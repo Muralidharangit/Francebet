@@ -119,7 +119,7 @@ const Avatar = () => {
               <h5 className="position-absolute start-50 translate-middle-x m-0 text-white fs-16">
                 Choose Your Avatar
               </h5>
-              {/* jcxj */}
+              {/* jcxdddj */}
             </div>
 
             {/* Loading / Error */}
