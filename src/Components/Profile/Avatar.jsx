@@ -121,6 +121,8 @@ const Avatar = () => {
               </h5>
             </div>
 
+            {/* test */}
+
             {/* Loading / Error */}
             {avatarsLoading && (
               <p className="text-muted mt-3">Loading avatars…</p>
