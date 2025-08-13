@@ -27,17 +27,17 @@ const RootApp = () => {
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      <QueryClientProvider client={queryClient}>
-        <AuthProvider>
-          <RouteTracker>
-            <RootApp />
-          </RouteTracker>
-        </AuthProvider>
-      </QueryClientProvider>
-    </BrowserRouter>
-  </React.StrictMode>
+  // <React.StrictMode>
+  <BrowserRouter>
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <RouteTracker>
+          <RootApp />
+        </RouteTracker>
+      </AuthProvider>
+    </QueryClientProvider>
+  </BrowserRouter>
+  // </React.StrictMode>
 );
 
 reportWebVitals();

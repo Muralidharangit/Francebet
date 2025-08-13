@@ -19,26 +19,32 @@ import { Images } from "./Header/constants/images";
 
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
-import Sidebar from "./Header/Sidebar";
+import {
+  fetchDiceGames,
+  fetchProviderList,
+  fetchSmartSoftGames,
+} from "../../hooks/homePageApi";
 import { useQuery } from "@tanstack/react-query";
-import { useProviders } from "../../hooks/fetchProviders ";
+import Sidebar from "./Header/Sidebar";
 
 function Home() {
   const { isLoading } = useContext(AuthContext);
-  // const token = user?.token;
-  // Define BASE_URL at the top
-
   // State for all games
   const [games, setGames] = useState([]);
   const [selectedGameUrl, setSelectedGameUrl] = useState(null);
   const [showFullScreenGame, setShowFullScreenGame] = useState(false);
   const [isLaunchingGame, setIsLaunchingGame] = useState(false);
   // const [filteredGames, setFilteredGames] = useState([]);
+  // const [isLoadingSlot, setIsLoadingSlot] = useState(true); // New loading state
+  // State for dice games
+  // const [diceGames, setDiceGames] = useState([]);
+  // const [isLoadingDice, setIsLoadingDice] = useState(true); // ✅ add this
+  // const [slotGames, setslotGames] = useState([]);
 
   // State for dice games
   const [isLoadings, setIsLoadings] = useState(true); // Correct placement
 
-  const [diceGames, setDiceGames] = useState([]);
+  // const [diceGames, setDiceGames] = useState([]);
   const [isLoadingDice, setIsLoadingDice] = useState(true); // ✅ add this
   const [slotGames, setslotGames] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -46,77 +52,45 @@ function Home() {
   // const [providerlist, setproviderlist] = useState([]);
   const [isLoadingSlot, setIsLoadingSlot] = useState(true); // New loading state
   const iframeRef = useRef(null);
-  const [isLoadingBanner, setIsLoadingBanner] = useState(true);
-  const [isLoadingMarquee, setIsLoadingMarquee] = useState(true); // New loading state
-  // const [providerList, setProviderList] = useState([]);
+
   const location = useLocation();
   const navigate = useNavigate();
+  // const { data: , isLoading_data } = useProviders();
+  // Fetch Dice Games Effect
+  const {
+    data: diceGames = [],
+    isLoadingDiceGame,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["diceGames"],
+    queryFn: fetchDiceGames,
+    staleTime: 5 * 60 * 1000,
+  });
 
-  // Dummy routes object - replace with your actual routes if different
-  const routes = {
-    games: {
-      all: "/all-games",
-    },
-  };
+  // SmartSoft games query
+  const {
+    data: smartSoftGames = [],
+    isLoading: isLoadingSmartSoftGames,
+    isError: isErrorSmartSoft,
+    error: errorSmartSoft,
+  } = useQuery({
+    queryKey: ["smartSoftGames"],
+    queryFn: fetchSmartSoftGames,
+    staleTime: 5 * 60 * 1000,
+  });
 
-  const [isLoadingTypes, setIsLoadingTypes] = useState(true);
-
-  // Define your game type data.
-  // This array ensures the skeleton and actual content match in structure and count.
-  const gameTypes = [
-    { name: "Casino", type: "card", imgSrc: "assets/img/css.png" },
-    { name: "Roulette", type: "roulette", imgSrc: "assets/img/casino11.png" },
-    { name: "Crash", type: "crash", imgSrc: "assets/img/crash.png" },
-    { name: "Lottery", type: "lottery", imgSrc: "assets/img/lottery.png" },
-    { name: "Instant", type: "instant", imgSrc: "assets/img/sports.png" },
-    { name: "Slots", type: "slots", imgSrc: "assets/img/horse.png" },
-    { name: "Dice", type: "dice", imgSrc: "assets/img/up.png" },
-  ];
-
-  // banner section
-
-  // You'll need to define this component or integrate it into your existing one
-
-  // Define your static game data for the marquee.
-  // In a real app, this would likely come from an API call.
-  const marqueeGames = [
-    { type: "roulette", imgSrc: "assets/img/turbo/1.png" },
-    { type: "slots", imgSrc: "assets/img/turbo/2.png" },
-    { type: "card", imgSrc: "assets/img/turbo/3.png" },
-    { type: "dice", imgSrc: "assets/img/turbo/4.png" },
-    { type: "shooting", imgSrc: "assets/img/turbo/5.png" },
-    { type: "home", imgSrc: "assets/img/turbo/6.png" }, // Last one navigating to home
-  ];
-
-  // Simulate a loading delay for the marquee content
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoadingMarquee(false);
-    }, 1000); // Simulate a 1.2-second load time
-
-    return () => clearTimeout(timer); // Cleanup the timer
-  }, []);
-
-  // State to manage loading status for this section
-  const [isLoadingGames, setIsLoadingGames] = useState(true);
-
-  // Your static game data (replace with API fetch in a real application)
-  const allGamesData = [
-    { type: "roulette", imgSrc: "assets/img/turbo/1.png" },
-    { type: "slots", imgSrc: "assets/img/turbo/2.png" },
-    { type: "card", imgSrc: "assets/img/turbo/3.png" },
-    { type: "dice", imgSrc: "assets/img/turbo/4.png" },
-    { type: "shooting", imgSrc: "assets/img/turbo/5.png" },
-    { type: "general", imgSrc: "assets/img/turbo/6.png", linkTo: routes.home },
-  ];
-
-  const { data: providerList, isLoading_data, isError } = useProviders();
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoadingGames(false);
-    }, 1500);
-    return () => clearTimeout(timer);
-  }, []);
+  // Provider List API
+  const {
+    data: providerList = [],
+    isLoading: isLoadingProviders,
+    isError: isErrorProviders,
+    error: errorProviders,
+  } = useQuery({
+    queryKey: ["providerList"],
+    queryFn: fetchProviderList,
+    staleTime: 5 * 60 * 1000, // optional 5 minutes cache
+  });
 
   useEffect(() => {
     if (location.state?.showLoginSuccess) {
@@ -128,113 +102,62 @@ function Home() {
         pauseOnHover: true,
         draggable: true,
         onClose: () => {
+          // Navigate after toast is closed automatically
           navigate(location.pathname, { replace: true, state: {} });
         },
       });
     }
   }, [location, navigate]);
 
-  useEffect(() => {
-    const fetchGames = async () => {
-      try {
-        const response = await axiosInstance.get(
-          `/all-games?is_mobile=1&limit=10&provider=SmartSoft`
-        );
-        const data = response.data;
-        setGames(Array.isArray(data.allGames) ? data.allGames : []);
-      } catch (error) {
-        console.error("Error fetching all games:", error);
-        setGames([]);
-      }
-    };
-    fetchGames();
-  }, []);
+  // Fetch All Games Effect
+  // useEffect(() => {
+  //   const fetchGames = async () => {
+  //     try {
+  //       const response = await axiosInstance.get(
+  //         `/all-games?is_mobile=1&limit=10&provider=SmartSoft`
+  //       );
+  //       const data = await response.json();
+  //       if (Array.isArray(data.allGames)) {
+  //         setGames(data.allGames);
+  //       } else {
+  //         setGames([]); // fallback
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching all games:", error);
+  //       setGames([]);
+  //     }
+  //   };
 
-  useEffect(() => {
-    const fetchDiceGames = async () => {
-      setIsLoadingDice(true);
-      try {
-        const response = await axiosInstance.get(
-          `/all-games?is_mobile=1&limit=10&type=dice`
-        );
-        const data = response.data;
-        setDiceGames(Array.isArray(data.allGames) ? data.allGames : []);
-      } catch (error) {
-        console.error("Error fetching dice games:", error);
-        setDiceGames([]);
-      } finally {
-        setIsLoadingDice(false);
-      }
-    };
-    fetchDiceGames();
-  }, []);
+  //   fetchGames();
+  // }, []); // No dependency since BASE_URL is constant
 
-  useEffect(() => {
-    const fetchSlotGames = async () => {
-      setIsLoadingSlot(true);
-      try {
-        const response = await axiosInstance.get(
-          `/all-games?is_mobile=1&limit=10&type=slots`
-        );
-        const data = response.data;
-        setslotGames(Array.isArray(data.allGames) ? data.allGames : []);
-      } catch (error) {
-        console.error("Error fetching slot games:", error);
-        setslotGames([]);
-      } finally {
-        setIsLoadingSlot(false);
-      }
-    };
-    fetchSlotGames();
-  }, []);
+  // Fetch Slot Games Effect
+  // useEffect(() => {
+  //   const slotGameType = async () => {
+  //     try {
+  //       setIsLoadingSlot(true); // Set loading to true before fetching
+  //       const response = await axiosInstance.get(
+  //         `/all-games?is_mobile=1&limit=10&type=slots`
+  //       );
+  //       const data = response.data;
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoadingBanner(false);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, []);
+  //       if (Array.isArray(data.allGames)) {
+  //         setslotGames(data.allGames);
+  //       } else {
+  //         setslotGames([]); // fallback
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching slot games:", error);
+  //       setslotGames([]);
+  //     } finally {
+  //       setIsLoadingSlot(false); // Set loading to false after fetching (success or error)
+  //     }
+  //   };
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoadingTypes(false);
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    const handlePopState = () => {
-      if (showFullScreenGame) {
-        setShowFullScreenGame(false);
-        setSelectedGameUrl(null);
-        setIsLaunchingGame(false);
-
-        const prevPage = sessionStorage.getItem("prevPage");
-        if (prevPage) {
-          navigate(prevPage);
-        }
-      }
-    };
-
-    window.addEventListener("popstate", handlePopState);
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, [showFullScreenGame, navigate]);
-
-  // ✅ Conditional rendering inside return
-  if (isLoading_data || isError) {
-    return (
-      <div>
-        {isLoading_data && <p>Loading providers...</p>}
-        {isError && <p>Something went wrong while fetching providers.</p>}
-      </div>
-    );
-  }
+  //   slotGameType();
+  // }, []); // Empty dependency array if BASE_URL is constant and axiosInstance is stable
 
   // Provider Games Effect
-  // / Declare the state at the top:
-  // Declare the state at the top:
 
   // useEffect(() => {
   //   const fetchProviderList = async () => {
@@ -260,6 +183,64 @@ function Home() {
   //   fetchProviderList();
   // }, []); // End of useEffect
 
+  useEffect(() => {
+    const handlePopState = () => {
+      if (showFullScreenGame) {
+        setShowFullScreenGame(false);
+        setSelectedGameUrl(null);
+        setIsLaunchingGame(false); // ✅ Hide loader when going back
+
+        // Navigate back to saved page (optional)
+        const prevPage = sessionStorage.getItem("prevPage");
+        if (prevPage) {
+          navigate(prevPage);
+        }
+      }
+    };
+
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [showFullScreenGame, navigate]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoadingTypes(false);
+    }, 1000); // Simulate a 1-second load time
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Simulate loading of the banner
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoadingBanner(false);
+    }, 1000); // Simulate an 800ms load time
+
+    return () => clearTimeout(timer); // Cleanup the timer
+  }, []);
+
+  // Simulate a loading delay for the marquee content
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoadingMarquee(false);
+    }, 1000); // Simulate a 1.2-second load time
+
+    return () => clearTimeout(timer); // Cleanup the timer
+  }, []);
+
+  // Simulate data fetching with a delay
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoadingGames(false); // Set loading to false after the delay
+    }, 1500); // Increased delay slightly for better visual effect (adjust as needed)
+
+    return () => clearTimeout(timer); // Cleanup the timer on unmount
+  }, []); // Effect runs once on component mount
+
+  // Turbo Games Effect
   // Declare the state at the top:
   // const [turboGamesList, setTurboGamesList] = useState([]);
   // const [isLoadingTurbo, setIsLoadingTurbo] = useState(true); // Separate loading state for Turbo Games
@@ -298,7 +279,7 @@ function Home() {
       return;
     }
 
-    // console.log(game);
+    console.log(game, "testing....................");
 
     const token = localStorage.getItem("token");
     try {
@@ -306,7 +287,11 @@ function Home() {
 
       const response = await axios.get(`${BASE_URL}/player/turbo/${game.key}`, {
         // params: { return_url: "https://jiboomba.in/games" },
-        params: { return_url: window.location.origin }, // 👈 dynamic base URL },
+        params: {
+          return_url: window.location.origin,
+          has_lobby: game.key,
+          has_tables: game.key,
+        }, // 👈 dynamic base URL },
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -436,7 +421,7 @@ function Home() {
       toast.error("Missing game info.");
       return;
     }
-
+    // console.log(game.has_lobby, "testing....................");
     const token = localStorage.getItem("token");
 
     try {
@@ -449,6 +434,8 @@ function Home() {
         {
           params: {
             return_url: `${window.location.origin}/all-games?is_mobile=1`,
+            has_lobby: game.has_lobby,
+            has_tables: game.has_tables,
           },
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -502,6 +489,59 @@ function Home() {
   // };
 
   // Assuming routes is defined like this:
+
+  // Dummy routes object - replace with your actual routes if different
+  const routes = {
+    games: {
+      all: "/all-games",
+    },
+  };
+
+  const [isLoadingTypes, setIsLoadingTypes] = useState(true);
+
+  // Define your game type data.
+  // This array ensures the skeleton and actual content match in structure and count.
+  const gameTypes = [
+    { name: "Casino", type: "card", imgSrc: "assets/img/css.png" },
+    { name: "Roulette", type: "roulette", imgSrc: "assets/img/casino11.png" },
+    { name: "Crash", type: "crash", imgSrc: "assets/img/crash.png" },
+    { name: "Lottery", type: "lottery", imgSrc: "assets/img/lottery.png" },
+    { name: "Instant", type: "instant", imgSrc: "assets/img/sports.png" },
+    { name: "Slots", type: "slots", imgSrc: "assets/img/horse.png" },
+    { name: "Dice", type: "dice", imgSrc: "assets/img/up.png" },
+  ];
+
+  // banner section
+
+  // You'll need to define this component or integrate it into your existing one
+
+  const [isLoadingBanner, setIsLoadingBanner] = useState(true);
+
+  const [isLoadingMarquee, setIsLoadingMarquee] = useState(true); // New loading state
+
+  // Define your static game data for the marquee.
+  // In a real app, this would likely come from an API call.
+  const marqueeGames = [
+    { type: "roulette", imgSrc: "assets/img/turbo/1.png" },
+    { type: "slots", imgSrc: "assets/img/turbo/2.png" },
+    { type: "card", imgSrc: "assets/img/turbo/3.png" },
+    { type: "dice", imgSrc: "assets/img/turbo/4.png" },
+    { type: "shooting", imgSrc: "assets/img/turbo/5.png" },
+    { type: "home", imgSrc: "assets/img/turbo/6.png" }, // Last one navigating to home
+  ];
+
+  // State to manage loading status for this section
+  const [isLoadingGames, setIsLoadingGames] = useState(true);
+
+  // Your static game data (replace with API fetch in a real application)
+  const allGamesData = [
+    { type: "roulette", imgSrc: "assets/img/turbo/1.png" },
+    { type: "slots", imgSrc: "assets/img/turbo/2.png" },
+    { type: "card", imgSrc: "assets/img/turbo/3.png" },
+    { type: "dice", imgSrc: "assets/img/turbo/4.png" },
+    { type: "shooting", imgSrc: "assets/img/turbo/5.png" },
+    { type: "general", imgSrc: "assets/img/turbo/6.png", linkTo: routes.home },
+  ];
 
   return (
     <>
@@ -702,7 +742,7 @@ function Home() {
                               },
                             }}
                           >
-                            {isLoadingDice ? (
+                            {isLoadingDiceGame ? ( // ✅ use the new loading state
                               Array.from({ length: 4 }).map((_, index) => (
                                 <SwiperSlide key={index}>
                                   <div className="game-card-wrapper rounded-2 new-cardclr p-1">
@@ -732,10 +772,10 @@ function Home() {
                                         </div>
                                       </div>
                                       {/* <div className="d-flex flex-column text-white text-center py-2 px-1">
-                                        <span className="fs-12 fw-bold text-truncate">
-                                          {game.name}
-                                        </span>
-                                      </div> */}
+                              <span className="fs-12 fw-bold text-truncate">
+                                {game.name}
+                              </span>
+                            </div> */}
                                     </div>
                                   </div>
                                 </SwiperSlide>
@@ -1279,7 +1319,7 @@ function Home() {
                                 highlightColor="#525252"
                               />
                             ) : (
-                              <h5 className="m-0 ms-2">All Gamesss</h5>
+                              <h5 className="m-0 ms-2">All Games</h5>
                             )}
                           </div>
                           <div>
@@ -1291,7 +1331,7 @@ function Home() {
                             </Link>
                           </div>
                         </div>
-                        ---
+
                         {/* Apply SkeletonTheme for consistent styling of all skeletons in this section */}
                         <SkeletonTheme
                           baseColor="#313131"
@@ -1340,6 +1380,7 @@ function Home() {
                               loop="true"
                               autoplay='{"delay": 0, "disableOnInteraction": false}'
                               speed="2500"
+                              slides-per-view="2.5"
                               centered-slides="false"
                               free-mode="true"
                               breakpoints={{
@@ -1453,7 +1494,8 @@ function Home() {
                               },
                             }}
                           >
-                            {isLoadingSlot ? (
+                            {isLoadingSmartSoftGames ? (
+                              // Skeleton loader
                               Array.from({ length: 4 }).map((_, index) => (
                                 <SwiperSlide key={index}>
                                   <div className="game-card-wrapper rounded-2 new-cardclr p-1">
@@ -1464,8 +1506,17 @@ function Home() {
                                   </div>
                                 </SwiperSlide>
                               ))
-                            ) : slotGames.length > 0 ? (
-                              slotGames.map((game, index) => (
+                            ) : isErrorSmartSoft ? (
+                              // Error message
+                              <div className="d-flex flex-column align-items-center mt-5 w-100">
+                                <p className="text-white text-center">
+                                  Error loading slot games:{" "}
+                                  {errorSmartSoft.message}
+                                </p>
+                              </div>
+                            ) : smartSoftGames.length > 0 ? (
+                              // Game cards
+                              smartSoftGames.map((game, index) => (
                                 <SwiperSlide key={game.uuid || index}>
                                   <div className="game-card-wrapper rounded-2 new-cardclr">
                                     <div className="game-card p-0 m-0 p-1">
@@ -1475,11 +1526,11 @@ function Home() {
                                         alt={game.name}
                                       />
                                       {/* <div className="d-flex flex-column text-white text-center py-2 px-1">
-                                        <span className="fs-12 fw-bold text-truncate">
-                                          {game.name}
-                                        </span>
-                                        <span className="fs-10">Duel</span>
-                                      </div> */}
+                              <span className="fs-12 fw-bold text-truncate">
+                                {game.name}
+                              </span>
+                              <span className="fs-10">Duel</span>
+                            </div> */}
                                     </div>
                                     <div className="game-play-button d-flex flex-column">
                                       <div
@@ -1493,6 +1544,7 @@ function Home() {
                                 </SwiperSlide>
                               ))
                             ) : (
+                              // No games message
                               <div className="d-flex flex-column align-items-center mt-5 w-100">
                                 <img
                                   src="assets/img/notification/img_2.png"
@@ -1516,21 +1568,6 @@ function Home() {
                         highlightColor="#525252"
                       >
                         <div>
-                          <div>
-                            {/* ✅ Use provider data safely */}
-                            <h2>Providers List</h2>
-                            <div>
-                              {isLoading_data && <div>Loading...</div>}
-                              {isError && <div>Something went wrong.</div>}
-
-                              {!isLoading_data &&
-                                providerList?.length > 0 &&
-                                providerList.map((provider) => (
-                                  <div key={provider.id}>{provider.name}</div>
-                                ))}
-                            </div>
-                          </div>
-
                           {/* Provider running list Header */}
                           <div className="top-matches-title d-flex align-items-center justify-content-between my-3">
                             <div className="d-flex">
@@ -1562,8 +1599,9 @@ function Home() {
                               </Link>
                             </div>
                           </div>
+
                           {/* Provider Swiper */}
-                          {isLoadings ? (
+                          {isLoadingProviders ? (
                             <swiper-container
                               class="mySwiper new_class4"
                               space-between="5"
@@ -1573,14 +1611,6 @@ function Home() {
                               slides-per-view="auto"
                               centered-slides="false"
                               free-mode="true"
-                              breakpoints={{
-                                768: {
-                                  slidesPerView: 8, // Tablet view
-                                },
-                                1024: {
-                                  slidesPerView: 10, // Laptop/Desktop view
-                                },
-                              }}
                             >
                               {Array.from({ length: 6 }).map((_, index) => (
                                 <swiper-slide
@@ -1608,6 +1638,10 @@ function Home() {
                                 </swiper-slide>
                               ))}
                             </swiper-container>
+                          ) : isErrorProviders ? (
+                            <p className="text-center text-white my-4">
+                              Error loading providers: {errorProviders.message}
+                            </p>
                           ) : providerList.length > 0 ? (
                             <swiper-container
                               class="mySwiper new_class4"

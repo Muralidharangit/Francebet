@@ -29,15 +29,15 @@ const WithdrawHistory = () => {
   const fetchWithdrawHistory = async () => {
     setLoading(true);
     try {
-      const verify = await verifyToken();
-      if (verify.status !== "success") {
-        setError("Invalid or expired token. Please login again.");
-        setWithdrawHistory([]);
-        return;
-      }
+      // const verify = await verifyToken();
+      // if (verify.status !== "success") {
+      //   setError("Invalid or expired token. Please login again.");
+      //   setWithdrawHistory([]);
+      //   return;
+      // }
 
       const response = await withdrawHistoryPage(token);
-      console.log(response);
+      // console.log(response);
 
       if (
         response.status === "success" &&

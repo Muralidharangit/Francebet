@@ -75,7 +75,7 @@ function Deposit() {
       {/* header  */}
       <StickyHeader onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
       {/* header end */}
-          <div className="container-fluid page-body-wrapper">
+      <div className="container-fluid page-body-wrapper">
         {/* Sidebar Nav Starts */}
         <Sidebar />
         {/* Sidebar Nav Ends */}
@@ -114,11 +114,11 @@ function Deposit() {
                 </button>
               </div> */}
 
-                    {/* test Starts */}
+                    {/* Wizard */}
                     <div className="container mt-4 px-0">
                       <div className="wizard my-5">
                         <ul className="nav nav-tabs justify-content-center">
-                          {steps.map((step, index) => (
+                          {steps.map((step) => (
                             <li
                               key={step.id}
                               className="nav-item flex-fill"
@@ -130,100 +130,76 @@ function Deposit() {
                               >
                                 {step.title}
                               </span>
-
                               <a
+                                href={`#${step.id}`}
                                 className={`nav-link rounded-circle mx-auto d-flex align-items-center justify-content-center ${
                                   activeStep === step.id ? "active" : ""
                                 }`}
-                                href={`#${step.id}`}
                                 onClick={(e) => {
                                   e.preventDefault();
+                                  // optional: block jumping ahead without required data
+                                  if (step.id === "step2" && !selectedAmount)
+                                    return;
+                                  if (
+                                    step.id === "step3" &&
+                                    (!selectedAmount || !paymentSelectedMethod)
+                                  )
+                                    return;
                                   setActiveStep(step.id);
                                 }}
                               >
-                                <i className={step.icon}></i>
+                                <i className={step.icon} />
                               </a>
                             </li>
                           ))}
                         </ul>
 
-                        {/* Navigation Tabs */}
+                        {/* Single Tab Content (keep just this one) */}
                         <div className="tab-content">
-                          {steps.map((step, index) => (
-                            <div
-                              key={step.id}
-                              className={`tab-pane fade ${
-                                activeStep === step.id ? "show active" : ""
-                              }`}
-                              id={step.id}
-                            >
-                              {/* <h5 className="mt-3">{step.title}</h5> */}
-                              {step.content()} {/* ✅ FIX: Call the function */}
-                              {/* <div className="d-flex justify-content-between">
-                    {index > 0 && (
-                      <button
-                        className="btn btn-secondary previous"
-                        onClick={goPrevious}
-                      >
-                        <i className="fas fa-angle-left"></i> Back
-                      </button>
-                    )}
-                    {index < steps.length - 1 ? (
-                      <button className="btn btn-info next" onClick={goNext}>
-                        Continue <i className="fas fa-angle-right"></i>
-                      </button>
-                    ) : (
-                      <button className="btn btn-info next">
-                        Submit <i className="fas fa-angle-right"></i>
-                      </button>
-                    )}
-                  </div> */}
-                            </div>
-                          ))}
-                        </div>
-
-                        {/* Tab Content */}
-                        <div className="tab-content">
-                          {steps.map((step, index) => (
-                            <div
-                              key={step.id}
-                              className={`tab-pane fade ${
-                                activeStep === step.id ? "show active" : ""
-                              }`}
-                              id={step.id}
-                            >
-                              {/* <h3>{step.title}</h3> */}
-                              <p>{step.content}</p>
-                              <div className="d-flex justify-content-between">
-                                {index > 0 && (
-                                  <button
-                                    className="btn btn-secondary previous"
-                                    onClick={goPrevious}
-                                  >
-                                    <i className="fas fa-angle-left"></i> Back
-                                  </button>
-                                )}
-                                {index < steps.length - 1 ? (
-                                  <button
-                                    className="btn btn-light next"
-                                    onClick={goNext}
-                                  >
-                                    Continue{" "}
-                                    <i className="fas fa-angle-right"></i>
-                                  </button>
-                                ) : (
-                                  ""
-                                  // <button className="btn bg-primary_color text-white next">
-                                  //   Submit <i className="fas fa-angle-right"></i>
-                                  // </button>
-                                )}
+                          {steps.map((step, index) => {
+                            const isActive = activeStep === step.id;
+                            return (
+                              <div
+                                key={step.id}
+                                className={`tab-pane fade ${
+                                  isActive ? "show active" : ""
+                                }`}
+                                id={step.id}
+                              >
+                                {step.content()}
+                                <div className="d-flex justify-content-between mt-3">
+                                  {index > 0 && (
+                                    <button
+                                      className="btn btn-secondary previous"
+                                      onClick={goPrevious}
+                                    >
+                                      <i className="fas fa-angle-left" /> Back
+                                    </button>
+                                  )}
+                                  {index < steps.length - 1 && (
+                                    <button
+                                      className="btn btn-light next"
+                                      onClick={goNext}
+                                      disabled={
+                                        (step.id === "step1" &&
+                                          !selectedAmount) ||
+                                        (step.id === "step2" &&
+                                          !paymentSelectedMethod)
+                                      }
+                                    >
+                                      Continue{" "}
+                                      <i className="fas fa-angle-right" />
+                                    </button>
+                                  )}
+                                </div>
                               </div>
-                            </div>
-                          ))}
+                            );
+                          })}
                         </div>
+                        {/* end .tab-content */}
                       </div>
                     </div>
-                    {/* test Ends */}
+                    {/* end wizard */}
                     {/* <Footer /> */}
                   </div>
                 </div>

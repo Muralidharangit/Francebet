@@ -31,12 +31,12 @@ const DepositHistory = () => {
       //   return;
       // }
 
-      const verify = await verifyToken();
-      if (verify.status !== "success") {
-        setError("Invalid or expired token. Please login again.");
-        setHistory([]); // 🟢 clear the old history
-        return;
-      }
+      // const verify = await verifyToken();
+      // if (verify.status !== "success") {
+      //   setError("Invalid or expired token. Please login again.");
+      //   setHistory([]); // 🟢 clear the old history
+      //   return;
+      // }
 
       const response = await depositHistory(token);
       if (response.status === "success") {

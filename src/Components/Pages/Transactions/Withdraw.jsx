@@ -10,8 +10,6 @@ function Withdraw() {
   const [loading, setLoading] = useState(true);
   const [selectedTab, setSelectedTab] = useState("all");
 
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
   useEffect(() => {
     const fetchWithdrawHistory = async () => {
       const token = localStorage.getItem("token");

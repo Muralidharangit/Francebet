@@ -1,3 +1,4 @@
+import Sidebar from "./Header/Sidebar";
 import { useState, useEffect, useRef, useContext } from "react";
 // import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
@@ -7,12 +8,22 @@ import Footer from "./footer/Footer";
 import { toast, ToastContainer } from "react-toastify";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-
+import PaginatedData from "../Pages/Pagination/PaginatedData";
+import {
+  manualAllGames,
+  manualBlackJackGames,
+  manualCardGames,
+  manualCrashGames,
+  manualDiceGames,
+  manualHotGames,
+  manualTableGames,
+} from "../../API/manualGames";
 import axiosInstance from "../../API/axiosConfig";
+import { Images } from "./Header/constants/images";
+import routes from "../routes/route";
 import { verifyToken } from "../../API/authAPI";
 import AuthContext from "../../Auth/AuthContext";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import Sidebar from "./Header/Sidebar";
 import useAllGames from "../../hooks/useAllGames";
 import useFilteredGames from "../../hooks/useFilteredGames";
 
@@ -169,19 +180,7 @@ const SearchTopGames = () => {
   }, [isSearchMode]);
 
   useEffect(() => {
-    const fetchProviders = async () => {
-      try {
-        const response = await axiosInstance.get(`/types-list`);
-        const data = response.data;
-        setTypes(data.types || []);
-      } catch (error) {
-        console.error("Error fetching providers:", error);
-      }
-    };
-
-    fetchProviders();
     fetchAllGames();
-    // Do not call fetchAllGames here — React Query handles it.
   }, []);
 
   useEffect(() => {

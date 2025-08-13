@@ -28,10 +28,10 @@ const BetHistory = () => {
   const fetchPlayerData = async (page = 1) => {
     setLoading(true);
     try {
-      const verify = await verifyToken();
-      if (verify.status !== "success") {
-        throw new Error("Session expired. Please login again.");
-      }
+      // const verify = await verifyToken();
+      // if (verify.status !== "success") {
+      //   throw new Error("Session expired. Please login again.");
+      // }
 
       const response = await betStatement(token, page);
 
@@ -71,13 +71,13 @@ const BetHistory = () => {
   }, [history, selectedTab]);
   return (
     <div>
-       <ToastContainer position="top-right" autoClose={5000} theme="dark" />
+      <ToastContainer position="top-right" autoClose={5000} theme="dark" />
       {/* header  */}
       <StickyHeader onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
       {/* header end */}
 
       {/* <StickyHeader /> */}
-     
+
       <div className="container-fluid page-body-wrapper">
         {/* Sidebar Nav Starts */}
         <Sidebar />

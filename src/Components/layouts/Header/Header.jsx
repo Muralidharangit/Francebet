@@ -10,13 +10,13 @@ const StickyHeader = ({ onToggleSidebar }) => {
   const [loading, setLoading] = useState(false);
   // console.log("onToggleSidebar", onToggleSidebar);
 
+  // const { user, profile, avatar, portalSettings, isLoading, logout, authType } =
   const { user, profile, avatar, portalSettings, isLoading, logout, authType } =
     useContext(AuthContext); // ✅ Get user authentication state
-
   const [isSticky, setIsSticky] = useState(false);
   const navigate = useNavigate();
 
-  // console.log("portalSettings", portalSettings);
+  // console.log("avatar", avatar);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -29,6 +29,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+  // console.log(profile, "user in header");
   // console.log(profile, "user in header");
 
   const handleDepositClick = async () => {
@@ -220,7 +221,29 @@ const StickyHeader = ({ onToggleSidebar }) => {
                       className="user-icon ms-2"
                       onClick={handleProfileClick}
                     >
-                      {avatar?.avatar?.image ? (
+                      <img
+                        src={
+                          // string URL on user.avatar
+                          (typeof user?.avatar === "string" && user.avatar) ||
+                          // object form: { image: "..." }
+                          user?.avatar?.image ||
+                          // fallback in /public
+                          "/assets/img/icons/man.png"
+                        }
+                        alt={user?.avatar?.name || "Profile"}
+                        className="w-100"
+                        style={{
+                          borderRadius: "10%",
+                          width: 36,
+                          height: 36,
+                          objectFit: "cover",
+                        }}
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = "/assets/img/icons/man.png";
+                        }}
+                      />
+                      {/* {avatar?.avatar?.image ? (
                         <img
                           src={avatar.avatar.image}
                           alt={avatar.avatar.name || "Profile"}
@@ -229,7 +252,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                         />
                       ) : (
                         <Skeleton circle height={36} width={36} />
-                      )}
+                      )} */}
                     </div>
                   </div>
                 ) : (
@@ -473,7 +496,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                             style={{ borderRadius: "50%" }}
                           /> */}
 
-                          {avatar?.avatar?.image ? (
+                          {/* {avatar?.avatar?.image ? (
                             <img
                               src={avatar.avatar.image}
                               alt={avatar.avatar.name || "Profile"}
@@ -482,7 +505,30 @@ const StickyHeader = ({ onToggleSidebar }) => {
                             />
                           ) : (
                             <Skeleton circle height={36} width={36} />
-                          )}
+                          )} */}
+                          <img
+                            src={
+                              // string URL on user.avatar
+                              (typeof user?.avatar === "string" &&
+                                user.avatar) ||
+                              // object form: { image: "..." }
+                              user?.avatar?.image ||
+                              // fallback in /public
+                              "/assets/img/icons/man.png"
+                            }
+                            alt={user?.avatar?.name || "Profile"}
+                            className="w-100"
+                            style={{
+                              borderRadius: "10%",
+                              width: 36,
+                              height: 36,
+                              objectFit: "cover",
+                            }}
+                            onError={(e) => {
+                              e.currentTarget.onerror = null;
+                              e.currentTarget.src = "/assets/img/icons/man.png";
+                            }}
+                          />
                         </div>
                       </a>
                       <div
@@ -604,6 +650,25 @@ const StickyHeader = ({ onToggleSidebar }) => {
                               Deposit History
                             </h6>
                             {/* <p className="text-gray mb-0"> 18 Minutes ago </p> */}
+                          </div>
+                        </a>
+
+                        <a className="dropdown-item preview-item">
+                          <div className="preview-thumbnail">
+                            {/* <img
+                          src="/assets/images/faces/face2.jpg"
+                          alt="image"
+                          className="profile-pic"
+                        /> */}
+                          </div>
+                          <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                            <h6
+                              className="preview-subject ellipsis mb-1 font-weight-normal"
+                              onClick={handleProfileClick}
+                            >
+                              Profile
+                            </h6>
+                            {/* <p className="text-gray mb-0"> 15 Minutes ago </p> */}
                           </div>
                         </a>
                         {/* <div className="dropdown-divider" />
