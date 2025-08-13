@@ -13,41 +13,110 @@ import Footer from "./footer/Footer";
 import { Images } from "./Header/constants/images";
 import routes from "../routes/route";
 import { motion } from "framer-motion";
-import {
-  manualCardGames,
-  manualCrashGames,
-  manualHotGames,
-} from "../../API/manualGames";
-import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import Sidebar from "./Header/Sidebar";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+
+// ✅ make sure this points to your real search hook file:
+// import useSearchGames from "../../hooks/useSearchGames";
+import useSearchGames from "../../hooks/filteredGames";
+// ✅ React Query (inline use)
+import {
+  useQuery,
+  keepPreviousData,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 const FilteredGamesPage = () => {
   const [games, setGames] = useState([]);
   const [filterType, setFilterType] = useState(null);
   const [selectedGameUrl, setSelectedGameUrl] = useState(null);
   const [showFullScreenGame, setShowFullScreenGame] = useState(false);
-  const [loading, setLoading] = useState(true);
   const [isLaunchingGame, setIsLaunchingGame] = useState(false);
   const iframeRef = useRef(null);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
+  const location = useLocation();
+  const queryClient = useQueryClient();
 
+  // ---- SEARCH STATE ----
   const [searchByNameResults, setSearchByNameResults] = useState([]);
   const [searchByProviderResults, setSearchByProviderResults] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearchMode, setIsSearchMode] = useState(false);
   const [searchPage, setSearchPage] = useState(1);
   const [isFetching, setIsFetching] = useState(false);
+
+  // ---- FILTERED (PAGINATION) STATE ----
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [searchLoading, setSearchLoading] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
-  const [searchResults, setSearchResults] = useState([]);
-  const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  // const navigate = useNavigate();
-  // 1️⃣ Handle search input changes
+  // ===== SEARCH via hook (unchanged) =====
+  const {
+    data: searchData,
+    isLoading: isSearchLoading,
+    isFetching: isSearchFetching,
+    isError: isSearchError,
+  } = useSearchGames(searchTerm, isSearchMode);
+
+  useEffect(() => {
+    if (searchData) {
+      setSearchByNameResults(searchData.searchByName);
+      setSearchByProviderResults(searchData.searchByProvider);
+    }
+  }, [searchData]);
+
+  // ===== FILTERED via React Query (inline) =====
+  const getFilteredGames = async (type, pageNum = 1, limit = 30) => {
+    const { data } = await axios.get(`${BASE_URL}/all-games`, {
+      params: { is_mobile: 1, type, page: pageNum, limit },
+    });
+    const items = Array.isArray(data?.allGames) ? data.allGames : [];
+    const tp =
+      data?.pagination?.total_page || data?.pagination?.total_pages || 1;
+    return { items, totalPages: tp };
+  };
+
+  const {
+    data: filteredData,
+    isLoading: isRQLoading,
+    isFetching: isRQFetching,
+  } = useQuery({
+    queryKey: ["filteredGames", filterType, page, 30],
+    queryFn: () => getFilteredGames(filterType, page, 30),
+    enabled: !!filterType && !isSearchMode, // only when not in search mode
+    placeholderData: keepPreviousData,
+    staleTime: 5 * 60 * 1000, // 5 mins cache
+    gcTime: 30 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    retry: 1,
+  });
+
+  // accumulate pages into local `games`
+  useEffect(() => {
+    if (!filteredData || isSearchMode) return;
+    setTotalPages(filteredData.totalPages);
+    setHasMore(page < filteredData.totalPages);
+
+    setGames((prev) => {
+      if (page === 1) return filteredData.items;
+      const combined = [...prev, ...filteredData.items];
+      return Array.from(new Map(combined.map((g) => [g.uuid, g])).values());
+    });
+  }, [filteredData, page, isSearchMode]);
+
+  // derived loading for skeletons in filtered view
+  const loading = isRQLoading && page === 1;
+
+  // ===== Search handlers (unchanged) =====
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const fixedSearchTerm = searchTerm.trim();
+    if (!fixedSearchTerm) return;
+    setIsSearchMode(true);
+  };
+
   useEffect(() => {
     const fixedSearchTerm = searchTerm.trim();
 
@@ -61,16 +130,15 @@ const FilteredGamesPage = () => {
 
     setIsSearchMode(true);
     setSearchPage(1);
-    setHasMore(true); // ✅ allow more fetches on scroll
+    setHasMore(true);
 
     const delay = setTimeout(() => {
       handleAutoSearch(fixedSearchTerm, 1);
-    }, 500); // debounce
+    }, 500);
 
     return () => clearTimeout(delay);
   }, [searchTerm]);
 
-  // 2️⃣ Trigger pagination when searchPage changes
   useEffect(() => {
     const fixedSearchTerm = searchTerm.trim();
     if (isSearchMode && fixedSearchTerm.length >= 3 && searchPage > 1) {
@@ -78,14 +146,7 @@ const FilteredGamesPage = () => {
     }
   }, [searchPage]);
 
-  // 3️⃣ Trigger pagination for filtered (non-search) view
-  useEffect(() => {
-    if (!isSearchMode && filterType && page > 1) {
-      fetchFilteredGames(filterType, page);
-    }
-  }, [page]);
-
-  // 4️⃣ Scroll detection to load more pages
+  // ===== Infinite scroll trigger =====
   useEffect(() => {
     const handleScroll = () => {
       const bottomReached =
@@ -105,18 +166,18 @@ const FilteredGamesPage = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [isFetching, isSearchMode, page, searchPage, totalPages]);
 
-  // 5️⃣ When URL ?type= changes (first load or type switch)
+  // ===== When URL ?type= changes =====
   useEffect(() => {
     const type = searchParams.get("type");
     if (type) {
       setFilterType(type);
-      setPage(1); // ✅ Reset pagination
+      setPage(1);
       setHasMore(true);
-      fetchFilteredGames(type, 1);
+      setGames([]); // clear while new type loads via React Query
     }
   }, [searchParams]);
 
-  // 6️⃣ Detect iframe closure and reload game list
+  // ===== Detect iframe close & refresh list (invalidate cache) =====
   useEffect(() => {
     let interval;
     if (showFullScreenGame && selectedGameUrl) {
@@ -125,31 +186,19 @@ const FilteredGamesPage = () => {
         if (!document.body.contains(frame)) {
           setShowFullScreenGame(false);
           setSelectedGameUrl(null);
-          if (filterType) fetchFilteredGames(filterType, 1);
+          if (filterType) {
+            queryClient.invalidateQueries({
+              queryKey: ["filteredGames", filterType],
+            });
+          }
           clearInterval(interval);
         }
       }, 1000);
     }
     return () => clearInterval(interval);
-  }, [showFullScreenGame, selectedGameUrl, filterType]);
+  }, [showFullScreenGame, selectedGameUrl, filterType, queryClient]);
 
-  const fetchFilteredGames = async (type) => {
-    // console.log(type);
-
-    try {
-      setLoading(true);
-      const response = await axios.get(`${BASE_URL}/all-games?is_mobile=1`, {
-        params: { type },
-      });
-      setGames(response.data.allGames);
-    } catch (error) {
-      console.error("Error fetching filtered games:", error);
-      toast.error("Something went wrong while filtering games.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
+  // ====== GAME LAUNCH (unchanged) ======
   const handleGameClick = async (game) => {
     if (!game.provider || !game.name || !game.uuid) {
       toast.error("Missing game info.");
@@ -161,6 +210,20 @@ const FilteredGamesPage = () => {
     try {
       setIsLaunchingGame(true);
 
+      // const response = await axios.get(
+      //   `${BASE_URL}/player/${game.provider}/launch/${encodeURIComponent(
+      //     game.name
+      //   )}/${game.uuid}`,
+      //   {
+      //     params: {
+      //       return_url: `${window.location.origin}/all-games?is_mobile=1`,
+      //       has_lobby: game.has_lobby,
+      //       has_tables: game.has_tables,
+      //     },
+      //     headers: { Authorization: `Bearer ${token}` },
+      //   }
+      // );
+
       const response = await axios.get(
         `${BASE_URL}/player/${game.provider}/launch/${encodeURIComponent(
           game.name
@@ -168,6 +231,8 @@ const FilteredGamesPage = () => {
         {
           params: {
             return_url: `${window.location.origin}/all-games?is_mobile=1`,
+            has_lobby: game.has_lobby,
+            has_tables: game.has_tables,
           },
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -175,16 +240,12 @@ const FilteredGamesPage = () => {
 
       const gameUrl = response.data?.game?.gameUrl || response.data?.game_url;
       if (gameUrl) {
-        // Store current location so user can return later
         sessionStorage.setItem("prevPage", location.pathname + location.search);
-
-        // Push a new state so back button will return here
         window.history.pushState(
           { isGameOpen: true },
           "",
           window.location.href
         );
-
         setSelectedGameUrl(gameUrl);
         setShowFullScreenGame(true);
       } else {
@@ -203,65 +264,8 @@ const FilteredGamesPage = () => {
       toast.error("Game launch failed. Try again later.");
     }
   };
-  useEffect(() => {
-    const handlePopState = () => {
-      if (showFullScreenGame) {
-        setShowFullScreenGame(false);
-        setSelectedGameUrl(null);
-        setIsLaunchingGame(false); // ✅ Hide loader when going back
 
-        // Navigate back to saved page (optional)
-        const prevPage = sessionStorage.getItem("prevPage");
-        if (prevPage) {
-          navigate(prevPage);
-        }
-      }
-    };
-
-    window.addEventListener("popstate", handlePopState);
-
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, [showFullScreenGame, navigate]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const fixedSearchTerm = searchTerm.trim();
-
-    if (!fixedSearchTerm) return;
-
-    try {
-      setIsSearchMode(true);
-
-      const [res1, res2, res3] = await Promise.all([
-        axios.get(
-          `${BASE_URL}/all-games?is_mobile=1&global=${fixedSearchTerm}`
-        ),
-        axios.get(
-          `${BASE_URL}/all-games?is_mobile=1&provider=${fixedSearchTerm}`
-        ),
-        axios.get(`${BASE_URL}/all-games?is_mobile=1&type=${fixedSearchTerm}`),
-      ]);
-
-      // 🟣 Merge search and type API results (res1 + res3)
-      const mergedSearchResults = [
-        ...(res1.data.allGames || []),
-        ...(res3.data.allGames || []),
-      ];
-
-      // // ✅ Remove duplicates if needed
-      // const uniqueMergedResults = Array.from(
-      //   new Map(mergedSearchResults.map((game) => [game.id, game])).values()
-      // );
-
-      setSearchByNameResults(mergedSearchResults); // 👈 store merged result
-      setSearchByProviderResults(res2.data.allGames || []); // provider-only result
-    } catch (error) {
-      console.error("Error fetching game data:", error);
-    }
-  };
-
+  // ====== Auto search (your existing code) ======
   const handleAutoSearch = async (fixedSearchTerm, pageNo = 1) => {
     if (isFetching || !hasMore) return;
 
@@ -286,21 +290,7 @@ const FilteredGamesPage = () => {
         ...(res3.data.allGames || []),
       ];
 
-      const manualGamesMap = {
-        card: manualCardGames,
-        hot: manualHotGames,
-        crash: manualCrashGames,
-      };
-
-      const lowerTerm = fixedSearchTerm.toLowerCase();
-      if (manualGamesMap[lowerTerm] && pageNo === 1) {
-        mergedSearchResults = [
-          ...manualGamesMap[lowerTerm],
-          ...mergedSearchResults,
-        ];
-      }
-
-      const totalPages = Math.max(
+      const total = Math.max(
         res1.data.pagination?.total_page || 1,
         res2.data.pagination?.total_page || 1,
         res3.data.pagination?.total_page || 1
@@ -310,7 +300,6 @@ const FilteredGamesPage = () => {
         new Map(mergedSearchResults.map((game) => [game.uuid, game])).values()
       );
 
-      // ✅ FIX HERE: If pageNo === 1, reset. If not, append to existing results.
       if (pageNo === 1) {
         setSearchByNameResults(newSearchGames);
       } else {
@@ -320,13 +309,12 @@ const FilteredGamesPage = () => {
         });
       }
 
-      // 📦 Provider results are not paginated, so only update on page 1
       if (pageNo === 1) {
         setSearchByProviderResults(res2.data.allGames || []);
       }
 
-      setHasMore(pageNo < totalPages);
-      setTotalPages(totalPages);
+      setHasMore(pageNo < total);
+      setTotalPages(total);
     } catch (error) {
       console.error("Search error:", error);
     } finally {
@@ -543,7 +531,7 @@ const FilteredGamesPage = () => {
                             // 🔄 Skeleton Cards While Loading
                             Array.from({ length: 6 }).map((_, index) => (
                               <div
-                                className="col-md-4 col-sm-4 col-6 px-1 col-custom-3"
+                                className="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 px-1 col-custom-3"
                                 key={index}
                               >
                                 <div className="game-card-wrapper rounded-2 new-cardclr mt-2">
@@ -559,7 +547,7 @@ const FilteredGamesPage = () => {
                               .filter((game) => game.image)
                               .map((game) => (
                                 <div
-                                  className="col-md-4 col-sm-4 col-6 px-1 col-custom-3"
+                                  className="col-xl-2 col-lg-3 col-md-4 col-sm-4 px-1 col-custom-3"
                                   key={game.uuid}
                                 >
                                   <div
@@ -585,7 +573,7 @@ const FilteredGamesPage = () => {
                               <img
                                 src="assets/img/notification/img_2.png"
                                 alt="unauth"
-                                className="w-75"
+                                className="w-25"
                               />
                               <p className="text-white text-center">
                                 No games available.

@@ -19,32 +19,79 @@ import { Images } from "./Header/constants/images";
 
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
+import {
+  fetchDiceGames,
+  fetchProviderList,
+  fetchSmartSoftGames,
+} from "../../hooks/homePageApi";
+import { useQuery } from "@tanstack/react-query";
 import Sidebar from "./Header/Sidebar";
 
 function Home() {
   const { isLoading } = useContext(AuthContext);
-  // const token = user?.token;
-  // Define BASE_URL at the top
-
   // State for all games
   const [games, setGames] = useState([]);
   const [selectedGameUrl, setSelectedGameUrl] = useState(null);
   const [showFullScreenGame, setShowFullScreenGame] = useState(false);
   const [isLaunchingGame, setIsLaunchingGame] = useState(false);
   // const [filteredGames, setFilteredGames] = useState([]);
+  // const [isLoadingSlot, setIsLoadingSlot] = useState(true); // New loading state
+  // State for dice games
+  // const [diceGames, setDiceGames] = useState([]);
+  // const [isLoadingDice, setIsLoadingDice] = useState(true); // ✅ add this
+  // const [slotGames, setslotGames] = useState([]);
 
   // State for dice games
-  const [diceGames, setDiceGames] = useState([]);
+  const [isLoadings, setIsLoadings] = useState(true); // Correct placement
+
+  // const [diceGames, setDiceGames] = useState([]);
   const [isLoadingDice, setIsLoadingDice] = useState(true); // ✅ add this
   const [slotGames, setslotGames] = useState([]);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   // const [isLoading, setIsLoading] = useState(true);
   // const [providerlist, setproviderlist] = useState([]);
-
+  const [isLoadingSlot, setIsLoadingSlot] = useState(true); // New loading state
   const iframeRef = useRef(null);
 
   const location = useLocation();
   const navigate = useNavigate();
+  // const { data: , isLoading_data } = useProviders();
+  // Fetch Dice Games Effect
+  const {
+    data: diceGames = [],
+    isLoadingDiceGame,
+    isError,
+    error,
+  } = useQuery({
+    queryKey: ["diceGames"],
+    queryFn: fetchDiceGames,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  // SmartSoft games query
+  const {
+    data: smartSoftGames = [],
+    isLoading: isLoadingSmartSoftGames,
+    isError: isErrorSmartSoft,
+    error: errorSmartSoft,
+  } = useQuery({
+    queryKey: ["smartSoftGames"],
+    queryFn: fetchSmartSoftGames,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  // Provider List API
+  const {
+    data: providerList = [],
+    isLoading: isLoadingProviders,
+    isError: isErrorProviders,
+    error: errorProviders,
+  } = useQuery({
+    queryKey: ["providerList"],
+    queryFn: fetchProviderList,
+    staleTime: 5 * 60 * 1000, // optional 5 minutes cache
+  });
+
   useEffect(() => {
     if (location.state?.showLoginSuccess) {
       toast.success("Login successful! 🎉", {
@@ -61,115 +108,137 @@ function Home() {
       });
     }
   }, [location, navigate]);
+
   // Fetch All Games Effect
-  useEffect(() => {
-    const fetchGames = async () => {
-      try {
-        // const response = await fetch(
-        //   `${BASE_URL}/all-games?is_mobile=1&limit=10&provider=SmartSoft`
-        // );
-        const response = await axiosInstance.get(
-          `/all-games?is_mobile=1&limit=10&provider=SmartSoft`
-        );
-        const data = await response.json();
-        // Debugging step
-        // console.log("All Games API Response:", data);
-        // Ensure data.allGames is an array
-        if (Array.isArray(data.allGames)) {
-          setGames(data.allGames);
-        } else {
-          setGames([]); // fallback
-        }
-      } catch (error) {
-        console.error("Error fetching all games:", error);
-        setGames([]);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchGames = async () => {
+  //     try {
+  //       const response = await axiosInstance.get(
+  //         `/all-games?is_mobile=1&limit=10&provider=SmartSoft`
+  //       );
+  //       const data = await response.json();
+  //       if (Array.isArray(data.allGames)) {
+  //         setGames(data.allGames);
+  //       } else {
+  //         setGames([]); // fallback
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching all games:", error);
+  //       setGames([]);
+  //     }
+  //   };
 
-    fetchGames();
-  }, []); // No dependency since BASE_URL is constant
+  //   fetchGames();
+  // }, []); // No dependency since BASE_URL is constant
 
-  // Fetch Dice Games Effect
-  useEffect(() => {
-    const fetchGameType = async () => {
-      setIsLoadingDice(true); // start loading
-      try {
-        const response = await axiosInstance.get(
-          `/all-games?is_mobile=1&limit=10&type=dice`
-        );
-        const data = response.data;
-
-        if (Array.isArray(data.allGames)) {
-          setDiceGames(data.allGames);
-        } else {
-          setDiceGames([]);
-        }
-      } catch (error) {
-        console.error("Error fetching dice games:", error);
-        setDiceGames([]);
-      } finally {
-        setIsLoadingDice(false); // ✅ end loading
-      }
-    };
-
-    fetchGameType();
-  }, []);
-  const [isLoadingSlot, setIsLoadingSlot] = useState(true); // New loading state
   // Fetch Slot Games Effect
-  useEffect(() => {
-    const slotGameType = async () => {
-      try {
-        setIsLoadingSlot(true); // Set loading to true before fetching
-        const response = await axiosInstance.get(
-          `/all-games?is_mobile=1&limit=10&type=slots`
-        );
-        const data = response.data;
+  // useEffect(() => {
+  //   const slotGameType = async () => {
+  //     try {
+  //       setIsLoadingSlot(true); // Set loading to true before fetching
+  //       const response = await axiosInstance.get(
+  //         `/all-games?is_mobile=1&limit=10&type=slots`
+  //       );
+  //       const data = response.data;
 
-        if (Array.isArray(data.allGames)) {
-          setslotGames(data.allGames);
-        } else {
-          setslotGames([]); // fallback
-        }
-      } catch (error) {
-        console.error("Error fetching slot games:", error);
-        setslotGames([]);
-      } finally {
-        setIsLoadingSlot(false); // Set loading to false after fetching (success or error)
-      }
-    };
+  //       if (Array.isArray(data.allGames)) {
+  //         setslotGames(data.allGames);
+  //       } else {
+  //         setslotGames([]); // fallback
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching slot games:", error);
+  //       setslotGames([]);
+  //     } finally {
+  //       setIsLoadingSlot(false); // Set loading to false after fetching (success or error)
+  //     }
+  //   };
 
-    slotGameType();
-  }, []); // Empty dependency array if BASE_URL is constant and axiosInstance is stable
+  //   slotGameType();
+  // }, []); // Empty dependency array if BASE_URL is constant and axiosInstance is stable
 
   // Provider Games Effect
-  // / Declare the state at the top:
-  // Declare the state at the top:
-  const [providerList, setProviderList] = useState([]);
-  const [isLoadings, setIsLoadings] = useState(true); // Correct placement
+
+  // useEffect(() => {
+  //   const fetchProviderList = async () => {
+  //     try {
+  //       setIsLoadings(true); // Set loading to true before the API call
+  //       const response = await axiosInstance.get(`/providers-list`);
+  //       const data = response.data;
+
+  //       if (Array.isArray(data.providers)) {
+  //         const limitedProviders = data.providers.slice(0, 10);
+  //         setProviderList(limitedProviders);
+  //       } else {
+  //         setProviderList([]);
+  //       }
+  //     } catch (error) {
+  //       console.error("Error fetching provider list:", error);
+  //       setProviderList([]);
+  //     } finally {
+  //       setIsLoadings(false); // Set loading to false after the API call completes
+  //     }
+  //   };
+
+  //   fetchProviderList();
+  // }, []); // End of useEffect
 
   useEffect(() => {
-    const fetchProviderList = async () => {
-      try {
-        setIsLoadings(true); // Set loading to true before the API call
-        const response = await axiosInstance.get(`/providers-list`);
-        const data = response.data;
+    const handlePopState = () => {
+      if (showFullScreenGame) {
+        setShowFullScreenGame(false);
+        setSelectedGameUrl(null);
+        setIsLaunchingGame(false); // ✅ Hide loader when going back
 
-        if (Array.isArray(data.providers)) {
-          const limitedProviders = data.providers.slice(0, 10);
-          setProviderList(limitedProviders);
-        } else {
-          setProviderList([]);
+        // Navigate back to saved page (optional)
+        const prevPage = sessionStorage.getItem("prevPage");
+        if (prevPage) {
+          navigate(prevPage);
         }
-      } catch (error) {
-        console.error("Error fetching provider list:", error);
-        setProviderList([]);
-      } finally {
-        setIsLoadings(false); // Set loading to false after the API call completes
       }
     };
 
-    fetchProviderList();
-  }, []); // End of useEffect
+    window.addEventListener("popstate", handlePopState);
+
+    return () => {
+      window.removeEventListener("popstate", handlePopState);
+    };
+  }, [showFullScreenGame, navigate]);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoadingTypes(false);
+    }, 1000); // Simulate a 1-second load time
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Simulate loading of the banner
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoadingBanner(false);
+    }, 1000); // Simulate an 800ms load time
+
+    return () => clearTimeout(timer); // Cleanup the timer
+  }, []);
+
+  // Simulate a loading delay for the marquee content
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoadingMarquee(false);
+    }, 1000); // Simulate a 1.2-second load time
+
+    return () => clearTimeout(timer); // Cleanup the timer
+  }, []);
+
+  // Simulate data fetching with a delay
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setIsLoadingGames(false); // Set loading to false after the delay
+    }, 1500); // Increased delay slightly for better visual effect (adjust as needed)
+
+    return () => clearTimeout(timer); // Cleanup the timer on unmount
+  }, []); // Effect runs once on component mount
 
   // Turbo Games Effect
   // Declare the state at the top:
@@ -210,7 +279,7 @@ function Home() {
       return;
     }
 
-    // console.log(game);
+    console.log(game, "testing....................");
 
     const token = localStorage.getItem("token");
     try {
@@ -218,7 +287,11 @@ function Home() {
 
       const response = await axios.get(`${BASE_URL}/player/turbo/${game.key}`, {
         // params: { return_url: "https://jiboomba.in/games" },
-        params: { return_url: window.location.origin }, // 👈 dynamic base URL },
+        params: {
+          return_url: window.location.origin,
+          has_lobby: game.key,
+          has_tables: game.key,
+        }, // 👈 dynamic base URL },
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -348,7 +421,7 @@ function Home() {
       toast.error("Missing game info.");
       return;
     }
-
+    // console.log(game.has_lobby, "testing....................");
     const token = localStorage.getItem("token");
 
     try {
@@ -361,6 +434,8 @@ function Home() {
         {
           params: {
             return_url: `${window.location.origin}/all-games?is_mobile=1`,
+            has_lobby: game.has_lobby,
+            has_tables: game.has_tables,
           },
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -396,27 +471,6 @@ function Home() {
       toast.error("Game launch failed. Try again later.");
     }
   };
-  useEffect(() => {
-    const handlePopState = () => {
-      if (showFullScreenGame) {
-        setShowFullScreenGame(false);
-        setSelectedGameUrl(null);
-        setIsLaunchingGame(false); // ✅ Hide loader when going back
-
-        // Navigate back to saved page (optional)
-        const prevPage = sessionStorage.getItem("prevPage");
-        if (prevPage) {
-          navigate(prevPage);
-        }
-      }
-    };
-
-    window.addEventListener("popstate", handlePopState);
-
-    return () => {
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, [showFullScreenGame, navigate]);
 
   // const handleFilterClick = async (type) => {
   //   try {
@@ -445,14 +499,6 @@ function Home() {
 
   const [isLoadingTypes, setIsLoadingTypes] = useState(true);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoadingTypes(false);
-    }, 1000); // Simulate a 1-second load time
-
-    return () => clearTimeout(timer);
-  }, []);
-
   // Define your game type data.
   // This array ensures the skeleton and actual content match in structure and count.
   const gameTypes = [
@@ -471,15 +517,6 @@ function Home() {
 
   const [isLoadingBanner, setIsLoadingBanner] = useState(true);
 
-  // Simulate loading of the banner
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoadingBanner(false);
-    }, 1000); // Simulate an 800ms load time
-
-    return () => clearTimeout(timer); // Cleanup the timer
-  }, []);
-
   const [isLoadingMarquee, setIsLoadingMarquee] = useState(true); // New loading state
 
   // Define your static game data for the marquee.
@@ -493,15 +530,6 @@ function Home() {
     { type: "home", imgSrc: "assets/img/turbo/6.png" }, // Last one navigating to home
   ];
 
-  // Simulate a loading delay for the marquee content
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoadingMarquee(false);
-    }, 1000); // Simulate a 1.2-second load time
-
-    return () => clearTimeout(timer); // Cleanup the timer
-  }, []);
-
   // State to manage loading status for this section
   const [isLoadingGames, setIsLoadingGames] = useState(true);
 
@@ -514,15 +542,6 @@ function Home() {
     { type: "shooting", imgSrc: "assets/img/turbo/5.png" },
     { type: "general", imgSrc: "assets/img/turbo/6.png", linkTo: routes.home },
   ];
-
-  // Simulate data fetching with a delay
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoadingGames(false); // Set loading to false after the delay
-    }, 1500); // Increased delay slightly for better visual effect (adjust as needed)
-
-    return () => clearTimeout(timer); // Cleanup the timer on unmount
-  }, []); // Effect runs once on component mount
 
   return (
     <>
@@ -723,7 +742,7 @@ function Home() {
                               },
                             }}
                           >
-                            {isLoadingDice ? (
+                            {isLoadingDiceGame ? ( // ✅ use the new loading state
                               Array.from({ length: 4 }).map((_, index) => (
                                 <SwiperSlide key={index}>
                                   <div className="game-card-wrapper rounded-2 new-cardclr p-1">
@@ -752,11 +771,11 @@ function Home() {
                                           <i className="fa-solid fa-play"></i>
                                         </div>
                                       </div>
-                                      <div className="d-flex flex-column text-white text-center py-2 px-1">
-                                        <span className="fs-12 fw-bold text-truncate">
-                                          {game.name}
-                                        </span>
-                                      </div>
+                                      {/* <div className="d-flex flex-column text-white text-center py-2 px-1">
+                              <span className="fs-12 fw-bold text-truncate">
+                                {game.name}
+                              </span>
+                            </div> */}
                                     </div>
                                   </div>
                                 </SwiperSlide>
@@ -1096,7 +1115,12 @@ function Home() {
                                     "linear-gradient(to left, rgb(255 70 42 / 30%), transparent 75%) !important",
                                 }}
                               >
-                                <div className="flex-column d-flex">
+                                <div
+                                  className="flex-column d-flex"
+                                  onClick={() =>
+                                    navigate(`/filtered-games?type=card`)
+                                  }
+                                >
                                   <span className="text-white fw-500 fs-13  py-2 px-1">
                                     Casino
                                   </span>
@@ -1116,9 +1140,14 @@ function Home() {
                                     "linear-gradient(to left, rgb(35 105 157 / 44%), transparent 75%) !important",
                                 }}
                               >
-                                <div className="flex-column d-flex">
+                                <div
+                                  className="flex-column d-flex"
+                                  onClick={() =>
+                                    navigate(`/filtered-games?type=instant`)
+                                  }
+                                >
                                   <span className="text-white fw-500 fs-13  py-2 px-1">
-                                    Sports
+                                    Instant
                                   </span>
                                   <img
                                     src="assets/img/sports.png"
@@ -1129,8 +1158,8 @@ function Home() {
                               </div>
                             </div>
                             <div className="col-4 ">
-                              <div className="d-flex  flex-wrap ">
-                                <div className="col-6 ">
+                              <div className="d-flex  flex-wrap  gap-2">
+                                <div className="w-45 ">
                                   <div
                                     className="card bg-cardtrans p-1"
                                     style={{
@@ -1138,7 +1167,12 @@ function Home() {
                                         "linear-gradient(to left, rgb(181 114 28 / 30%), transparent 60%) !important",
                                     }}
                                   >
-                                    <div className="flex-column d-flex">
+                                    <div
+                                      className="flex-column d-flex"
+                                      onClick={() =>
+                                        navigate(`/filtered-games?type=lottery`)
+                                      }
+                                    >
                                       <span className="text-white fw-500 fs-13 py-2 px-1">
                                         Lottery
                                       </span>
@@ -1151,7 +1185,7 @@ function Home() {
                                     </div>
                                   </div>
                                 </div>
-                                <div className="col-6 ">
+                                <div className="w-45 ">
                                   <div
                                     className="card bg-cardtrans p-1"
                                     style={{
@@ -1159,9 +1193,14 @@ function Home() {
                                         "linear-gradient(to left, rgb(123 64 14 / 49%), transparent 75%) !important",
                                     }}
                                   >
-                                    <div className="flex-column d-flex">
+                                    <div
+                                      className="flex-column d-flex"
+                                      onClick={() =>
+                                        navigate(`/filtered-games?type=slots`)
+                                      }
+                                    >
                                       <span className="text-white fw-500 fs-13  py-2 px-1">
-                                        Racing
+                                        Slot
                                       </span>
                                       <img
                                         src="assets/img/horse.png"
@@ -1171,17 +1210,20 @@ function Home() {
                                     </div>
                                   </div>
                                 </div>
-                                <div className="col-6 pt-2">
+                                <div className="w-45 pt-2">
                                   <div
                                     className="card bg-cardtrans p-1"
                                     style={{
                                       backgroundImage:
                                         "linear-gradient(to left, rgb(190 191 183 / 27%), transparent 75%) !important",
                                     }}
+                                    onClick={() =>
+                                      navigate(`/filtered-games?type=dice`)
+                                    }
                                   >
                                     <div className="flex-column d-flex">
                                       <span className="text-white fw-500 fs-13  py-2 px-1">
-                                        UpDown
+                                        Dice
                                       </span>
                                       <img
                                         src="assets/img/up.png"
@@ -1191,13 +1233,16 @@ function Home() {
                                     </div>
                                   </div>
                                 </div>
-                                <div className="col-6 pt-2">
+                                <div className="w-45 pt-2">
                                   <div
                                     className="card bg-cardtrans p-1"
                                     style={{
                                       backgroundImage:
                                         "linear-gradient(to left, rgb(123 64 14 / 49%), transparent 75%) !important",
                                     }}
+                                    onClick={() =>
+                                      navigate(`/filtered-games?type=bingo`)
+                                    }
                                   >
                                     <div className="flex-column d-flex">
                                       <span className="text-white fw-500 fs-13  py-2 px-1">
@@ -1274,7 +1319,7 @@ function Home() {
                                 highlightColor="#525252"
                               />
                             ) : (
-                              <h5 className="m-0 ms-2">All Gamesss</h5>
+                              <h5 className="m-0 ms-2">All Games</h5>
                             )}
                           </div>
                           <div>
@@ -1286,7 +1331,7 @@ function Home() {
                             </Link>
                           </div>
                         </div>
-                        ---
+
                         {/* Apply SkeletonTheme for consistent styling of all skeletons in this section */}
                         <SkeletonTheme
                           baseColor="#313131"
@@ -1335,6 +1380,7 @@ function Home() {
                               loop="true"
                               autoplay='{"delay": 0, "disableOnInteraction": false}'
                               speed="2500"
+                              slides-per-view="2.5"
                               centered-slides="false"
                               free-mode="true"
                               breakpoints={{
@@ -1448,7 +1494,8 @@ function Home() {
                               },
                             }}
                           >
-                            {isLoadingSlot ? (
+                            {isLoadingSmartSoftGames ? (
+                              // Skeleton loader
                               Array.from({ length: 4 }).map((_, index) => (
                                 <SwiperSlide key={index}>
                                   <div className="game-card-wrapper rounded-2 new-cardclr p-1">
@@ -1459,8 +1506,17 @@ function Home() {
                                   </div>
                                 </SwiperSlide>
                               ))
-                            ) : slotGames.length > 0 ? (
-                              slotGames.map((game, index) => (
+                            ) : isErrorSmartSoft ? (
+                              // Error message
+                              <div className="d-flex flex-column align-items-center mt-5 w-100">
+                                <p className="text-white text-center">
+                                  Error loading slot games:{" "}
+                                  {errorSmartSoft.message}
+                                </p>
+                              </div>
+                            ) : smartSoftGames.length > 0 ? (
+                              // Game cards
+                              smartSoftGames.map((game, index) => (
                                 <SwiperSlide key={game.uuid || index}>
                                   <div className="game-card-wrapper rounded-2 new-cardclr">
                                     <div className="game-card p-0 m-0 p-1">
@@ -1469,12 +1525,12 @@ function Home() {
                                         className="game-card-img"
                                         alt={game.name}
                                       />
-                                      <div className="d-flex flex-column text-white text-center py-2 px-1">
-                                        <span className="fs-12 fw-bold text-truncate">
-                                          {game.name}
-                                        </span>
-                                        <span className="fs-10">Duel</span>
-                                      </div>
+                                      {/* <div className="d-flex flex-column text-white text-center py-2 px-1">
+                              <span className="fs-12 fw-bold text-truncate">
+                                {game.name}
+                              </span>
+                              <span className="fs-10">Duel</span>
+                            </div> */}
                                     </div>
                                     <div className="game-play-button d-flex flex-column">
                                       <div
@@ -1488,6 +1544,7 @@ function Home() {
                                 </SwiperSlide>
                               ))
                             ) : (
+                              // No games message
                               <div className="d-flex flex-column align-items-center mt-5 w-100">
                                 <img
                                   src="assets/img/notification/img_2.png"
@@ -1544,7 +1601,7 @@ function Home() {
                           </div>
 
                           {/* Provider Swiper */}
-                          {isLoadings ? (
+                          {isLoadingProviders ? (
                             <swiper-container
                               class="mySwiper new_class4"
                               space-between="5"
@@ -1554,14 +1611,6 @@ function Home() {
                               slides-per-view="auto"
                               centered-slides="false"
                               free-mode="true"
-                              breakpoints={{
-                                768: {
-                                  slidesPerView: 8, // Tablet view
-                                },
-                                1024: {
-                                  slidesPerView: 10, // Laptop/Desktop view
-                                },
-                              }}
                             >
                               {Array.from({ length: 6 }).map((_, index) => (
                                 <swiper-slide
@@ -1589,6 +1638,10 @@ function Home() {
                                 </swiper-slide>
                               ))}
                             </swiper-container>
+                          ) : isErrorProviders ? (
+                            <p className="text-center text-white my-4">
+                              Error loading providers: {errorProviders.message}
+                            </p>
                           ) : providerList.length > 0 ? (
                             <swiper-container
                               class="mySwiper new_class4"
@@ -1805,13 +1858,6 @@ function Home() {
                                         <p>100% Crash Power Bonus</p>
                                       </span>
                                     </div>
-                                    {/* <div className="bonus_sec_img">
-                        <img
-                          src="https://upload.4rabet4.com/storage/239257/PNG_75-Crash-Power-Bonus-(1)-1-(1).png"
-                          alt="img"
-                          className="img-fluid rounded"
-                        />
-                      </div> */}
                                   </div>
                                   {/* Bottom section with timer and buttons */}
                                   <div className="bonusBlock_other__bottom p-2">

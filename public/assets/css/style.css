@@ -4108,6 +4108,7 @@ li.nav-item button {
 
 .preview-list .preview-item:hover {
   background: var(--bs-tertiary-bg);
+  background: #1e2022;
 }
 
 .preview-list .preview-item .form-check {
@@ -5227,7 +5228,7 @@ input {
   /* position: relative; */
 }
 .selected-avatar {
-  border: 2px solid var(--primary-color);
+  /* border: 2px solid var(--primary-color); */
   border-radius: 50%;
   padding: 2px;
 }
@@ -5422,7 +5423,7 @@ swiper-container.mySwiper.new_class4 swiper-slide {
 .user-icon {
   width: 35px;
   height: 35px;
-  background: #e4063b;
+  /* background: #e4063b; */
   border-radius: 10%;
   display: flex;
   justify-content: center;
@@ -5467,4 +5468,26 @@ nav.sidebar.sidebar-offcanvas.open
   flex-grow: 1;
   /* background: #000; */
   height: 100%;
+}
+
+.card.bg-cardtrans.p-1 {
+  height: 100%;
+}
+
+.w-45 {
+  width: 45%;
+}
+
+@media (min-width: 1156px) {
+  .wizard .nav-tabs:after {
+    content: "";
+    /* width: 80%; */
+    width: 68%;
+    border-bottom: solid 2px #ccc;
+    position: absolute;
+    margin-left: auto;
+    margin-right: auto;
+    top: 26%;
+    z-index: -1;
+  }
 }

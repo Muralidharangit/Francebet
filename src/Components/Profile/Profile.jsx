@@ -16,7 +16,7 @@ function Profile() {
 
   // # 4️⃣ Fetch Profile When Token is Available
   useEffect(() => {
-    if (!token) return; //# Ensure token exists
+    // if (!token) return; //# Ensure token exists
 
     const fetchProfile = async () => {
       try {

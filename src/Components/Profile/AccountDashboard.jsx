@@ -16,49 +16,56 @@ const AccountDashboard = () => {
     user,
     avatar,
     portalSettings,
+    loginVerify,
     setAvatar,
+    portalAllData,
   } = useContext(AuthContext);
   const [displayName, setDisplayName] = useState(avatar?.displayName || "");
   const navigate = useNavigate(); // useNavigate hook for redirection
-  if (isLoading || authType === null) return <p>Loading account settings...</p>;
+  if (isLoading || loginVerify === null)
+    return <p>Loading account settings...</p>;
   // console.log("authType", authType, profile, avatar);
   // console.log("avatar", avatar);
   // console.log("profile==============", profile);
+  // console.log("loginVerify==============", loginVerify);
+  // console.log("authType==============", authType);
+  // console.log("user==============", user);
+  // console.log("portalAllData==============", portalAllData);
 
-  const handleSecureRoute = async (route) => {
-    const token = user?.token;
-    if (!token) {
-      toast.error("Session expired.");
-      logout(navigate);
-      return;
-    }
+  // const handleSecureRoute = async (route) => {
+  //   const token = user?.token;
+  //   if (!token) {
+  //     toast.error("Session expired.");
+  //     logout(navigate);
+  //     return;
+  //   }
 
-    setLoading(true);
-    try {
-      const res = await verifyToken(token);
-      if (res.status === "success") {
-        navigate(route);
-      } else {
-        toast.error("Invalid session.");
-        logout(navigate);
-      }
-    } catch {
-      toast.error("Token check failed.");
-      logout(navigate);
-    } finally {
-      setLoading(false);
-    }
-  };
+  //   setLoading(true);
+  //   try {
+  //     const res = await verifyToken(token);
+  //     if (res.status === "success") {
+  //       navigate(route);
+  //     } else {
+  //       toast.error("Invalid session.");
+  //       logout(navigate);
+  //     }
+  //   } catch {
+  //     toast.error("Token check failed.");
+  //     logout(navigate);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   // Update
   const handleUpdateName = async (e) => {
     e.preventDefault();
 
     const token = localStorage.getItem("token");
-    if (!token) {
-      toast.error("Login session expired.");
-      return;
-    }
+    // if (!token) {
+    //   toast.error("Login session expired.");
+    //   return;
+    // }
 
     try {
       const response = await axios.get(`${BASE_URL}/player/update-profile`, {
@@ -89,7 +96,6 @@ const AccountDashboard = () => {
       toast.error("Something went wrong.");
     }
   };
-
   return (
     <>
       <ToastContainer position="top-right" autoClose={5000} theme="dark" />
@@ -180,9 +186,10 @@ const AccountDashboard = () => {
                   {portalSettings?.auto_deposit === 1 ? (
                     <button
                       className="btn btn-outline-light w-100"
-                      onClick={() =>
-                        handleSecureRoute(routes.transactions.deposit)
-                      }
+                      onClick={() => navigate(routes.transactions.deposit)}
+                      // onClick={() =>
+                      //   handleSecureRoute(routes.transactions.deposit)
+                      // }
                     >
                       Deposit
                     </button>
@@ -193,9 +200,10 @@ const AccountDashboard = () => {
                   {portalSettings?.auto_withdraw === 1 ? (
                     <button
                       className="btn btn-outline-light w-100"
-                      onClick={() =>
-                        handleSecureRoute(routes.transactions.withdraw)
-                      }
+                      // onClick={() =>
+                      //   handleSecureRoute(routes.transactions.withdraw)
+                      // }
+                      onClick={() => navigate(routes.transactions.withdraw)}
                     >
                       Withdraw
                     </button>
@@ -209,9 +217,10 @@ const AccountDashboard = () => {
                 <div className="d-flex flex-wrap justify-content-center gap-3 mt-3">
                   <div
                     className="text-center"
-                    onClick={() =>
-                      handleSecureRoute(routes.transactions.depositHistory)
-                    }
+                    // onClick={() =>
+                    //   handleSecureRoute(routes.transactions.depositHistory)
+                    // }
+                    onClick={() => navigate(routes.transactions.depositHistory)}
                   >
                     <img
                       src="assets/img/icons/rupee_2.png"
@@ -224,8 +233,11 @@ const AccountDashboard = () => {
                   <div
                     className="text-center"
                     onClick={() =>
-                      handleSecureRoute(routes.transactions.withdrawHistory)
+                      navigate(routes.transactions.withdrawHistory)
                     }
+                    // onClick={() =>
+                    //   handleSecureRoute(routes.transactions.withdrawHistory)
+                    // }
                   >
                     <img
                       src="assets/img/icons/rupee_2.png"
@@ -236,7 +248,8 @@ const AccountDashboard = () => {
                   </div>
                   <div
                     className="text-center"
-                    onClick={() => handleSecureRoute(routes.games.history)}
+                    onClick={() => navigate(routes.games.history)}
+                    // onClick={() => handleSecureRoute(routes.games.history)}
                   >
                     <img
                       src="assets/img/icons/history.png"
@@ -331,18 +344,18 @@ const AccountDashboard = () => {
                     <i className="ri-arrow-right-s-line text-white" />
                   </div>
                 )} */}
-                {authType.type == "default" ? (
-                  <Link to={routes.profile.changePassword}>
-                    <div className="d-flex justify-content-between align-items-center mt-3">
-                      <p className="mb-0 fs-16">
-                        <i className="ri-lock-fill pe-2" /> Change Password
-                      </p>
-                      <i className="ri-arrow-right-s-line text-white" />
-                    </div>
-                  </Link>
-                ) : authType === null ? (
+                {/* {authType.type == "default" ? ( */}
+                <Link to={routes.profile.changePassword}>
+                  <div className="d-flex justify-content-between align-items-center mt-3">
+                    <p className="mb-0 fs-16">
+                      <i className="ri-lock-fill pe-2" /> Change Password
+                    </p>
+                    <i className="ri-arrow-right-s-line text-white" />
+                  </div>
+                </Link>
+                {/* ) : authType === null ? (
                   <p className="text-white fs-14">Checking login type...</p>
-                ) : null}
+                ) : null} */}
               </div>
             </div>
 

@@ -1,9 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import AuthContext from "../../../../Auth/AuthContext";
-import axios from "axios";
-import BASE_URL from "../../../../API/api";
-// import routes from "../../../routes/route";
-// import { useNavigate } from "react-router-dom";
+
 import { toast, ToastContainer } from "react-toastify";
 import {
   getDepositMethods,
@@ -22,6 +19,9 @@ const SelectPaymentMethod = ({
   const [paymentDetails, setPaymentDetails] = useState(null); // Payment details from API
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [methodsLoading, setMethodsLoading] = useState(false);
+  const [detailsLoading, setDetailsLoading] = useState(false);
+  const lastRequestId = useRef(0);
   const inputRef1 = useRef();
   const inputRef2 = useRef();
   const inputRef3 = useRef();
@@ -80,107 +80,123 @@ const SelectPaymentMethod = ({
 
   // Fetch deposit methods
 
+  // fetch methods
   useEffect(() => {
     const fetchData = async () => {
       if (!token) return;
-
+      setMethodsLoading(true);
       try {
-        const verifyRes = await verifyToken(token);
-        if (verifyRes.status !== "success") {
-          setError("Invalid or expired token. Please log in again.");
-          return;
-        }
-
         const methodRes = await getDepositMethods(token);
         if (methodRes.status === "success") {
-          setDepositMethod(methodRes.paymentMethod || []);
+          const methods = methodRes.paymentMethod || [];
+          setDepositMethod(methods);
+
+          // ✅ default to id=2 if exists, else first
+          const upi = methods.find((m) => m.id === 2);
+          const firstId = upi?.id ?? methods[0]?.id;
+          if (firstId) {
+            setSelectedMethod(firstId);
+            setPaymentSelectedMethod(firstId);
+            fetchPaymentDetails(firstId);
+          }
         } else {
-          setError(methodRes.msg || "Failed to load payment methods");
+          toast.error(methodRes.msg || "Failed to load payment methods", {
+            toastId: "deposit-method-error",
+          });
         }
       } catch (err) {
-        setError(
-          "Something went wrong while verifying token or fetching methods."
+        toast.error(
+          err.message || "Something went wrong while fetching methods.",
+          { toastId: "deposit-method-error" }
         );
+      } finally {
+        setMethodsLoading(false);
       }
     };
-
     fetchData();
   }, [token]);
-
-  useEffect(() => {
-    if (depositMethod.length > 0 && !selectedMethod) {
-      const firstMethodId = depositMethod[0].id;
-      setSelectedMethod(firstMethodId); // ✅ set default selected method
-      fetchPaymentDetails(firstMethodId); // ✅ fetch its details
-    }
-  }, [depositMethod]);
   // useEffect(() => {
-  //   const fetchDepositMethods = async () => {
+  //   const fetchData = async () => {
   //     if (!token) return;
 
-  //     setLoading(true);
   //     try {
-  //       const response = await axios.get(
-  //         `${BASE_URL}/player/get-deposit-method`,
-  //         {
-  //           headers: { Authorization: `Bearer ${token}` },
-  //         }
-  //       );
+  //       // const verifyRes = await verifyToken(token);
+  //       // if (verifyRes.status !== "success") {
+  //       //   setError("Invalid or expired token. Please log in again.");
+  //       //   return;
+  //       // }
 
-  //       if (response.data.status === "success") {
-  //         setDepositMethod(response.data.paymentMethod || []);
+  //       const methodRes = await getDepositMethods(token);
+  //       if (methodRes.status === "success") {
+  //         setDepositMethod(methodRes.paymentMethod || []);
   //       } else {
-  //         setError(response.data.msg || "Failed to load payment methods");
+  //         toast.error(methodRes.msg || "Failed to load payment methods", {
+  //           toastId: "deposit-method-error",
+  //         });
   //       }
   //     } catch (err) {
-  //       setError("Something went wrong. Please try again.");
-  //     } finally {
-  //       setLoading(false);
+  //       toast.error(
+  //         err.message ||
+  //           "Something went wrong while verifying token or fetching methods.",
+  //         { toastId: "deposit-method-error" }
+  //       );
   //     }
   //   };
 
-  //   fetchDepositMethods();
+  //   fetchData();
   // }, [token]);
+  // useEffect(() => {
+  //   if (depositMethod.length > 0 && !selectedMethod) {
+  //     const firstMethodId = depositMethod[0].id;
+  //     setSelectedMethod(firstMethodId); // ✅ set default selected method
+  //     fetchPaymentDetails(firstMethodId); // ✅ fetch its details
+  //   }
+  // }, [depositMethod]);
 
   // Fetch payment details based on method selection
+  // let lastRequestId = 0; // module-scope or useRef
 
   const fetchPaymentDetails = async (methodId) => {
     if (!token) return;
 
-    setSelectedMethod(methodId); // Update selected method
+    setSelectedMethod(methodId);
     setPaymentSelectedMethod(methodId);
+
+    // Clear previous UI state immediately
+    setError(null);
+    setPaymentDetails(null);
     setLoading(true);
 
+    // const reqId = ++lastRequestId;
+
+    setDetailsLoading(true);
+    const reqId = ++lastRequestId.current;
+
     try {
-      const verifyRes = await verifyToken(token);
+      const res = await getPaymentDetails(token, methodId); // throws on status:"error"
+      // Ignore stale responses if user clicked another method quickly
+      // if (reqId !== lastRequestId) return;
+      if (reqId !== lastRequestId.current) return;
 
-      if (verifyRes.status !== "success") {
-        setError("Invalid or expired token. Please log in again.");
-        return;
-      }
-
-      // const response = await axios.get(
-      //   `${BASE_URL}/player/get-payment-detail`,
-      //   {
-      //     params: { payment_method_id: methodId }, // <-- Pass data as query parameters
-      //     headers: { Authorization: `Bearer ${token}` },
-      //   }
-      // );
-
-      const getPayment = await getPaymentDetails(token, methodId);
-
-      if (getPayment.status === "success") {
-        setPaymentDetails(getPayment.paymentDetails); // Store payment details
-        console.log(getPayment.paymentDetails);
-      } else {
-        setError(getPayment.msg || "Failed to load payment details");
-      }
+      setPaymentDetails(res.paymentDetails || null);
     } catch (err) {
-      setError("Something went wrong. Please try again.");
+      const msg =
+        err?.message ||
+        err?.response?.data?.msg ||
+        "Something went wrong. Please try again.";
+
+      // if (reqId !== lastRequestId) return;
+      if (reqId !== lastRequestId.current) return;
+
+      setError(msg); // if you conditionally render error blocks
+      // toast.error(msg, { toastId: "payment-details-error" });
+      setPaymentDetails(null); // ensure details don't render on error
     } finally {
-      setLoading(false);
+      // if (reqId === lastRequestId) setLoading(false);
+      if (reqId === lastRequestId.current) setDetailsLoading(false);
     }
   };
+
   // const fetchPaymentDetails = async (methodId) => {
   //   if (!token) return;
 
@@ -189,19 +205,19 @@ const SelectPaymentMethod = ({
   //   setLoading(true);
 
   //   try {
-  //     const response = await axios.get(
-  //       `${BASE_URL}/player/get-payment-detail`,
-  //       {
-  //         params: { payment_method_id: methodId }, // <-- Pass data as query parameters
-  //         headers: { Authorization: `Bearer ${token}` },
-  //       }
-  //     );
+  //     // const verifyRes = await verifyToken(token);
 
-  //     if (response.data.status === "success") {
-  //       setPaymentDetails(response.data.paymentDetail); // Store payment details
-  //       console.log(response.data.paymentDetail);
+  //     // if (verifyRes.status !== "success") {
+  //     //   setError("Invalid or expired token. Please log in again.");
+  //     //   return;
+  //     // }
+  //     const getPayment = await getPaymentDetails(token, methodId);
+
+  //     if (getPayment.status === "success") {
+  //       setPaymentDetails(getPayment.paymentDetails); // Store payment details
+  //       console.log(getPayment.paymentDetails, "check errrrrrrror");
   //     } else {
-  //       setError(response.data.msg || "Failed to load payment details");
+  //       setError(getPayment.msg || "Failed to load payment details");
   //     }
   //   } catch (err) {
   //     setError("Something went wrong. Please try again.");
@@ -209,53 +225,67 @@ const SelectPaymentMethod = ({
   //     setLoading(false);
   //   }
   // };
+
+  // if (methodRes.status === "success") {
+  //   setDepositMethod(methodRes.paymentMethod || []);
+
+  //   // Default to method.id === 2 if exists
+  //   const upiMethod = methodRes.paymentMethod.find((m) => m.id === 2);
+  //   if (upiMethod) {
+  //     setSelectedMethod(upiMethod.id);
+  //     setPaymentSelectedMethod(upiMethod.id);
+  //     fetchPaymentDetails(upiMethod.id);
+  //   }
+  // }
   return (
     <div className=" bg_light_grey rounded-2  py-3">
       <div className="mx-3">
-        <h5 className="mb-3">Select Payment Method</h5>
+        <h5 className="mb-3">Select Payment Method jzhjcvhjc nbvnc</h5>
 
-        {loading && <p>Loading payment methods...</p>}
-        {error && <p className="text-danger">{error}</p>}
-
-        {depositMethod.length === 0 && !loading && !error && (
-          <p>No payment methods available.</p>
-        )}
-        {/* Bootstrap Tab Navigation */}
-        {depositMethod.length > 0 && !loading && !error && (
-          <nav className="nav nav-pills d-flex justify-content-between tab_red_active">
-            {depositMethod.map((method) => (
-              <button
-                key={method.id}
-                className={`nav-link btn-color text-white w-150 ${
-                  selectedMethod === method.id ? "active" : ""
-                }`}
-                onClick={() => {
-                  fetchPaymentDetails(method.id);
-                  toast.success(
-                    `Selected payment method: ${
-                      method.id === 1 ? "BANK" : "UPI"
-                    }`
-                  );
-                }}
-                id={`tab-${method.id}`}
-                data-bs-toggle="tab"
-                data-bs-target={`#content-${method.id}`} // Bootstrap tab switching
-                type="button"
-                role="tab"
-                aria-controls={`content-${method.id}`}
-                aria-selected={selectedMethod === method.id ? "true" : "false"}
-              >
-                <img
-                  src="assets/img/icons/icons8-deposit-64.png"
-                  alt="deposit"
-                  width="30px"
-                />
-                {method.name}
-                {method.id}
-              </button>
-            ))}
-          </nav>
-        )}
+        {/* {loading && <p>Loading payment methods...</p>} */}
+        {methodsLoading && <p>Loading payment methods...</p>}
+        {/* {error && <p className="text-danger">{error}</p>} */}
+        {/* {error && <p className="text-danger">{error}</p>} */}
+        <nav className="nav nav-pills d-flex justify-content-between tab_red_active">
+          {depositMethod.length > 0
+            ? depositMethod.map((method) => (
+                <button
+                  key={method.id}
+                  className={`nav-link btn-color text-white w-150 ${
+                    selectedMethod === method.id ? "active" : ""
+                  }`}
+                  onClick={() => {
+                    fetchPaymentDetails(method.id);
+                    toast.success(
+                      `Selected payment method: ${
+                        method.id === 1 ? "BANK" : "UPI"
+                      }`
+                    );
+                  }}
+                  id={`tab-${method.id}`}
+                  data-bs-toggle="tab"
+                  data-bs-target={`#content-${method.id}`}
+                  type="button"
+                  role="tab"
+                  aria-controls={`content-${method.id}`}
+                  aria-selected={
+                    selectedMethod === method.id ? "true" : "false"
+                  }
+                >
+                  <img
+                    src="assets/img/icons/icons8-deposit-64.png"
+                    alt="deposit"
+                    width="30px"
+                  />
+                  {method.name}
+                  {method.id}
+                </button>
+              ))
+            : !loading &&
+              !error && (
+                <p className="m-0 text-muted">No payment methods available.</p>
+              )}
+        </nav>
       </div>
       <div>
         {/* <button onClick={notify}>Notify!</button> */}
@@ -285,154 +315,139 @@ const SelectPaymentMethod = ({
             role="tabpanel"
             aria-labelledby={`tab-${method.id}`}
           >
-            {/* Payment Details */}
-            {/* {selectedMethod === method.id && paymentDetails && (
-      <div className="card bg_light_grey account_input-textbox-container">
-        <div className="p-3 red-gradient rounded-top d-flex justify-content-center align-items-center">
-          <h5 className="text-center mb-0">
-            Payment Details for{" "}
-            {paymentDetails.payment_method_name}
-          </h5>
-        </div>
-        <div className="card-body">
-          <pre className="text-white">
-            {JSON.stringify(paymentDetails, null, 2)}
-          </pre>
-        </div>
-      </div>
-    )} */}
-
-            {/* <p>{paymentDetails?.bank_name}</p> */}
             {/* Bank Details (Only for Bank) */}
-            {selectedMethod === 1 && paymentDetails && (
-              // paymentDetails.length > 0 &&
+            {Number(selectedMethod) === 1 && (
               <>
-                <div className="card account_input-textbox-container border-0">
-                  {/* <div className="p-3 red-gradient rounded-top d-flex justify-content-center align-items-center">
-                          <h5 className="text-center mb-0">Bank Details</h5>
-                        </div> */}
-                  <div className="card-body pt-0 py-0">
-                    <h5 className="text-center mb-0">Bank Details</h5>
-                    <div className="form-control_container">
-                      <div className="input-field mb-3">
-                        <input
-                          required
-                          className="input"
-                          type="text"
-                          value={paymentDetails?.bank_name}
-                          readOnly
-                          ref={inputRef1}
-                          disabled
-                        />
-                        <div
-                          className="position-absolute copy-text"
-                          style={{
-                            right: "10px",
-                            top: "60%",
-                            transform: "translateY(-50%)",
-                            cursor: "pointer",
-                          }}
-                        >
-                          <button
-                            onClick={() => handleCopy(inputRef1, setCopied1)}
+                {error ? (
+                  <div className="text-center py-4 text-danger">{error}</div>
+                ) : detailsLoading ? (
+                  <div className="text-center py-4 text-white">
+                    Loading Bank details...
+                  </div>
+                ) : paymentDetails ? (
+                  <div className="card account_input-textbox-container border-0">
+                    <div className="card-body pt-0 py-0">
+                      <h5 className="text-center mb-0">Bank Details</h5>
+                      <div className="form-control_container">
+                        <div className="input-field mb-3">
+                          <input
+                            required
+                            className="input"
+                            type="text"
+                            value={paymentDetails?.bank_name}
+                            readOnly
+                            ref={inputRef1}
+                            disabled
+                          />
+                          <div
+                            className="position-absolute copy-text"
+                            style={{
+                              right: "10px",
+                              top: "60%",
+                              transform: "translateY(-50%)",
+                              cursor: "pointer",
+                            }}
                           >
-                            <i className="fa-solid fa-copy text-white fs-5"></i>
-                          </button>
-                          {copied1 && (
-                            <span className="copied-tooltip">Copied</span>
-                          )}
+                            <button
+                              onClick={() => handleCopy(inputRef1, setCopied1)}
+                            >
+                              <i className="fa-solid fa-copy text-white fs-5"></i>
+                            </button>
+                            {copied1 && (
+                              <span className="copied-tooltip">Copied</span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="input-field mb-3">
+                          <input
+                            required
+                            className="input"
+                            type="text"
+                            value={paymentDetails.account_holder_name}
+                            readOnly
+                            ref={inputRef2}
+                            disabled
+                          />
+                          <div
+                            className="position-absolute copy-text"
+                            style={{
+                              right: "10px",
+                              top: "60%",
+                              transform: "translateY(-50%)",
+                              cursor: "pointer",
+                            }}
+                          >
+                            <button
+                              onClick={() => handleCopy(inputRef2, setCopied2)}
+                            >
+                              <i className="fa-solid fa-copy text-white fs-5"></i>
+                            </button>
+                            {copied2 && (
+                              <span className="copied-tooltip">Copied</span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="input-field mb-3">
+                          <input
+                            required
+                            className="input"
+                            type="text"
+                            value={paymentDetails.account_number}
+                            readOnly
+                            ref={inputRef3}
+                            disabled
+                          />
+                          <div
+                            className="position-absolute copy-text"
+                            style={{
+                              right: "10px",
+                              top: "60%",
+                              transform: "translateY(-50%)",
+                              cursor: "pointer",
+                            }}
+                          >
+                            <button
+                              onClick={() => handleCopy(inputRef3, setCopied3)}
+                            >
+                              <i className="fa-solid fa-copy text-white fs-5"></i>
+                            </button>
+                            {copied3 && (
+                              <span className="copied-tooltip">Copied</span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="input-field mb-3">
+                          <input
+                            required
+                            className="input"
+                            type="text"
+                            value={paymentDetails.ifsc_code}
+                            readOnly
+                            ref={inputRef4}
+                            disabled
+                          />
+                          <div
+                            className="position-absolute copy-text"
+                            style={{
+                              right: "10px",
+                              top: "60%",
+                              transform: "translateY(-50%)",
+                              cursor: "pointer",
+                            }}
+                          >
+                            <button
+                              onClick={() => handleCopy(inputRef4, setCopied4)}
+                            >
+                              <i className="fa-solid fa-copy text-white fs-5"></i>
+                            </button>
+                            {copied4 && (
+                              <span className="copied-tooltip">Copied</span>
+                            )}
+                          </div>
                         </div>
                       </div>
-                      <div className="input-field mb-3">
-                        <input
-                          required
-                          className="input"
-                          type="text"
-                          value={paymentDetails.account_holder_name}
-                          readOnly
-                          ref={inputRef2}
-                          disabled
-                        />
-                        <div
-                          className="position-absolute copy-text"
-                          style={{
-                            right: "10px",
-                            top: "60%",
-                            transform: "translateY(-50%)",
-                            cursor: "pointer",
-                          }}
-                        >
-                          <button
-                            onClick={() => handleCopy(inputRef2, setCopied2)}
-                          >
-                            <i className="fa-solid fa-copy text-white fs-5"></i>
-                          </button>
-                          {copied2 && (
-                            <span className="copied-tooltip">Copied</span>
-                          )}
-                        </div>
-                      </div>
-                      <div className="input-field mb-3">
-                        <input
-                          required
-                          className="input"
-                          type="text"
-                          value={paymentDetails.account_number}
-                          readOnly
-                          ref={inputRef3}
-                          disabled
-                        />
-                        <div
-                          className="position-absolute copy-text"
-                          style={{
-                            right: "10px",
-                            top: "60%",
-                            transform: "translateY(-50%)",
-                            cursor: "pointer",
-                          }}
-                        >
-                          <button
-                            onClick={() => handleCopy(inputRef3, setCopied3)}
-                          >
-                            <i className="fa-solid fa-copy text-white fs-5"></i>
-                          </button>
-                          {copied3 && (
-                            <span className="copied-tooltip">Copied</span>
-                          )}
-                        </div>
-                      </div>
-                      <div className="input-field mb-3">
-                        <input
-                          required
-                          className="input"
-                          type="text"
-                          value={paymentDetails.ifsc_code}
-                          readOnly
-                          ref={inputRef4}
-                          disabled
-                        />
-                        <div
-                          className="position-absolute copy-text"
-                          style={{
-                            right: "10px",
-                            top: "60%",
-                            transform: "translateY(-50%)",
-                            cursor: "pointer",
-                          }}
-                        >
-                          <button
-                            onClick={() => handleCopy(inputRef4, setCopied4)}
-                          >
-                            <i className="fa-solid fa-copy text-white fs-5"></i>
-                          </button>
-                          {copied4 && (
-                            <span className="copied-tooltip">Copied</span>
-                          )}
-                        </div>
-                      </div>
-                    </div>
 
-                    {/* <div className="d-flex justify-content-center">
+                      {/* <div className="d-flex justify-content-center">
                           <button
                             type="submit"
                             className="btn btn-login w-100 mt-4 mb-3 text-capitalize"
@@ -440,204 +455,74 @@ const SelectPaymentMethod = ({
                             Select the Payment Method
                           </button>
                         </div> */}
-                  </div>
-                </div>
-                {/* {paymentDetails.map((item, index) => (
-                    <div
-                      key={index}
-                      className="card account_input-textbox-container border-0"
-                    >
-                      
-                      <div className="card-body pt-0 py-0">
-                        <h5 className="text-center mb-0">Bank Details</h5>
-                        <div className="form-control_container">
-                          <div className="input-field mb-3">
-                            <input
-                              required
-                              className="input"
-                              type="text"
-                              value={item.bank_name}
-                              readOnly
-                              ref={inputRef1}
-                              disabled
-                            />
-                            <div
-                              className="position-absolute copy-text"
-                              style={{
-                                right: "10px",
-                                top: "60%",
-                                transform: "translateY(-50%)",
-                                cursor: "pointer",
-                              }}
-                            >
-                              <button
-                                onClick={() =>
-                                  handleCopy(inputRef1, setCopied1)
-                                }
-                              >
-                                <i className="fa-solid fa-copy text-white fs-5"></i>
-                              </button>
-                              {copied1 && (
-                                <span className="copied-tooltip">Copied</span>
-                              )}
-                            </div>
-                          </div>
-                          <div className="input-field mb-3">
-                            <input
-                              required
-                              className="input"
-                              type="text"
-                              value={item.account_holder_name}
-                              readOnly
-                              ref={inputRef2}
-                              disabled
-                            />
-                            <div
-                              className="position-absolute copy-text"
-                              style={{
-                                right: "10px",
-                                top: "60%",
-                                transform: "translateY(-50%)",
-                                cursor: "pointer",
-                              }}
-                            >
-                              <button
-                                onClick={() =>
-                                  handleCopy(inputRef2, setCopied2)
-                                }
-                              >
-                                <i className="fa-solid fa-copy text-white fs-5"></i>
-                              </button>
-                              {copied2 && (
-                                <span className="copied-tooltip">Copied</span>
-                              )}
-                            </div>
-                          </div>
-                          <div className="input-field mb-3">
-                            <input
-                              required
-                              className="input"
-                              type="text"
-                              value={item.account_number}
-                              readOnly
-                              ref={inputRef3}
-                              disabled
-                            />
-                            <div
-                              className="position-absolute copy-text"
-                              style={{
-                                right: "10px",
-                                top: "60%",
-                                transform: "translateY(-50%)",
-                                cursor: "pointer",
-                              }}
-                            >
-                              <button
-                                onClick={() =>
-                                  handleCopy(inputRef3, setCopied3)
-                                }
-                              >
-                                <i className="fa-solid fa-copy text-white fs-5"></i>
-                              </button>
-                              {copied3 && (
-                                <span className="copied-tooltip">Copied</span>
-                              )}
-                            </div>
-                          </div>
-                          <div className="input-field mb-3">
-                            <input
-                              required
-                              className="input"
-                              type="text"
-                              value={item.ifsc_code}
-                              readOnly
-                              ref={inputRef4}
-                              disabled
-                            />
-                            <div
-                              className="position-absolute copy-text"
-                              style={{
-                                right: "10px",
-                                top: "60%",
-                                transform: "translateY(-50%)",
-                                cursor: "pointer",
-                              }}
-                            >
-                              <button
-                                onClick={() =>
-                                  handleCopy(inputRef4, setCopied4)
-                                }
-                              >
-                                <i className="fa-solid fa-copy text-white fs-5"></i>
-                              </button>
-                              {copied4 && (
-                                <span className="copied-tooltip">Copied</span>
-                              )}
-                            </div>
-                          </div>
-                        </div>
-
-                      
-                      </div>
                     </div>
-                  ))} */}
-
-                {/* // Rules Starts here */}
-                <div>
-                  {/* <div className="border-1 border-top mb-3 opacity-25"></div>
-                    <div className="card bg-transparent account_input-textbox-container mt-0 mb-0 border-0">
-                      <div className="card-body py-0">
-                        <h6 className="mb-2">Rules</h6>
-                        <ul className="list-unstyled mb-0">
-                          <li className="text-white fs-14 mb-2">
-                            <img
-                              src="assets/img/icons/tick.png"
-                              alt="tick"
-                              width="20px"
-                              className="me-2"
-                            />
-                            Transfer the amount through our safe payment gateway
-                          </li>
-                          <li className="text-white fs-14 mb-2">
-                            <img
-                              src="assets/img/icons/tick.png"
-                              alt="tick"
-                              width="20px"
-                              className="me-2"
-                            />
-                            The amount will be deposited to your account
-                            instantly
-                          </li>
-                          <li className="text-white fs-14 mb-2">
-                            <img
-                              src="assets/img/icons/tick.png"
-                              alt="tick"
-                              width="20px"
-                              className="me-2"
-                            />
-                            Transfer the amount through our safe payment gateway
-                          </li>
-                          <li className="text-white fs-14 mb-2">
-                            <img
-                              src="assets/img/icons/tick.png"
-                              alt="tick"
-                              width="20px"
-                              className="me-2"
-                            />
-                            Transfer the amount through our safe payment gateway
-                          </li>
-                        </ul>
-                      </div>
-                    </div> */}
-                </div>
-                {/* // Rules Ends here */}
+                  </div>
+                ) : (
+                  // {/* // Rules Starts here */}
+                  // <div>
+                  //   {/* <div className="border-1 border-top mb-3 opacity-25"></div>
+                  //     <div className="card bg-transparent account_input-textbox-container mt-0 mb-0 border-0">
+                  //       <div className="card-body py-0">
+                  //         <h6 className="mb-2">Rules</h6>
+                  //         <ul className="list-unstyled mb-0">
+                  //           <li className="text-white fs-14 mb-2">
+                  //             <img
+                  //               src="assets/img/icons/tick.png"
+                  //               alt="tick"
+                  //               width="20px"
+                  //               className="me-2"
+                  //             />
+                  //             Transfer the amount through our safe payment gateway
+                  //           </li>
+                  //           <li className="text-white fs-14 mb-2">
+                  //             <img
+                  //               src="assets/img/icons/tick.png"
+                  //               alt="tick"
+                  //               width="20px"
+                  //               className="me-2"
+                  //             />
+                  //             The amount will be deposited to your account
+                  //             instantly
+                  //           </li>
+                  //           <li className="text-white fs-14 mb-2">
+                  //             <img
+                  //               src="assets/img/icons/tick.png"
+                  //               alt="tick"
+                  //               width="20px"
+                  //               className="me-2"
+                  //             />
+                  //             Transfer the amount through our safe payment gateway
+                  //           </li>
+                  //           <li className="text-white fs-14 mb-2">
+                  //             <img
+                  //               src="assets/img/icons/tick.png"
+                  //               alt="tick"
+                  //               width="20px"
+                  //               className="me-2"
+                  //             />
+                  //             Transfer the amount through our safe payment gateway
+                  //           </li>
+                  //         </ul>
+                  //       </div>
+                  //     </div> */}
+                  // </div>
+                  // {/* // Rules Ends here */}
+                  <div className="text-center py-4 text-warning">
+                    No bank details found for the selected method
+                  </div>
+                )}
               </>
             )}
 
             {/* UPI Details (Only for UPI) */}
-            {selectedMethod === 2 && (
+            {Number(selectedMethod) === 2 && (
               <>
-                {loading ? (
+                {error ? (
+                  <div className="text-center py-4 text-danger">
+                    {" "}
+                    No payment details found for the selected method
+                  </div>
+                ) : detailsLoading ? (
                   <div className="text-center py-4 text-white">
                     Loading UPI details...
                   </div>
@@ -656,7 +541,8 @@ const SelectPaymentMethod = ({
                         <div className="d-flex justify-content-center mb-0">
                           {paymentDetails?.qr_code ? (
                             <img
-                              src={`/${paymentDetails?.qr_code}`}
+                              // src={`/${paymentDetails?.qr_code}`}
+                              src={paymentDetails.qr_code}
                               className="w-50"
                               alt="QR Code"
                               onError={(e) => (e.target.style.display = "none")}
@@ -712,7 +598,7 @@ const SelectPaymentMethod = ({
                   </>
                 ) : (
                   <div className="text-center py-4 text-warning">
-                    No UPI details found
+                    No payment details found for the selected method
                   </div>
                 )}
               </>

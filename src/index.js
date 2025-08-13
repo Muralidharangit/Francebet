@@ -7,12 +7,15 @@ import AuthContext, { AuthProvider } from "./Auth/AuthContext";
 import { BrowserRouter } from "react-router-dom";
 import RouteTracker from "./Auth/RouteTracker";
 import ForbiddenPage from "./Components/Pages/ErrorPages/ForbiddenPage";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
+const queryClient = new QueryClient(); // ✅ outside the component
 
 const RootApp = () => {
   const { portalStatus } = React.useContext(AuthContext);
 
   if (portalStatus === "loading") {
-    return ;
+    return;
   }
 
   if (portalStatus === "forbidden") {
@@ -24,17 +27,17 @@ const RootApp = () => {
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <React.StrictMode>
-    <BrowserRouter>
-      {" "}
-      {/* ✅ This wraps everything */}
+  // <React.StrictMode>
+  <BrowserRouter>
+    <QueryClientProvider client={queryClient}>
       <AuthProvider>
         <RouteTracker>
           <RootApp />
         </RouteTracker>
       </AuthProvider>
-    </BrowserRouter>
-  </React.StrictMode>
+    </QueryClientProvider>
+  </BrowserRouter>
+  // </React.StrictMode>
 );
 
 reportWebVitals();

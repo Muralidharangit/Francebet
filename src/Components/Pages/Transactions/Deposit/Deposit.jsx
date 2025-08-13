@@ -8,11 +8,14 @@ import React, { useState } from "react";
 import SelectAmount from "./SelectAmount";
 import SelectPaymentMethod from "./SelectPaymentMethod";
 import DepositAmountRequest from "./DepositAmountRequest";
+import StickyHeader from "../../../layouts/Header/Header";
+import Sidebar from "../../../layouts/Header/Sidebar";
 
 function Deposit() {
   const [activeStep, setActiveStep] = useState("step1");
   const [selectedAmount, setSelectedAmount] = useState(""); // 🟣 Add this line
   const [paymentSelectedMethod, setPaymentSelectedMethod] = useState(""); // 🟣 Add this line
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [depositFormData, setDepositFormData] = useState({
     amount: "", // selected in Step 1
     paymentSelectedMethod: "", // selected in Step 2
@@ -69,29 +72,40 @@ function Deposit() {
   };
   return (
     <>
-      <section className="container position-relative">
-        <div className="h-100">
-          <div className="pt-3 pb-2">
-            <div className="row px-2">
-              {/* header Starts */}
-              <div className="d-flex align-items-center justify-content-between position-relative  px-0">
-                {/* Back Button on Left */}
-                <div className="d-flex justify-content-between align-items-center px-0">
-                  <button
-                    className="go_back_btn bg-grey"
-                    onClick={() => window.history.back()}
-                  >
-                    <i className="ri-arrow-left-s-line text-white fs-20" />
-                  </button>
-                </div>
+      {/* header  */}
+      <StickyHeader onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
+      {/* header end */}
+      <div className="container-fluid page-body-wrapper">
+        {/* Sidebar Nav Starts */}
+        <Sidebar />
+        {/* Sidebar Nav Ends */}
+        {/* 🔍 Search Bar */}
 
-                {/* Centered Title */}
-                <h5 className="position-absolute start-50 translate-middle-x m-0 text-white fs-16">
-                  Deposit
-                </h5>
-              </div>
-              {/* header Ends */}
-              {/* <div className="d-flex justify-content-between align-items-center px-0">
+        <div className="main-panel">
+          <div className="content-wrapper">
+            <div className="max-1250 mx-auto">
+              <div className="h-100">
+                <div className="pt-3 pb-2">
+                  <div className="row px-2">
+                    {/* header Starts */}
+                    <div className="d-flex align-items-center justify-content-between position-relative  px-0">
+                      {/* Back Button on Left */}
+                      {/* <div className="d-flex justify-content-between align-items-center px-0">
+                        <button
+                          className="go_back_btn bg-grey"
+                          onClick={() => window.history.back()}
+                        >
+                          <i className="ri-arrow-left-s-line text-white fs-20" />
+                        </button>
+                      </div> */}
+
+                      {/* Centered Title */}
+                      <h5 className="position-absolute start-50 translate-middle-x m-0 text-white fs-16">
+                        Deposit
+                      </h5>
+                    </div>
+                    {/* header Ends */}
+                    {/* <div className="d-flex justify-content-between align-items-center px-0">
                 <button
                   className="go_back_btn"
                   onClick={() => window.history.back()}
@@ -100,120 +114,100 @@ function Deposit() {
                 </button>
               </div> */}
 
-              {/* test Starts */}
-              <div className="container mt-4 px-0">
-                <div className="wizard my-5">
-                  <ul className="nav nav-tabs justify-content-center">
-                    {steps.map((step, index) => (
-                      <li
-                        key={step.id}
-                        className="nav-item flex-fill"
-                        role="presentation"
-                      >
-                        <span
-                          className="text-white position-absolute start-50 translate-middle-x"
-                          style={{ top: "-30px" }}
-                        >
-                          {step.title}
-                        </span>
-
-                        <a
-                          className={`nav-link rounded-circle mx-auto d-flex align-items-center justify-content-center ${
-                            activeStep === step.id ? "active" : ""
-                          }`}
-                          href={`#${step.id}`}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            setActiveStep(step.id);
-                          }}
-                        >
-                          <i className={step.icon}></i>
-                        </a>
-                      </li>
-                    ))}
-                  </ul>
-
-                  {/* Navigation Tabs */}
-                  <div className="tab-content">
-                    {steps.map((step, index) => (
-                      <div
-                        key={step.id}
-                        className={`tab-pane fade ${
-                          activeStep === step.id ? "show active" : ""
-                        }`}
-                        id={step.id}
-                      >
-                        {/* <h5 className="mt-3">{step.title}</h5> */}
-                        {step.content()} {/* ✅ FIX: Call the function */}
-                        {/* <div className="d-flex justify-content-between">
-                    {index > 0 && (
-                      <button
-                        className="btn btn-secondary previous"
-                        onClick={goPrevious}
-                      >
-                        <i className="fas fa-angle-left"></i> Back
-                      </button>
-                    )}
-                    {index < steps.length - 1 ? (
-                      <button className="btn btn-info next" onClick={goNext}>
-                        Continue <i className="fas fa-angle-right"></i>
-                      </button>
-                    ) : (
-                      <button className="btn btn-info next">
-                        Submit <i className="fas fa-angle-right"></i>
-                      </button>
-                    )}
-                  </div> */}
-                      </div>
-                    ))}
-                  </div>
-
-                  {/* Tab Content */}
-                  <div className="tab-content">
-                    {steps.map((step, index) => (
-                      <div
-                        key={step.id}
-                        className={`tab-pane fade ${
-                          activeStep === step.id ? "show active" : ""
-                        }`}
-                        id={step.id}
-                      >
-                        {/* <h3>{step.title}</h3> */}
-                        <p>{step.content}</p>
-                        <div className="d-flex justify-content-between">
-                          {index > 0 && (
-                            <button
-                              className="btn btn-secondary previous"
-                              onClick={goPrevious}
+                    {/* Wizard */}
+                    <div className="container mt-4 px-0">
+                      <div className="wizard my-5">
+                        <ul className="nav nav-tabs justify-content-center">
+                          {steps.map((step) => (
+                            <li
+                              key={step.id}
+                              className="nav-item flex-fill"
+                              role="presentation"
                             >
-                              <i className="fas fa-angle-left"></i> Back
-                            </button>
-                          )}
-                          {index < steps.length - 1 ? (
-                            <button
-                              className="btn btn-light next"
-                              onClick={goNext}
-                            >
-                              Continue <i className="fas fa-angle-right"></i>
-                            </button>
-                          ) : (
-                            ""
-                            // <button className="btn bg-primary_color text-white next">
-                            //   Submit <i className="fas fa-angle-right"></i>
-                            // </button>
-                          )}
+                              <span
+                                className="text-white position-absolute start-50 translate-middle-x"
+                                style={{ top: "-30px" }}
+                              >
+                                {step.title}
+                              </span>
+                              <a
+                                href={`#${step.id}`}
+                                className={`nav-link rounded-circle mx-auto d-flex align-items-center justify-content-center ${
+                                  activeStep === step.id ? "active" : ""
+                                }`}
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  // optional: block jumping ahead without required data
+                                  if (step.id === "step2" && !selectedAmount)
+                                    return;
+                                  if (
+                                    step.id === "step3" &&
+                                    (!selectedAmount || !paymentSelectedMethod)
+                                  )
+                                    return;
+                                  setActiveStep(step.id);
+                                }}
+                              >
+                                <i className={step.icon} />
+                              </a>
+                            </li>
+                          ))}
+                        </ul>
+
+                        {/* Single Tab Content (keep just this one) */}
+                        <div className="tab-content">
+                          {steps.map((step, index) => {
+                            const isActive = activeStep === step.id;
+                            return (
+                              <div
+                                key={step.id}
+                                className={`tab-pane fade ${
+                                  isActive ? "show active" : ""
+                                }`}
+                                id={step.id}
+                              >
+                                {step.content()}
+                                <div className="d-flex justify-content-between mt-3">
+                                  {index > 0 && (
+                                    <button
+                                      className="btn btn-secondary previous"
+                                      onClick={goPrevious}
+                                    >
+                                      <i className="fas fa-angle-left" /> Back
+                                    </button>
+                                  )}
+                                  {index < steps.length - 1 && (
+                                    <button
+                                      className="btn btn-light next"
+                                      onClick={goNext}
+                                      disabled={
+                                        (step.id === "step1" &&
+                                          !selectedAmount) ||
+                                        (step.id === "step2" &&
+                                          !paymentSelectedMethod)
+                                      }
+                                    >
+                                      Continue{" "}
+                                      <i className="fas fa-angle-right" />
+                                    </button>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
                         </div>
+                        {/* end .tab-content */}
                       </div>
-                    ))}
+                    </div>
+                    {/* end wizard */}
+                    {/* <Footer /> */}
                   </div>
                 </div>
               </div>
-              {/* test Ends */}
-              {/* <Footer /> */}
             </div>
           </div>
         </div>
-      </section>
+      </div>
     </>
   );
 }

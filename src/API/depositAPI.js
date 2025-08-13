@@ -15,16 +15,29 @@ export const getDepositMethods = async (token) => {
 };
 
 // get the Admin payment details
+// export const getPaymentDetails = async (token, methodId) => {
+//   const response = await axiosInstance.get("/player/get-payment-detail", {
+//     headers: {
+//       Authorization: `Bearer ${token}`,
+//     },
+//     params: {
+//       payment_method_id: methodId,
+//     },
+//   });
+//   return response.data;
+// };
+
+// get the Admin payment details
 export const getPaymentDetails = async (token, methodId) => {
-  const response = await axiosInstance.get("/player/get-payment-detail", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-    params: {
-      payment_method_id: methodId,
-    },
+  const res = await axiosInstance.get("/player/get-payment-detail", {
+    headers: { Authorization: `Bearer ${token}` },
+    params: { payment_method_id: methodId },
   });
-  return response.data;
+
+  if (res.data?.status === "error") {
+    throw new Error(res.data.msg || "Payment details not found");
+  }
+  return res.data;
 };
 
 // Send the Deposit Request

@@ -7,13 +7,16 @@ import { toast, ToastContainer } from "react-toastify";
 import { Images } from "./constants/images";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 const StickyHeader = ({ onToggleSidebar }) => {
-  console.log("onToggleSidebar", onToggleSidebar);
+  const [loading, setLoading] = useState(false);
+  // console.log("onToggleSidebar", onToggleSidebar);
 
-  const { user, profile, avatar, portalSettings } = useContext(AuthContext); // ✅ Get user authentication state
+  // const { user, profile, avatar, portalSettings, isLoading, logout, authType } =
+  const { user, profile, avatar, portalSettings, isLoading, logout, authType } =
+    useContext(AuthContext); // ✅ Get user authentication state
   const [isSticky, setIsSticky] = useState(false);
   const navigate = useNavigate();
 
-  // console.log("portalSettings", portalSettings);
+  // console.log("avatar", avatar);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -26,6 +29,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+  // console.log(profile, "user in header");
   // console.log(profile, "user in header");
 
   const handleDepositClick = async () => {
@@ -116,6 +120,31 @@ const StickyHeader = ({ onToggleSidebar }) => {
   const handleToggleSidebar = () => {
     document.body.classList.toggle("sidebar-icon-only");
   };
+
+  const handleSecureRoute = async (route) => {
+    const token = user?.token;
+    if (!token) {
+      toast.error("Session expired.");
+      logout(navigate);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const res = await verifyToken(token);
+      if (res.status === "success") {
+        navigate(route);
+      } else {
+        toast.error("Invalid session.");
+        logout(navigate);
+      }
+    } catch {
+      toast.error("Token check failed.");
+      logout(navigate);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <SkeletonTheme baseColor="#313131" highlightColor="#525252">
       <>
@@ -192,7 +221,29 @@ const StickyHeader = ({ onToggleSidebar }) => {
                       className="user-icon ms-2"
                       onClick={handleProfileClick}
                     >
-                      {avatar?.avatar?.image ? (
+                      <img
+                        src={
+                          // string URL on user.avatar
+                          (typeof user?.avatar === "string" && user.avatar) ||
+                          // object form: { image: "..." }
+                          user?.avatar?.image ||
+                          // fallback in /public
+                          "/assets/img/icons/man.png"
+                        }
+                        alt={user?.avatar?.name || "Profile"}
+                        className="w-100"
+                        style={{
+                          borderRadius: "10%",
+                          width: 36,
+                          height: 36,
+                          objectFit: "cover",
+                        }}
+                        onError={(e) => {
+                          e.currentTarget.onerror = null;
+                          e.currentTarget.src = "/assets/img/icons/man.png";
+                        }}
+                      />
+                      {/* {avatar?.avatar?.image ? (
                         <img
                           src={avatar.avatar.image}
                           alt={avatar.avatar.name || "Profile"}
@@ -201,7 +252,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                         />
                       ) : (
                         <Skeleton circle height={36} width={36} />
-                      )}
+                      )} */}
                     </div>
                   </div>
                 ) : (
@@ -277,198 +328,375 @@ const StickyHeader = ({ onToggleSidebar }) => {
     <button type="button" class="btn  btn-index w-100  "> Deposit</button>
     </a>
   </li> */}
-                <li>
-                  <div className="deposit_btn_container">
-                    <p className="text-light mb-0 px-3">
-                      <i className="fi fi-rs-coins" /> 50,000
-                    </p>
-                    <button className="btn  btn-index w-100 deposit-btn">
-                      Deposit
-                    </button>
-                  </div>
-                </li>
-                {/* <li className="nav-item d-none d-lg-block full-screen-link">
-                  <a className="nav-link">
-                    <i class="mdi mdi-fullscreen" id="fullscreen-button"></i>
-                    <i className="fi fi-bs-expand" id="fullscreen-button" />
-                  </a>
-                </li> */}
 
-                <li className="nav-item d-none d-lg-block full-screen-link">
-                  <a
-                    className="nav-link"
-                    onClick={() => {
-                      const elem = document.documentElement; // makes the whole page fullscreen
-                      if (!document.fullscreenElement) {
-                        elem.requestFullscreen().catch((err) => {
-                          console.error(
-                            `Error attempting to enable full-screen mode: ${err.message}`
-                          );
-                        });
-                      } else {
-                        document.exitFullscreen();
-                      }
-                    }}
-                  >
-                    <i className="fi fi-bs-expand" id="fullscreen-button" />
-                  </a>
-                </li>
-                <li className="nav-item dropdown">
-                  <a
-                    className="nav-link count-indicator dropdown-toggle"
-                    id="messageDropdown"
-                    href="#"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    <i className="fi fi-rr-comment-alt" />
-                    <span className="count-symbol bg-danger" />
-                  </a>
-                  <div
-                    className="dropdown-menu dropdown-menu-end navbar-dropdown preview-list"
-                    aria-labelledby="messageDropdown"
-                  >
-                    <h6 className="p-3 mb-0">Messages</h6>
-                    <div className="dropdown-divider" />
-                    <a className="dropdown-item preview-item">
-                      <div className="preview-thumbnail">
+                {/* if user login Starts */}
+                {/* If Logged In */}
+                {user ? (
+                  <div className="d-flex justify-content-center align-items-center mx-2">
+                    {/* Coin Box */}
+                    {profile ? (
+                      <div className="d-flex align-items-center px-2 py-1 rounded-pill">
+                        <li>
+                          <div className="deposit_btn_container">
+                            <p className="text-light mb-0 px-3">
+                              <i className="fi fi-rs-coins" /> ₹{" "}
+                              {Number(profile?.chips).toFixed(2)}
+                            </p>
+                            <button
+                              className="btn  btn-index w-100 deposit-btn"
+                              onClick={() =>
+                                handleSecureRoute(routes.transactions.deposit)
+                              }
+                            >
+                              Deposit
+                            </button>
+                          </div>
+                        </li>
+                      </div>
+                    ) : (
+                      <Skeleton height={32} width={120} borderRadius={30} />
+                    )}
+
+                    {/* Avatar */}
+                    {/* <div
+                      className="user-icon ms-2"
+                      onClick={handleProfileClick}
+                    >
+                      {avatar?.avatar?.image ? (
                         <img
+                          src={avatar.avatar.image}
+                          alt={avatar.avatar.name || "Profile"}
+                          className="w-100"
+                          style={{ borderRadius: "10%" }}
+                        />
+                      ) : (
+                        <Skeleton circle height={36} width={36} />
+                      )}
+                    </div> */}
+
+                    {/* <li>
+                      <div className="deposit_btn_container">
+                        <p className="text-light mb-0 px-3">
+                          <i className="fi fi-rs-coins" /> 50,000
+                        </p>
+                        <button className="btn  btn-index w-100 deposit-btn">
+                          Deposit
+                        </button>
+                      </div>
+                    </li> */}
+
+                    <li className="nav-item d-none d-lg-block full-screen-link">
+                      <a
+                        className="nav-link"
+                        onClick={() => {
+                          const elem = document.documentElement; // makes the whole page fullscreen
+                          if (!document.fullscreenElement) {
+                            elem.requestFullscreen().catch((err) => {
+                              console.error(
+                                `Error attempting to enable full-screen mode: ${err.message}`
+                              );
+                            });
+                          } else {
+                            document.exitFullscreen();
+                          }
+                        }}
+                      >
+                        <i className="fi fi-bs-expand" id="fullscreen-button" />
+                      </a>
+                    </li>
+
+                    <li className="nav-item dropdown">
+                      <a
+                        className="nav-link count-indicator dropdown-toggle"
+                        id="notificationDropdown"
+                        href="#"
+                        data-bs-toggle="dropdown"
+                      >
+                        <i className="fi fi-rr-bell" />
+                        <span className="count-symbol bg-danger" />
+                      </a>
+                      <div
+                        className="dropdown-menu dropdown-menu-end navbar-dropdown preview-list"
+                        aria-labelledby="notificationDropdown"
+                        style={{ background: "#161616" }}
+                      >
+                        <h6 className="p-3 mb-0">Notifications</h6>
+                        <div className="dropdown-divider" />
+                        <a className="dropdown-item preview-item">
+                          <div className="preview-thumbnail">
+                            <div className="preview-icon bg-success">
+                              <i className="mdi mdi-calendar" />
+                            </div>
+                          </div>
+                          <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                            <h6 className="preview-subject font-weight-normal mb-1">
+                              Event today
+                            </h6>
+                            <p className="text-white ellipsis mb-0">
+                              Just a reminder that you have an event today{" "}
+                            </p>
+                          </div>
+                        </a>
+                        <div className="dropdown-divider" />
+                        <a className="dropdown-item preview-item">
+                          <div className="preview-thumbnail">
+                            <div className="preview-icon bg-warning">
+                              <i className="mdi mdi-cog" />
+                            </div>
+                          </div>
+                          <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                            <h6 className="preview-subject font-weight-normal mb-1">
+                              Settings
+                            </h6>
+                            <p className="text-white ellipsis mb-0">
+                              {" "}
+                              Update dashboard{" "}
+                            </p>
+                          </div>
+                        </a>
+                        <div className="dropdown-divider" />
+                        <a className="dropdown-item preview-item">
+                          <div className="preview-thumbnail">
+                            <div className="preview-icon bg-info">
+                              <i className="mdi mdi-link-variant" />
+                            </div>
+                          </div>
+                          <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                            <h6 className="preview-subject font-weight-normal mb-1">
+                              Launch Admin
+                            </h6>
+                            <p className="text-white ellipsis mb-0">
+                              {" "}
+                              New admin wow!{" "}
+                            </p>
+                          </div>
+                        </a>
+                        <div className="dropdown-divider" />
+                        {/* <h6 className="p-3 mb-0 text-center">
+                      See all notifications
+                    </h6> */}
+                      </div>
+                    </li>
+
+                    {/* Profile dropdown starts */}
+                    <li className="nav-item dropdown">
+                      <a
+                        className="nav-link count-indicator dropdown-toggle"
+                        id="messageDropdown"
+                        href="#"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                      >
+                        <div className="user-icon ms-2">
+                          {/* <img
+                            src="assets/img/icons/man.png"
+                            alt=""
+                            srcSet=""
+                            className="w-100"
+                            style={{ borderRadius: "50%" }}
+                          /> */}
+
+                          {/* {avatar?.avatar?.image ? (
+                            <img
+                              src={avatar.avatar.image}
+                              alt={avatar.avatar.name || "Profile"}
+                              className="w-100"
+                              style={{ borderRadius: "10%" }}
+                            />
+                          ) : (
+                            <Skeleton circle height={36} width={36} />
+                          )} */}
+                          <img
+                            src={
+                              // string URL on user.avatar
+                              (typeof user?.avatar === "string" &&
+                                user.avatar) ||
+                              // object form: { image: "..." }
+                              user?.avatar?.image ||
+                              // fallback in /public
+                              "/assets/img/icons/man.png"
+                            }
+                            alt={user?.avatar?.name || "Profile"}
+                            className="w-100"
+                            style={{
+                              borderRadius: "10%",
+                              width: 36,
+                              height: 36,
+                              objectFit: "cover",
+                            }}
+                            onError={(e) => {
+                              e.currentTarget.onerror = null;
+                              e.currentTarget.src = "/assets/img/icons/man.png";
+                            }}
+                          />
+                        </div>
+                      </a>
+                      <div
+                        className="dropdown-menu dropdown-menu-end navbar-dropdown preview-list"
+                        aria-labelledby="messageDropdown"
+                        style={{ background: "#161616" }}
+                      >
+                        {/* deposit starts */}
+                        <div className="dropdown-divider" />
+                        <a className="dropdown-item preview-item">
+                          <div className="preview-thumbnail">
+                            {/* <img
+                          src="/assets/images/faces/face2.jpg"
+                          alt="image"
+                          className="profile-pic"
+                        /> */}
+                          </div>
+                          <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                            <h6
+                              className="preview-subject ellipsis mb-1 font-weight-normal"
+                              onClick={() =>
+                                handleSecureRoute(routes.transactions.deposit)
+                              }
+                            >
+                              Deposit
+                            </h6>
+                            {/* <p className="text-gray mb-0"> 15 Minutes ago </p> */}
+                          </div>
+                        </a>
+                        {/* deposit ends */}
+                        {/* Withdraw starts */}
+                        <div className="dropdown-divider" />
+                        <a className="dropdown-item preview-item">
+                          <div className="preview-thumbnail">
+                            {/* <img
+                          src="/assets/images/faces/face2.jpg"
+                          alt="image"
+                          className="profile-pic"
+                        /> */}
+                          </div>
+                          <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                            <h6
+                              className="preview-subject ellipsis mb-1 font-weight-normal"
+                              onClick={() =>
+                                handleSecureRoute(routes.transactions.withdraw)
+                              }
+                            >
+                              Withdraw
+                            </h6>
+                            {/* <p className="text-gray mb-0"> 15 Minutes ago </p> */}
+                          </div>
+                        </a>
+                        {/* Withdraw ends */}
+                        {/* <h6 className="p-3 mb-0">Messages</h6> */}
+                        <div className="dropdown-divider" />
+                        <a className="dropdown-item preview-item">
+                          <div className="preview-thumbnail">
+                            {/* <img
                           src="../assets/images/faces/face4.jpg"
                           alt="image"
                           className="profile-pic"
-                        />
-                      </div>
-                      <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                        <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
-                          Mark send you a message
-                        </h6>
-                        <p className="text-gray mb-0"> 1 Minutes ago </p>
-                      </div>
-                    </a>
-                    <div className="dropdown-divider" />
-                    <a className="dropdown-item preview-item">
-                      <div className="preview-thumbnail">
-                        <img
-                          src="../assets/images/faces/face2.jpg"
+                        /> */}
+                          </div>
+                          <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                            <h6
+                              className="preview-subject ellipsis mb-1 font-weight-normal"
+                              onClick={() =>
+                                handleSecureRoute(routes.games.history)
+                              }
+                            >
+                              Bet History
+                            </h6>
+                            {/* <p className="text-gray mb-0"> 1 Minutes ago </p> */}
+                          </div>
+                        </a>
+
+                        <div className="dropdown-divider" />
+                        <a className="dropdown-item preview-item">
+                          <div className="preview-thumbnail">
+                            {/* <img
+                          src="/assets/images/faces/face2.jpg"
                           alt="image"
                           className="profile-pic"
-                        />
-                      </div>
-                      <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                        <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
-                          Cregh send you a message
-                        </h6>
-                        <p className="text-gray mb-0"> 15 Minutes ago </p>
-                      </div>
-                    </a>
-                    <div className="dropdown-divider" />
-                    <a className="dropdown-item preview-item">
-                      <div className="preview-thumbnail">
-                        <img
-                          src="../assets/images/faces/face3.jpg"
+                        /> */}
+                          </div>
+                          <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                            <h6
+                              className="preview-subject ellipsis mb-1 font-weight-normal"
+                              onClick={() =>
+                                handleSecureRoute(
+                                  routes.transactions.withdrawHistory
+                                )
+                              }
+                            >
+                              Withdraw History
+                            </h6>
+                            {/* <p className="text-gray mb-0"> 15 Minutes ago </p> */}
+                          </div>
+                        </a>
+                        <div className="dropdown-divider" />
+                        <a className="dropdown-item preview-item">
+                          <div className="preview-thumbnail">
+                            {/* <img
+                          src="assets/img/icons/rupee_2.png"
+                          alt="deposit"
+                          // // width={"12px"}
+                          // style={{width:}}
+                        /> */}
+                          </div>
+                          <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                            <h6
+                              className="preview-subject ellipsis mb-1 font-weight-normal"
+                              onClick={() =>
+                                handleSecureRoute(
+                                  routes.transactions.depositHistory
+                                )
+                              }
+                            >
+                              Deposit History
+                            </h6>
+                            {/* <p className="text-gray mb-0"> 18 Minutes ago </p> */}
+                          </div>
+                        </a>
+
+                        <a className="dropdown-item preview-item">
+                          <div className="preview-thumbnail">
+                            {/* <img
+                          src="/assets/images/faces/face2.jpg"
                           alt="image"
                           className="profile-pic"
-                        />
+                        /> */}
+                          </div>
+                          <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                            <h6
+                              className="preview-subject ellipsis mb-1 font-weight-normal"
+                              onClick={handleProfileClick}
+                            >
+                              Profile
+                            </h6>
+                            {/* <p className="text-gray mb-0"> 15 Minutes ago </p> */}
+                          </div>
+                        </a>
+                        {/* <div className="dropdown-divider" />
+                    <h6 className="p-3 mb-0 text-center">4 new messages</h6> */}
                       </div>
-                      <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                        <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
-                          Profile picture updated
-                        </h6>
-                        <p className="text-gray mb-0"> 18 Minutes ago </p>
-                      </div>
-                    </a>
-                    <div className="dropdown-divider" />
-                    <h6 className="p-3 mb-0 text-center">4 new messages</h6>
+                    </li>
+                    {/* Profile dropdown ends */}
                   </div>
-                </li>
-                <li className="nav-item dropdown">
-                  <a
-                    className="nav-link count-indicator dropdown-toggle"
-                    id="notificationDropdown"
-                    href="#"
-                    data-bs-toggle="dropdown"
-                  >
-                    <i className="fi fi-rr-bell" />
-                    <span className="count-symbol bg-danger" />
-                  </a>
-                  <div
-                    className="dropdown-menu dropdown-menu-end navbar-dropdown preview-list"
-                    aria-labelledby="notificationDropdown"
-                  >
-                    <h6 className="p-3 mb-0">Notifications</h6>
-                    <div className="dropdown-divider" />
-                    <a className="dropdown-item preview-item">
-                      <div className="preview-thumbnail">
-                        <div className="preview-icon bg-success">
-                          <i className="mdi mdi-calendar" />
-                        </div>
-                      </div>
-                      <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                        <h6 className="preview-subject font-weight-normal mb-1">
-                          Event today
-                        </h6>
-                        <p className="text-gray ellipsis mb-0">
-                          {" "}
-                          Just a reminder that you have an event today{" "}
-                        </p>
-                      </div>
-                    </a>
-                    <div className="dropdown-divider" />
-                    <a className="dropdown-item preview-item">
-                      <div className="preview-thumbnail">
-                        <div className="preview-icon bg-warning">
-                          <i className="mdi mdi-cog" />
-                        </div>
-                      </div>
-                      <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                        <h6 className="preview-subject font-weight-normal mb-1">
-                          Settings
-                        </h6>
-                        <p className="text-gray ellipsis mb-0">
-                          {" "}
-                          Update dashboard{" "}
-                        </p>
-                      </div>
-                    </a>
-                    <div className="dropdown-divider" />
-                    <a className="dropdown-item preview-item">
-                      <div className="preview-thumbnail">
-                        <div className="preview-icon bg-info">
-                          <i className="mdi mdi-link-variant" />
-                        </div>
-                      </div>
-                      <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                        <h6 className="preview-subject font-weight-normal mb-1">
-                          Launch Admin
-                        </h6>
-                        <p className="text-gray ellipsis mb-0">
-                          {" "}
-                          New admin wow!{" "}
-                        </p>
-                      </div>
-                    </a>
-                    <div className="dropdown-divider" />
-                    <h6 className="p-3 mb-0 text-center">
-                      See all notifications
-                    </h6>
+                ) : (
+                  // If Not Logged In
+                  <div className="d-flex">
+                    <Link to={routes.auth.login}>
+                      <button
+                        type="button"
+                        className="btn btn-index w-100 bgbody-color"
+                      >
+                        Log in
+                      </button>
+                    </Link>
+                    <Link to={routes.auth.register}>
+                      <button type="button" className="btn btn-index w-100">
+                        Sign up
+                      </button>
+                    </Link>
                   </div>
-                </li>
-                <li className="nav-item nav-profile">
-                  <div className="user-icon ms-2">
-                    <a className="" href="./sideMenu.html">
-                      <img
-                        src="assets/img/icons/man.png"
-                        alt=""
-                        srcSet=""
-                        className="w-100"
-                        style={{ borderRadius: "50%" }}
-                        data-bs-toggle="offcanvas"
-                        data-bs-target="#Profile_offcanvas"
-                        aria-controls="offcanvasExample"
-                      />
-                    </a>
-                  </div>
-                </li>
+                )}
+                {/* if user login Ends */}
+
                 {/* 
   <li>
     <div class="user-icon ms-2">
