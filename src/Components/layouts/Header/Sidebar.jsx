@@ -144,12 +144,12 @@ const Sidebar = () => {
               </ul>
             </div>
           </li> */}
-          <li className="nav-item">
+          {/* <li className="nav-item">
             <Link to={routes.games.bonus} className="nav-link">
               <span className="menu-title">Bonus</span>
               <i className="fi fi-rs-gift menu-icon" />
             </Link>
-          </li>
+          </li> */}
           <li className="nav-item">
             <Link to={routes.pages.howToPlay} className="nav-link">
               <span className="menu-title">How to Play</span>
