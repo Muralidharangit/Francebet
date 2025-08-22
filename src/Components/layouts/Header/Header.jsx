@@ -671,6 +671,19 @@ const StickyHeader = ({ onToggleSidebar }) => {
                             {/* <p className="text-gray mb-0"> 15 Minutes ago </p> */}
                           </div>
                         </a>
+
+                        <a className="dropdown-item preview-item">
+                          <div className="preview-thumbnail"></div>
+                          <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                            <h6
+                              className="preview-subject ellipsis mb-1 font-weight-normal"
+                              onClick={() => logout(navigate)}
+                            >
+                              Logout
+                            </h6>
+                            {/* <p className="text-gray mb-0"> 15 Minutes ago </p> */}
+                          </div>
+                        </a>
                         {/* <div className="dropdown-divider" />
                     <h6 className="p-3 mb-0 text-center">4 new messages</h6> */}
                       </div>
