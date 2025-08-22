@@ -208,6 +208,7 @@ import BASE_URL from "../API/api";
 import routes from "../Components/routes/route";
 import { getAuthType } from "../API/authAPI";
 import { useLocation } from "react-router-dom";
+import axiosInstance from "../API/axiosConfig";
 
 const AuthContext = createContext();
 
@@ -226,6 +227,47 @@ export const AuthProvider = ({ children }) => {
   const location = useLocation();
   const firstLoadRef = useRef(true);
 
+  // ✅ paste the effect here, inside AuthProvider
+  useEffect(() => {
+    const code = localStorage.getItem("pendingGiftCode");
+    if (!user?.token || !code) return;
+
+    (async () => {
+      try {
+        const upper = code;
+        await axiosInstance.get("/gift-envelope/validate", {
+          params: { id: upper },
+        });
+
+        const payload = { mobile: user?.mobile, code: upper };
+        const claimRes = await axiosInstance.post(
+          "/gift-envelope/claim",
+          payload
+        );
+
+        sessionStorage.setItem(
+          "giftFlash",
+          JSON.stringify({
+            type: "success",
+            message: claimRes?.data?.message || "Gift claimed successfully 🎉",
+            amount: claimRes?.data?.amount,
+          })
+        );
+      } catch (err) {
+        const msg =
+          err?.message ||
+          err?.response?.data?.error ||
+          err?.message ||
+          "Gift link invalid, used, or claim failed.";
+        sessionStorage.setItem(
+          "giftFlash",
+          JSON.stringify({ type: "error", message: msg })
+        );
+      } finally {
+        localStorage.removeItem("pendingGiftCode");
+      }
+    })();
+  }, [user?.token, user?.mobile]);
   // --- Fetch user data ---
   const fetchUser = useCallback(async (token) => {
     try {

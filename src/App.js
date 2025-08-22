@@ -5,6 +5,7 @@ import ProtectedRoute from "./Auth/ProtectedRoute";
 
 const Home = lazy(() => import("./Components/layouts/Home"));
 const Bonus = lazy(() => import("./Components/layouts/Bonus"));
+const Envelope = lazy(() => import("./Components/Pages/Envelope/Envelope"));
 const Profile = lazy(() => import("./Components/Profile/Profile"));
 const ProfileEdit = lazy(() => import("./Components/Profile/ProfileEdit"));
 const AccountDashboard = lazy(() =>
@@ -131,6 +132,7 @@ function App() {
           <Route path={routes.pages.menu} element={<Menu />} />
           <Route path={routes.pages.provider} element={<Provider />} />
           <Route path={routes.games.bonus} element={<Bonus />} />
+          <Route path={routes.games.gift_envelope} element={<Envelope />} />
           {/* Protected Routes */}
           <Route element={<ProtectedRoute />}>
             <Route path={routes.games.history} element={<BetHistory />} />

@@ -7,14 +7,23 @@ import { checkPlayerName, getAuthType, registerUser } from "../../API/authAPI";
 import AuthContext from "../../Auth/AuthContext";
 import routes from "../routes/route";
 import { Images } from "../layouts/Header/constants/images";
-
+const PENDING_CODE_KEY = "pendingGiftCode";
 const Register = () => {
   const { login } = useContext(AuthContext);
   const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate(); // Navigation function
   const [authType, setAuthType] = useState(null); // 👈 Store type here
   const [loading, setLoading] = useState(true); // 👈 To wait until API response
+  const [giftNotice, setGiftNotice] = useState(null);
+  useEffect(() => {
+    // Check both giftNotice flag and pending code
+    const noticeFlag = localStorage.getItem("giftNotice");
+    const pendingCode = localStorage.getItem(PENDING_CODE_KEY);
 
+    if (noticeFlag === "true" && pendingCode) {
+      setGiftNotice("You got a gift! Please login to claim it 🎁");
+    }
+  }, []);
   useEffect(() => {
     // if the token is there then navigate to the home
     const token = localStorage.getItem("token");
@@ -38,27 +47,26 @@ const Register = () => {
 
   //   Validation Schema
   const validationSchema = Yup.object({
-    username: Yup.string()
-      .required("Name is required")
-      .test("unique-username", "Checking...", async function (value) {
-        if (!value) return false;
+    username: Yup.string().required("Name is required"),
+    // .test("unique-username", "Checking...", async function (value) {
+    //   if (!value) return false;
 
-        try {
-          const res = await checkPlayerName(value);
+    //   try {
+    //     const res = await checkPlayerName(value);
 
-          if (res.status === "success") return true;
+    //     if (res.status === "success") return true;
 
-          return this.createError({
-            message: res.msg || "Username already taken",
-          });
-        } catch (err) {
-          // ✅ Handle 409 error gracefully
-          const message =
-            err?.response?.data?.msg ||
-            "Something went wrong while checking name.";
-          return this.createError({ message });
-        }
-      }),
+    //     return this.createError({
+    //       message: res.msg || "Username already taken",
+    //     });
+    //   } catch (err) {
+    //     // ✅ Handle 409 error gracefully
+    //     const message =
+    //       err?.response?.data?.msg ||
+    //       "Something went wrong while checking name.";
+    //     return this.createError({ message });
+    //   }
+    // })
 
     mobile: Yup.string()
       .matches(/^\d{10}$/, "Enter a valid 10-digit mobile number") //   Enforce exactly 11 digits
@@ -185,7 +193,18 @@ const Register = () => {
 
       <div className="pt-3 pb-2 card-log">
         {/* Logo */}
-
+        {giftNotice && (
+          <div className="alert alert-light border border-warning shadow-sm d-flex align-items-center gap-0 py-0 px-1">
+            <span style={{ fontSize: "2rem" }}>🎁</span>
+            <span>
+              <span style={{ fontWeight: "700", color: "#109607ff" }}>
+                You got a gift!
+              </span>
+              {/* <br /> */}
+              {/* <span style={{ color: "#555" }}> Login to claim it.</span> */}
+            </span>
+          </div>
+        )}
         <div className="">
           {/* Heading */}
           <div className="py-2">

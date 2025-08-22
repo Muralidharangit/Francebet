@@ -5491,3 +5491,25 @@ nav.sidebar.sidebar-offcanvas.open
     z-index: -1;
   }
 }
+/* Add to your existing CSS file (e.g., App.css or a dedicated CSS module) */
+
+/* gift card */
+.gift_card .circle1,
+.gift_card .circle2 {
+  background: #161616;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  position: absolute;
+  top: 27%;
+  transform: translateY(-50%);
+}
+.gift_card .circle1 {
+  left: -25px;
+}
+.gift_card .circle2 {
+  right: -25px;
+}
+.gift_card input.form-control.login-card__form-control {
+  border-style: dashed !important;
+}

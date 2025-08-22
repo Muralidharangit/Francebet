@@ -11,6 +11,8 @@ const routes = {
     filteredGames: "/filtered-games",
     filteredProviderGames: "/filtered-provider-games",
     // filteredAllGames: "/all-games",
+    envelope: "/claim-bonus",
+    gift_envelope: "/gift_envelope",
   },
   transactions: {
     withdraw: "/withdraw",

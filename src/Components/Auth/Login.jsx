@@ -6,15 +6,24 @@ import AuthContext from "../../Auth/AuthContext";
 import { getAuthType, loginUser } from "../../API/authAPI"; // Renamed verifyOTP import
 import routes from "../routes/route";
 import { Images } from "../layouts/Header/constants/images";
-
+const PENDING_CODE_KEY = "pendingGiftCode";
 const LoginPage = () => {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
   const [authType, setAuthType] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const [giftNotice, setGiftNotice] = useState(null);
   const [submitLock, setSubmitLock] = useState(false);
+  useEffect(() => {
+    // Check both giftNotice flag and pending code
+    const noticeFlag = localStorage.getItem("giftNotice");
+    const pendingCode = localStorage.getItem(PENDING_CODE_KEY);
 
+    if (noticeFlag === "true" && pendingCode) {
+      setGiftNotice("You got a gift! Please login to claim it 🎁");
+    }
+  }, []);
+  
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -165,6 +174,18 @@ const LoginPage = () => {
         </div>
 
         <div className="p-3 d-flex justify-content-start flex-column card-log">
+          {giftNotice && (
+            <div className="alert alert-light border border-warning shadow-sm d-flex align-items-center gap-0 py-0 px-1">
+              <span style={{ fontSize: "2rem" }}>🎁</span>
+              <span>
+                <span style={{ fontWeight: "700", color: "#109607ff" }}>
+                  You got a gift!
+                </span>
+                {/* <br /> */}
+                {/* <span style={{ color: "#555" }}> Login to claim it.</span> */}
+              </span>
+            </div>
+          )}
           <div class="py-2 pt-0">
             <h4 class="fw-bold text-black">Hi, Welcome Back! 👋</h4>
             <p class="text-muted mb-2 text-gray">

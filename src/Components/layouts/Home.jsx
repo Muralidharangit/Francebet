@@ -29,6 +29,8 @@ import Sidebar from "./Header/Sidebar";
 
 function Home() {
   const { isLoading } = useContext(AuthContext);
+  const [showModal, setShowModal] = useState(false);
+  const [result, setResult] = useState(null);
   // State for all games
   const [games, setGames] = useState([]);
   const [selectedGameUrl, setSelectedGameUrl] = useState(null);
@@ -91,6 +93,21 @@ function Home() {
     queryFn: fetchProviderList,
     staleTime: 5 * 60 * 1000, // optional 5 minutes cache
   });
+
+  useEffect(() => {
+    const flash = sessionStorage.getItem("giftFlash");
+    if (flash) {
+      try {
+        const parsed = JSON.parse(flash);
+        setResult(parsed);
+        setShowModal(true);
+      } catch {
+        setResult({ type: "error", message: flash });
+        setShowModal(true);
+      }
+      sessionStorage.removeItem("giftFlash");
+    }
+  }, []);
 
   useEffect(() => {
     if (location.state?.showLoginSuccess) {
@@ -1924,6 +1941,65 @@ function Home() {
                     <Footer />
                     {/* {!showFullScreenGame && <Footer />} */}
                     {/* Footer Start */}
+
+                    {showModal && (
+                      <div
+                        className="modal fade show d-block"
+                        tabIndex="-1"
+                        role="dialog"
+                        style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+                      >
+                        <div className="modal-dialog modal-dialog-centered modal-sm justify-content-center">
+                          <div
+                            className="modal-content"
+                            style={{ width: "240px" }}
+                          >
+                            <div className="modal-body d-flex flex-column align-items-center">
+                              <img
+                                src="assets/img/icons/rupee.gif"
+                                alt="rupee"
+                                className="mb-2 w-75"
+                              />
+
+                              <div
+                                className={`fw-700 fs-13 text-center mb-1 ${
+                                  result?.type === "error"
+                                    ? "text-danger"
+                                    : "text-black"
+                                }`}
+                              >
+                                {result?.message}
+                              </div>
+
+                              {typeof result?.amount !== "undefined" && (
+                                <div
+                                  className="fw-bold text-success mb-3"
+                                  style={{ fontSize: 22 }}
+                                >
+                                  ₹
+                                  {new Intl.NumberFormat("en-IN").format(
+                                    result.amount
+                                  )}
+                                </div>
+                              )}
+
+                              <Link to={routes.home}>
+                                <span
+                                  className="btn text-white green-bg"
+                                  onClick={() => setShowModal(false)}
+                                >
+                                  Thank You
+                                </span>
+                              </Link>
+
+                              <span className="text-dark-grey fs-10 fw-700 mt-3">
+                                For Choosing jiboomba
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </>
                 )}
               </div>
