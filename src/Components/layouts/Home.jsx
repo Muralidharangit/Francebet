@@ -23,6 +23,7 @@ import {
   fetchDiceGames,
   fetchProviderList,
   fetchSmartSoftGames,
+  getIsMobileParam,
 } from "../../hooks/homePageApi";
 import { useQuery } from "@tanstack/react-query";
 import Sidebar from "./Header/Sidebar";
@@ -443,6 +444,7 @@ function Home() {
 
     try {
       setIsLaunchingGame(true);
+      const isMobileParam = getIsMobileParam();
 
       const response = await axios.get(
         `${BASE_URL}/player/${game.provider}/launch/${encodeURIComponent(
@@ -450,7 +452,7 @@ function Home() {
         )}/${game.uuid}`,
         {
           params: {
-            return_url: `${window.location.origin}/all-games?is_mobile=1`,
+            return_url: `${window.location.origin}/all-games?is_mobile=${isMobileParam}`,
             has_lobby: game.has_lobby,
             has_tables: game.has_tables,
           },
@@ -773,20 +775,18 @@ function Home() {
                             ) : diceGames.length > 0 ? (
                               diceGames.map((game, index) => (
                                 <SwiperSlide key={game.uuid || index}>
-                                  <div className="game-card-wrapper rounded-2 new-cardclr">
+                                  <div
+                                    className="game-card-wrapper rounded-2 new-cardclr"
+                                    onClick={() => handleGameClick(game)}
+                                  >
                                     <div className="game-card p-0 m-0 p-1 ">
                                       <img
                                         src={game.image}
                                         className="game-card-img position-relative"
                                         alt={game.name}
                                       />
-                                      <div className="game-play-button d-flex flex-column">
-                                        <div
-                                          className="btn-play"
-                                          onClick={() => handleGameClick(game)}
-                                        >
-                                          <i className="fa-solid fa-play"></i>
-                                        </div>
+                                      <div className="btn-play position-absolute top-50 start-50 translate-middle">
+                                        <i className="fa-solid fa-play"></i>
                                       </div>
                                       {/* <div className="d-flex flex-column text-white text-center py-2 px-1">
                               <span className="fs-12 fw-bold text-truncate">

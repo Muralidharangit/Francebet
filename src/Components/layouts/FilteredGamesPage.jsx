@@ -25,6 +25,7 @@ import {
   keepPreviousData,
   useQueryClient,
 } from "@tanstack/react-query";
+import { getIsMobileParam } from "../../hooks/homePageApi";
 
 const FilteredGamesPage = () => {
   const [games, setGames] = useState([]);
@@ -69,8 +70,9 @@ const FilteredGamesPage = () => {
 
   // ===== FILTERED via React Query (inline) =====
   const getFilteredGames = async (type, pageNum = 1, limit = 30) => {
+    const isMobile = getIsMobileParam(); // 1 or 0
     const { data } = await axios.get(`${BASE_URL}/all-games`, {
-      params: { is_mobile: 1, type, page: pageNum, limit },
+      params: { is_mobile: String(isMobile), type, page: pageNum, limit },
     });
     const items = Array.isArray(data?.allGames) ? data.allGames : [];
     const tp =
@@ -223,6 +225,7 @@ const FilteredGamesPage = () => {
       //     headers: { Authorization: `Bearer ${token}` },
       //   }
       // );
+      const isMobileParam = getIsMobileParam();
 
       const response = await axios.get(
         `${BASE_URL}/player/${game.provider}/launch/${encodeURIComponent(
@@ -230,7 +233,7 @@ const FilteredGamesPage = () => {
         )}/${game.uuid}`,
         {
           params: {
-            return_url: `${window.location.origin}/all-games?is_mobile=1`,
+            return_url: `${window.location.origin}/all-games?is_mobile=${isMobileParam}`,
             has_lobby: game.has_lobby,
             has_tables: game.has_tables,
           },
@@ -272,16 +275,17 @@ const FilteredGamesPage = () => {
     try {
       setSearchLoading(true);
       setIsFetching(true);
+      const isMobileParam = getIsMobileParam();
 
       const [res1, res2, res3] = await Promise.all([
         axios.get(
-          `${BASE_URL}/all-games?is_mobile=1&global=${fixedSearchTerm}&page=${pageNo}`
+          `${BASE_URL}/all-games?is_mobile=${isMobileParam}&global=${fixedSearchTerm}&page=${pageNo}`
         ),
         axios.get(
-          `${BASE_URL}/all-games?is_mobile=1&provider=${fixedSearchTerm}&page=${pageNo}`
+          `${BASE_URL}/all-games?is_mobile=${isMobileParam}&provider=${fixedSearchTerm}&page=${pageNo}`
         ),
         axios.get(
-          `${BASE_URL}/all-games?is_mobile=1&type=${fixedSearchTerm}&page=${pageNo}`
+          `${BASE_URL}/all-games?is_mobile=${isMobileParam}&type=${fixedSearchTerm}&page=${pageNo}`
         ),
       ]);
 
