@@ -2,6 +2,7 @@ import axios from "axios";
 import { useQuery } from "@tanstack/react-query";
 import BASE_URL from "../API/api";
 import { toast } from "react-toastify";
+import { getIsMobileParam } from "./homePageApi";
 // import axios from "axios";
 // import { useQuery } from "@tanstack/react-query";
 // import BASE_URL from "../API/api";
@@ -12,11 +13,18 @@ const fetchSearchGames = async (searchTerm) => {
   if (!fixedSearchTerm) {
     return { searchByName: [], searchByProvider: [] };
   }
+  const isMobileParam = getIsMobileParam();
 
   const [res1, res2, res3] = await Promise.all([
-    axios.get(`${BASE_URL}/all-games?is_mobile=1&global=${fixedSearchTerm}`),
-    axios.get(`${BASE_URL}/all-games?is_mobile=1&provider=${fixedSearchTerm}`),
-    axios.get(`${BASE_URL}/all-games?is_mobile=1&type=${fixedSearchTerm}`),
+    axios.get(
+      `${BASE_URL}/all-games?is_mobile=${isMobileParam}&global=${fixedSearchTerm}`
+    ),
+    axios.get(
+      `${BASE_URL}/all-games?is_mobile=${isMobileParam}&provider=${fixedSearchTerm}`
+    ),
+    axios.get(
+      `${BASE_URL}/all-games?is_mobile=${isMobileParam}&type=${fixedSearchTerm}`
+    ),
   ]);
 
   // Merge res1 + res3 results

@@ -15,9 +15,9 @@ const AllGames = () => {
   const handleNext = () => setCurrentPage((prev) => prev + 1);
   const handlePrev = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
 
-  console.log("Is Loading:", isLoading);
-  console.log("Is Fetching:", isFetching);
-  console.log("Data:", data);
+  // console.log("Is Loading:", isLoading);
+  // console.log("Is Fetching:", isFetching);
+  // console.log("Data:", data);
 
   if (isLoading) return <div>Loading games...</div>;
   if (isError) return <div>Error: {error.message}</div>;

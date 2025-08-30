@@ -7,6 +7,7 @@ import { toast, ToastContainer } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 import PaginatedData from "../Pages/Pagination/PaginatedData";
+import { getIsMobileParam } from "../../hooks/homePageApi";
 
 const SearchTopGames = () => {
   const [types, setTypes] = useState([]);
@@ -87,8 +88,10 @@ const SearchTopGames = () => {
   const fetchAllGames = async (page = 1) => {
     try {
       setLoading(true);
+      const isMobileParam = getIsMobileParam();
+
       const response = await fetch(
-        `${BASE_URL}/all-games?is_mobile=1&page=${page}`
+        `${BASE_URL}/all-games?is_mobile=${isMobileParam}&page=${page}`
       );
       const data = await response.json();
       setGames(data.allGames || []);
@@ -110,8 +113,10 @@ const SearchTopGames = () => {
 
     try {
       setLoading(true);
+      const isMobileParam = getIsMobileParam();
+
       const response = await fetch(
-        `${BASE_URL}/all-games?is_mobile=1&type=${encodeURIComponent(
+        `${BASE_URL}/all-games?is_mobile=${isMobileParam}&type=${encodeURIComponent(
           type
         )}&page=${page}`
       );
@@ -134,13 +139,15 @@ const SearchTopGames = () => {
     const token = localStorage.getItem("token");
     try {
       setIsLaunchingGame(true);
+      const isMobileParam = getIsMobileParam();
+
       const response = await axios.get(
         `${BASE_URL}/player/${game.provider}/launch/${encodeURIComponent(
           game.name
         )}/${game.uuid}`,
         {
           params: {
-            return_url: `${window.location.origin}/all-games?is_mobile=1`,
+            return_url: `${window.location.origin}/all-games?is_mobile=${isMobileParam}`,
           },
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -190,53 +197,96 @@ const SearchTopGames = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const fixedSearchTerm = searchTerm.trim();
-
     if (!fixedSearchTerm) return;
 
     try {
       setIsSearchMode(true);
+      const isMobileParam = getIsMobileParam();
+
+      const qs1 = `is_mobile=${isMobileParam}&search=${encodeURIComponent(
+        fixedSearchTerm
+      )}`;
+      const qs2 = `is_mobile=${isMobileParam}&provider=${encodeURIComponent(
+        fixedSearchTerm
+      )}`;
+      const qs3 = `is_mobile=${isMobileParam}&type=${encodeURIComponent(
+        fixedSearchTerm
+      )}`;
 
       const [res1, res2, res3] = await Promise.all([
-        axios.get(
-          `${BASE_URL}/all-games?is_mobile=1&search=${fixedSearchTerm}`
-        ),
-        axios.get(
-          `${BASE_URL}/all-games?is_mobile=1&provider=${fixedSearchTerm}`
-        ),
-        axios.get(`${BASE_URL}/all-games?is_mobile=1&type=${fixedSearchTerm}`),
+        axios.get(`${BASE_URL}/all-games?${qs1}`),
+        axios.get(`${BASE_URL}/all-games?${qs2}`),
+        axios.get(`${BASE_URL}/all-games?${qs3}`),
       ]);
 
-      // 🟣 Merge search and type API results (res1 + res3)
       const mergedSearchResults = [
         ...(res1.data.allGames || []),
         ...(res3.data.allGames || []),
       ];
 
-      // // ✅ Remove duplicates if needed
-      // const uniqueMergedResults = Array.from(
-      //   new Map(mergedSearchResults.map((game) => [game.id, game])).values()
-      // );
+      // Optional dedupe by a stable key (uuid/id)
+      // const unique = Array.from(new Map(mergedSearchResults.map(g => [g.uuid ?? g.id, g])).values());
 
-      setSearchByNameResults(mergedSearchResults); // 👈 store merged result
-      setSearchByProviderResults(res2.data.allGames || []); // provider-only result
+      setSearchByNameResults(mergedSearchResults);
+      setSearchByProviderResults(res2.data.allGames || []);
     } catch (error) {
       console.error("Error fetching game data:", error);
     }
   };
 
+  // const handleSubmit = async (e) => {
+  //   e.preventDefault();
+  //   const fixedSearchTerm = searchTerm.trim();
+
+  //   if (!fixedSearchTerm) return;
+
+  //   try {
+  //     setIsSearchMode(true);
+
+  //     const [res1, res2, res3] = await Promise.all([
+  //       axios.get(
+  //         `${BASE_URL}/all-games?is_mobile=1&search=${fixedSearchTerm}`
+  //       ),
+  //       axios.get(
+  //         `${BASE_URL}/all-games?is_mobile=1&provider=${fixedSearchTerm}`
+  //       ),
+  //       axios.get(`${BASE_URL}/all-games?is_mobile=1&type=${fixedSearchTerm}`),
+  //     ]);
+
+  //     // 🟣 Merge search and type API results (res1 + res3)
+  //     const mergedSearchResults = [
+  //       ...(res1.data.allGames || []),
+  //       ...(res3.data.allGames || []),
+  //     ];
+
+  //     // // ✅ Remove duplicates if needed
+  //     // const uniqueMergedResults = Array.from(
+  //     //   new Map(mergedSearchResults.map((game) => [game.id, game])).values()
+  //     // );
+
+  //     setSearchByNameResults(mergedSearchResults); // 👈 store merged result
+  //     setSearchByProviderResults(res2.data.allGames || []); // provider-only result
+  //   } catch (error) {
+  //     console.error("Error fetching game data:", error);
+  //   }
+  // };
+
   const handleAutoSearch = async (fixedSearchTerm) => {
     try {
       setIsSearchMode(true);
       setSearchLoading(true);
+      const isMobileParam = getIsMobileParam();
 
       const [res1, res2, res3] = await Promise.all([
         axios.get(
-          `${BASE_URL}/all-games?is_mobile=1&search=${fixedSearchTerm}`
+          `${BASE_URL}/all-games?is_mobile=${isMobileParam}&search=${fixedSearchTerm}`
         ),
         axios.get(
-          `${BASE_URL}/all-games?is_mobile=1&provider=${fixedSearchTerm}`
+          `${BASE_URL}/all-games?is_mobile=${isMobileParam}&provider=${fixedSearchTerm}`
         ),
-        axios.get(`${BASE_URL}/all-games?is_mobile=1&type=${fixedSearchTerm}`),
+        axios.get(
+          `${BASE_URL}/all-games?is_mobile=${isMobileParam}&type=${fixedSearchTerm}`
+        ),
       ]);
 
       const mergedSearchResults = [

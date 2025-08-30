@@ -8,24 +8,25 @@ import Footer from "./footer/Footer";
 import { toast, ToastContainer } from "react-toastify";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
-import PaginatedData from "../Pages/Pagination/PaginatedData";
-import {
-  manualAllGames,
-  manualBlackJackGames,
-  manualCardGames,
-  manualCrashGames,
-  manualDiceGames,
-  manualHotGames,
-  manualTableGames,
-} from "../../API/manualGames";
+// import PaginatedData from "../Pages/Pagination/PaginatedData";
+// import {
+//   manualAllGames,
+//   manualBlackJackGames,
+//   manualCardGames,
+//   manualCrashGames,
+//   manualDiceGames,
+//   manualHotGames,
+//   manualTableGames,
+// } from "../../API/manualGames";
 import axiosInstance from "../../API/axiosConfig";
-import { Images } from "./Header/constants/images";
-import routes from "../routes/route";
+// import { Images } from "./Header/constants/images";
+// import routes from "../routes/route";
 import { verifyToken } from "../../API/authAPI";
 import AuthContext from "../../Auth/AuthContext";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import useAllGames from "../../hooks/useAllGames";
 import useFilteredGames from "../../hooks/useFilteredGames";
+import { getIsMobileParam } from "../../hooks/homePageApi";
 
 const SearchTopGames = () => {
   const [types, setTypes] = useState([]);
@@ -235,9 +236,14 @@ const SearchTopGames = () => {
 
     try {
       setIsFetching(true);
+      const isMobileParam = getIsMobileParam();
+
       const response = await axiosInstance.get(
-        `/all-games?is_mobile=1&page=${page}`
+        `/all-games?is_mobile=${isMobileParam}&page=${page}`
       );
+      // const response = await axiosInstance.get(
+      //   `/all-games?is_mobile=1&page=${page}`
+      // );
       let newGames = response.data.allGames || [];
 
       // ✅ Add manual games only on page 1
@@ -368,6 +374,7 @@ const SearchTopGames = () => {
 
     try {
       setIsLaunchingGame(true);
+      const isMobileParam = getIsMobileParam();
 
       const response = await axios.get(
         `${BASE_URL}/player/${game.provider}/launch/${encodeURIComponent(
@@ -375,7 +382,7 @@ const SearchTopGames = () => {
         )}/${game.uuid}`,
         {
           params: {
-            return_url: `${window.location.origin}/all-games?is_mobile=1`,
+            return_url: `${window.location.origin}/all-games?is_mobile=${isMobileParam}`,
           },
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -461,16 +468,17 @@ const SearchTopGames = () => {
     try {
       setIsSearchMode(true);
       setSearchPage(1); // ✅ Reset searchPage so infinite scroll works correctly
+      const isMobileParam = getIsMobileParam();
 
       const [res1, res2, res3] = await Promise.all([
         axios.get(
-          `${BASE_URL}/all-games?is_mobile=1&search=${fixedSearchTerm}&page=${pageNo}`
+          `${BASE_URL}/all-games?is_mobile=${isMobileParam}&search=${fixedSearchTerm}&page=${pageNo}`
         ),
         axios.get(
-          `${BASE_URL}/all-games?is_mobile=1&provider=${fixedSearchTerm}&page=${pageNo}`
+          `${BASE_URL}/all-games?is_mobile=${isMobileParam}&provider=${fixedSearchTerm}&page=${pageNo}`
         ),
         axios.get(
-          `${BASE_URL}/all-games?is_mobile=1&type=${fixedSearchTerm}&page=${pageNo}`
+          `${BASE_URL}/all-games?is_mobile=${isMobileParam}&type=${fixedSearchTerm}&page=${pageNo}`
         ),
       ]);
 
@@ -575,9 +583,10 @@ const SearchTopGames = () => {
     try {
       setSearchLoading(true);
       setIsFetching(true);
+      const isMobileParam = getIsMobileParam();
 
       const response = await axios.get(
-        `${BASE_URL}/all-games?is_mobile=1&global=${fixedSearchTerm}&page=${pageNo}`
+        `${BASE_URL}/all-games?is_mobile=${isMobileParam}&global=${fixedSearchTerm}&page=${pageNo}`
       );
 
       const apiGames = response.data.allGames || [];
