@@ -551,7 +551,7 @@ const FilteredGamesPage = () => {
                               .filter((game) => game.image)
                               .map((game) => (
                                 <div
-                                  className="col-xl-2 col-lg-3 col-md-4 col-sm-4 px-1 col-custom-3"
+                                  className="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 px-1 col-custom-3"
                                   key={game.uuid}
                                 >
                                   <div
@@ -564,6 +564,7 @@ const FilteredGamesPage = () => {
                                         className="game-card-img"
                                         alt={game.name}
                                       />
+                                      {/* <h6>ytstinn</h6> */}
                                     </div>
                                     <div className="btn-play position-absolute top-50 start-50 translate-middle">
                                       <i className="fa-solid fa-play"></i>
