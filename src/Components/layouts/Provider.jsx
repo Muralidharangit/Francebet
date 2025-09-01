@@ -42,8 +42,8 @@ const Provider = () => {
       {/*-- Provider Section --*/}
       <div className="container">
         <div className="p-1 pt-4">
-          <h3 className="text-center">Providers</h3>
-          <div className="row">
+          <h3 className="text-center ">Providers</h3>
+          <div className="row px-8leftright">
             {providers.length > 0 ? (
               providers.map((provider, index) => (
                 <div className="col-4 px-1" key={index}>

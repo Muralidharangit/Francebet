@@ -1186,7 +1186,7 @@ const SearchTopGames = () => {
                           <div className="">
                             {loading && page === 1 ? (
                               // Skeleton loader for the first page
-                              <div className="row">
+                              <div className="row px-8leftright">
                                 {Array.from({ length: 6 }).map((_, index) => (
                                   <div
                                     className="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 px-1 col-custom-3"
@@ -1203,7 +1203,7 @@ const SearchTopGames = () => {
                               </div>
                             ) : (
                               <>
-                                <div className="row">
+                                <div className="row px-8leftright">
                                   {games.map((game, index) => (
                                     <motion.div
                                       className="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 px-1 col-custom-3"
@@ -1299,6 +1299,7 @@ const SearchTopGames = () => {
               )} */}
               <div style={{ marginTop: "100px" }}></div>
               <Footer />
+            
             </div>
           </div>
         </div>

@@ -165,7 +165,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                       to={routes.home}
                     >
                       <img src={Images.Favlogo} alt="favicon" width="65%" />
-                      <Link
+                      {/* <Link
                         to={routes.pages.testinginfo}
                         style={{
                           position: "absolute",
@@ -188,7 +188,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                         }}
                       >
                         Testing app
-                      </Link>
+                      </Link> */}
                     </Link>
                   ) : (
                     <Skeleton height={40} width={120} />
@@ -304,20 +304,15 @@ const StickyHeader = ({ onToggleSidebar }) => {
                 />
               </button>
               <div className="search-field d-none d-md-block">
-                {/* <form className="d-flex align-items-center h-100" action="#">
-          <div className="search-container position-relative">
-            <input
-              type="text"
-              name="text"
-              className="form-control search-input visibility-hidden"
-              required=""
-              placeholder="Type to search..."
-            />
-            <div className="search-icon position-absolute">
-              <i className="fi fi-rs-search" />
-            </div>
-          </div>
-        </form> */}
+                <form className="d-flex align-items-center h-100" action="#">
+                  <div className="search-container position-relative">
+                    <Link to={routes.games.topGames}>
+                      <div className="search-icon ">
+                        <i className="fi fi-rs-search" />
+                      </div>
+                    </Link>
+                  </div>
+                </form>
               </div>
               <ul className="navbar-nav navbar-nav-right">
                 {/* <li>

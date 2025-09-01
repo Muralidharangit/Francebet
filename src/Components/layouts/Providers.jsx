@@ -10,6 +10,7 @@ import axiosInstance from "../../API/axiosConfig";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Sidebar from "./Header/Sidebar";
+import BottomFooter from "./footer/BottomFooter";
 
 const Providers = () => {
   const [providerList, setProviderList] = useState([]);
@@ -178,7 +179,7 @@ const Providers = () => {
               </div>
 
               <h5>Providersd </h5>
-              <div className="row">
+              <div className="row px-8leftright">
                 {searchTerm.trim().length >= 3 ? (
                   isSearchingGames ? (
                     Array.from({ length: 6 }).map((_, index) => (
@@ -240,7 +241,7 @@ const Providers = () => {
                                 "assets/img/game.png"
                               }
                               alt={game.provider || "Provider Logo"}
-                              style={{ width: "27%" }}
+                              style={{ width: "35%" }}
                             />
                             <span className="fs-12 fw-bold text-truncate text-white">
                               {game.provider}
@@ -343,7 +344,7 @@ const Providers = () => {
                               "assets/img/game.png"
                             }
                             alt={provider.provider || "Provider Logo"}
-                            style={{ width: "27%" }}
+                            style={{ width: "50%" }}
                           />
                           <span className="fs-12 fw-bold text-truncate text-white">
                             {provider.provider}
@@ -366,6 +367,10 @@ const Providers = () => {
           </div>
         </div>
       </div>
+
+
+      <BottomFooter />
+      <Footer />
     </>
   );
 };

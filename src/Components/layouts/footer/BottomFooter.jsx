@@ -34,27 +34,34 @@ const BottomFooter = () => {
                       <h5 className="m-0 mt-1">Jiboomba</h5>
                     </div>
                     <p>
-                      A multi-award winning crypto casino. With a player-centric
-                      approach, JIBOOMBA.TOP is able to satisfy millions of
-                      gamblers across the global game..
+                      Jiboomba is a multi-award-winning betting app built
+                      for players who love the thrill of the game. With exciting
+                      sports, live matches, and casino-style games, we bring
+                      nonstop entertainment and bigger chances to win. Simple to
+                      use, fast, and secure, JIBOOMBA.TOP is the place where
+                      every bet brings you closer to victory.
                     </p>
                   </div>
                   <div>
                     <div className="social-links text-center w-100 justify-content-center my-2">
-                      <Link to={routes.home}>
+                      <Link
+                        to={
+                          "https://www.facebook.com/people/Jiboomba/61579870741480/"
+                        }
+                      >
                         <i className="fab fa-facebook-f" />
                       </Link>
-                      <Link to={routes.home}>
+                      <Link to={"https://www.instagram.com/jiboomba.in/"}>
                         <i className="fab fa-instagram" />
                       </Link>
-                      <Link to={routes.home}>
-                        <i className="fab fa-twitter" />
+                      <Link to={"https://x.com/jiboomba51633"}>
+                        <i className="fab ri-twitter-x-line" />
                       </Link>
                       <Link to={routes.home}>
                         <i className="fab fa-github" />
                       </Link>
                       <Link to={routes.home}>
-                        <i className="fab fa-linkedin-in" />
+                        <i className="fab ri-youtube-line" />
                       </Link>
                     </div>
                   </div>
@@ -68,7 +75,7 @@ const BottomFooter = () => {
               <div className="copy_right">
                 <p>
                   {" "}
-                  Copyright © 2024 jiboomba <br /> All rights are reserved and
+                  Copyright © 2025 jiboomba <br /> All rights are reserved and
                   protected by law
                 </p>
               </div>
