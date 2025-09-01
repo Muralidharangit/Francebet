@@ -61,7 +61,7 @@ function PrivacyPolicy() {
                     of <Link to={routes.auth.register}>registration</Link>
                     when verifying identity when creating a game account when
                     betting. When using any services provided by betting company
-                    4rabet India, you automatically agree to this privacy
+                    jiboomba India, you automatically agree to this privacy
                     policy.
                   </p>
                   <h2 className="persona_info_heading">
@@ -83,7 +83,7 @@ function PrivacyPolicy() {
                       balances;
                     </li>
                     <li>
-                      Bookmaker office 4rabet uses players’ personal data for
+                      Bookmaker office jiboomba uses players’ personal data for
                       opening a personal account, providing services and
                       services, checking the reliability of information about
                       users, compiling statistical reports, conducting
@@ -91,7 +91,7 @@ function PrivacyPolicy() {
                     </li>
                   </ul>
                   <p>
-                    Since 4rabet is an international company and operates in a
+                    Since jiboomba is an international company and operates in a
                     number of countries, the collection of personal data is also
                     necessary to comply with the laws in these countries. It
                     also helps us to prevent fraud and money laundering through

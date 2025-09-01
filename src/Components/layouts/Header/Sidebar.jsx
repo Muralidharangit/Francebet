@@ -204,23 +204,36 @@ const Sidebar = () => {
         <div className="br-top-gray"></div>
         <div className="min-menunone">
           <div className="container px-5">
-            <a href="./login.html">
+            <Link to={routes.games.all}>
               <button
                 type="button"
                 className="btn swiper-scrollbar-drag w-100 bgbody-color text-white rounded-pill fs-15 fw-500"
               >
-                Join Now
+                All Games
               </button>
-            </a>
+            </Link>
           </div>
           <div className="text-center  bottom-0 w-100 my-3 start-0">
             <div className="icon-social">
               <div className="d-flex justify-content-center  text-white fs-25 gap-3">
-                <i className="ri-facebook-fill" />
-                <i className="ri-instagram-line" />
-                <i className="ri-linkedin-box-line" />
-                <i className="ri-twitter-x-line" />
-                <i className="ri-youtube-line" />
+                <Link
+                  to={
+                    "https://www.facebook.com/people/Jiboomba/61579870741480/"
+                  }
+                  className="text-white"
+                >
+                  <i className="ri-facebook-fill" />
+                </Link>
+                <Link
+                  to={"https://www.instagram.com/jiboomba.in/"}
+                  className="text-white"
+                >
+                  <i className="ri-instagram-line" />
+                </Link>
+
+                <Link to={"https://x.com/jiboomba51633"} className="text-white">
+                  <i className="ri-twitter-x-line" />
+                </Link>
               </div>
             </div>
           </div>

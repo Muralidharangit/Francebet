@@ -23,7 +23,7 @@ const LoginPage = () => {
       setGiftNotice("You got a gift! Please login to claim it 🎁");
     }
   }, []);
-  
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -282,7 +282,7 @@ const LoginPage = () => {
                 {/* Register Link */}
                 <div className="text-center mt-3">
                   <p className="text-gray ">
-                    <span className="text-gray "> New to Jiboomba? </span>
+                    <span className="text-gray "> New to jiboomba ? </span>
                     <Link
                       to={routes.auth.register}
                       className="link ms-2 fs-16 text-red z-2"

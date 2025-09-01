@@ -297,7 +297,7 @@ function Home() {
       return;
     }
 
-    console.log(game, "testing....................");
+    // console.log(game, "testing....................");
 
     const token = localStorage.getItem("token");
     try {
@@ -346,7 +346,7 @@ function Home() {
         return;
       }
 
-      console.error("Error launching game:", error);
+      // console.error("Error launching game:", error);
       toast.error("Game launch failed. Try again later.");
     }
   };
@@ -486,7 +486,7 @@ function Home() {
         setTimeout(() => navigate("/login"), 3000);
         return;
       }
-      console.error("Error launching game:", error);
+      // console.error("Error launching game:", error);
       toast.error("Game launch failed. Try again later.");
     }
   };
@@ -563,7 +563,7 @@ function Home() {
     { type: "general", imgSrc: "assets/img/turbo/6.png", linkTo: routes.home },
     { type: "bingo", imgSrc: "assets/img/turbo/7.png" },
     { type: "fish/shooting", imgSrc: "assets/img/turbo/8.png" },
-    { type: "table", imgSrc: "assets/img/turbo/6.png" },
+    { type: "table", imgSrc: "assets/img/turbo/9.png" },
   ];
 
   return (
@@ -613,7 +613,7 @@ function Home() {
                   theme="dark"
                 />
                 {isLoading ? (
-                  <FullPageLoader message="Loading..." />
+                  <FullPageLoader message="" />
                 ) : (
                   <>
                     <section className="container vh-100  py-2">

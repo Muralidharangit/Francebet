@@ -34,11 +34,11 @@ const BottomFooter = () => {
                       <h5 className="m-0 mt-1">Jiboomba</h5>
                     </div>
                     <p>
-                      Jiboomba is a multi-award-winning betting app built
-                      for players who love the thrill of the game. With exciting
+                      jiboomba is a multi-award-winning betting app built for
+                      players who love the thrill of the game. With exciting
                       sports, live matches, and casino-style games, we bring
                       nonstop entertainment and bigger chances to win. Simple to
-                      use, fast, and secure, JIBOOMBA.TOP is the place where
+                      use, fast, and secure, jiboomba .TOP is the place where
                       every bet brings you closer to victory.
                     </p>
                   </div>
