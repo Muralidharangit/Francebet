@@ -153,7 +153,7 @@ const Providers = () => {
         {/* 🔍 Search Bar */}
 
         <div className="main-panel">
-          <div className="content-wrapper">
+          <div className="content-wrapper new">
             <div className="max-1250 mx-auto">
               <div className="search_container_box">
                 <form
@@ -178,7 +178,7 @@ const Providers = () => {
                 </form>
               </div>
 
-              <h5>Providersd </h5>
+              <h5>Providers </h5>
               <div className="row px-8leftright">
                 {searchTerm.trim().length >= 3 ? (
                   isSearchingGames ? (
@@ -362,15 +362,20 @@ const Providers = () => {
               </div>
             </div>
 
-            <div style={{ marginTop: "100px" }}></div>
+
+
+            <BottomFooter />
+
             <Footer />
+
+           
+          
           </div>
         </div>
       </div>
 
 
-      <BottomFooter />
-      <Footer />
+     
     </>
   );
 };

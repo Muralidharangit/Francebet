@@ -1909,7 +1909,7 @@ function Home() {
 
                       {/*---bonus------*/}
                       <div>
-                        <div className="row">
+                        <div className="">
                           <div className="top-matches-title d-flex align-items-center gap-2  my-3 justify-content-between">
                             <div className="d-flex align-items-center">
                               <img
@@ -1929,9 +1929,9 @@ function Home() {
                             </Link>
                           </div>
 
-                          <div className="row">
-                            <div className="col-lg-6">
-                              <div className="bouns_sec p-2">
+                          <div className="row px-0">
+                            <div className="col-lg-6 mb-3">
+                              <div className="bouns_sec">
                                 <div className="card bonus_card">
                                   <div className="card-body p-0">
                                     <div className="bonus_card_sec">
@@ -1965,7 +1965,7 @@ function Home() {
                             </div>
 
                             <div className="col-lg-6">
-                              <div className="bouns_sec p-2">
+                              <div className="bouns_sec ">
                                 <div className="card bonus_card">
                                   <div className="card-body p-0">
                                     <div className="bonus_card_sec">
