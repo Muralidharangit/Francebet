@@ -19,7 +19,7 @@ function PrivacyPolicy() {
         <Sidebar />
         {/* Sidebar Nav Ends */}
         <div className="main-panel">
-          <div className="content-wrapper">
+          <div className="content-wrapper new">
             <div className="max-1250 mx-auto">
               <div className="h-100 d-flex justify-content-evenly flex-column">
                 <div className="pt-3 pb-2 ">
@@ -117,7 +117,7 @@ function PrivacyPolicy() {
               </div>
             </div>
             <BottomFooter />
-            <div className="h-100 w-100 mb-5"></div>
+            {/* <div className="h-100 w-100 mb-5"></div> */}
             <Footer />
           </div>
         </div>
