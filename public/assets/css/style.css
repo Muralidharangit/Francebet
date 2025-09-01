@@ -5475,7 +5475,7 @@ nav.sidebar.sidebar-offcanvas.open
 }
 
 .w-45 {
-  width: 45%;
+  width: 47%;
 }
 
 @media (min-width: 1156px) {
@@ -5513,3 +5513,45 @@ nav.sidebar.sidebar-offcanvas.open
 .gift_card input.form-control.login-card__form-control {
   border-style: dashed !important;
 }
+
+
+.game-card-wrapper.rounded-2.new-cardclr.mt-2.d-flex.justify-content-center.pt-2 .d-flex.gap-1.flex-column.align-items-center.justify-content-center img{
+  height: 65px;
+  object-fit: contain;
+}
+
+
+@media(max-width:992px){
+  .px-8leftright{
+    padding-right: .5rem !important;
+    padding-left: .5rem !important;
+  }
+      .content-wrapper {
+        /* padding: 0.5rem 0.3rem !important; */
+    }
+
+    .max-1250.mx-auto div h5 {
+    padding: 0 8px;
+}
+}
+
+
+
+span.fs-12.fw-bold.text-truncate.text-white{
+  font-size: 11px !important;
+  text-transform: uppercase !important;
+}
+
+span.fs-12.fw-bold.text-truncate.text-white {
+  font-size: 11px !important;
+  text-transform: uppercase !important;
+  display: inline-block;   /* Needed for width to apply */
+  width: 83px;            /* Fixed width */
+  white-space: nowrap;     /* Prevents text wrapping */
+  overflow: hidden;        /* Hides overflowing text */
+  text-overflow: ellipsis; /* Shows the three dots (...) */
+  text-align: center;
+}
+
+
+

@@ -463,7 +463,7 @@ const FilteredGamesPage = () => {
                                 <h5 className="text-white mt-6">
                                   Search by Provider
                                 </h5>
-                                <div className="row">
+                                <div className="row ">
                                   {searchByProviderResults.map(
                                     (game, index) => (
                                       <motion.div
@@ -530,7 +530,7 @@ const FilteredGamesPage = () => {
                       </h5>
 
                       <div className="">
-                        <div className="row">
+                        <div className="row px-8leftright">
                           {loading ? (
                             // 🔄 Skeleton Cards While Loading
                             Array.from({ length: 6 }).map((_, index) => (

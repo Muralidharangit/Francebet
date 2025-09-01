@@ -546,7 +546,8 @@ function Home() {
     { type: "card", imgSrc: "assets/img/turbo/3.png" },
     { type: "dice", imgSrc: "assets/img/turbo/4.png" },
     { type: "shooting", imgSrc: "assets/img/turbo/5.png" },
-    { type: "home", imgSrc: "assets/img/turbo/6.png" }, // Last one navigating to home
+    { type: "home", imgSrc: "assets/img/turbo/6.png" },
+    // Last one navigating to home
   ];
 
   // State to manage loading status for this section
@@ -560,6 +561,9 @@ function Home() {
     { type: "dice", imgSrc: "assets/img/turbo/4.png" },
     { type: "shooting", imgSrc: "assets/img/turbo/5.png" },
     { type: "general", imgSrc: "assets/img/turbo/6.png", linkTo: routes.home },
+    { type: "bingo", imgSrc: "assets/img/turbo/7.png" },
+    { type: "fish/shooting", imgSrc: "assets/img/turbo/8.png" },
+    { type: "table", imgSrc: "assets/img/turbo/6.png" },
   ];
 
   return (
@@ -649,44 +653,97 @@ function Home() {
                                 },
                               }}
                             >
-                              <SwiperSlide>
+                              <SwiperSlide onClick={() =>
+                                    navigate(`/filtered-games?type=roulette`)
+                                  }
+ >
                                 <img
                                   src="assets/img/slider/first1.png"
                                   className="w-100 rounded-2"
                                   alt="Gaming Banner Slide 1" // Improved alt text
                                 />
                               </SwiperSlide>
-                              <SwiperSlide>
+
+                              <SwiperSlide onClick={() =>
+                                    navigate(`/filtered-games?type=slots`)
+                                  }
+ >
                                 <img
                                   src="assets/img/slider/first2.png"
                                   className="w-100 rounded-2"
                                   alt="Gaming Banner Slide 2"
                                 />
                               </SwiperSlide>
-                              <SwiperSlide>
+
+                              <SwiperSlide onClick={() =>
+                                    navigate(`/filtered-games?type=blackjack`)
+                                  }
+ >
                                 <img
-                                  src="assets/img/slider/first3.png"
+                                  src="assets/img/slider/10.png"
+                                  className="w-100 rounded-2"
+                                  alt="Gaming Banner Slide 6"
+                                />
+                              </SwiperSlide>
+
+                              <SwiperSlide onClick={() =>
+                                    navigate(`/filtered-games?type=crash`)
+                                  }
+ >
+                                <img
+                                  src="assets/img/slider/8.png"
+                                  className="w-100 rounded-2"
+                                  alt="Gaming Banner Slide 6"
+                                />
+                              </SwiperSlide>
+
+                              <SwiperSlide onClick={() =>
+                                    navigate(`/filtered-games?type=others`)
+                                  }
+ >
+                                <img
+                                  src="assets/img/slider/first7.png"
                                   className="w-100 rounded-2"
                                   alt="Gaming Banner Slide 3"
                                 />
                               </SwiperSlide>
-                              <SwiperSlide>
+                              {/* <SwiperSlide onClick={() =>
+                                    navigate(`/filtered-games?type=card`)
+                                  }
+ >
                                 <img
                                   src="assets/img/slider/first4.png"
                                   className="w-100 rounded-2"
                                   alt="Gaming Banner Slide 4"
                                 />
-                              </SwiperSlide>
-                              <SwiperSlide>
+                              </SwiperSlide> */}
+                              <SwiperSlide onClick={() =>
+                                    navigate(`/filtered-games?type=poker`)
+                                  }
+ >
                                 <img
                                   src="assets/img/slider/first5.png"
                                   className="w-100 rounded-2"
                                   alt="Gaming Banner Slide 5"
                                 />
                               </SwiperSlide>
-                              <SwiperSlide>
+                              <SwiperSlide onClick={() =>
+                                    navigate(`/filtered-games?type=card`)
+                                  }
+ >
                                 <img
                                   src="assets/img/slider/first6.png"
+                                  className="w-100 rounded-2"
+                                  alt="Gaming Banner Slide 6"
+                                />
+                              </SwiperSlide>
+
+                              <SwiperSlide onClick={() =>
+                                    navigate(`/filtered-games?type=card`)
+                                  }
+ >
+                                <img
+                                  src="assets/img/slider/9.png"
                                   className="w-100 rounded-2"
                                   alt="Gaming Banner Slide 6"
                                 />
@@ -1853,7 +1910,7 @@ function Home() {
                                 srcSet=""
                                 width=""
                               />{" "}
-                              <h5 className="m-0 ms-2">Bonus bncghg</h5>
+                              <h5 className="m-0 ms-2">Bonus </h5>
                             </div>
                             <Link to="/bonus">
                               <div>
@@ -1863,61 +1920,69 @@ function Home() {
                               </div>
                             </Link>
                           </div>
-                          <div className="bouns_sec p-2">
-                            <div className="card bonus_card">
-                              <div className="card-body p-0">
-                                <div className="bonus_card_sec">
-                                  {/* Top section with text and image */}
-                                  <div className="bonus_sec_top p-4 py-2">
-                                    <div className="bonus_sec_content">
-                                      <span>Casino</span>
-                                      <span className="text-shadow">
-                                        <p>100% Crash Power Bonus</p>
-                                      </span>
-                                    </div>
-                                  </div>
-                                  {/* Bottom section with timer and buttons */}
-                                  <div className="bonusBlock_other__bottom p-2">
-                                    <div className="timer_block_container d-flex align-items-center">
-                                      {/* Action buttons */}
-                                      <div className="bonus_bottom_btn red_clr w-100">
-                                        <button className="btn btn-red w-100">
-                                          Get bonus
-                                        </button>
-                                        <button className="btn btn-outline-light w-100">
-                                          Details
-                                        </button>
+
+                          <div className="row">
+                            <div className="col-lg-6">
+                              <div className="bouns_sec p-2">
+                                <div className="card bonus_card">
+                                  <div className="card-body p-0">
+                                    <div className="bonus_card_sec">
+                                      {/* Top section with text and image */}
+                                      <div className="bonus_sec_top p-4 py-2">
+                                        <div className="bonus_sec_content">
+                                          <span>Casino</span>
+                                          <span className="text-shadow">
+                                            <p>100% Crash Power Bonus</p>
+                                          </span>
+                                        </div>
+                                      </div>
+                                      {/* Bottom section with timer and buttons */}
+                                      <div className="bonusBlock_other__bottom p-2">
+                                        <div className="timer_block_container d-flex align-items-center">
+                                          {/* Action buttons */}
+                                          <div className="bonus_bottom_btn red_clr w-100">
+                                            <button className="btn btn-red w-100">
+                                              Get bonus
+                                            </button>
+                                            <button className="btn btn-outline-light w-100">
+                                              Details
+                                            </button>
+                                          </div>
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
                                 </div>
                               </div>
                             </div>
-                          </div>
-                          <div className="bouns_sec p-2">
-                            <div className="card bonus_card">
-                              <div className="card-body p-0">
-                                <div className="bonus_card_sec">
-                                  {/* Top section with text and image */}
-                                  <div className="bonus_sec_top p-4 py-2">
-                                    <div className="bonus_sec_content">
-                                      <span>Casino</span>
-                                      <span className="text-shadow">
-                                        <p>75% Crash Power Bonus</p>
-                                      </span>
-                                    </div>
-                                  </div>
-                                  {/* Bottom section with timer and buttons */}
-                                  <div className="bonusBlock_other__bottom p-2">
-                                    <div className="timer_block_container d-flex align-items-center">
-                                      {/* Action buttons */}
-                                      <div className="bonus_bottom_btn red_clr w-100">
-                                        <button className="btn btn-red w-100">
-                                          Get bonus
-                                        </button>
-                                        <button className="btn btn-outline-light w-100">
-                                          Details
-                                        </button>
+
+                            <div className="col-lg-6">
+                              <div className="bouns_sec p-2">
+                                <div className="card bonus_card">
+                                  <div className="card-body p-0">
+                                    <div className="bonus_card_sec">
+                                      {/* Top section with text and image */}
+                                      <div className="bonus_sec_top p-4 py-2">
+                                        <div className="bonus_sec_content">
+                                          <span>Casino</span>
+                                          <span className="text-shadow">
+                                            <p>75% Crash Power Bonus</p>
+                                          </span>
+                                        </div>
+                                      </div>
+                                      {/* Bottom section with timer and buttons */}
+                                      <div className="bonusBlock_other__bottom p-2">
+                                        <div className="timer_block_container d-flex align-items-center">
+                                          {/* Action buttons */}
+                                          <div className="bonus_bottom_btn red_clr w-100">
+                                            <button className="btn btn-red w-100">
+                                              Get bonus
+                                            </button>
+                                            <button className="btn btn-outline-light w-100">
+                                              Details
+                                            </button>
+                                          </div>
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
