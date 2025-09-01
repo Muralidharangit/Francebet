@@ -6,16 +6,16 @@ import BottomFooter from "./footer/BottomFooter";
 import Footer from "./footer/Footer";
 // import OffCanvas from "../offcanvapages/Offcanva";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-import routes from "../routes/route";
+// import routes from "../routes/route";
 import BottomProvider from "./footer/BottomProvider";
 import BASE_URL from "../../API/api";
 import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import AuthContext from "../../Auth/AuthContext";
 import FullPageLoader from "./FullPageLoader";
-import axiosInstance from "../../API/axiosConfig";
+// import axiosInstance from "../../API/axiosConfig";
 
-import { Images } from "./Header/constants/images";
+// import { Images } from "./Header/constants/images";
 
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -653,10 +653,11 @@ function Home() {
                                 },
                               }}
                             >
-                              <SwiperSlide onClick={() =>
-                                    navigate(`/filtered-games?type=roulette`)
-                                  }
- >
+                              <SwiperSlide
+                                onClick={() =>
+                                  navigate(`/filtered-games?type=roulette`)
+                                }
+                              >
                                 <img
                                   src="assets/img/slider/first1.png"
                                   className="w-100 rounded-2"
@@ -664,10 +665,11 @@ function Home() {
                                 />
                               </SwiperSlide>
 
-                              <SwiperSlide onClick={() =>
-                                    navigate(`/filtered-games?type=slots`)
-                                  }
- >
+                              <SwiperSlide
+                                onClick={() =>
+                                  navigate(`/filtered-games?type=slots`)
+                                }
+                              >
                                 <img
                                   src="assets/img/slider/first2.png"
                                   className="w-100 rounded-2"
@@ -675,10 +677,11 @@ function Home() {
                                 />
                               </SwiperSlide>
 
-                              <SwiperSlide onClick={() =>
-                                    navigate(`/filtered-games?type=blackjack`)
-                                  }
- >
+                              <SwiperSlide
+                                onClick={() =>
+                                  navigate(`/filtered-games?type=blackjack`)
+                                }
+                              >
                                 <img
                                   src="assets/img/slider/10.png"
                                   className="w-100 rounded-2"
@@ -686,10 +689,11 @@ function Home() {
                                 />
                               </SwiperSlide>
 
-                              <SwiperSlide onClick={() =>
-                                    navigate(`/filtered-games?type=crash`)
-                                  }
- >
+                              <SwiperSlide
+                                onClick={() =>
+                                  navigate(`/filtered-games?type=crash`)
+                                }
+                              >
                                 <img
                                   src="assets/img/slider/8.png"
                                   className="w-100 rounded-2"
@@ -697,10 +701,11 @@ function Home() {
                                 />
                               </SwiperSlide>
 
-                              <SwiperSlide onClick={() =>
-                                    navigate(`/filtered-games?type=others`)
-                                  }
- >
+                              <SwiperSlide
+                                onClick={() =>
+                                  navigate(`/filtered-games?type=others`)
+                                }
+                              >
                                 <img
                                   src="assets/img/slider/first7.png"
                                   className="w-100 rounded-2"
@@ -717,20 +722,22 @@ function Home() {
                                   alt="Gaming Banner Slide 4"
                                 />
                               </SwiperSlide> */}
-                              <SwiperSlide onClick={() =>
-                                    navigate(`/filtered-games?type=poker`)
-                                  }
- >
+                              <SwiperSlide
+                                onClick={() =>
+                                  navigate(`/filtered-games?type=poker`)
+                                }
+                              >
                                 <img
                                   src="assets/img/slider/first5.png"
                                   className="w-100 rounded-2"
                                   alt="Gaming Banner Slide 5"
                                 />
                               </SwiperSlide>
-                              <SwiperSlide onClick={() =>
-                                    navigate(`/filtered-games?type=card`)
-                                  }
- >
+                              <SwiperSlide
+                                onClick={() =>
+                                  navigate(`/filtered-games?type=card`)
+                                }
+                              >
                                 <img
                                   src="assets/img/slider/first6.png"
                                   className="w-100 rounded-2"
@@ -738,10 +745,11 @@ function Home() {
                                 />
                               </SwiperSlide>
 
-                              <SwiperSlide onClick={() =>
-                                    navigate(`/filtered-games?type=card`)
-                                  }
- >
+                              <SwiperSlide
+                                onClick={() =>
+                                  navigate(`/filtered-games?type=card`)
+                                }
+                              >
                                 <img
                                   src="assets/img/slider/9.png"
                                   className="w-100 rounded-2"
@@ -1173,11 +1181,11 @@ function Home() {
                               <h5 className="m-0 ms-2">Games Type</h5>
                             </div>
                             <div>
-                              <a href="./Allgames.html">
+                              <Link to={routes.games.all}>
                                 <span className="text-white fs-13 fw-500 right_heading">
                                   All <i className="ri-arrow-right-s-line" />
                                 </span>
-                              </a>
+                              </Link>
                             </div>
                           </div>
                           <div className="d-flex gap-2">
@@ -1666,7 +1674,7 @@ function Home() {
                               )}
                             </div>
                             <div>
-                              <Link to={routes.games.providers}>
+                              <Link to="/providers">
                                 <span className="text-white fs-13 fw-500 right_heading">
                                   All <i className="ri-arrow-right-s-line" />
                                 </span>
