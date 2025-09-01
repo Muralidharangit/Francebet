@@ -57,12 +57,12 @@ const BottomFooter = () => {
                       <Link to={"https://x.com/jiboomba51633"}>
                         <i className="fab ri-twitter-x-line" />
                       </Link>
-                      <Link to={routes.home}>
+                      {/* <Link to={routes.home}>
                         <i className="fab fa-github" />
                       </Link>
                       <Link to={routes.home}>
                         <i className="fab ri-youtube-line" />
-                      </Link>
+                      </Link> */}
                     </div>
                   </div>
                 </div>
