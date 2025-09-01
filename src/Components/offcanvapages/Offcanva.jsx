@@ -3121,7 +3121,7 @@ const OffCanvas = () => {
               </p>
               {/* <span class="btn text-white green-bg">Thank You</span>
 <span class="text-dard-grey fs-10 fw-700 mt-3"
- >For Choosing jiboomba</span
+ >For Choosing jiboomba </span
 > */}
               <div className="d-flex gap-2 mt-2">
                 <button

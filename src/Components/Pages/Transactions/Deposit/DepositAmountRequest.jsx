@@ -323,7 +323,7 @@ const DepositAmountRequest = ({
                   Thank You
                 </span>
                 <span className="text-dark-grey fs-10 fw-700 mt-3">
-                  For Choosing jiboomba
+                  For Choosing jiboomba 
                 </span>
               </div>
             </div>

@@ -16,14 +16,14 @@ const BottomProvider = () => {
               <img src="assets/img/footer_icon/evolution.svg" alt="spribe" />
             </div>
           </div>
-          <div className="col-4 px-1">
+          {/* <div className="col-4 px-1">
             <div className="game_provider_item">
               <img
                 src="assets/img/footer_icon/4rabet_exclusive.svg"
                 alt="4rabet_exclusive"
               />
             </div>
-          </div>
+          </div> */}
           <div className="col-4 px-1">
             <div className="game_provider_item">
               <img src="assets/img/footer_icon/smartsoft.svg" alt="SmartSoft" />
@@ -49,11 +49,11 @@ const BottomProvider = () => {
               <img src="assets/img/footer_icon/betgames.svg" alt="betGames" />
             </div>
           </div>
-          <div className="col-4 px-1">
+          {/* <div className="col-4 px-1">
             <div className="game_provider_item">
               <img src="assets/img/footer_icon/pgsoft.svg" alt="pgSoft" />
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
       {/*--provider-end*/}

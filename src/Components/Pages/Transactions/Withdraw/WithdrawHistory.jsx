@@ -49,7 +49,7 @@ const WithdrawHistory = () => {
         setError(response.msg || "Failed to load withdraw history.");
       }
     } catch (err) {
-      console.error("Error fetching withdrawal history:", err);
+      // console.error("Error fetching withdrawal history:", err);
       toast.error(`${err.message}. Please log in again to continue.`, {
         toastId: "unauthorized-toast",
       });
@@ -91,7 +91,7 @@ const WithdrawHistory = () => {
         alert(response.data.message || "Failed to cancel withdrawal ❌");
       }
     } catch (error) {
-      console.error("Cancel withdraw error:", error);
+      // console.error("Cancel withdraw error:", error);
       alert(
         error.response?.data?.message ||
           "Something went wrong. Please try again later."

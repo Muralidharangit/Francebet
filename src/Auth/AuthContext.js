@@ -283,7 +283,7 @@ export const AuthProvider = ({ children }) => {
         setLoginVerify(status);
         setPortalAllData(response.data);
         setProfile(user);
-        setAvatar(user.avatar);
+        setAvatar(user);
         setPortalSettings(portal_settings);
 
         // await fetchAuthType();

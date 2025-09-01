@@ -77,7 +77,8 @@ const WithdrawIndex = lazy(() =>
 function App() {
   return (
     <>
-      <Suspense fallback={<div>Loading...</div>}>
+      {/* <Suspense fallback={<div>Loading...</div>}> */}
+      <Suspense>
         <ScrollToTop />
         <Routes>
           {/* Add the new Testing Info Page Route */}
