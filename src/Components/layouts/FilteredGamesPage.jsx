@@ -364,7 +364,7 @@ const FilteredGamesPage = () => {
         {/* 🔍 Search Bar */}
 
         <div className="main-panel">
-          <div className="content-wrapper">
+          <div className="content-wrapper new">
             <div className="max-1250 mx-auto">
               <div className="search_container_box">
                 <form className="form my-2" onSubmit={handleSubmit}>

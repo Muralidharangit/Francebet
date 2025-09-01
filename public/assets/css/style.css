@@ -403,6 +403,7 @@ button.btn.btn-index {
   }
   .unique-footer ul li p {
     font-size: 12px !important;
+    margin-bottom: 10px !important;
   }
   .unique-footer ul li a p {
     font-size: 12px;
@@ -5526,11 +5527,12 @@ nav.sidebar.sidebar-offcanvas.open
     padding-right: .5rem !important;
     padding-left: .5rem !important;
   }
-      .content-wrapper {
+      .content-wrapper.new {
         /* padding: 0.5rem 0.3rem !important; */
+        overflow: hidden;
     }
 
-    .max-1250.mx-auto div h5 {
+    .max-1250.mx-auto  h5 {
     padding: 0 8px;
 }
 }
