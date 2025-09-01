@@ -2,6 +2,7 @@ import React, { lazy, Suspense } from "react";
 import routes from "./Components/routes/route";
 import { Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./Auth/ProtectedRoute";
+import ScrollToTop from "./ScrollToTop";
 
 const Home = lazy(() => import("./Components/layouts/Home"));
 const Bonus = lazy(() => import("./Components/layouts/Bonus"));
@@ -77,6 +78,7 @@ function App() {
   return (
     <>
       <Suspense fallback={<div>Loading...</div>}>
+        <ScrollToTop />
         <Routes>
           {/* Add the new Testing Info Page Route */}
           <Route
