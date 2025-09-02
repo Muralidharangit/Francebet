@@ -846,18 +846,17 @@ function Home() {
                                   >
                                     <div className="game-card p-0 m-0 p-1 ">
                                       <img
-                                        src={game.image}
+                                        src={
+                                          game.image
+                                            ? game.image
+                                            : "assets/img/play_now.png"
+                                        }
                                         className="game-card-img position-relative"
                                         alt={game.name}
                                       />
                                       <div className="btn-play position-absolute top-50 start-50 translate-middle">
                                         <i className="fa-solid fa-play"></i>
                                       </div>
-                                      {/* <div className="d-flex flex-column text-white text-center py-2 px-1">
-                              <span className="fs-12 fw-bold text-truncate">
-                                {game.name}
-                              </span>
-                            </div> */}
                                     </div>
                                   </div>
                                 </SwiperSlide>
@@ -942,13 +941,13 @@ function Home() {
                               <h5 className="m-0 ms-2">Games Type</h5>
                             )}
                           </div>
-                          <div>
+                          {/* <div>
                             <Link to={routes.games.all}>
                               <span className="text-white fs-13 fw-500 right_heading">
                                 All <i className="ri-arrow-right-s-line" />
                               </span>
                             </Link>
-                          </div>
+                          </div> */}
                         </div>
 
                         {/* SkeletonTheme for consistent skeleton colors */}
@@ -1180,13 +1179,13 @@ function Home() {
                               />
                               <h5 className="m-0 ms-2">Games Type</h5>
                             </div>
-                            <div>
+                            {/* <div>
                               <a href="./Allgames.html">
                                 <span className="text-white fs-13 fw-500 right_heading">
                                   All <i className="ri-arrow-right-s-line" />
                                 </span>
                               </a>
-                            </div>
+                            </div> */}
                           </div>
                           <div className="d-flex gap-2">
                             <div className="col-4 ">
@@ -1603,7 +1602,11 @@ function Home() {
                                   <div className="game-card-wrapper rounded-2 new-cardclr">
                                     <div className="game-card p-0 m-0 p-1">
                                       <img
-                                        src={game.image}
+                                        src={
+                                          game.image
+                                            ? game.image
+                                            : "assets/img/play_now.png"
+                                        }
                                         className="game-card-img"
                                         alt={game.name}
                                       />
