@@ -69,10 +69,10 @@ const FilteredGamesPage = () => {
   }, [searchData]);
 
   // ===== FILTERED via React Query (inline) =====
-  const getFilteredGames = async (type, pageNum = 1, limit = 30) => {
+  const getFilteredGames = async (customType, pageNum = 1, limit = 30) => {
     const isMobile = getIsMobileParam(); // 1 or 0
     const { data } = await axios.get(`${BASE_URL}/all-games`, {
-      params: { is_mobile: String(isMobile), type, page: pageNum, limit },
+      params: { is_mobile: String(isMobile), customType, page: pageNum, limit },
     });
     const items = Array.isArray(data?.allGames) ? data.allGames : [];
     const tp =
