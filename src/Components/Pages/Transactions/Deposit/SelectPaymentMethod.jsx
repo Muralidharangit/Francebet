@@ -240,7 +240,7 @@ const SelectPaymentMethod = ({
   return (
     <div className=" bg_light_grey rounded-2  py-3">
       <div className="mx-3">
-        <h5 className="mb-3">Select Payment Method jzhjcvhjc nbvnc</h5>
+        <h5 className="mb-3">Select Payment Method</h5>
 
         {/* {loading && <p>Loading payment methods...</p>} */}
         {methodsLoading && <p>Loading payment methods...</p>}

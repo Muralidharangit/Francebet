@@ -22,7 +22,7 @@ const HowToPlay = () => {
           <div className="content-wrapper">
             <div className="max-1250 mx-auto">
               <div className="h-100 d-flex justify-content-evenly flex-column">
-                <div className="pt-3 pb-2 ">
+                <div className="pt-3 pb-2 px-2">
                   <div className="breadcrumb">
                     <nav aria-label="breadcrumb">
                       <ol className="breadcrumb">
@@ -35,13 +35,13 @@ const HowToPlay = () => {
                           className="breadcrumb-item active  text-white"
                           aria-current="page"
                         >
-                          Privacy Policy
+                          How to play
                         </li>
                       </ol>
                     </nav>
                   </div>
                 </div>
-                <section className="Privacy_policy_content mt-2">
+                <section className="Privacy_policy_content mt-2 px-2">
                   <p>
                     This privacy policy is designed to provide players with
                     information on how personal data is collected and how it is
@@ -64,54 +64,47 @@ const HowToPlay = () => {
                     jiboomba India, you automatically agree to this privacy
                     policy.
                   </p>
-                  <h2 className="persona_info_heading">
-                    How we use customers’ personal information:
-                  </h2>
+                  <p>
+                    Playing is simple and designed to give you a smooth and
+                    exciting experience. Please follow the steps below to get
+                    started:
+                  </p>
+
                   <ul className="personal_info_list text-white">
                     <li>
-                      The main purpose of collecting and using players’ personal
-                      information is to improve the quality of customer service.
-                      By submitting personal information you help us to create
-                      better advertising and marketing materials, as well as
-                      provide yourself with access to all the features and
-                      functions of the bookmaker’s office;
+                      <strong>Step 1 – Register / Login:</strong> Create an
+                      account by completing the registration form or log in if
+                      you already have one.
                     </li>
                     <li>
-                      The collection of personal data allows us to guarantee the
-                      principles of fair play. The information is used to ensure
-                      the safety of customers and the safety of money on their
-                      balances;
+                      <strong>Step 2 – Add Funds:</strong> Deposit money into
+                      your wallet using any of the available secure payment
+                      methods.
                     </li>
                     <li>
-                      Bookmaker office jiboomba uses players’ personal data for
-                      opening a personal account, providing services and
-                      services, checking the reliability of information about
-                      users, compiling statistical reports, conducting
-                      promotions, etc.
+                      <strong>Step 3 – Choose a Game:</strong> Browse through
+                      the list of games and select the one you want to play.
+                    </li>
+                    <li>
+                      <strong>Step 4 – Place Your Bet:</strong> Select your bet
+                      amount and confirm before the game starts.
+                    </li>
+                    <li>
+                      <strong>Step 5 – Play & Win:</strong> Enjoy the game! If
+                      you win, your winnings will be added to your account
+                      balance instantly.
+                    </li>
+                    <li>
+                      <strong>Step 6 – Withdraw Earnings:</strong> You can
+                      withdraw your winnings securely anytime using the
+                      withdrawal option in your account.
                     </li>
                   </ul>
+
                   <p>
-                    Since jiboomba is an international company and operates in a
-                    number of countries, the collection of personal data is also
-                    necessary to comply with the laws in these countries. It
-                    also helps us to prevent fraud and money laundering through
-                    our betting shop accounts.
-                  </p>
-                  <p>
-                    We do not send out emails or phone numbers to players that
-                    they have not agreed to receive. We may, however, use your
-                    information in promotional publications. For example, news
-                    about the recipients of big winnings.
-                  </p>
-                  <p>
-                    If we suspect fraud or money laundering on your part, your
-                    account may be temporarily frozen and your personal
-                    information will be reported to law enforcement upon
-                    request. At any time you can refuse to have your personal
-                    data processed by 4rabet. To do this, write a request to the
-                    support service with a request to stop processing personal
-                    data. Also, some information can be updated or changed
-                    manually, using the tools in your personal cabinet.
+                    Make sure you play responsibly. Always set a budget, enjoy
+                    the experience, and never chase losses. The goal is to have
+                    fun while testing your skills and luck!
                   </p>
                 </section>
               </div>

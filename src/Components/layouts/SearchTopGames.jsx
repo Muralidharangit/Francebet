@@ -1183,7 +1183,7 @@ const SearchTopGames = () => {
                           highlightColor="#525252"
                         >
                           <h5>Filtered Games</h5>
-                          <div className="">
+                          <div className="px-2">
                             {loading && page === 1 ? (
                               // Skeleton loader for the first page
                               <div className="row px-8leftright">

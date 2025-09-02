@@ -22,8 +22,8 @@ function PrivacyPolicy() {
           <div className="content-wrapper new">
             <div className="max-1250 mx-auto">
               <div className="h-100 d-flex justify-content-evenly flex-column">
-                <div className="pt-3 pb-2 ">
-                  <div className="breadcrumb">
+                <div className="pt-3 pb-2  px-2">
+                  <div className="breadcrumb mb-0">
                     <nav aria-label="breadcrumb">
                       <ol className="breadcrumb">
                         <li className="breadcrumb-item text-white">
@@ -41,7 +41,7 @@ function PrivacyPolicy() {
                     </nav>
                   </div>
                 </div>
-                <section className="Privacy_policy_content mt-2">
+                <section className="Privacy_policy_content mt-2 px-2">
                   <p>
                     This privacy policy is designed to provide players with
                     information on how personal data is collected and how it is

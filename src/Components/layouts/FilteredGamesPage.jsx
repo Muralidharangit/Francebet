@@ -520,7 +520,7 @@ const FilteredGamesPage = () => {
                 <>
                   {/* filter Game List Starts */}
                   <SkeletonTheme baseColor="#313131" highlightColor="#525252">
-                    <div className="game-list px-1 container">
+                    <div className="game-list px-2 container">
                       <h5 className="text-white text-capitalize my-2">
                         {filterType
                           ? filterType === "card"

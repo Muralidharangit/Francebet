@@ -154,7 +154,7 @@ const Providers = () => {
 
         <div className="main-panel">
           <div className="content-wrapper new">
-            <div className="max-1250 mx-auto">
+            <div className="max-1250 mx-auto px-2">
               <div className="search_container_box">
                 <form
                   className="form my-2"

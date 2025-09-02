@@ -6,7 +6,7 @@ const SelectAmount = ({ amount, setAmount }) => {
   };
   return (
     <div className="card bg_light_grey account_input-textbox-container">
-      <div className="card-body py-4 pb-5">
+      <div className="card-body py-4 pb-3">
         <h5 className="mb-3">Select Amount</h5>
         <form className="form-control_container" action="">
           <div className="input-field mb-3">
