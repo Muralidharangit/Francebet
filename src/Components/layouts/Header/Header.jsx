@@ -729,13 +729,13 @@ const StickyHeader = ({ onToggleSidebar }) => {
     </div>
   </li> */}
               </ul>
-              <button
+              {/* <button
                 className="navbar-toggler navbar-toggler-right d-lg-none align-self-center"
                 type="button"
                 data-toggle="offcanvas"
               >
                 <span className="mdi mdi-menu" />
-              </button>
+              </button> */}
             </div>
           </nav>
           {/* tab and laptopnav */}
