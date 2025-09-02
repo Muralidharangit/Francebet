@@ -5,7 +5,7 @@ const BottomProvider = () => {
     <div>
       {/*--provider---*/}
       <div className="p-1">
-        <div className="row" style={{ marginBottom: "100px" }}>
+        <div className="row justify-content-center" style={{ marginBottom: "100px" }}>
           <div className="col-4 px-1">
             <div className="game_provider_item">
               <img src="assets/img/footer_icon/spribe.svg" alt="spribe" />

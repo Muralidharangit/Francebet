@@ -660,13 +660,13 @@ const SearchTopGames = () => {
       <StickyHeader onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
       {/* header end */}
 
-      <div className="container-fluid page-body-wrapper">
+      <div className="page-body-wrapper ">
         {/* Sidebar Nav Starts */}
         <Sidebar />
         {/* Sidebar Nav Ends */}
-        <div className="main-panel">
+        <div className="main-panel ">
           <div className="content-wrapper new">
-            <div className="max-1250 mx-auto">
+            <div className="max-1250 mx-auto ">
               <div>
                 {showFullScreenGame && selectedGameUrl ? (
                   <div

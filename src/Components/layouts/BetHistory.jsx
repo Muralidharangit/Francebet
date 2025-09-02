@@ -101,7 +101,7 @@ const BetHistory = () => {
               </div> */}
 
                     {/* header Starts */}
-                    <div className="d-flex align-items-center justify-content-between position-relative  px-0">
+                    <div className="d-flex align-items-center justify-content-between position-relative  px-2">
                       {/* Back Button on Left */}
                       <div className="d-flex justify-content-between align-items-center px-0">
                         {/* <button
@@ -126,7 +126,7 @@ const BetHistory = () => {
                     {/* header Ends */}
 
                     {/* ✅ Tabs Section */}
-                    <div className="overflow-auto px-0 mt-4">
+                    <div className="overflow-auto px-3 mt-4">
                       <div
                         className="nav nav-pills flex-wrap"
                         id="transaction-tabs"
@@ -152,7 +152,7 @@ const BetHistory = () => {
                     </div>
 
                     {/* ✅ Display Filtered Transactions */}
-                    <div className="tab-content p-0 mt-2 mb-3">
+                    <div className="tab-content px-3 mt-3 mb-3">
                       {loading ? (
                         <p className="text-white text-center mt-4">
                           Loading...

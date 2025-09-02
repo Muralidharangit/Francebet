@@ -116,7 +116,7 @@ function Deposit() {
 
                     {/* Wizard */}
                     <div className="container mt-4 px-0">
-                      <div className="wizard my-5">
+                      <div className="wizard my-5 px-2">
                         <ul className="nav nav-tabs justify-content-center">
                           {steps.map((step) => (
                             <li

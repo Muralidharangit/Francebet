@@ -20,7 +20,7 @@ function TermsCondition() {
         {/* Sidebar Nav Ends */}
         <div className="main-panel">
           <div className="content-wrapper">
-            <div className="max-1250 mx-auto">
+            <div className="max-1250 mx-auto px-2">
               <div className="h-100 d-flex justify-content-evenly flex-column">
                 <div className="pt-3 pb-2 ">
                   <div className="breadcrumb">
@@ -41,7 +41,7 @@ function TermsCondition() {
                     </nav>
                   </div>
                 </div>
-                <section className="Privacy_policy_content mt-2">
+                <section className="Privacy_policy_content mt-2 px-2">
                   <p>
                     This privacy policy is designed to provide players with
                     information on how personal data is collected and how it is
@@ -93,7 +93,7 @@ function TermsCondition() {
             </div>
           </div>
           <BottomFooter />
-          <div className="h-100 w-100 mb-5"></div>
+          <div className="h-100 w-100 mb-5 px-2"></div>
           <Footer />
         </div>
       </div>

@@ -137,7 +137,7 @@ const DepositHistory = () => {
       <StickyHeader onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
       {/* header end */}
 
-      <section className="container-fluid page-body-wrapper">
+      <section className="page-body-wrapper">
         {/* Sidebar Nav Starts */}
         <Sidebar />
         {/* Sidebar Nav Ends */}
@@ -171,9 +171,9 @@ const DepositHistory = () => {
               </div> */}
 
                     {/* header Starts */}
-                    <div className="d-flex align-items-center justify-content-between position-relative  px-0">
+                    <div className="d-flex align-items-center justify-content-between position-relative  px-2">
                       {/* Back Button on Left */}
-                      <div className="d-flex justify-content-between align-items-center px-0">
+                      <div className="d-flex justify-content-between align-items-center px-2">
                         {/* <button
                           className="go_back_btn bg-grey"
                           onClick={() => window.history.back()}
@@ -195,7 +195,7 @@ const DepositHistory = () => {
                     </div>
 
                     {/* header Ends */}
-                    <div className="overflow-auto px-0 mt-4">
+                    <div className="overflow-auto px-3 mt-4">
                       <div
                         className="nav nav-pills flex-nowrap gap-2 scroll-hidden rounded-2"
                         id="latest-bet-tabs"
@@ -229,7 +229,7 @@ const DepositHistory = () => {
                       </div>
                     </div>
 
-                    <div className="tab-content p-0 mt-2 mb-3">
+                    <div className="tab-content px-3 mt-2 mb-3">
                       {loading ? (
                         <p className="text-white text-center mt-4">
                           Loading...

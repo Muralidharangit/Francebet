@@ -14,7 +14,7 @@ const BottomFooter = () => {
             {/*--provider---*/}
 
             {/*--provider-end*/}
-            <div className="container">
+            <div className="container px-1">
               <div className="d-flex justify-content-center my-3">
                 <div className="logo_brand">
                   <Link to={routes.home} className="navbar-brand m-0">
@@ -28,12 +28,12 @@ const BottomFooter = () => {
                 </div>
               </div>
               <div className="row">
-                <div className="col-12 ">
+                <div className="col-lg-12 ">
                   <div className="footer_section__sports">
                     <div className="top-matches-title d-flex align-items-center gap-2  my-3">
                       <h5 className="m-0 mt-1">Jiboomba</h5>
                     </div>
-                    <p>
+                    <p className="text-justify">
                       jiboomba is a multi-award-winning betting app built for
                       players who love the thrill of the game. With exciting
                       sports, live matches, and casino-style games, we bring
