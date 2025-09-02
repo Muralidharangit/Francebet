@@ -28,7 +28,7 @@ const BottomFooter = () => {
                 </div>
               </div>
               <div className="row">
-                <div className="col-lg-12 ">
+                <div className="col-lg-12 px-3">
                   <div className="footer_section__sports">
                     <div className="top-matches-title d-flex align-items-center gap-2  my-3">
                       <h5 className="m-0 mt-1">Jiboomba</h5>
@@ -48,13 +48,17 @@ const BottomFooter = () => {
                         to={
                           "https://www.facebook.com/people/Jiboomba/61579870741480/"
                         }
+                        target="new"
                       >
                         <i className="fab fa-facebook-f" />
                       </Link>
-                      <Link to={"https://www.instagram.com/jiboomba.in/"}>
+                      <Link
+                        to={"https://www.instagram.com/jiboomba.in/"}
+                        target="new"
+                      >
                         <i className="fab fa-instagram" />
                       </Link>
-                      <Link to={"https://x.com/jiboomba51633"}>
+                      <Link to={"https://x.com/jiboomba51633"} target="new">
                         <i className="fab ri-twitter-x-line" />
                       </Link>
                       {/* <Link to={routes.home}>

@@ -42,7 +42,7 @@ function PrivacyPolicy() {
                   </div>
                 </div>
                 <section class="privacy-container px-2">
-                  <h1>Privacy Policy</h1>
+                  <h1 className="text-white">Privacy Policy</h1>
 
                   <p>
                     This Privacy Policy describes Our policies and procedures on

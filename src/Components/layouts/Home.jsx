@@ -1462,12 +1462,17 @@ function Home() {
                             <swiper-container
                               className="mySwiper"
                               space-between="5"
-                              loop="true"
+                            
                               autoplay='{"delay": 0, "disableOnInteraction": false}'
-                              speed="2500"
+                             
                               slides-per-view="2.5"
                               centered-slides="false"
                               free-mode="true"
+                              loop={true}
+                              
+                              speed={3000}
+                              slidesPerView={2}
+                              freeMode={true}
                               breakpoints={{
                                 768: {
                                   slidesPerView: 6, // Tablet view

@@ -42,7 +42,9 @@ const HowToPlay = () => {
                   </div>
                 </div>
                 <section class="privacy-container px-2 m-0">
-                  <h1>Responsible Gaming & Player Protection Policy</h1>
+                  <h1 className="text-white">
+                    Responsible Gaming & Player Protection Policy
+                  </h1>
                   <p>
                     At <strong>jiboomba.in</strong>, we are committed to
                     promoting responsible gaming and ensuring the safety of our
