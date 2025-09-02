@@ -1,136 +1,74 @@
-import React, { useEffect, useState, useMemo } from "react";
-import {
-  getPortalSettings,
-  getRandomDepositSuggestions,
-} from "../../../../API/depositAPI";
+import React, { useEffect, useState } from "react";
+import { getPortalSettings } from "../../../../API/depositAPI";
 
-/**
- * Props:
- *  - amount: string|number
- *  - setAmount: (v: string) => void
- *  - token?: string
- *  - count?: number  // how many quick-pick buttons (default 7)
- *  - roundStep?: number // optional rounding step for input & suggestions (default 100)
- */
-const SelectAmount = ({
-  amount,
-  setAmount,
-  token,
-  count = 7,
-  roundStep = 100,
-}) => {
+const SelectAmount = ({ amount, setAmount, token }) => {
   const [amounts, setAmounts] = useState([]);
-  const [minMax, setMinMax] = useState({ min: null, max: null });
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     (async () => {
       try {
         const settings = await getPortalSettings("deposit", token);
-        const min = Number(settings?.min_deposit) || 0;
-        const max = Number(settings?.max_deposit) || 0;
-        setMinMax({ min, max });
+        const min = Number(settings?.min_deposit);
+        const max = Number(settings?.max_deposit);
 
-        // Generate suggestions
-        let suggested = getRandomDepositSuggestions(settings, count);
-
-        // Fallback if API fails or range too small
-        if (!suggested.length) {
-          // base fallback, but clamp to range when available
-          const base = [500, 1000, 4000, 10000, 20000, 30000, 40000].slice(
-            0,
-            count
-          );
-          suggested = base
-            .map((v) => clamp(roundTo(v, roundStep), min || v, max || v))
-            .filter((v, i, arr) => arr.indexOf(v) === i);
+        if (!Number.isFinite(min) || !Number.isFinite(max) || min <= 0 || min >= max) {
+          setAmounts([]);
+        } else {
+          setAmounts(generateFourButtons(min, max));
         }
-
-        setAmounts(suggested);
-      } catch (e) {
-        console.error(e);
-        const fallback = [500, 1000, 4000, 10000, 20000, 30000, 40000].slice(
-          0,
-          count
-        );
-        setAmounts(fallback);
+      } catch (err) {
+        console.error("Failed to fetch portal settings:", err);
+        setAmounts([]);
       } finally {
         setLoading(false);
       }
     })();
-  }, [token, count, roundStep]);
+  }, [token]);
 
-  const handleSelectAmount = (value) => {
-    const v = String(value);
-    setAmount(v);
-  };
-
-  // Keep typed value inside range (if range known)
-  const onChangeAmount = (e) => {
-    const raw = e.target.value;
-    if (raw === "") return setAmount("");
-
-    const num = Number(raw);
-    if (Number.isNaN(num)) return;
-
-    const rounded = roundTo(num, roundStep);
-    const clamped = clamp(
-      rounded,
-      minMax.min ?? rounded,
-      minMax.max ?? rounded
-    );
-    setAmount(String(clamped));
-  };
-
-  const hint = useMemo(() => {
-    const { min, max } = minMax;
-    if (!min || !max) return "";
-    return `Allowed range: ₹${min} – ₹${max}`;
-  }, [minMax]);
+  const handleSelectAmount = (value) => setAmount(String(value));
 
   return (
     <div className="card bg_light_grey account_input-textbox-container">
-      <div className="card-body py-4 pb-3">
+      <div className="card-body py-4 pb-5">
         <h5 className="mb-3">Select Amount</h5>
 
-        <form
-          className="form-control_container"
-          onSubmit={(e) => e.preventDefault()}
-        >
-          <div className="input-field mb-1">
+        <form className="form-control_container" onSubmit={(e) => e.preventDefault()}>
+          <div className="input-field mb-3">
             <input
               required
               className="input"
               type="number"
               value={amount}
-              min={minMax.min ?? undefined}
-              max={minMax.max ?? undefined}
-              step={roundStep}
-              onChange={onChangeAmount}
-              inputMode="numeric"
+              onChange={(e) => setAmount(e.target.value)}
             />
             <label className="label" htmlFor="input">
               Enter the Amount or select the Amount
             </label>
           </div>
 
-          {hint && <small className="text-muted d-block mb-3">{hint}</small>}
-
           <div className="recharge-amount-container button">
             {loading
-              ? Array.from({ length: count }).map((_, i) => (
+              ? [0, 1, 2, 3].map((i) => (
                   <button key={i} type="button" className="btn" disabled>
                     ...
                   </button>
                 ))
-              : amounts.map((amt) => (
+              : amounts.map((amt, idx) => (
                   <button
-                    key={amt}
+                    key={idx + "-" + amt}
                     type="button"
                     className="btn"
                     onClick={() => handleSelectAmount(amt)}
+                    title={
+                      idx === 0
+                        ? `Min (₹ ${amt.toLocaleString("en-IN")})`
+                        : idx === 3
+                        ? `Max (₹ ${amt.toLocaleString("en-IN")})`
+                        : `₹ ${amt.toLocaleString("en-IN")}`
+                    }
                   >
-                    {amt}
+                    {amt.toLocaleString("en-IN")}
                   </button>
                 ))}
           </div>
@@ -142,10 +80,85 @@ const SelectAmount = ({
 
 export default SelectAmount;
 
-/* helpers (local) */
-function clamp(n, lo, hi) {
-  return Math.max(lo, Math.min(hi, n));
+/* ------------ helpers ------------ */
+
+/**
+ * Pick a “nice” step (…000) based on the range so we get clean values.
+ * Targets ~2 interior buttons.
+ */
+function pickStep(min, max) {
+  const range = max - min;
+  if (range >= 200000) return 50000;   // 50k steps
+  if (range >= 100000) return 20000;   // 20k steps
+  if (range >= 50000)  return 10000;   // 10k steps
+  if (range >= 20000)  return 5000;    // 5k steps
+  if (range >= 10000)  return 2000;    // 2k steps
+  return 1000;                         // 1k step fallback
 }
-function roundTo(n, step) {
+
+function roundToStep(n, step) {
   return Math.round(n / step) * step;
+}
+
+/**
+ * Generate exactly 4 buttons:
+ * [min, niceMid1, niceMid2, max]
+ * where the two mids are clean …000 numbers inside the range.
+ */
+function generateFourButtons(min, max) {
+  const step = pickStep(min, max);
+
+  // target mids around 1/3 and 2/3 of the range
+  const t1 = min + (max - min) / 3;
+  const t2 = min + (2 * (max - min)) / 3;
+
+  let m1 = roundToStep(t1, step);
+  let m2 = roundToStep(t2, step);
+
+  // clamp to (min, max)
+  m1 = Math.min(Math.max(m1, min), max);
+  m2 = Math.min(Math.max(m2, min), max);
+
+  // ensure they don't collide with min/max
+  if (m1 === min) m1 = Math.min(m1 + step, max);
+  if (m1 === max) m1 = Math.max(max - step, min);
+
+  if (m2 === max) m2 = Math.max(m2 - step, min);
+  if (m2 === min) m2 = Math.min(min + step, max);
+
+  // if mids collide with each other, spread them by a step if possible
+  if (m1 === m2) {
+    const tryLeft = m1 - step;
+    const tryRight = m2 + step;
+    if (tryLeft > min) m1 = tryLeft;
+    else if (tryRight < max) m2 = tryRight;
+  }
+
+  // build unique, sorted list with min & max guaranteed
+  const set = new Set([min, m1, m2, max]);
+  const arr = Array.from(set).sort((a, b) => a - b);
+
+  // ensure exactly 4 entries: if we lost one due to collisions, fill using step grid
+  if (arr.length < 4) {
+    // fill from a stepped sequence within range
+    const first = Math.ceil(min / step) * step;
+    for (let v = first; v <= max && arr.length < 4; v += step) {
+      if (!arr.includes(v)) arr.splice(arr.length - 1, 0, v); // insert before max
+    }
+  }
+
+  // if more than 4 (unlikely), trim to 4 while keeping min & max
+  if (arr.length > 4) {
+    // keep min, pick two best mids closest to t1/t2, keep max
+    const mids = arr.slice(1, -1);
+    mids.sort((a, b) => {
+      // score closeness to t1 or t2
+      const da = Math.min(Math.abs(a - t1), Math.abs(a - t2));
+      const db = Math.min(Math.abs(b - t1), Math.abs(b - t2));
+      return da - db;
+    });
+    return [arr[0], mids[0], mids[1], arr[arr.length - 1]].sort((a, b) => a - b);
+  }
+
+  return arr;
 }
