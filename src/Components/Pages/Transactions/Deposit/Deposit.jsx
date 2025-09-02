@@ -16,19 +16,25 @@ function Deposit() {
   const [selectedAmount, setSelectedAmount] = useState(""); // 🟣 Add this line
   const [paymentSelectedMethod, setPaymentSelectedMethod] = useState(""); // 🟣 Add this line
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   const [depositFormData, setDepositFormData] = useState({
     amount: "", // selected in Step 1
     paymentSelectedMethod: "", // selected in Step 2
     utr_number: "",
     payment_screenshot: null,
   });
+
   const steps = [
     {
       id: "step1",
       icon: "fas fa-folder-open",
       title: "Step 1",
       content: () => (
-        <SelectAmount amount={selectedAmount} setAmount={setSelectedAmount} />
+        <SelectAmount
+          amount={selectedAmount}
+          setAmount={setSelectedAmount}
+          count={4}
+        />
       ),
     },
     {
