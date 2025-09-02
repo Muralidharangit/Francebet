@@ -798,12 +798,16 @@ function Home() {
                               )}
                             </div>
 
-                            <div>
-                              <Link to="/all-games">
-                                <span className="text-white fs-13 fw-500 right_heading">
-                                  All <i className="ri-arrow-right-s-line" />
-                                </span>
-                              </Link>
+                            <div
+                              onClick={() =>
+                                navigate(`/filtered-games?type=hot`)
+                              }
+                            >
+                              {/* <Link to="/all-games"> */}
+                              <span className="text-white fs-13 fw-500 right_heading">
+                                All <i className="ri-arrow-right-s-line" />
+                              </span>
+                              {/* </Link> */}
                             </div>
                           </div>
 
@@ -1547,12 +1551,16 @@ function Home() {
                                 Slot Games
                               </h5>
                             </div>
-                            <div>
-                              <Link to={routes.games.all}>
-                                <span className="text-white fs-13 fw-500 right_heading">
-                                  All <i className="ri-arrow-right-s-line" />
-                                </span>
-                              </Link>
+                            <div
+                              onClick={() =>
+                                navigate(`/filtered-games?type=slots`)
+                              }
+                            >
+                              {/* <Link to={routes.games.all}> */}
+                              <span className="text-white fs-13 fw-500 right_heading">
+                                All <i className="ri-arrow-right-s-line" />
+                              </span>
+                              {/* </Link> */}
                             </div>
                           </div>
 
