@@ -23,9 +23,9 @@ const HowToPlay = () => {
             <div className="max-1250 mx-auto">
               <div className="h-100 d-flex justify-content-evenly flex-column">
                 <div className="pt-3 pb-2 px-2">
-                  <div className="breadcrumb">
+                  <div className=" ">
                     <nav aria-label="breadcrumb">
-                      <ol className="breadcrumb">
+                      <ol className="breadcrumb m-0">
                         <li className="breadcrumb-item text-white">
                           <Link to={routes.home} className="text-white fw-600 ">
                             Home
@@ -41,70 +41,183 @@ const HowToPlay = () => {
                     </nav>
                   </div>
                 </div>
-                <section className="Privacy_policy_content mt-2 px-2">
+                <section class="privacy-container px-2 m-0">
+                  <h1>Responsible Gaming & Player Protection Policy</h1>
                   <p>
-                    This privacy policy is designed to provide players with
-                    information on how personal data is collected and how it is
-                    used in interaction with the official website and services
-                    of the bookmaker’s office.
+                    At <strong>jiboomba.in</strong>, we are committed to
+                    promoting responsible gaming and ensuring the safety of our
+                    players. Our goal is to raise awareness about problem
+                    gambling while providing effective tools for prevention,
+                    intervention, and support.
                   </p>
                   <p>
-                    Player personal data refers to any personal information that
-                    identifies a player as a unique user. This is first and last
-                    name, country of residence, address, phone number, email
-                    address, etc.
-                  </p>
-                  <p>
-                    <Link to={routes.home}>jiboomba</Link> collects and
-                    processes personal data in order to improve the quality of
-                    service and player service. Data is collected at the stage
-                    of <Link to={routes.auth.register}>registration</Link>
-                    when verifying identity when creating a game account when
-                    betting. When using any services provided by betting company
-                    jiboomba India, you automatically agree to this privacy
-                    policy.
-                  </p>
-                  <p>
-                    Playing is simple and designed to give you a smooth and
-                    exciting experience. Please follow the steps below to get
-                    started:
+                    Our Responsible Gaming Policy reflects our dedication to
+                    reducing the risks associated with gambling and creating a
+                    secure, enjoyable experience for every player.
                   </p>
 
-                  <ul className="personal_info_list text-white">
+                  <h2>Our Commitment</h2>
+                  <p>
+                    We strive to make sure that while you enjoy your gaming
+                    experience on <strong>jiboomba.in</strong>, you remain fully
+                    aware of the potential{" "}
+                    <strong>social and financial risks</strong> associated with
+                    gambling.
+                  </p>
+                  <ul>
+                    <li>Customer-driven deposit and loss limits.</li>
                     <li>
-                      <strong>Step 1 – Register / Login:</strong> Create an
-                      account by completing the registration form or log in if
-                      you already have one.
+                      Self-exclusion options available through Customer Support.
                     </li>
                     <li>
-                      <strong>Step 2 – Add Funds:</strong> Deposit money into
-                      your wallet using any of the available secure payment
-                      methods.
+                      Links to trusted support organizations such as SICAD,
+                      GamCare, and Gambling Therapy.
                     </li>
+                    <li>Self-protection and awareness resources.</li>
                     <li>
-                      <strong>Step 3 – Choose a Game:</strong> Browse through
-                      the list of games and select the one you want to play.
-                    </li>
-                    <li>
-                      <strong>Step 4 – Place Your Bet:</strong> Select your bet
-                      amount and confirm before the game starts.
-                    </li>
-                    <li>
-                      <strong>Step 5 – Play & Win:</strong> Enjoy the game! If
-                      you win, your winnings will be added to your account
-                      balance instantly.
-                    </li>
-                    <li>
-                      <strong>Step 6 – Withdraw Earnings:</strong> You can
-                      withdraw your winnings securely anytime using the
-                      withdrawal option in your account.
+                      Strong account security measures to prevent underage or
+                      unauthorized access.
                     </li>
                   </ul>
 
+                  <h2>Temporary Account Closure / Self-Exclusion</h2>
                   <p>
-                    Make sure you play responsibly. Always set a budget, enjoy
-                    the experience, and never chase losses. The goal is to have
-                    fun while testing your skills and luck!
+                    You have the option to restrict access to your account or
+                    exclude yourself from playing games temporarily or
+                    permanently.
+                  </p>
+                  <p>
+                    <strong>How to apply restrictions:</strong>
+                  </p>
+                  <ul>
+                    <li>
+                      Go to <strong>Profile &gt; Player Protection</strong> in
+                      your account.
+                    </li>
+                    <li>
+                      Or contact our Customer Support team at{" "}
+                      <a href="mailto:support@jiboomba.in">
+                        support@jiboomba.in
+                      </a>
+                      .
+                    </li>
+                  </ul>
+                  <p>
+                    <strong>Important:</strong>
+                  </p>
+                  <ul>
+                    <li>
+                      All account blocking or self-exclusion requests take
+                      effect <strong>immediately</strong>.
+                    </li>
+                    <li>
+                      Revoking restrictions may take up to{" "}
+                      <strong>7 days</strong> after your request and only once
+                      the exclusion period has expired.
+                    </li>
+                  </ul>
+
+                  <h2>Maintaining Control Over Gambling</h2>
+                  <p>
+                    While most players enjoy gaming within their limits, some
+                    may face challenges. To stay in control:
+                  </p>
+                  <ul>
+                    <li>
+                      Treat gambling as <strong>entertainment</strong>, not
+                      income.
+                    </li>
+                    <li>Never chase losses.</li>
+                    <li>
+                      Track your <strong>time and money</strong> spent.
+                    </li>
+                    <li>
+                      Use the <strong>loss limit</strong> feature in your
+                      profile settings.
+                    </li>
+                    <li>
+                      Take breaks or use <strong>self-exclusion</strong> when
+                      needed.
+                    </li>
+                    <li>
+                      Reach out to professional organizations if gambling
+                      becomes harmful.
+                    </li>
+                  </ul>
+                  <div class="highlight-box text-black">
+                    💡 You can monitor your deposits, withdrawals, and bets
+                    under <strong>History &gt; Transactions</strong>. If you
+                    notice unauthorized activity, contact{" "}
+                    <a href="mailto:support@jiboomba.in">support@jiboomba.in</a>{" "}
+                    immediately and update your password.
+                  </div>
+
+                  <h2>Do You Think You Have a Problem?</h2>
+                  <p>
+                    If gambling is negatively impacting your life, ask yourself:
+                  </p>
+                  <ul>
+                    <li>Do you skip school/work to gamble?</li>
+                    <li>Do you gamble out of boredom?</li>
+                    <li>Do you spend long hours gambling alone?</li>
+                    <li>Have people criticized your gambling habits?</li>
+                    <li>
+                      Do you neglect family, friends, or hobbies due to
+                      gambling?
+                    </li>
+                    <li>Have you borrowed or stolen money for gambling?</li>
+                    <li>Do you gamble until all your money is gone?</li>
+                    <li>Do you chase losses immediately after losing?</li>
+                    <li>Do arguments or frustrations push you to gamble?</li>
+                    <li>
+                      Has gambling led to depression or suicidal thoughts?
+                    </li>
+                  </ul>
+                  <p>
+                    👉 If you answered <strong>yes</strong> to several of these
+                    questions, we strongly encourage you to seek support from
+                    trusted organizations like{" "}
+                    <a href="https://www.gamcare.org.uk/" target="_blank">
+                      GamCare
+                    </a>{" "}
+                    or
+                    <a href="https://www.gamblingtherapy.org/" target="_blank">
+                      Gambling Therapy
+                    </a>
+                    .
+                  </p>
+
+                  <h2>Underage Gambling Policy</h2>
+                  <p>
+                    It is strictly prohibited for anyone{" "}
+                    <strong>under the age of 18</strong> to register or gamble
+                    on
+                    <strong>jiboomba.in</strong>.
+                  </p>
+                  <p>To prevent underage gambling, we enforce:</p>
+                  <ul>
+                    <li>Age verification checks for all users.</li>
+                    <li>
+                      Random checks on accounts linked to payment methods.
+                    </li>
+                    <li>
+                      Immediate account closure and forfeiture of winnings for
+                      underage users.
+                    </li>
+                    <li>Possible reporting to authorities for violations.</li>
+                  </ul>
+
+                  <h2>Our Promise</h2>
+                  <p>
+                    At <strong>jiboomba.in</strong>, we are dedicated to
+                    providing a safe, fair, and enjoyable gaming environment. We
+                    strongly encourage players to stay informed, play
+                    responsibly, and seek help if needed.
+                  </p>
+                  <p>
+                    📧 For questions or support, contact us anytime at
+                    <a href="mailto:support@jiboomba.in">support@jiboomba.in</a>
+                    .
                   </p>
                 </section>
               </div>

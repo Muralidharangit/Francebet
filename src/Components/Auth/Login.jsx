@@ -160,10 +160,10 @@ const LoginPage = () => {
 
   return (
     <section className="container vh-100 position-relative overflow-hidden black-red">
-      <div className="circle1 position-absolute top-0"></div>
-      <div className="circle2 position-absolute bottom-0"></div>
+      {/* <div className="circle1 position-absolute top-0"></div>
+      <div className="circle2 position-absolute bottom-0"></div> */}
 
-      <div className="pt-3 pb-2 h-100 d-flex align-items-center flex-column justify-content-center w-100 position-top-60">
+      <div className="">
         <div className="logo d-flex justify-content-center mb-2">
           <img
             src={Images.Favlogo}
