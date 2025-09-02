@@ -126,18 +126,24 @@ const Sidebar = () => {
                   to={
                     "https://www.facebook.com/people/Jiboomba/61579870741480/"
                   }
+                  target="new"
                   className="text-white"
                 >
                   <i className="ri-facebook-fill" />
                 </Link>
                 <Link
                   to={"https://www.instagram.com/jiboomba.in/"}
+                  target="new"
                   className="text-white"
                 >
                   <i className="ri-instagram-line" />
                 </Link>
 
-                <Link to={"https://x.com/jiboomba51633"} className="text-white">
+                <Link
+                  to={"https://x.com/jiboomba51633"}
+                  target="new"
+                  className="text-white"
+                >
                   <i className="ri-twitter-x-line" />
                 </Link>
               </div>

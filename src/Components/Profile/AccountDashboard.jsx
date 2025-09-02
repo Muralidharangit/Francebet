@@ -142,7 +142,7 @@ const AccountDashboard = () => {
               </Link>
               <div data-bs-toggle="modal" data-bs-target="#Edit_bank_pop_up">
                 <h4 className="mb-0">
-                  {avatar?.displayName || "Unknown User"}
+                  {avatar?.displayName || avatar?.playername}
                 </h4>
                 <h5>
                   {/* <span className="text-grey fs-14">
