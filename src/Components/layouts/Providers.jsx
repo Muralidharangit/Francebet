@@ -1,16 +1,49 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
-import BASE_URL from "../../API/api";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import StickyHeader from "./Header/Header";
 import Footer from "./footer/Footer";
 import { motion } from "framer-motion";
-import axios from "axios";
 import axiosInstance from "../../API/axiosConfig";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Sidebar from "./Header/Sidebar";
 import BottomFooter from "./footer/BottomFooter";
+
+// ---------- helpers ----------
+const parseProviders = (data) => {
+  // Try common response shapes
+  if (Array.isArray(data?.providers)) return data.providers;
+  if (Array.isArray(data?.data)) return data.data;
+  if (Array.isArray(data?.providers?.data)) return data.providers.data;
+  if (Array.isArray(data?.items)) return data.items;
+  return [];
+};
+
+const getHasMore = (data) => {
+  // Supports multiple pagination shapes
+  if (data?.links?.next) return true; // { links: { next: "..." } }
+  if (data?.pagination && "next_page_url" in data.pagination) {
+    return Boolean(data.pagination.next_page_url);
+  }
+  if (data?.meta?.current_page && data?.meta?.last_page) {
+    return data.meta.current_page < data.meta.last_page;
+  }
+  // Fallback heuristic
+  const list = parseProviders(data);
+  return list.length >= 20;
+};
+
+const getLogo = (item) =>
+  item?.images?.logo ||
+  item?.images?.name ||
+  item?.images?.logo_name ||
+  "assets/img/game.png";
+
+const getName = (item) =>
+  item?.provider || item?.name || item?.provider_name || "Unknown";
+
+// --------------------------------
 
 const Providers = () => {
   const [providerList, setProviderList] = useState([]);
@@ -26,18 +59,15 @@ const Providers = () => {
 
   const pageRef = useRef(1);
   const isFetchingRef = useRef(false);
-  const hasFetchedRef = useRef(false);
   const navigate = useNavigate();
 
+  // Debounced provider search (min 3 chars)
   useEffect(() => {
-    const fixedSearchTerm = searchTerm.trim();
-
-    if (fixedSearchTerm.length >= 3) {
+    const fixed = searchTerm.trim();
+    if (fixed.length >= 3) {
       setIsSearchingGames(true);
-      const timer = setTimeout(() => {
-        handleAutoSearch(fixedSearchTerm);
-      }, 400);
-      return () => clearTimeout(timer);
+      const t = setTimeout(() => handleAutoSearch(fixed), 400);
+      return () => clearTimeout(t);
     } else {
       setSearchedGames([]);
       setIsSearchingGames(false);
@@ -46,11 +76,12 @@ const Providers = () => {
 
   const handleAutoSearch = async (term) => {
     try {
-      const res = await axios.get(
-        // `${BASE_URL}/all-games?is_mobile=1&provider=${term}`
-        `${BASE_URL}/providers-list?provider=${term}`
-      );
-      setSearchedGames(res.data.providers || []);
+      // Use axiosInstance so headers/baseURL are consistent
+      const res = await axiosInstance.get(`/providers-list`, {
+        params: { provider: term },
+      });
+      const list = parseProviders(res.data);
+      setSearchedGames(list);
     } catch (error) {
       console.error("Auto search failed:", error);
     } finally {
@@ -58,64 +89,44 @@ const Providers = () => {
     }
   };
 
-  //  const handleAutoSearch = async (term) => {
-  //   try {
-  //     const res = await axios.get(
-  //       // `${BASE_URL}/all-games?is_mobile=1&provider=${term}`
-  //       `${BASE_URL}/providers-list?provider=${term}`
-  //     );
-  //     setSearchedGames(res.data.providers || []);
-  //   } catch (error) {
-  //     console.error("Auto search failed:", error);
-  //   }
-  // };
-
-  // ✅ Fetch all providers
-
+  // Fetch all providers (with pagination)
   const fetchAllProvider = async (page = 1) => {
     if (page === pageRef.current && page !== 1) return;
     page === 1 ? setIsInitialLoading(true) : setIsPageLoading(true);
 
     try {
-      const response = await axiosInstance.get(`/providers-list?page=${page}`);
-      const data = response.data;
+      const res = await axiosInstance.get(`/providers-list`, {
+        params: { page },
+      });
+      const data = res.data;
+      const list = parseProviders(data);
 
-      console.log(data);
-
-      if (Array.isArray(data.providers)) {
-        setProviderList((prev) => [...prev, ...data.providers]);
-        pageRef.current = page;
-        setCurrentPage(page);
-        setHasMore(data.pagination?.next_page_url !== null);
-      } else {
-        setHasMore(false);
-      }
+      setProviderList((prev) => (page === 1 ? list : [...prev, ...list]));
+      pageRef.current = page;
+      setCurrentPage(page);
+      setHasMore(getHasMore(data));
     } catch (error) {
       console.error("Error fetching provider list:", error);
+      setHasMore(false);
     } finally {
       setIsInitialLoading(false);
       setIsPageLoading(false);
     }
   };
 
+  // Initial load
   useEffect(() => {
-    const hasFetched = sessionStorage.getItem("providersFetched");
-    if (!hasFetched && !hasFetchedRef.current) {
-      sessionStorage.setItem("providersFetched", "true");
-      hasFetchedRef.current = true;
-      fetchAllProvider();
-    }
+    fetchAllProvider(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  useEffect(() => {
-    return () => sessionStorage.removeItem("providersFetched");
-  }, []);
-
+  // Infinite scroll (safer documentElement metrics)
   const handleScroll = useCallback(() => {
-    const bottom =
-      window.innerHeight + window.scrollY >= document.body.offsetHeight - 100;
+    const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
+    const nearBottom = scrollTop + clientHeight >= scrollHeight - 120;
+
     if (
-      bottom &&
+      nearBottom &&
       !isInitialLoading &&
       !isPageLoading &&
       hasMore &&
@@ -129,7 +140,7 @@ const Providers = () => {
   }, [isInitialLoading, isPageLoading, hasMore]);
 
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
@@ -142,19 +153,18 @@ const Providers = () => {
       )}
 
       <ToastContainer position="top-right" autoClose={5000} theme="dark" />
-      {/* header  */}
+
+      {/* header */}
       <StickyHeader onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
-      {/* header end */}
 
       <div className="container-fluid page-body-wrapper">
-        {/* Sidebar Nav Starts */}
+        {/* Sidebar */}
         <Sidebar />
-        {/* Sidebar Nav Ends */}
-        {/* 🔍 Search Bar */}
 
         <div className="main-panel">
           <div className="content-wrapper new">
             <div className="max-1250 mx-auto px-2">
+              {/* 🔍 Search Bar */}
               <div className="search_container_box">
                 <form
                   className="form my-2"
@@ -178,9 +188,11 @@ const Providers = () => {
                 </form>
               </div>
 
-              <h5>Providers </h5>
+              <h5>Providers</h5>
+
               <div className="row px-8leftright">
                 {searchTerm.trim().length >= 3 ? (
+                  // Search Mode
                   isSearchingGames ? (
                     Array.from({ length: 6 }).map((_, index) => (
                       <div
@@ -195,7 +207,6 @@ const Providers = () => {
                             highlightColor="#525252"
                             className="mb-2"
                           />
-                          {/* Skeleton for game name text */}
                           <Skeleton
                             height={14}
                             width="80%"
@@ -203,7 +214,6 @@ const Providers = () => {
                             highlightColor="#525252"
                             className="mx-auto mt-2"
                           />
-                          {/* Skeleton for provider name text */}
                           <Skeleton
                             height={12}
                             width="60%"
@@ -215,10 +225,10 @@ const Providers = () => {
                       </div>
                     ))
                   ) : searchedGames.length > 0 ? (
-                    searchedGames.map((game, index) => (
+                    searchedGames.map((item, index) => (
                       <motion.div
                         className="col-xl-2 col-lg-4 col-md-4 col-sm-4 col-4 mb-3"
-                        key={game.uuid || `${game.name}-${index}`}
+                        key={item.id ?? `${getName(item)}-${index}`}
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.4, delay: index * 0.05 }}
@@ -228,23 +238,20 @@ const Providers = () => {
                           style={{ height: "120px" }}
                           onClick={() =>
                             navigate(
-                              `/filtered-provider-games?provider=${game.provider}`
+                              `/filtered-provider-games?provider=${encodeURIComponent(
+                                getName(item)
+                              )}`
                             )
                           }
                         >
                           <div className="d-flex gap-1 flex-column align-items-center justify-content-center">
                             <img
-                              src={
-                                game.images?.logo ||
-                                game.images?.name ||
-                                game.images?.logo_name ||
-                                "assets/img/game.png"
-                              }
-                              alt={game.provider || "Provider Logo"}
+                              src={getLogo(item)}
+                              alt={getName(item)}
                               style={{ width: "35%" }}
                             />
                             <span className="fs-12 fw-bold text-truncate text-white">
-                              {game.provider}
+                              {getName(item)}
                             </span>
                           </div>
                           <div className="game-play-button d-flex flex-column">
@@ -257,10 +264,11 @@ const Providers = () => {
                     ))
                   ) : (
                     <p className="text-white text-center mt-5">
-                      No games found for this provider.
+                      No providers found for this search.
                     </p>
                   )
-                ) : isInitialLoading ? (
+                ) : // Default Mode (list + infinite scroll)
+                isInitialLoading ? (
                   Array.from({ length: 9 }).map((_, index) => (
                     <div
                       className="col-xl-2 col-lg-4 col-md-4 col-sm-4 col-4 px-1"
@@ -272,24 +280,20 @@ const Providers = () => {
                       >
                         <div className="d-flex gap-1 flex-column align-items-center justify-content-center">
                           <Skeleton
-                            circle={true}
+                            circle
                             height={40}
                             width={40}
                             baseColor="#313131"
                             highlightColor="#525252"
                           />
-                          {/* Skeleton for provider name text */}
                           <Skeleton
                             height={12}
                             width={100}
                             baseColor="#313131"
                             highlightColor="#525252"
-                            className="mt-1 "
+                            className="mt-1"
                           />
-
-                          {/* <Skeleton  width={100} height={20} baseColor="#313131" highlightColor="#525252" /> */}
                         </div>
-
                         <div
                           className="game-play-button d-flex flex-column"
                           style={{ opacity: 0 }}
@@ -303,25 +307,15 @@ const Providers = () => {
                               highlightColor="#525252"
                             />
                           </div>
-
-                          {/* <Skeleton  width={100} height={20} baseColor="#313131" highlightColor="#525252" /> */}
                         </div>
                       </div>
                     </div>
                   ))
-                ) : (
-                  // ✅ Show all providers (default view)
-
-                  // .filter(
-                  //   (provider) =>
-                  //     provider.images?.logo ||
-                  //     provider.images?.name ||
-                  //     provider.images?.logo_name
-                  // // )
+                ) : providerList.length > 0 ? (
                   providerList.map((provider, index) => (
                     <motion.div
                       className="col-xl-2 col-lg-4 col-md-4 col-sm-4 col-4 px-1"
-                      key={provider.id}
+                      key={provider.id ?? `${getName(provider)}-${index}`}
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       transition={{ duration: 0.4, delay: index * 0.1 }}
@@ -331,23 +325,20 @@ const Providers = () => {
                         style={{ height: "120px" }}
                         onClick={() =>
                           navigate(
-                            `/filtered-provider-games?provider=${provider.provider}`
+                            `/filtered-provider-games?provider=${encodeURIComponent(
+                              getName(provider)
+                            )}`
                           )
                         }
                       >
                         <div className="d-flex gap-1 flex-column align-items-center justify-content-center">
                           <img
-                            src={
-                              provider.images?.logo ||
-                              provider.images?.name ||
-                              provider.images?.logo_name ||
-                              "assets/img/game.png"
-                            }
-                            alt={provider.provider || "Provider Logo"}
+                            src={getLogo(provider)}
+                            alt={getName(provider)}
                             style={{ width: "50%" }}
                           />
                           <span className="fs-12 fw-bold text-truncate text-white">
-                            {provider.provider}
+                            {getName(provider)}
                           </span>
                         </div>
                         <div className="game-play-button d-flex flex-column">
@@ -358,24 +349,19 @@ const Providers = () => {
                       </div>
                     </motion.div>
                   ))
+                ) : (
+                  <p className="text-white text-center mt-5">
+                    No providers to display.
+                  </p>
                 )}
               </div>
             </div>
 
-
-
             <BottomFooter />
-
             <Footer />
-
-           
-          
           </div>
         </div>
       </div>
-
-
-     
     </>
   );
 };

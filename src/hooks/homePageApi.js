@@ -12,7 +12,7 @@ export const fetchDiceGames = async () => {
   const isMobileParam = getIsMobileParam(); // 1 or 0
 
   const response = await axiosInstance.get(
-    `/all-games?is_mobile=${isMobileParam}&limit=10&type=dice`
+    `/all-games?is_mobile=${isMobileParam}&limit=10&customType=hot`
   );
 
   const data = response.data;
@@ -22,7 +22,7 @@ export const fetchDiceGames = async () => {
 export const fetchSmartSoftGames = async () => {
   const isMobileParam = getIsMobileParam(); // 1 or 0
   const response = await axiosInstance.get(
-    `/all-games?is_mobile=${isMobileParam}&limit=10&provider=SmartSoft`
+    `/all-games?is_mobile=${isMobileParam}&limit=10&customType=slots`
   );
   const data = response.data;
   return Array.isArray(data.allGames) ? data.allGames : [];
