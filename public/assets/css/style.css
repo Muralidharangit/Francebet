@@ -1449,7 +1449,7 @@ ul.nav.my-2.bonus_filter {
 .nav-link.active {
   color: var(--text-white);
   background-color: var(--bs-nav-tabs-link-active-bg);
-  /* background: var(--primary-color) !important; */
+  background: var(--primary-color) !important;
   border-radius: 8px 8px 8px 8px;
   display: flex;
   align-items: center;
@@ -5732,5 +5732,7 @@ swiper-container.mySwiper.new_class4 swiper-slide {
           color: rgb(228 6 59);
         }
 
-
-
+.sidebar 
+a.nav-link.active {
+   background: none !important;
+}
