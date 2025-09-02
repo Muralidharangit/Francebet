@@ -84,7 +84,7 @@ export const depositHistory = async (token) => {
  */
 export const getPortalSettings = async (type = "deposit", token) => {
   const res = await axiosInstance.post(
-    "/jiboomba/player/portal-settings",
+    "/jiboomba/player/portal-setting",
     { type },
     { headers: token ? { Authorization: `Bearer ${token}` } : undefined }
   );
