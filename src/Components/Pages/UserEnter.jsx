@@ -91,7 +91,7 @@ const UserEnter = () => {
                     alt="bet_history"
                     width="27px"
                   />
-                  <p className="mb-0">Bet History</p>
+                  <p className="mb-0"> Transaction History</p>
                 </div>
 
                 <div

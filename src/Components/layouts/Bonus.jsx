@@ -20,7 +20,7 @@ function Bonus() {
         {/* Sidebar Nav Ends */}
         <div className="main-panel">
           <div className="content-wrapper">
-            <div className="max-1250 mx-auto">
+            <div className="max-1250 mx-auto px-2">
               {/*---bonus------*/}
               <div>
                 <div className="row">

@@ -41,78 +41,172 @@ function PrivacyPolicy() {
                     </nav>
                   </div>
                 </div>
-                <section className="Privacy_policy_content mt-2 px-2">
+                <section class="privacy-container px-2">
+                  <h1>Privacy Policy</h1>
+
                   <p>
-                    This privacy policy is designed to provide players with
-                    information on how personal data is collected and how it is
-                    used in interaction with the official website and services
-                    of the bookmaker’s office.
+                    This Privacy Policy describes Our policies and procedures on
+                    the collection, use and disclosure of Your information when
+                    You use the Service and tells You about Your privacy rights
+                    and how the law protects You.
                   </p>
+                  <div class="highlight-box">
+                    <p>
+                      <strong>
+                        By using our Service, you agree to the collection and
+                        use of information in accordance with this Privacy
+                        Policy.
+                      </strong>
+                    </p>
+                  </div>
+
+                  <h2>Interpretation and Definitions</h2>
+                  <h3>Interpretation</h3>
                   <p>
-                    Player personal data refers to any personal information that
-                    identifies a player as a unique user. This is first and last
-                    name, country of residence, address, phone number, email
-                    address, etc.
+                    Words with the initial letter capitalized have meanings
+                    defined under the following conditions. The following
+                    definitions shall apply regardless of singular or plural
+                    usage.
                   </p>
-                  <p>
-                    <Link to={routes.home}>jiboomba</Link> collects and
-                    processes personal data in order to improve the quality of
-                    service and player service. Data is collected at the stage
-                    of <Link to={routes.auth.register}>registration</Link>
-                    when verifying identity when creating a game account when
-                    betting. When using any services provided by betting company
-                    jiboomba India, you automatically agree to this privacy
-                    policy.
-                  </p>
-                  <h2 className="persona_info_heading">
-                    How we use customers’ personal information:
-                  </h2>
-                  <ul className="personal_info_list text-white">
+
+                  <h3>Definitions</h3>
+                  <ul>
                     <li>
-                      The main purpose of collecting and using players’ personal
-                      information is to improve the quality of customer service.
-                      By submitting personal information you help us to create
-                      better advertising and marketing materials, as well as
-                      provide yourself with access to all the features and
-                      functions of the bookmaker’s office;
+                      <strong>Account:</strong> a unique account created for You
+                      to access our Service.
                     </li>
                     <li>
-                      The collection of personal data allows us to guarantee the
-                      principles of fair play. The information is used to ensure
-                      the safety of customers and the safety of money on their
-                      balances;
+                      <strong>Affiliate:</strong> an entity under common control
+                      or ownership.
                     </li>
                     <li>
-                      Bookmaker office jiboomba uses players’ personal data for
-                      opening a personal account, providing services and
-                      services, checking the reliability of information about
-                      users, compiling statistical reports, conducting
-                      promotions, etc.
+                      <strong>Company:</strong> Jiboomba (“We”, “Us”, “Our”).
+                    </li>
+                    <li>
+                      <strong>Cookies:</strong> small files stored on Your
+                      device to track browsing activity.
+                    </li>
+                    <li>
+                      <strong>Country:</strong> Puducherry, India.
+                    </li>
+                    <li>
+                      <strong>Device:</strong> any device such as a computer,
+                      phone, or tablet.
+                    </li>
+                    <li>
+                      <strong>Personal Data:</strong> information relating to an
+                      identified or identifiable individual.
+                    </li>
+                    <li>
+                      <strong>Service:</strong> the Website.
+                    </li>
+                    <li>
+                      <strong>Website:</strong> Jiboomba, accessible from{" "}
+                      <a href="https://jiboomba.in/">https://jiboomba.in/</a>.
+                    </li>
+                    <li>
+                      <strong>You:</strong> the individual using the Service, or
+                      a company/legal entity on whose behalf it is used.
                     </li>
                   </ul>
+
+                  <h2>Collecting and Using Your Personal Data</h2>
+                  <h3>Types of Data Collected</h3>
+                  <h4>1.Personal Data</h4>
                   <p>
-                    Since jiboomba is an international company and operates in a
-                    number of countries, the collection of personal data is also
-                    necessary to comply with the laws in these countries. It
-                    also helps us to prevent fraud and money laundering through
-                    our betting shop accounts.
+                    We may collect personally identifiable information
+                    including:
                   </p>
+                  <ul>
+                    <li>Email address</li>
+                    <li>Usage Data</li>
+                  </ul>
+
+                  <h4>2.Usage Data</h4>
                   <p>
-                    We do not send out emails or phone numbers to players that
-                    they have not agreed to receive. We may, however, use your
-                    information in promotional publications. For example, news
-                    about the recipients of big winnings.
+                    Usage Data may include Your IP address, browser type, pages
+                    visited, time spent, device identifiers, and diagnostic
+                    data.
                   </p>
+
+                  <h2>Tracking Technologies and Cookies</h2>
                   <p>
-                    If we suspect fraud or money laundering on your part, your
-                    account may be temporarily frozen and your personal
-                    information will be reported to law enforcement upon
-                    request. At any time you can refuse to have your personal
-                    data processed by 4rabet. To do this, write a request to the
-                    support service with a request to stop processing personal
-                    data. Also, some information can be updated or changed
-                    manually, using the tools in your personal cabinet.
+                    We use Cookies and similar tracking technologies for
+                    analytics and functionality:
                   </p>
+                  <ul>
+                    <li>
+                      <strong>Essential Cookies:</strong> ensure core service
+                      features and prevent fraud.
+                    </li>
+                    <li>
+                      <strong>Notice Acceptance Cookies:</strong> record cookie
+                      acceptance.
+                    </li>
+                    <li>
+                      <strong>Functionality Cookies:</strong> remember login
+                      details and preferences.
+                    </li>
+                  </ul>
+
+                  <h2>Use of Your Personal Data</h2>
+                  <ul>
+                    <li>Provide and maintain the Service</li>
+                    <li>Manage Your Account</li>
+                    <li>Perform contracts and purchases</li>
+                    <li>Contact You via email, SMS, or push notifications</li>
+                    <li>Provide offers, news, and promotions</li>
+                    <li>Analytics and improvements</li>
+                    <li>Business transfers (mergers/acquisitions)</li>
+                  </ul>
+
+                  <h2>Retention & Transfer of Data</h2>
+                  <p>
+                    We retain Your Personal Data only as long as necessary and
+                    may transfer it securely outside Your jurisdiction with
+                    safeguards.
+                  </p>
+
+                  <h2>Delete Your Personal Data</h2>
+                  <p>
+                    You may request deletion of Your data anytime via account
+                    settings or contacting us directly.
+                  </p>
+
+                  <h2>Disclosure of Your Personal Data</h2>
+                  <ul>
+                    <li>
+                      <strong>Business Transactions:</strong> in mergers or
+                      acquisitions.
+                    </li>
+                    <li>
+                      <strong>Law Enforcement:</strong> when required by law.
+                    </li>
+                    <li>
+                      <strong>Legal Requirements:</strong> to comply, defend, or
+                      protect rights.
+                    </li>
+                  </ul>
+
+                  <h2>Children’s Privacy</h2>
+                  <p>
+                    Our Service does not target children under 13. If data is
+                    collected unknowingly, we will delete it immediately.
+                  </p>
+
+                  <h2>Changes to this Privacy Policy</h2>
+                  <p>
+                    We may update this policy periodically and notify You via
+                    email or a service notice.
+                  </p>
+
+                  <h2>Contact Us</h2>
+                  <p>If you have questions, contact us:</p>
+                  <ul>
+                    <li>
+                      <strong>Email:</strong> jiboomba@gmail.com
+                    </li>
+                  </ul>
                 </section>
               </div>
             </div>

@@ -256,7 +256,7 @@ const AccountDashboard = () => {
                       alt="bet_history"
                       width="27px"
                     />
-                    <p className="mb-0 small">Bet History</p>
+                    <p className="mb-0 small"> Transaction History</p>
                   </div>
                   {/* <div
                     className="text-center"

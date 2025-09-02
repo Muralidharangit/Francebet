@@ -6,7 +6,7 @@ const routes = {
     turbo: "/turbo-games",
     spribe: "/spribe-games",
     providers: "/providers",
-    history: "/bet-history",
+    history: "/transaction-history",
     bonus: "/bonus",
     filteredGames: "/filtered-games",
     filteredProviderGames: "/filtered-provider-games",
