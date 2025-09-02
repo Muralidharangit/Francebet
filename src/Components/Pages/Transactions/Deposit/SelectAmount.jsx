@@ -4,6 +4,8 @@ import { getPortalSettings } from "../../../../API/depositAPI";
 const SelectAmount = ({ amount, setAmount, token }) => {
   const [amounts, setAmounts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [bounds, setBounds] = useState({ min: null, max: null });
+  const [error, setError] = useState("");
 
   useEffect(() => {
     (async () => {
@@ -12,40 +14,100 @@ const SelectAmount = ({ amount, setAmount, token }) => {
         const min = Number(settings?.min_deposit);
         const max = Number(settings?.max_deposit);
 
-        if (!Number.isFinite(min) || !Number.isFinite(max) || min <= 0 || min >= max) {
+        if (
+          !Number.isFinite(min) ||
+          !Number.isFinite(max) ||
+          min <= 0 ||
+          min >= max
+        ) {
           setAmounts([]);
+          setBounds({ min: null, max: null });
         } else {
+          setBounds({ min, max });
           setAmounts(generateFourButtons(min, max));
         }
       } catch (err) {
         console.error("Failed to fetch portal settings:", err);
         setAmounts([]);
+        setBounds({ min: null, max: null });
       } finally {
         setLoading(false);
       }
     })();
   }, [token]);
 
-  const handleSelectAmount = (value) => setAmount(String(value));
+  /* ---------- handlers ---------- */
+  const handleSelectAmount = (value) => {
+    setAmount(String(value));
+    setError(""); // quick-pick is always valid
+  };
+
+  const handleAmountChange = (e) => {
+    const val = e.target.value;
+    setAmount(val);
+
+    if (val === "") return setError("");
+
+    const num = Number(val);
+    if (!Number.isFinite(num)) {
+      setError("Enter a valid number");
+      return;
+    }
+    const { min, max } = bounds;
+    if (min != null && num < min) {
+      setError(`Minimum allowed is ₹ ${min.toLocaleString("en-IN")}`);
+    } else if (max != null && num > max) {
+      setError(`Maximum allowed is ₹ ${max.toLocaleString("en-IN")}`);
+    } else {
+      setError("");
+    }
+  };
+
+  const handleAmountBlur = () => {
+    const num = Number(amount);
+    if (!Number.isFinite(num)) return;
+    const { min, max } = bounds;
+    let v = num;
+    if (min != null && v < min) v = min;
+    if (max != null && v > max) v = max;
+    if (v !== num) setAmount(String(v));
+  };
 
   return (
     <div className="card bg_light_grey account_input-textbox-container">
       <div className="card-body py-4 pb-5">
         <h5 className="mb-3">Select Amount</h5>
 
-        <form className="form-control_container" onSubmit={(e) => e.preventDefault()}>
-          <div className="input-field mb-3">
+        <form
+          className="form-control_container"
+          onSubmit={(e) => e.preventDefault()}
+        >
+          <div className="input-field mb-1">
             <input
               required
-              className="input"
+              className={`input ${error ? "is-invalid" : ""}`}
               type="number"
               value={amount}
-              onChange={(e) => setAmount(e.target.value)}
+              min={bounds.min ?? undefined}
+              max={bounds.max ?? undefined}
+              onChange={handleAmountChange}
+              onBlur={handleAmountBlur}
+              inputMode="numeric"
             />
             <label className="label" htmlFor="input">
               Enter the Amount or select the Amount
             </label>
           </div>
+
+          {/* hint / error */}
+          {error ? (
+            <small className="text-danger d-block mb-3">{error}</small>
+          ) : bounds.min != null && bounds.max != null ? (
+            <small className="text-muted d-block mb-3">
+              Allowed range: ₹ {bounds.min.toLocaleString("en-IN")} – ₹{" "}
+              {bounds.max.toLocaleString("en-IN")}
+            </small>
+          ) : null}
 
           <div className="recharge-amount-container button">
             {loading
@@ -88,12 +150,12 @@ export default SelectAmount;
  */
 function pickStep(min, max) {
   const range = max - min;
-  if (range >= 200000) return 50000;   // 50k steps
-  if (range >= 100000) return 20000;   // 20k steps
-  if (range >= 50000)  return 10000;   // 10k steps
-  if (range >= 20000)  return 5000;    // 5k steps
-  if (range >= 10000)  return 2000;    // 2k steps
-  return 1000;                         // 1k step fallback
+  if (range >= 200000) return 50000; // 50k steps
+  if (range >= 100000) return 20000; // 20k steps
+  if (range >= 50000) return 10000; // 10k steps
+  if (range >= 20000) return 5000; // 5k steps
+  if (range >= 10000) return 2000; // 2k steps
+  return 1000; // 1k step fallback
 }
 
 function roundToStep(n, step) {
@@ -140,7 +202,6 @@ function generateFourButtons(min, max) {
 
   // ensure exactly 4 entries: if we lost one due to collisions, fill using step grid
   if (arr.length < 4) {
-    // fill from a stepped sequence within range
     const first = Math.ceil(min / step) * step;
     for (let v = first; v <= max && arr.length < 4; v += step) {
       if (!arr.includes(v)) arr.splice(arr.length - 1, 0, v); // insert before max
@@ -149,15 +210,17 @@ function generateFourButtons(min, max) {
 
   // if more than 4 (unlikely), trim to 4 while keeping min & max
   if (arr.length > 4) {
-    // keep min, pick two best mids closest to t1/t2, keep max
+    const t1 = min + (max - min) / 3;
+    const t2 = min + (2 * (max - min)) / 3;
     const mids = arr.slice(1, -1);
     mids.sort((a, b) => {
-      // score closeness to t1 or t2
       const da = Math.min(Math.abs(a - t1), Math.abs(a - t2));
       const db = Math.min(Math.abs(b - t1), Math.abs(b - t2));
       return da - db;
     });
-    return [arr[0], mids[0], mids[1], arr[arr.length - 1]].sort((a, b) => a - b);
+    return [arr[0], mids[0], mids[1], arr[arr.length - 1]].sort(
+      (a, b) => a - b
+    );
   }
 
   return arr;
