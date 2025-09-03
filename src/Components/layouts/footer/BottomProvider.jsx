@@ -5,13 +5,16 @@ const BottomProvider = () => {
     <div>
       {/*--provider---*/}
       <div className="p-1">
-        <div className="row justify-content-center" style={{ marginBottom: "100px" }}>
-          <div className="col-lg-4 px-1">
+        <div
+          className="row justify-content-center"
+          style={{ marginBottom: "100px" }}
+        >
+          <div className="col-lg-4  col-md-6 px-1">
             <div className="game_provider_item">
               <img src="assets/img/footer_icon/spribe.svg" alt="spribe" />
             </div>
           </div>
-          <div className="col-lg-4 px-1">
+          <div className="col-lg-4  col-md-6 px-1">
             <div className="game_provider_item">
               <img src="assets/img/footer_icon/evolution.svg" alt="spribe" />
             </div>
@@ -24,27 +27,27 @@ const BottomProvider = () => {
               />
             </div>
           </div> */}
-          <div className="col-lg-4 px-1">
+          <div className="col-lg-4 col-md-6 px-1">
             <div className="game_provider_item">
               <img src="assets/img/footer_icon/smartsoft.svg" alt="SmartSoft" />
             </div>
           </div>
-          <div className="col-3 px-1">
+          <div className="col-lg-3 col-md-6 px-1">
             <div className="game_provider_item">
               <img src="assets/img/footer_icon/aviatrix.svg" alt="aviatrix" />
             </div>
           </div>
-          <div className="col-lg-3 px-1">
+          <div className="col-lg-3 col-md-6 px-1">
             <div className="game_provider_item">
               <img src="assets/img/footer_icon/threeoaks.svg" alt="threeOaks" />
             </div>
           </div>
-          <div className="col-lg-3 px-1">
+          <div className="col-lg-3 col-md-6 px-1">
             <div className="game_provider_item">
               <img src="assets/img/footer_icon/ezugi.svg" alt="ezugi" />
             </div>
           </div>
-          <div className="col-lg-3 px-1">
+          <div className="col-lg-3 col-md-6 px-1">
             <div className="game_provider_item">
               <img src="assets/img/footer_icon/betgames.svg" alt="betGames" />
             </div>

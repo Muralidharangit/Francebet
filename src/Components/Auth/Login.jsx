@@ -164,14 +164,19 @@ const LoginPage = () => {
       <div className="circle2 position-absolute bottom-0"></div> */}
 
       <div className="">
-        <div className="logo d-flex justify-content-center mb-2">
-          <img
-            src={Images.Favlogo}
-            alt="Logo"
-            width="50%"
-            style={{ objectFit: "contain" }}
-          />
-        </div>
+        <Link to={routes.home}>
+          <div
+            className="logo d-flex justify-content-center mb-2"
+            style={{ "max-width": "400px" }}
+          >
+            <img
+              src={Images.Favlogo}
+              alt="Logo"
+              width="50%"
+              style={{ objectFit: "contain" }}
+            />
+          </div>
+        </Link>
 
         <div className="p-3 d-flex justify-content-start flex-column card-log">
           {giftNotice && (

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import BASE_URL from "../../API/api";
 import { Images } from "../layouts/Header/constants/images";
+import routes from "../routes/route";
 const NewPassword = () => {
   const [mobile, setMobile] = useState("");
   const [message, setMessage] = useState("");
@@ -63,16 +64,27 @@ const NewPassword = () => {
 
   return (
     <section className="container black-red position-relative">
-      <div className="logo d-flex justify-content-center mb-2">
-          <img src={Images.Favlogo} alt="favicon" width="50%" />
+      <Link to={routes.home}>
+        <div
+          className="logo d-flex justify-content-center mb-2"
+          style={{ "max-width": "400px" }}
+        >
+          <img
+            src={Images.Favlogo}
+            alt="Logo"
+            width="50%"
+            style={{ objectFit: "contain" }}
+          />
         </div>
+      </Link>
       <div className="pt-3 pb-2 card-log">
-        
         <div className="">
           <div className="py-2">
             <div className="section-head">
               <h3 className="title text-black">Enter New Password</h3>
-              <p className="text-gray">Create a strong password to secure your account.</p>
+              <p className="text-gray">
+                Create a strong password to secure your account.
+              </p>
             </div>
           </div>
 
@@ -94,13 +106,23 @@ const NewPassword = () => {
                   <Form>
                     {/* Mobile Number (Display only) */}
                     <div className="input-groups mb-3">
-                      <label className="form-label text-gray">Mobile Number</label>
-                      <input type="text" className="form-control login-card__form-control" value={mobile} disabled />
+                      <label className="form-label text-gray">
+                        Mobile Number
+                      </label>
+                      <input
+                        type="text"
+                        className="form-control login-card__form-control"
+                        value={mobile}
+                        disabled
+                      />
                     </div>
 
                     {/* New Password */}
                     <div className="input-groups mb-3 position-relative">
-                      <label htmlFor="password" className="form-label text-gray">
+                      <label
+                        htmlFor="password"
+                        className="form-label text-gray"
+                      >
                         New Password
                       </label>
                       <Field
@@ -110,12 +132,19 @@ const NewPassword = () => {
                         name="password"
                         placeholder="Enter new password"
                       />
-                      <ErrorMessage name="password" component="div" className="text-danger" />
+                      <ErrorMessage
+                        name="password"
+                        component="div"
+                        className="text-danger"
+                      />
                     </div>
 
                     {/* Confirm Password */}
                     <div className="input-groups mb-3 position-relative">
-                      <label htmlFor="confirmPassword" className="form-label text-gray">
+                      <label
+                        htmlFor="confirmPassword"
+                        className="form-label text-gray"
+                      >
                         Confirm Password
                       </label>
                       <Field
@@ -125,7 +154,11 @@ const NewPassword = () => {
                         name="confirmPassword"
                         placeholder="Confirm new password"
                       />
-                      <ErrorMessage name="confirmPassword" component="div" className="text-danger" />
+                      <ErrorMessage
+                        name="confirmPassword"
+                        component="div"
+                        className="text-danger"
+                      />
                     </div>
 
                     {/* Submit Button */}
@@ -137,11 +170,13 @@ const NewPassword = () => {
                       {isSubmitting ? "Saving..." : "Save Password"}{" "}
                       <i className="ri-lock-line text-white fs-20" />
                     </button>
- 
+
                     {/* Success/Error Message */}
                     {message && (
                       <p
-                        className={`text-center ${isSuccess ? "text-success" : "text-danger"}`}
+                        className={`text-center ${
+                          isSuccess ? "text-success" : "text-danger"
+                        }`}
                       >
                         {message}
                       </p>
@@ -153,13 +188,14 @@ const NewPassword = () => {
               <div className="text-center">
                 <p className="text-gray">
                   Remembered your password?{" "}
-                  <a href="/login" className="text-red fw-600">Log In</a>
+                  <a href="/login" className="text-red fw-600">
+                    Log In
+                  </a>
                 </p>
               </div>
             </div>
           </div>
         </div>
-
       </div>
 
       {/* <div className="position-absolute bot-img" >
