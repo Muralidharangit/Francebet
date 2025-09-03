@@ -1212,7 +1212,8 @@ const SearchTopGames = () => {
                                       animate={{ opacity: 1, scale: 1 }}
                                       transition={{
                                         duration: 0.3,
-                                        delay: index * 0.002,
+                                        // delay: index * 0.002,
+                                        ease: "easeOut",
                                       }}
                                     >
                                       <div

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import StickyHeader from "./Header/Header";
@@ -10,9 +10,8 @@ import "react-loading-skeleton/dist/skeleton.css";
 import Sidebar from "./Header/Sidebar";
 import BottomFooter from "./footer/BottomFooter";
 
-// ---------- helpers ----------
+/* ---------------- helpers ---------------- */
 const parseProviders = (data) => {
-  // Try common response shapes
   if (Array.isArray(data?.providers)) return data.providers;
   if (Array.isArray(data?.data)) return data.data;
   if (Array.isArray(data?.providers?.data)) return data.providers.data;
@@ -21,17 +20,26 @@ const parseProviders = (data) => {
 };
 
 const getHasMore = (data) => {
-  // Supports multiple pagination shapes
-  if (data?.links?.next) return true; // { links: { next: "..." } }
-  if (data?.pagination && "next_page_url" in data.pagination) {
-    return Boolean(data.pagination.next_page_url);
+  // Common pagination shapes
+  if (data?.links?.next) return true;
+  if (data?.next_page_url) return true;
+
+  if (data?.pagination) {
+    const p = data.pagination;
+    if ("current_page" in p && "last_page" in p)
+      return p.current_page < p.last_page;
+    if ("page" in p && "total_pages" in p) return p.page < p.total_pages;
+    if ("next_page_url" in p) return Boolean(p.next_page_url);
   }
+
   if (data?.meta?.current_page && data?.meta?.last_page) {
     return data.meta.current_page < data.meta.last_page;
   }
-  // Fallback heuristic
+
+  // Heuristic fallback: if response count >= page size, assume more
   const list = parseProviders(data);
-  return list.length >= 20;
+  const pageSize = data?.pagination?.per_page || data?.meta?.per_page || 20;
+  return list.length >= pageSize;
 };
 
 const getLogo = (item) =>
@@ -43,7 +51,11 @@ const getLogo = (item) =>
 const getName = (item) =>
   item?.provider || item?.name || item?.provider_name || "Unknown";
 
-// --------------------------------
+const getKey = (item, index) => {
+  // Stable key for dedupe/map
+  return (item?.id ?? `${getName(item)}-${index}`).toString();
+};
+/* ---------------------------------------- */
 
 const Providers = () => {
   const [providerList, setProviderList] = useState([]);
@@ -54,14 +66,17 @@ const Providers = () => {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isPageLoading, setIsPageLoading] = useState(false);
   const [isSearchingGames, setIsSearchingGames] = useState(false);
-
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const pageRef = useRef(1);
   const isFetchingRef = useRef(false);
   const navigate = useNavigate();
 
-  // Debounced provider search (min 3 chars)
+  // Scroll container + sentinel
+  const contentRef = useRef(null);
+  const sentinelRef = useRef(null);
+
+  /* ---------- Debounced provider search (min 3 chars) ---------- */
   useEffect(() => {
     const fixed = searchTerm.trim();
     if (fixed.length >= 3) {
@@ -76,7 +91,6 @@ const Providers = () => {
 
   const handleAutoSearch = async (term) => {
     try {
-      // Use axiosInstance so headers/baseURL are consistent
       const res = await axiosInstance.get(`/providers-list`, {
         params: { provider: term },
       });
@@ -89,7 +103,7 @@ const Providers = () => {
     }
   };
 
-  // Fetch all providers (with pagination)
+  /* ---------- Fetch all providers (with pagination) ---------- */
   const fetchAllProvider = async (page = 1) => {
     if (page === pageRef.current && page !== 1) return;
     page === 1 ? setIsInitialLoading(true) : setIsPageLoading(true);
@@ -101,7 +115,23 @@ const Providers = () => {
       const data = res.data;
       const list = parseProviders(data);
 
-      setProviderList((prev) => (page === 1 ? list : [...prev, ...list]));
+      setProviderList((prev) => {
+        const merged = page === 1 ? list : [...prev, ...list];
+
+        // Deduplicate by key (id or name)
+        const seen = new Set();
+        const deduped = [];
+        for (let i = 0; i < merged.length; i++) {
+          const it = merged[i];
+          const k = (it?.id ?? getName(it)).toString().toLowerCase();
+          if (!seen.has(k)) {
+            seen.add(k);
+            deduped.push(it);
+          }
+        }
+        return deduped;
+      });
+
       pageRef.current = page;
       setCurrentPage(page);
       setHasMore(getHasMore(data));
@@ -114,35 +144,46 @@ const Providers = () => {
     }
   };
 
-  // Initial load
+  /* ---------- Initial load ---------- */
   useEffect(() => {
     fetchAllProvider(1);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Infinite scroll (safer documentElement metrics)
-  const handleScroll = useCallback(() => {
-    const { scrollTop, clientHeight, scrollHeight } = document.documentElement;
-    const nearBottom = scrollTop + clientHeight >= scrollHeight - 120;
-
-    if (
-      nearBottom &&
-      !isInitialLoading &&
-      !isPageLoading &&
-      hasMore &&
-      !isFetchingRef.current
-    ) {
-      isFetchingRef.current = true;
-      fetchAllProvider(pageRef.current + 1).finally(() => {
-        isFetchingRef.current = false;
-      });
-    }
-  }, [isInitialLoading, isPageLoading, hasMore]);
-
+  /* ---------- IntersectionObserver for infinite load ---------- */
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll, { passive: true });
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [handleScroll]);
+    const root = contentRef.current || null; // if content scrolls; else viewport
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
+
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (
+            entry.isIntersecting &&
+            !isInitialLoading &&
+            !isPageLoading &&
+            hasMore &&
+            !isFetchingRef.current &&
+            searchTerm.trim().length < 3 // don't auto-load when in search mode
+          ) {
+            isFetchingRef.current = true;
+            fetchAllProvider(pageRef.current + 1).finally(() => {
+              isFetchingRef.current = false;
+            });
+          }
+        });
+      },
+      {
+        root, // observe inside scroll container if it scrolls
+        rootMargin: "300px 0px", // prefetch earlier
+        threshold: 0,
+      }
+    );
+
+    io.observe(sentinel);
+    return () => io.disconnect();
+  }, [isInitialLoading, isPageLoading, hasMore, searchTerm]);
 
   return (
     <>
@@ -162,7 +203,7 @@ const Providers = () => {
         <Sidebar />
 
         <div className="main-panel">
-          <div className="content-wrapper new">
+          <div className="content-wrapper new" ref={contentRef}>
             <div className="max-1250 mx-auto px-2">
               {/* 🔍 Search Bar */}
               <div className="search_container_box">
@@ -228,7 +269,7 @@ const Providers = () => {
                     searchedGames.map((item, index) => (
                       <motion.div
                         className="col-xl-2 col-lg-4 col-md-4 col-sm-4 col-4 mb-3"
-                        key={item.id ?? `${getName(item)}-${index}`}
+                        key={getKey(item, index)}
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.4, delay: index * 0.05 }}
@@ -313,12 +354,19 @@ const Providers = () => {
                   ))
                 ) : providerList.length > 0 ? (
                   providerList.map((provider, index) => (
+                    // <motion.div
+                    //   className="col-xl-2 col-lg-4 col-md-4 col-sm-4 col-4 px-1"
+                    //   key={getKey(provider, index)}
+                    //   initial={{ opacity: 0, scale: 0.8 }}
+                    //   animate={{ opacity: 1, scale: 1 }}
+                    //   transition={{ duration: 0.4, delay: index * 0.06 }}
+                    // >
                     <motion.div
                       className="col-xl-2 col-lg-4 col-md-4 col-sm-4 col-4 px-1"
-                      key={provider.id ?? `${getName(provider)}-${index}`}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.4, delay: index * 0.1 }}
+                      key={getKey(provider, index)}
+                      initial={{ opacity: 0, y: 8 }} // tiny translate is cheaper than big scale
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.16, ease: "easeOut" }} // no delay
                     >
                       <div
                         className="game-card-wrapper rounded-2 new-cardclr mt-2 d-flex justify-content-center pt-2"
@@ -355,6 +403,9 @@ const Providers = () => {
                   </p>
                 )}
               </div>
+
+              {/* Sentinel for infinite scroll */}
+              <div ref={sentinelRef} style={{ height: 1 }} />
             </div>
 
             <BottomFooter />
