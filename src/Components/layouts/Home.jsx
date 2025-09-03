@@ -566,6 +566,28 @@ function Home() {
     { type: "table", imgSrc: "assets/img/turbo/9.png" },
   ];
 
+  // inside component
+  const [isSearching, setIsSearching] = useState(false);
+  // const navigate = useNavigate();
+  const handleImageClick = async (term) => {
+    try {
+      setIsSearching(true);
+      const res = await axiosInstance.get("/all-games", {
+        params: { is_mobile: 1, search: term, page: 1 }, // Lucky 6 → term = "Lucky 6"
+      });
+      const results = res?.data?.allGames || [];
+
+      // use results (navigate + pass state, or open modal, etc.)
+      navigate(`/filtered-games?search=${encodeURIComponent(term)}`, {
+        state: { results },
+      });
+    } catch (e) {
+      console.error("Search failed:", e);
+    } finally {
+      setIsSearching(false);
+    }
+  };
+
   return (
     <>
       {/* header  */}
@@ -666,14 +688,12 @@ function Home() {
                               </SwiperSlide>
 
                               <SwiperSlide
-                                onClick={() =>
-                                  navigate(`/filtered-games?type=roulette`)
-                                }
+                                onClick={() => handleImageClick("Lucky 6")} // or getName(provider)
                               >
                                 <img
-                                  src="assets/img/slider/first1.png"
+                                  src="assets/img/slider/lucky 6.png"
                                   className="w-100 rounded-2"
-                                  alt="Gaming Banner Slide 1" // Improved alt text
+                                  alt="Gaming Banner Slide 5"
                                 />
                               </SwiperSlide>
 
@@ -686,6 +706,32 @@ function Home() {
                                   src="assets/img/slider/first2.png"
                                   className="w-100 rounded-2"
                                   alt="Gaming Banner Slide 2"
+                                />
+                              </SwiperSlide>
+
+                              {/* bingo */}
+
+                              <SwiperSlide
+                                onClick={() =>
+                                  navigate(`/filtered-games?type=bingo`)
+                                }
+                              >
+                                <img
+                                  src="assets/img/slider/bingo banner.png"
+                                  className="w-100 rounded-2"
+                                  alt="Gaming Banner Slide 2"
+                                />
+                              </SwiperSlide>
+
+                              <SwiperSlide
+                                onClick={() =>
+                                  navigate(`/filtered-games?type=roulette`)
+                                }
+                              >
+                                <img
+                                  src="assets/img/slider/first1.png"
+                                  className="w-100 rounded-2"
+                                  alt="Gaming Banner Slide 1" // Improved alt text
                                 />
                               </SwiperSlide>
 
@@ -703,7 +749,7 @@ function Home() {
 
                               <SwiperSlide
                                 onClick={() =>
-                                  navigate(`/filtered-games?type=others`)
+                                  navigate(`/filtered-games?type=lucky`)
                                 }
                               >
                                 <img
@@ -719,20 +765,10 @@ function Home() {
                                 <img
                                   src="assets/img/slider/first4.png"
                                   className="w-100 rounded-2"
-                                  alt="Gaming Banner Slide 4"
+                                  alt="Gaming Banner Slide 4" xfd
                                 />
                               </SwiperSlide> */}
-                              <SwiperSlide
-                                onClick={() =>
-                                  navigate(`/filtered-games?type=lucky`)
-                                }
-                              >
-                                <img
-                                  src="assets/img/slider/12.png"
-                                  className="w-100 rounded-2"
-                                  alt="Gaming Banner Slide 5"
-                                />
-                              </SwiperSlide>
+
                               <SwiperSlide
                                 onClick={() =>
                                   navigate(`/filtered-games?type=card`)
@@ -1462,14 +1498,11 @@ function Home() {
                             <swiper-container
                               className="mySwiper"
                               space-between="5"
-                            
                               autoplay='{"delay": 0, "disableOnInteraction": false}'
-                             
                               slides-per-view="2.5"
                               centered-slides="false"
                               free-mode="true"
                               loop={true}
-                              
                               speed={3000}
                               slidesPerView={2}
                               freeMode={true}
