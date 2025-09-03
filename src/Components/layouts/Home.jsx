@@ -765,7 +765,7 @@ function Home() {
                                 <img
                                   src="assets/img/slider/first4.png"
                                   className="w-100 rounded-2"
-                                  alt="Gaming Banner Slide 4"
+                                  alt="Gaming Banner Slide 4" xfd
                                 />
                               </SwiperSlide> */}
 
