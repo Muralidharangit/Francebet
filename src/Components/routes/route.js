@@ -17,6 +17,8 @@ const routes = {
   transactions: {
     withdraw: "/withdraw",
     deposit: "/deposit",
+    paymentMethod: "/payment-method",
+    deposit_static: "/deposit_static",
     withdrawHistory: "/withdraw-history",
     depositHistory: "/deposit-history",
     addBank: "/add-bank",

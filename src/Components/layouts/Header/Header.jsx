@@ -340,7 +340,9 @@ const StickyHeader = ({ onToggleSidebar }) => {
                             <button
                               className="btn  btn-index w-100 deposit-btn"
                               onClick={() =>
-                                handleSecureRoute(routes.transactions.deposit)
+                                handleSecureRoute(
+                                  routes.transactions.paymentMethod
+                                )
                               }
                             >
                               Deposit
