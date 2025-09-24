@@ -25,10 +25,13 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import BASE_URL from "../API/api";
+import { getIsMobileParam } from "./homePageApi";
 
 const fetchAllGames = async (page) => {
+  const isMobileParam = getIsMobileParam();
+
   const response = await axios.get(
-    `${BASE_URL}/all-games?is_mobile=1&page=${page}`
+    `${BASE_URL}/all-games?is_mobile=${isMobileParam}&page=${page}`
   );
   return response.data;
 };

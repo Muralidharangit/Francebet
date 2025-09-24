@@ -6,7 +6,7 @@ const routes = {
     turbo: "/turbo-games",
     spribe: "/spribe-games",
     providers: "/providers",
-    history: "/bet-history",
+    history: "/transaction-history",
     bonus: "/bonus",
     filteredGames: "/filtered-games",
     filteredProviderGames: "/filtered-provider-games",
@@ -17,9 +17,15 @@ const routes = {
   transactions: {
     withdraw: "/withdraw",
     deposit: "/deposit",
+    paymentMethod: "/payment-method",
+    deposit_static: "/deposit_static",
     withdrawHistory: "/withdraw-history",
     depositHistory: "/deposit-history",
     addBank: "/add-bank",
+
+    // namibia
+    deposit_namibia: "/deposit-namibia/manual-deposit/get-payment-details",
+    ewallet_deposit_namibia: "/deposit-namibia/ewallet-deposit/get-payment-details",
   },
   account: {
     dashboard: "/account-dashboard",

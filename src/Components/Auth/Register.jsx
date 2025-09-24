@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 import * as Yup from "yup";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 // import axios from "axios";
 import { checkPlayerName, getAuthType, registerUser } from "../../API/authAPI";
 import AuthContext from "../../Auth/AuthContext";
@@ -187,9 +187,11 @@ const Register = () => {
   if (loading) return <p className="text-white text-center mt-5">Loading...</p>;
   return (
     <section className="container black-red">
-      <div className="logo d-flex justify-content-center mb-2">
-        <img src={Images.Favlogo} alt="Logo" width="50%" />
-      </div>
+      <Link to={routes.home}>
+        <div className="logo d-flex justify-content-center mb-2">
+          <img src={Images.Favlogo} alt="Logo" width="50%" />
+        </div>
+      </Link>
 
       <div className="pt-3 pb-2 card-log">
         {/* Logo */}

@@ -165,7 +165,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                       to={routes.home}
                     >
                       <img src={Images.Favlogo} alt="favicon" width="65%" />
-                      <Link
+                      {/* <Link
                         to={routes.pages.testinginfo}
                         style={{
                           position: "absolute",
@@ -188,7 +188,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                         }}
                       >
                         Testing app
-                      </Link>
+                      </Link> */}
                     </Link>
                   ) : (
                     <Skeleton height={40} width={120} />
@@ -304,20 +304,15 @@ const StickyHeader = ({ onToggleSidebar }) => {
                 />
               </button>
               <div className="search-field d-none d-md-block">
-                {/* <form className="d-flex align-items-center h-100" action="#">
-          <div className="search-container position-relative">
-            <input
-              type="text"
-              name="text"
-              className="form-control search-input visibility-hidden"
-              required=""
-              placeholder="Type to search..."
-            />
-            <div className="search-icon position-absolute">
-              <i className="fi fi-rs-search" />
-            </div>
-          </div>
-        </form> */}
+                <form className="d-flex align-items-center h-100" action="#">
+                  <div className="search-container position-relative">
+                    <Link to={routes.games.topGames}>
+                      <div className="search-icon ">
+                        <i className="fi fi-rs-search" />
+                      </div>
+                    </Link>
+                  </div>
+                </form>
               </div>
               <ul className="navbar-nav navbar-nav-right">
                 {/* <li>
@@ -345,7 +340,9 @@ const StickyHeader = ({ onToggleSidebar }) => {
                             <button
                               className="btn  btn-index w-100 deposit-btn"
                               onClick={() =>
-                                handleSecureRoute(routes.transactions.deposit)
+                                handleSecureRoute(
+                                  routes.transactions.paymentMethod
+                                )
                               }
                             >
                               Deposit
@@ -405,7 +402,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                       </a>
                     </li>
 
-                    <li className="nav-item dropdown">
+                    {/* <li className="nav-item dropdown">
                       <a
                         className="nav-link count-indicator dropdown-toggle"
                         id="notificationDropdown"
@@ -469,14 +466,14 @@ const StickyHeader = ({ onToggleSidebar }) => {
                               {" "}
                               New admin wow!{" "}
                             </p>
-                          </div>
+                          </div>sty
                         </a>
                         <div className="dropdown-divider" />
                         {/* <h6 className="p-3 mb-0 text-center">
                       See all notifications
-                    </h6> */}
+                    </h6> 
                       </div>
-                    </li>
+                    </li> */}
 
                     {/* Profile dropdown starts */}
                     <li className="nav-item dropdown">
@@ -546,13 +543,13 @@ const StickyHeader = ({ onToggleSidebar }) => {
                           className="profile-pic"
                         /> */}
                           </div>
-                          <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                            <h6
-                              className="preview-subject ellipsis mb-1 font-weight-normal"
-                              onClick={() =>
-                                handleSecureRoute(routes.transactions.deposit)
-                              }
-                            >
+                          <div
+                            className="preview-item-content d-flex align-items-start flex-column justify-content-center"
+                            onClick={() =>
+                              handleSecureRoute(routes.transactions.deposit)
+                            }
+                          >
+                            <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
                               Deposit
                             </h6>
                             {/* <p className="text-gray mb-0"> 15 Minutes ago </p> */}
@@ -569,13 +566,13 @@ const StickyHeader = ({ onToggleSidebar }) => {
                           className="profile-pic"
                         /> */}
                           </div>
-                          <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                            <h6
-                              className="preview-subject ellipsis mb-1 font-weight-normal"
-                              onClick={() =>
-                                handleSecureRoute(routes.transactions.withdraw)
-                              }
-                            >
+                          <div
+                            className="preview-item-content d-flex align-items-start flex-column justify-content-center"
+                            onClick={() =>
+                              handleSecureRoute(routes.transactions.withdraw)
+                            }
+                          >
+                            <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
                               Withdraw
                             </h6>
                             {/* <p className="text-gray mb-0"> 15 Minutes ago </p> */}
@@ -592,14 +589,14 @@ const StickyHeader = ({ onToggleSidebar }) => {
                           className="profile-pic"
                         /> */}
                           </div>
-                          <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                            <h6
-                              className="preview-subject ellipsis mb-1 font-weight-normal"
-                              onClick={() =>
-                                handleSecureRoute(routes.games.history)
-                              }
-                            >
-                              Bet History
+                          <div
+                            className="preview-item-content d-flex align-items-start flex-column justify-content-center"
+                            onClick={() =>
+                              handleSecureRoute(routes.games.history)
+                            }
+                          >
+                            <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
+                              Transaction History
                             </h6>
                             {/* <p className="text-gray mb-0"> 1 Minutes ago </p> */}
                           </div>
@@ -614,15 +611,15 @@ const StickyHeader = ({ onToggleSidebar }) => {
                           className="profile-pic"
                         /> */}
                           </div>
-                          <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                            <h6
-                              className="preview-subject ellipsis mb-1 font-weight-normal"
-                              onClick={() =>
-                                handleSecureRoute(
-                                  routes.transactions.withdrawHistory
-                                )
-                              }
-                            >
+                          <div
+                            className="preview-item-content d-flex align-items-start flex-column justify-content-center"
+                            onClick={() =>
+                              handleSecureRoute(
+                                routes.transactions.withdrawHistory
+                              )
+                            }
+                          >
+                            <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
                               Withdraw History
                             </h6>
                             {/* <p className="text-gray mb-0"> 15 Minutes ago </p> */}
@@ -638,15 +635,15 @@ const StickyHeader = ({ onToggleSidebar }) => {
                           // style={{width:}}
                         /> */}
                           </div>
-                          <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                            <h6
-                              className="preview-subject ellipsis mb-1 font-weight-normal"
-                              onClick={() =>
-                                handleSecureRoute(
-                                  routes.transactions.depositHistory
-                                )
-                              }
-                            >
+                          <div
+                            className="preview-item-content d-flex align-items-start flex-column justify-content-center"
+                            onClick={() =>
+                              handleSecureRoute(
+                                routes.transactions.depositHistory
+                              )
+                            }
+                          >
+                            <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
                               Deposit History
                             </h6>
                             {/* <p className="text-gray mb-0"> 18 Minutes ago </p> */}
@@ -661,11 +658,11 @@ const StickyHeader = ({ onToggleSidebar }) => {
                           className="profile-pic"
                         /> */}
                           </div>
-                          <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                            <h6
-                              className="preview-subject ellipsis mb-1 font-weight-normal"
-                              onClick={handleProfileClick}
-                            >
+                          <div
+                            className="preview-item-content d-flex align-items-start flex-column justify-content-center"
+                            onClick={handleProfileClick}
+                          >
+                            <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
                               Profile
                             </h6>
                             {/* <p className="text-gray mb-0"> 15 Minutes ago </p> */}
@@ -734,13 +731,13 @@ const StickyHeader = ({ onToggleSidebar }) => {
     </div>
   </li> */}
               </ul>
-              <button
+              {/* <button
                 className="navbar-toggler navbar-toggler-right d-lg-none align-self-center"
                 type="button"
                 data-toggle="offcanvas"
               >
                 <span className="mdi mdi-menu" />
-              </button>
+              </button> */}
             </div>
           </nav>
           {/* tab and laptopnav */}

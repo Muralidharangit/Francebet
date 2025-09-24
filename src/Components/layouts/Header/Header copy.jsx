@@ -121,7 +121,7 @@ const StickyHeader = () => {
               {Images?.Favlogo ? (
                 <Link className="navbar-brand m-0 position-relative" to={routes.home}>
                   <img src={Images.Favlogo} alt="favicon" width="65%" />
-                  <Link
+                  {/* <Link
                     to={routes.pages.testinginfo}
                     style={{
                       position: "absolute",
@@ -144,7 +144,7 @@ const StickyHeader = () => {
                     }}
                   >
                     Testing app
-                  </Link>
+                  </Link> */}
                 </Link>
               ) : (
                 <Skeleton height={40} width={120} />

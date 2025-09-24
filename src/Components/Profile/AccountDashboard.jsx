@@ -142,7 +142,7 @@ const AccountDashboard = () => {
               </Link>
               <div data-bs-toggle="modal" data-bs-target="#Edit_bank_pop_up">
                 <h4 className="mb-0">
-                  {avatar?.displayName || "Unknown User"}
+                  {avatar?.displayName || avatar?.playername}
                 </h4>
                 <h5>
                   {/* <span className="text-grey fs-14">
@@ -256,7 +256,7 @@ const AccountDashboard = () => {
                       alt="bet_history"
                       width="27px"
                     />
-                    <p className="mb-0 small">Bet History</p>
+                    <p className="mb-0 small"> Transaction History</p>
                   </div>
                   {/* <div
                     className="text-center"
@@ -304,15 +304,15 @@ const AccountDashboard = () => {
 
             {/* Notification & Other Options */}
             <div className="card bg_light_grey account_input-textbox-container mt-3">
-              <div className="card-body px-3">
-                <Link to={routes.games.bonus}>
+              <div className="card-body px-3 pt-0">
+                {/* <Link to={routes.games.bonus}>
                   <div className="d-flex justify-content-between align-items-center">
                     <p className="mb-0 fs-16">
                       <i className="fa-solid fa-gift pe-2" /> Get Bonus
                     </p>
                     <i className="ri-arrow-right-s-line text-white" />
                   </div>
-                </Link>
+                </Link> */}
                 {/* <div className="d-flex justify-content-between align-items-center mt-3">
                   <p className="mb-0 fs-16">
                     <i className="ri-group-fill pe-2" /> Notification

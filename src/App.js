@@ -2,6 +2,9 @@ import React, { lazy, Suspense } from "react";
 import routes from "./Components/routes/route";
 import { Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./Auth/ProtectedRoute";
+import ScrollToTop from "./ScrollToTop";
+import DepositStatic from "./Components/Pages/Transactions/Deposit copy/Deposit_static";
+import DepositMethod from "./Components/Pages/Transactions/Deposit/DepositMethod";
 
 const Home = lazy(() => import("./Components/layouts/Home"));
 const Bonus = lazy(() => import("./Components/layouts/Bonus"));
@@ -63,6 +66,7 @@ const TemporaryContentPage = lazy(() =>
 const Deposit = lazy(() =>
   import("./Components/Pages/Transactions/Deposit/Deposit")
 );
+
 const DepositHistory = lazy(() =>
   import("./Components/Pages/Transactions/Deposit/DepositHistory")
 );
@@ -73,10 +77,23 @@ const WithdrawIndex = lazy(() =>
   import("./Components/Pages/Transactions/Withdraw/WithdrawIndex")
 );
 
+const Deposit_Namibia = lazy(() =>
+  import(
+    "./Components/Pages/Transactions/Namibia/Deposit_Namibia_Manual/Deposit_Namibia"
+  )
+);
+const Deposit_Namibia_Ewallet = lazy(() =>
+  import(
+    "./Components/Pages/Transactions/Namibia/Deposit_Namibia_Ewallet/Deposit_Namibia_Ewallet"
+  )
+);
+
 function App() {
   return (
     <>
-      <Suspense fallback={<div>Loading...</div>}>
+      {/* <Suspense fallback={<div>Loading...</div>}> */}
+      <Suspense>
+        <ScrollToTop />
         <Routes>
           {/* Add the new Testing Info Page Route */}
           <Route
@@ -145,11 +162,30 @@ function App() {
               element={<DepositHistory />}
             />
 
+            <Route
+              path={routes.transactions.paymentMethod}
+              element={<DepositMethod />}
+            />
+
             <Route path={routes.transactions.addBank} element={<AddBank />} />
 
+            {/* ================================================================ */}
             {/* <Route path={routes.transactions.withdraw} element={<Withdraw />} /> */}
             <Route path={routes.transactions.deposit} element={<Deposit />} />
+            <Route
+              path={routes.transactions.deposit_namibia}
+              element={<Deposit_Namibia />}
+            />
+            <Route
+              path={routes.transactions.ewallet_deposit_namibia}
+              element={<Deposit_Namibia_Ewallet />}
+            />
 
+            <Route
+              path={routes.transactions.deposit_static}
+              element={<DepositStatic />}
+            />
+            {/* =========================================================================== */}
             <Route path={routes.profile.main} element={<Profile />} />
             <Route path={routes.profile.edit} element={<ProfileEdit />} />
             <Route

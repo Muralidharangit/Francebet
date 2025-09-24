@@ -23,7 +23,7 @@ const LoginPage = () => {
       setGiftNotice("You got a gift! Please login to claim it 🎁");
     }
   }, []);
-  
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -160,18 +160,23 @@ const LoginPage = () => {
 
   return (
     <section className="container vh-100 position-relative overflow-hidden black-red">
-      <div className="circle1 position-absolute top-0"></div>
-      <div className="circle2 position-absolute bottom-0"></div>
+      {/* <div className="circle1 position-absolute top-0"></div>
+      <div className="circle2 position-absolute bottom-0"></div> */}
 
-      <div className="pt-3 pb-2 h-100 d-flex align-items-center flex-column justify-content-center w-100 position-top-60">
-        <div className="logo d-flex justify-content-center mb-2">
-          <img
-            src={Images.Favlogo}
-            alt="Logo"
-            width="50%"
-            style={{ objectFit: "contain" }}
-          />
-        </div>
+      <div className="">
+        <Link to={routes.home}>
+          <div
+            className="logo d-flex justify-content-center mb-2"
+            style={{ "max-width": "400px" }}
+          >
+            <img
+              src={Images.Favlogo}
+              alt="Logo"
+              width="50%"
+              style={{ objectFit: "contain" }}
+            />
+          </div>
+        </Link>
 
         <div className="p-3 d-flex justify-content-start flex-column card-log">
           {giftNotice && (
@@ -282,7 +287,7 @@ const LoginPage = () => {
                 {/* Register Link */}
                 <div className="text-center mt-3">
                   <p className="text-gray ">
-                    <span className="text-gray "> New to Jiboomba? </span>
+                    <span className="text-gray "> New to jiboomba ? </span>
                     <Link
                       to={routes.auth.register}
                       className="link ms-2 fs-16 text-red z-2"

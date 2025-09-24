@@ -33,14 +33,6 @@ const SelectPaymentMethod = ({
   const [copied4, setCopied4] = useState(false);
   const [copied5, setCopied5] = useState(false);
 
-  // const navigate = useNavigate();
-  // const handleCopy = (ref, setCopied) => {
-  //   if (ref.current) {
-  //     navigator.clipboard.writeText(ref.current.value);
-  //     setCopied(true);
-  //     setTimeout(() => setCopied(false), 2000);
-  //   }
-  // };
   const handleCopy = (ref, setCopied) => {
     if (ref.current) {
       const textToCopy = ref.current.value;
@@ -115,46 +107,6 @@ const SelectPaymentMethod = ({
     };
     fetchData();
   }, [token]);
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     if (!token) return;
-
-  //     try {
-  //       // const verifyRes = await verifyToken(token);
-  //       // if (verifyRes.status !== "success") {
-  //       //   setError("Invalid or expired token. Please log in again.");
-  //       //   return;
-  //       // }
-
-  //       const methodRes = await getDepositMethods(token);
-  //       if (methodRes.status === "success") {
-  //         setDepositMethod(methodRes.paymentMethod || []);
-  //       } else {
-  //         toast.error(methodRes.msg || "Failed to load payment methods", {
-  //           toastId: "deposit-method-error",
-  //         });
-  //       }
-  //     } catch (err) {
-  //       toast.error(
-  //         err.message ||
-  //           "Something went wrong while verifying token or fetching methods.",
-  //         { toastId: "deposit-method-error" }
-  //       );
-  //     }
-  //   };
-
-  //   fetchData();
-  // }, [token]);
-  // useEffect(() => {
-  //   if (depositMethod.length > 0 && !selectedMethod) {
-  //     const firstMethodId = depositMethod[0].id;
-  //     setSelectedMethod(firstMethodId); // ✅ set default selected method
-  //     fetchPaymentDetails(firstMethodId); // ✅ fetch its details
-  //   }
-  // }, [depositMethod]);
-
-  // Fetch payment details based on method selection
-  // let lastRequestId = 0; // module-scope or useRef
 
   const fetchPaymentDetails = async (methodId) => {
     if (!token) return;
@@ -197,55 +149,13 @@ const SelectPaymentMethod = ({
     }
   };
 
-  // const fetchPaymentDetails = async (methodId) => {
-  //   if (!token) return;
 
-  //   setSelectedMethod(methodId); // Update selected method
-  //   setPaymentSelectedMethod(methodId);
-  //   setLoading(true);
-
-  //   try {
-  //     // const verifyRes = await verifyToken(token);
-
-  //     // if (verifyRes.status !== "success") {
-  //     //   setError("Invalid or expired token. Please log in again.");
-  //     //   return;
-  //     // }
-  //     const getPayment = await getPaymentDetails(token, methodId);
-
-  //     if (getPayment.status === "success") {
-  //       setPaymentDetails(getPayment.paymentDetails); // Store payment details
-  //       console.log(getPayment.paymentDetails, "check errrrrrrror");
-  //     } else {
-  //       setError(getPayment.msg || "Failed to load payment details");
-  //     }
-  //   } catch (err) {
-  //     setError("Something went wrong. Please try again.");
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-  // if (methodRes.status === "success") {
-  //   setDepositMethod(methodRes.paymentMethod || []);
-
-  //   // Default to method.id === 2 if exists
-  //   const upiMethod = methodRes.paymentMethod.find((m) => m.id === 2);
-  //   if (upiMethod) {
-  //     setSelectedMethod(upiMethod.id);
-  //     setPaymentSelectedMethod(upiMethod.id);
-  //     fetchPaymentDetails(upiMethod.id);
-  //   }
-  // }
   return (
     <div className=" bg_light_grey rounded-2  py-3">
       <div className="mx-3">
-        <h5 className="mb-3">Select Payment Method jzhjcvhjc nbvnc</h5>
+        <h5 className="mb-3">Select Payment Method</h5>
 
-        {/* {loading && <p>Loading payment methods...</p>} */}
         {methodsLoading && <p>Loading payment methods...</p>}
-        {/* {error && <p className="text-danger">{error}</p>} */}
-        {/* {error && <p className="text-danger">{error}</p>} */}
         <nav className="nav nav-pills d-flex justify-content-between tab_red_active">
           {depositMethod.length > 0
             ? depositMethod.map((method) => (

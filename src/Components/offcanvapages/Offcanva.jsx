@@ -100,7 +100,7 @@ const OffCanvas = () => {
                       srcSet=""
                       width="27px"
                     />
-                    <p className="mb-0">Bet History</p>
+                    <p className="mb-0"> Transaction History</p>
                   </div>
                   <div
                     className="text-center mt-3 col"
@@ -283,7 +283,7 @@ const OffCanvas = () => {
               </div>
             </div>
             <div className="d-flex mx-2 justify-content-center align-items-center">
-              <h5 className="mb-0">Bet History</h5>
+              <h5 className="mb-0"> Transaction History</h5>
             </div>
           </div>
         </div>
@@ -3121,7 +3121,7 @@ const OffCanvas = () => {
               </p>
               {/* <span class="btn text-white green-bg">Thank You</span>
 <span class="text-dard-grey fs-10 fw-700 mt-3"
- >For Choosing jiboomba</span
+ >For Choosing jiboomba </span
 > */}
               <div className="d-flex gap-2 mt-2">
                 <button

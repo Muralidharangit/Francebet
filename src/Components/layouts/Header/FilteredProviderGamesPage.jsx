@@ -13,6 +13,7 @@ import BASE_URL from "../../../API/api";
 import { Images } from "./constants/images";
 import routes from "../../routes/route";
 import Sidebar from "./Sidebar";
+import { getIsMobileParam } from "../../../hooks/homePageApi";
 
 const FilteredProviderGamesPage = () => {
   const [games, setGames] = useState([]);
@@ -40,9 +41,14 @@ const FilteredProviderGamesPage = () => {
   const fetchFilteredGames = async (provider) => {
     try {
       setLoading(true);
-      const response = await axios.get(`${BASE_URL}/all-games?is_mobile=1`, {
-        params: { provider },
-      });
+      const isMobileParam = getIsMobileParam();
+
+      const response = await axios.get(
+        `${BASE_URL}/all-games?is_mobile=${isMobileParam}`,
+        {
+          params: { provider },
+        }
+      );
       setGames(response.data.allGames);
     } catch (error) {
       console.error("Error fetching filtered games:", error);
@@ -63,6 +69,7 @@ const FilteredProviderGamesPage = () => {
 
     try {
       setIsLaunchingGame(true);
+      const isMobileParam = getIsMobileParam();
 
       const response = await axios.get(
         `${BASE_URL}/player/${game.provider}/launch/${encodeURIComponent(
@@ -70,7 +77,7 @@ const FilteredProviderGamesPage = () => {
         )}/${game.uuid}`,
         {
           params: {
-            return_url: `${window.location.origin}/all-games?is_mobile=1`,
+            return_url: `${window.location.origin}/all-games?is_mobile=${isMobileParam}`,
           },
           headers: { Authorization: `Bearer ${token}` },
         }
