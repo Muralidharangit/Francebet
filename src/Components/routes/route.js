@@ -22,6 +22,10 @@ const routes = {
     withdrawHistory: "/withdraw-history",
     depositHistory: "/deposit-history",
     addBank: "/add-bank",
+
+    // namibia
+    deposit_namibia: "/deposit-namibia/manual-deposit/get-payment-details",
+    ewallet_deposit_namibia: "/deposit-namibia/ewallet-deposit/get-payment-details",
   },
   account: {
     dashboard: "/account-dashboard",

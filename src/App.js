@@ -66,6 +66,7 @@ const TemporaryContentPage = lazy(() =>
 const Deposit = lazy(() =>
   import("./Components/Pages/Transactions/Deposit/Deposit")
 );
+
 const DepositHistory = lazy(() =>
   import("./Components/Pages/Transactions/Deposit/DepositHistory")
 );
@@ -74,6 +75,17 @@ const WithdrawHistory = lazy(() =>
 );
 const WithdrawIndex = lazy(() =>
   import("./Components/Pages/Transactions/Withdraw/WithdrawIndex")
+);
+
+const Deposit_Namibia = lazy(() =>
+  import(
+    "./Components/Pages/Transactions/Namibia/Deposit_Namibia_Manual/Deposit_Namibia"
+  )
+);
+const Deposit_Namibia_Ewallet = lazy(() =>
+  import(
+    "./Components/Pages/Transactions/Namibia/Deposit_Namibia_Ewallet/Deposit_Namibia_Ewallet"
+  )
 );
 
 function App() {
@@ -157,13 +169,23 @@ function App() {
 
             <Route path={routes.transactions.addBank} element={<AddBank />} />
 
+            {/* ================================================================ */}
             {/* <Route path={routes.transactions.withdraw} element={<Withdraw />} /> */}
             <Route path={routes.transactions.deposit} element={<Deposit />} />
+            <Route
+              path={routes.transactions.deposit_namibia}
+              element={<Deposit_Namibia />}
+            />
+            <Route
+              path={routes.transactions.ewallet_deposit_namibia}
+              element={<Deposit_Namibia_Ewallet />}
+            />
+
             <Route
               path={routes.transactions.deposit_static}
               element={<DepositStatic />}
             />
-
+            {/* =========================================================================== */}
             <Route path={routes.profile.main} element={<Profile />} />
             <Route path={routes.profile.edit} element={<ProfileEdit />} />
             <Route

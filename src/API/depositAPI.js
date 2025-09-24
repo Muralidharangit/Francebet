@@ -107,46 +107,90 @@ export const getPortalSettings = async (type = "deposit", token) => {
   return data?.settings || {};
 };
 
-// /**
-//  * Create 4 neat-looking amounts within [min_deposit, max_deposit].
-//  * Rounded to nearest 100 and spread across the range.
-//  */
-// export const getRandomDepositSuggestions = (
-//   { min_deposit, max_deposit },
-//   count = 6
-// ) => {
-//   const min = Number(min_deposit) || 0;
-//   const max = Number(max_deposit) || 0;
-//   if (!min || !max || min >= max) return [];
+// Namibia function
+export const getDepositMethodsNamibia = async (token) => {
+  const response = await axiosInstance.get(
+    "/player/deposit-namibia/manual-deposit/get-payment-details",
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};
 
-//   const results = new Set();
-//   const buckets = [
-//     { start: 0.1, end: 0.2 },
-//     { start: 0.25, end: 0.4 },
-//     { start: 0.5, end: 0.7 },
-//     { start: 0.75, end: 0.95 },
-//   ];
+// Send the Deposit Request
+export const sendDepositRequestNamibia = async ({
+  token,
+  amount,
+  utr_number,
+  paymentSelectedMethod,
+  player_id,
+}) => {
+  // console.log("paymentSelectedMethod", paymentSelectedMethod);
 
-//   for (let i = 0; i < buckets.length && results.size < count; i++) {
-//     const { start, end } = buckets[i];
-//     const lo = Math.floor(min + (max - min) * start);
-//     const hi = Math.floor(min + (max - min) * end);
-//     let val = randInt(lo, hi);
-//     val = roundTo(val, 100);
-//     val = clamp(val, min, max);
-//     results.add(val);
-//   }
+  const formData = new FormData();
+  formData.append("player_id", player_id);
+  formData.append("manual_deposit_id", paymentSelectedMethod);
+  formData.append("amount", amount);
+  formData.append("utr", utr_number);
 
-//   // If still short (small ranges), fill randomly
-//   while (results.size < count) {
-//     let val = roundTo(randInt(min, max), 100);
-//     results.add(clamp(val, min, max));
-//   }
+  const response = await axios.post(
+    `${BASE_URL}/player/deposit-namibia/manual-deposit/send-deposit-request`,
+    formData,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
 
-//   return Array.from(results).sort((a, b) => a - b);
-// };
+  return response.data;
+};
 
-// /** ---------------- Helpers ---------------- */
-// const randInt = (a, b) => Math.floor(Math.random() * (b - a + 1)) + a;
-// const roundTo = (n, step) => Math.round(n / step) * step;
-// const clamp = (n, lo, hi) => Math.max(lo, Math.min(hi, n));
+// Namibia Ewallet Function
+
+export const getDepositMethodsNamibiaEwallet = async (token) => {
+  const response = await axiosInstance.get(
+    "/player/deposit-namibia/ewallet-deposit/get-payment-details",
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};
+
+// deposit-namibia/ewallet-deposit/send-deposit-request
+// Send the Deposit Request namibia
+export const sendDepositRequestNamibiaEwallet = async ({
+  token,
+  amount,
+  utr_number,
+  paymentSelectedMethod,
+  player_id,
+}) => {
+  // console.log("paymentSelectedMethod", paymentSelectedMethod);
+
+  const formData = new FormData();
+  formData.append("player_id", player_id);
+  formData.append("manual_deposit_id", paymentSelectedMethod);
+  formData.append("amount", amount);
+  formData.append("utr", utr_number);
+
+  const response = await axios.post(
+    `${BASE_URL}/player/deposit-namibia/manual-deposit/send-deposit-request`,
+    formData,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+
+  return response.data;
+};

@@ -1,5 +1,10 @@
-// const BASE_URL = "https://staging.syscorp.in/api/v1/jiboomba";
-const BASE_URL = "https://staging.syscorp.in/api/v1/test";
+// jiboomba URL
+// const BASE_URL = "https://staging.syscorp.in/api/v1/";
 // const BASE_URL = "https://iccpanel.com/api/v1/jiboomba";
+
+// const BASE_URL = "https://staging.syscorp.in/api/v1/test";
+
+// Namibia URL
+const BASE_URL = "https://staging.syscorp.in/api/v1/test2";
 
 export default BASE_URL;

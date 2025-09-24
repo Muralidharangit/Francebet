@@ -3,10 +3,10 @@ import React, { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
 // Adjust these paths if your structure differs:
-import StickyHeader from "../../../layouts/Header/Header";
-import Sidebar from "../../../layouts/Header/Sidebar";
-import AuthContext from "../../../../Auth/AuthContext";
-import axiosInstance from "../../../../API/axiosConfig";
+import StickyHeader from "../../../../layouts/Header/Header";
+import Sidebar from "../../../../layouts/Header/Sidebar";
+import AuthContext from "../../../../../Auth/AuthContext";
+import axiosInstance from "../../../../../API/axiosConfig";
 
 const DepositMethod = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -114,28 +114,12 @@ const DepositMethod = () => {
   function handleChoose(method) {
     const name = (method?.name || "").toLowerCase().trim();
 
-    // console.log(name, "hhhhhhhhhhhh");
-
-    // name -> something like "Manual Deposit - Namibia"
-    const key = (name || "").toLowerCase().trim();
-
-    // Most specific FIRST
-    if (key.includes("manual") && key.includes("namibia")) {
-      navigate("/deposit-namibia/manual-deposit/get-payment-details");
-      return;
-    }
-
-    // Generic manual
-    if (key.includes("manual")) {
+    // Manual Deposit -> internal route
+    if (name.includes("manual")) {
       navigate("/deposit");
       return;
     }
 
-    // Generic manual
-    if (key.includes("ewallet")) {
-      navigate("/deposit-namibia/ewallet-deposit/get-payment-details");
-      return;
-    }
     // A-Pay -> kickoff via axios (so token + JSON headers go along)
     // if (name.includes("apay")) {
     //   if (!user?.token) {
