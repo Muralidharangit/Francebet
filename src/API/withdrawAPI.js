@@ -95,6 +95,7 @@ export const withdrawHistoryPage = async (token) => {
   });
   return response.data;
 };
+
 // ====================================================================
 // Get Bank Data namibia
 export const getBankDetailsNamibia = async (token, userId) => {
@@ -150,3 +151,4 @@ export const sendWithdrawRequestNamibia = async ({
 
   return response.data;
 };
+
