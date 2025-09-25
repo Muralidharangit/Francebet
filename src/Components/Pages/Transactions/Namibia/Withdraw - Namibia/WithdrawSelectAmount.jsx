@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { getPortalSettings } from "../../../../API/depositAPI";
+import { getPortalSettings } from "../../../../../API/depositAPI";
 
 const WithdrawSelectAmount = ({ amount, setAmount, token }) => {
   const [amounts, setAmounts] = useState([]);

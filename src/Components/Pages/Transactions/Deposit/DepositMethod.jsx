@@ -114,7 +114,7 @@ const DepositMethod = () => {
   function handleChoose(method) {
     const name = (method?.name || "").toLowerCase().trim();
 
-    // console.log(name, "hhhhhhhhhhhh");
+    console.log(name, "hhhhhhhhhhhh");
 
     // name -> something like "Manual Deposit - Namibia"
     const key = (name || "").toLowerCase().trim();
@@ -132,7 +132,7 @@ const DepositMethod = () => {
     }
 
     // Generic manual
-    if (key.includes("ewallet")) {
+    if (key.includes("e-wallet")) {
       navigate("/deposit-namibia/ewallet-deposit/get-payment-details");
       return;
     }

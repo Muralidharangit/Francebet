@@ -1,18 +1,42 @@
 import React, { useContext, useEffect, useState } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import { Link } from "react-router-dom";
-import AuthContext from "../../../../Auth/AuthContext";
-import routes from "../../../routes/route";
-import { EditBank, sendWithdrawRequest } from "../../../../API/withdrawAPI";
-import { verifyToken } from "../../../../API/authAPI";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import AuthContext from "../../../../../Auth/AuthContext";
+import routes from "../../../../routes/route";
+import {
+  EditBank,
+  sendWithdrawRequest,
+  sendWithdrawRequestNamibia,
+} from "../../../../../API/withdrawAPI";
+import { verifyToken } from "../../../../../API/authAPI";
 import { toast, ToastContainer } from "react-toastify";
+import {
+  clearSelectedBank,
+  loadSelectedBank,
+} from "../../../../../API/bankSelectionStorage";
 
 const WithdrawAmountRequest = ({ amount, bankId }) => {
   const [bankDetails, setBankDetails] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const { user } = useContext(AuthContext);
   const token = user?.token;
+  const userid = user?.id;
+  console.log(bankDetails);
+  const [bank, setBank] = useState(null);
+  const location = useLocation();
+
+  useEffect(() => {
+    const refresh = () => setBank(loadSelectedBank());
+    refresh(); // initial
+    window.addEventListener("nm-bank-selected", refresh);
+    return () => window.removeEventListener("nm-bank-selected", refresh);
+  }, []);
+  
+  useEffect(() => {
+    setBank(loadSelectedBank());
+  }, [location.key]); // 🔁 runs on each navigation to this route
+
   const formik = useFormik({
     enableReinitialize: true, // 🟣 IMPORTANT!
     initialValues: {
@@ -54,16 +78,18 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
           return;
         }
 
-        const response = await sendWithdrawRequest({
+        const response = await sendWithdrawRequestNamibia({
           token,
           bankId,
           amount: values.amount,
+          userid,
         });
 
         if (response.status === "success") {
           // toast.success("Withdraw request sent successfully! 🎉");
           setShowModal(true);
           resetForm();
+          localStorage.removeItem("nm_selected_bank");
           // navigate(routes.transactions.withdrawHistory);
         } else {
           setErrors({
@@ -87,35 +113,36 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
     },
   });
 
-  useEffect(() => {
-    if (!token || !bankId) return; // ✅ Prevents unnecessary API call
+  // ============================ *********** Dont Delete this to get the bank details  ***********************  =====================
+  // useEffect(() => {
+  //   if (!token || !bankId) return; // ✅ Prevents unnecessary API call
 
-    const fetchBankDetails = async () => {
-      try {
-        const response = await EditBank(bankId, token);
-        if (response.status === "success") {
-          setBankDetails(response.playerBank);
-        } else {
-          toast.error(
-            response.message ||
-              "Failed to fetch bank details. Please log in again.",
-            { toastId: "unauthorized-toast" }
-          );
-        }
-      } catch (error) {
-        const errorMessage =
-          error.response?.data?.message ||
-          error.message ||
-          "Something went wrong. Please log in again.";
+  //   const fetchBankDetails = async () => {
+  //     try {
+  //       const response = await EditBank(bankId, token);
+  //       if (response.status === "success") {
+  //         setBankDetails(response.playerBank);
+  //       } else {
+  //         toast.error(
+  //           response.message ||
+  //             "Failed to fetch bank details. Please log in again.",
+  //           { toastId: "unauthorized-toast" }
+  //         );
+  //       }
+  //     } catch (error) {
+  //       const errorMessage =
+  //         error.response?.data?.message ||
+  //         error.message ||
+  //         "Something went wrong. Please log in again.";
 
-        toast.error(`${errorMessage}`, {
-          toastId: "unauthorized-toast",
-        });
-      }
-    };
+  //       toast.error(`${errorMessage}`, {
+  //         toastId: "unauthorized-toast",
+  //       });
+  //     }
+  //   };
 
-    fetchBankDetails();
-  }, [token, bankId]);
+  //   fetchBankDetails();
+  // }, [token, bankId]);
 
   return (
     <>
@@ -157,22 +184,44 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
           <h5 className=" mb-0">Withdraw Amount</h5>
           {amount && <h4>₹ {amount}</h4>}
           {bankDetails && (
-            <div className="mt-3">
-              <h5 className="mb-1">Bank Info:</h5>
-              <p className="mb-0 text-grey">
-                Bank Name: <strong>{bankDetails.bank_name}</strong>
-              </p>
-              <p className="mb-0 text-grey">
-                Account Holder:{" "}
-                <strong>{bankDetails.account_holder_name}</strong>
-              </p>
-              <p className="mb-0 text-grey">
-                Account Number: <strong>{bankDetails.account_number}</strong>
-              </p>
-              <p className="mb-0 text-grey">
-                IFSC Code: <strong>{bankDetails.ifsc_code}</strong>
-              </p>
-            </div>
+            <>
+              <div className="mt-3">
+                <h5 className="mb-1">Bank Info:</h5>
+                <p className="mb-0 text-grey">
+                  Bank Name: <strong>{bankDetails.bank_name}</strong>
+                </p>
+                <p className="mb-0 text-grey">
+                  Account Holder:{" "}
+                  <strong>{bankDetails.account_holder_name}</strong>
+                </p>
+                <p className="mb-0 text-grey">
+                  Account Number: <strong>{bankDetails.account_number}</strong>
+                </p>
+                <p className="mb-0 text-grey">
+                  IFSC Code: <strong>{bankDetails.ifsc_code}</strong>
+                </p>
+              </div>
+            </>
+          )}
+
+          {bank && (
+            <>
+              <div className="mt-3">
+                <h5 className="mb-1">Bank Info:</h5>
+                <p className="mb-0 text-grey">
+                  Bank Name: <strong>{bank.bank_name}</strong>
+                </p>
+                <p className="mb-0 text-grey">
+                  Account Holder: <strong>{bank.account_name}</strong>
+                </p>
+                <p className="mb-0 text-grey">
+                  Account Number: <strong>{bank.account_masked}</strong>
+                </p>
+                {/* <p className="mb-0 text-grey">
+                  Branch Code: <strong>{bank.account_masked}</strong>
+                </p> */}
+              </div>
+            </>
           )}
 
           {!bankId || !amount ? (

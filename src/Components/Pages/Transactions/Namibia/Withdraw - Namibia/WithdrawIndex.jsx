@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import WithdrawSelectAmount from "./WithdrawSelectAmount";
-import BankDetails from "./BankDetails";
+import BankDetails from "./BankDetails_Namibia";
 import WithdrawAmountRequest from "./WithdrawAmountRequest";
-import StickyHeader from "../../../layouts/Header/Header";
-import Sidebar from "../../../layouts/Header/Sidebar";
+import StickyHeader from "../../../../layouts/Header/Header";
+import Sidebar from "../../../../layouts/Header/Sidebar";
 
 const WithdrawIndex = () => {
   const [activeStep, setActiveStep] = useState("step1");
@@ -19,7 +19,7 @@ const WithdrawIndex = () => {
         <WithdrawSelectAmount
           amount={selectedAmount}
           setAmount={setSelectedAmount}
-           count={4}
+          count={4}
         />
       ),
     },
@@ -87,14 +87,14 @@ const WithdrawIndex = () => {
                     {/* header Starts */}
                     <div className="d-flex align-items-center justify-content-between position-relative  px-0">
                       {/* Back Button on Left */}
-                      {/* <div className="d-flex justify-content-between align-items-center px-0">
+                      <div className="d-flex justify-content-between align-items-center px-0">
                         <button
                           className="go_back_btn bg-grey"
                           onClick={() => window.history.back()}
                         >
                           <i className="ri-arrow-left-s-line text-white fs-20" />
                         </button>
-                      </div> */}
+                      </div>
 
                       {/* Centered Title */}
                       <h5 className="position-absolute start-50 translate-middle-x m-0 text-white fs-16">

@@ -5,17 +5,19 @@ import * as Yup from "yup";
 // import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { useFormik } from "formik";
-import AuthContext from "../../../../Auth/AuthContext";
+import AuthContext from "../../../../../Auth/AuthContext";
 import {
   changeBankStatus,
   deleteBankDetails,
   EditBank,
-  getBankDetails,
+  getBankDetailsNamibia,
   storeBank,
+  storeBankNamibia,
   updateBank,
-} from "../../../../API/withdrawAPI";
-import { verifyToken } from "../../../../API/authAPI";
+} from "../../../../../API/withdrawAPI";
+import { verifyToken } from "../../../../../API/authAPI";
 import { toast, ToastContainer } from "react-toastify";
+import { saveSelectedBank } from "../../../../../API/bankSelectionStorage";
 // import { Link } from "react-router-dom";
 const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
   const [bankDetails, setbankDetails] = useState([]);
@@ -29,44 +31,13 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
   // const [editingBankData, setEditingBankData] = useState(null);
   const { user } = useContext(AuthContext);
   const token = user?.token;
-  // useEffect(() => {
-  //   toast.success("Testing toast closing...", { autoClose: 3000 });
-  // }, []);
-  // useEffect(() => {
-  //   const currentToken = user?.token;
+  const userId = user?.id;
 
-  //   if (!currentToken) {
-  //     setError("Authentication error. Please log in again.");
-  //     setLoading(false);
-  //     return;
-  //   }
-
-  //   const fetchWithdrawHistory = async () => {
-  //     try {
-  //       const verifyRes = await verifyToken(currentToken);
-  //       if (verifyRes.status !== "success") {
-  //         setError("Invalid or expired token. Please log in again.");
-  //         return;
-  //       }
-
-  //       const response = await getBankDetails(currentToken);
-  //       if (
-  //         response.status === "success" &&
-  //         Array.isArray(response.playerBank)
-  //       ) {
-  //         setbankDetails(response.playerBank);
-  //       } else {
-  //         setError(response.msg || "Failed to load withdraw history.");
-  //       }
-  //     } catch (err) {
-  //       setError("Something went wrong. Please try again.");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchWithdrawHistory();
-  // }, [user?.token]); // ✅ token change will re-run
+  const handleSelectBank = (bank) => {
+    saveSelectedBank(bank);
+    window.dispatchEvent(new Event("nm-bank-selected")); // 🔔 tell listeners to refresh
+    // navigate("/deposit-namibia/manual-deposit/get-payment-details");
+  };
 
   useEffect(() => {
     const currentToken = user?.token;
@@ -89,7 +60,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
           return;
         }
 
-        const response = await getBankDetails(); // ✅ No need to pass token if axiosInstance handles it
+        const response = await getBankDetailsNamibia(token, userId); // ✅ No need to pass token if axiosInstance handles it
         if (
           response.status === "success" &&
           Array.isArray(response.playerBank)
@@ -146,21 +117,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
             bank.id === bank_id ? { ...bank, status: newStatus } : bank
           )
         );
-        // toast.success(
-        //   `Bank ${
-        //     newStatus === "1" ? "🔓 Activated " : "🔒 Deactivated "
-        //   } successfully!`
-        // );
-        // toast.success(
-        //   <span>
-        //     Bank{" "}
-        //     <span style={{ position: "relative", top: "-2px" }}>
-        //       {newStatus === "1" ? "🔓" : "🔒"}
-        //     </span>{" "}
-        //     {newStatus === "1" ? "Activated" : "Deactivated"} successfully!
-        //   </span>
-        // );
-        // toast.success(`heoolo`);
+
         toast.success(
           <span>
             Bank{" "}
@@ -202,18 +159,18 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
     account_number: Yup.string()
       .matches(/^\d+$/, "Only numbers allowed")
       .required("Account Number is required"),
-    ifsc_code: Yup.string()
-      .matches(/^[A-Z0-9]/, "Enter a valid IFSC code")
-      .required("IFSC Code is required"),
+    branch_code: Yup.string().required("Branch Code is required"),
+    branch_name: Yup.string().required("Branch Name is required"),
   });
 
   //   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
+      account_number: "",
+      branch_code: "",
+      branch_name: "",
       bank_name: "",
       account_holder_name: "",
-      account_number: "",
-      ifsc_code: "",
     },
     validationSchema,
     onSubmit: async (values, { setSubmitting, setErrors, resetForm }) => {
@@ -250,7 +207,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
         }
 
         // ✅ Step 2: Submit bank form
-        const response = await storeBank(token, values);
+        const response = await storeBankNamibia(token, values, userId);
 
         if (response.status === "success") {
           toast.dismiss("bank-added"); // optional: clean before show
@@ -265,7 +222,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
           setActiveTab("bank");
           setLoading(true);
 
-          const refreshedBanks = await getBankDetails(token);
+          const refreshedBanks = await getBankDetailsNamibia(token, userId);
           if (
             refreshedBanks.status === "success" &&
             Array.isArray(refreshedBanks.playerBank)
@@ -352,25 +309,13 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
             verifyError.message ||
             "Invalid or expired token. Please log in again.";
 
-          // toast.error(errorMessage);
           toast.error(`${errorMessage}. Please log in again to continue.`, {
             toastId: "unauthorized-toast", // prevents duplicate toasts
           });
-          // setErrors({ api: errorMessage });
+
           setSubmitting(false);
           return;
         }
-
-        // const response = await axios.post(
-        //   `${BASE_URL}/player/update-bank/${editingBankId}`,
-        //   values,
-        //   {
-        //     headers: {
-        //       Authorization: `Bearer ${token}`,
-        //       "Content-Type": "application/json",
-        //     },
-        //   }
-        // );
 
         const response = await updateBank(token, values, editingBankId);
         if (response.status === "success") {
@@ -390,7 +335,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
           //   }
           // );
 
-          const refreshedBanks = await getBankDetails(token);
+          const refreshedBanks = await getBankDetailsNamibia(token, userId);
 
           if (
             refreshedBanks.status === "success" &&
@@ -520,6 +465,10 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
     }
   };
 
+  // handlePopUP
+  const handlePopUP = () => {
+    alert("api is working ");
+  };
   return (
     <>
       <ToastContainer
@@ -681,6 +630,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
                                   value={bank.id}
                                   checked={selectedBankId === bank.id}
                                   onChange={() => setSelectedBankId(bank.id)}
+                                  onClick={() => handleSelectBank(bank)}
                                 />
                               </div>
                             </div>
@@ -759,41 +709,6 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
                       <input
                         required
                         className="input"
-                        type="text"
-                        name="bank_name"
-                        value={formik.values.bank_name}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                      />
-                      <label className="label">Bank Name</label>
-                      {formik.touched.bank_name && formik.errors.bank_name && (
-                        <p className="text-danger">{formik.errors.bank_name}</p>
-                      )}
-                    </div>
-
-                    <div className="input-field">
-                      <input
-                        required
-                        className="input"
-                        type="text"
-                        name="account_holder_name"
-                        value={formik.values.account_holder_name}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                      />
-                      <label className="label">A/C Holder Name</label>
-                      {formik.touched.account_holder_name &&
-                        formik.errors.account_holder_name && (
-                          <p className="text-danger">
-                            {formik.errors.account_holder_name}
-                          </p>
-                        )}
-                    </div>
-
-                    <div className="input-field">
-                      <input
-                        required
-                        className="input"
                         type="number"
                         name="account_number"
                         value={formik.values.account_number}
@@ -814,15 +729,72 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
                         required
                         className="input"
                         type="text"
-                        name="ifsc_code"
-                        value={formik.values.ifsc_code}
+                        name="branch_code"
+                        value={formik.values.branch_code}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                       />
-                      <label className="label">IFSC</label>
-                      {formik.touched.ifsc_code && formik.errors.ifsc_code && (
-                        <p className="text-danger">{formik.errors.ifsc_code}</p>
+                      <label className="label">Branch Code</label>
+                      {formik.touched.branch_code &&
+                        formik.errors.branch_code && (
+                          <p className="text-danger">
+                            {formik.errors.branch_code}
+                          </p>
+                        )}
+                    </div>
+
+                    <div className="input-field">
+                      <input
+                        required
+                        className="input"
+                        type="text"
+                        name="bank_name"
+                        value={formik.values.bank_name}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                      />
+                      <label className="label">Bank Name</label>
+                      {formik.touched.bank_name && formik.errors.bank_name && (
+                        <p className="text-danger">{formik.errors.bank_name}</p>
                       )}
+                    </div>
+
+                    <div className="input-field">
+                      <input
+                        required
+                        className="input"
+                        type="text"
+                        name="branch_name"
+                        value={formik.values.branch_name}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                      />
+                      <label className="label">Branch Name</label>
+                      {formik.touched.branch_name &&
+                        formik.errors.branch_name && (
+                          <p className="text-danger">
+                            {formik.errors.branch_name}
+                          </p>
+                        )}
+                    </div>
+
+                    <div className="input-field">
+                      <input
+                        required
+                        className="input"
+                        type="text"
+                        name="account_holder_name"
+                        value={formik.values.account_holder_name}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+                      />
+                      <label className="label">A/C Holder Name</label>
+                      {formik.touched.account_holder_name &&
+                        formik.errors.account_holder_name && (
+                          <p className="text-danger">
+                            {formik.errors.account_holder_name}
+                          </p>
+                        )}
                     </div>
 
                     <div className="d-flex justify-content-center">
@@ -920,7 +892,8 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
                           className={`btn ${
                             bank.status === "1" ? "btn-success" : "btn-danger"
                           }`}
-                          onClick={() => toggleBankStatus(bank.id, bank.status)}
+                          // onClick={() => toggleBankStatus(bank.id, bank.status)}
+                          onClick={handlePopUP}
                         >
                           {bank.status === "1" ? "Active" : "Inactive"}
                         </button>
@@ -928,16 +901,18 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
                         {/* Edit Button */}
                         <button
                           className="btn mt-2"
-                          onClick={() => handleEditBankClick(bank.id)}
-                          data-bs-toggle="modal"
-                          data-bs-target="#edit_bank_details"
+                          onClick={handlePopUP}
+                          // onClick={() => handleEditBankClick(bank.id)}
+                          // data-bs-toggle="modal"
+                          // data-bs-target="#edit_bank_details"
                         >
                           <i class="fa-solid fa-pen-to-square fs-4 text-white"></i>
                         </button>
                         {/* Edit Button */}
                         <button
                           className="btn mt-2"
-                          onClick={() => handleDeleteBankClick(bank.id)}
+                          // onClick={() => handleDeleteBankClick(bank.id)}
+                          onClick={handlePopUP}
                         >
                           <i class="fa-regular fa-trash-can fs-4 text-danger">
                             {/* {bank.id} */}

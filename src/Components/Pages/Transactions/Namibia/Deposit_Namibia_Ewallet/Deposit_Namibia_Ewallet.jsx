@@ -105,14 +105,14 @@ function Deposit() {
                       </h5>
                     </div>
                     {/* header Ends */}
-                    {/* <div className="d-flex justify-content-between align-items-center px-0">
+                    <div className="d-flex justify-content-between align-items-center px-0">
                 <button
-                  className="go_back_btn"
+                  className="go_back_btn bg-grey"
                   onClick={() => window.history.back()}
                 >
                   <i className="ri-arrow-left-s-line text-white fs-24" />
                 </button>
-              </div> */}
+              </div>
 
                     {/* Wizard */}
                     <div className="container mt-4 px-0">
