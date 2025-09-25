@@ -284,10 +284,10 @@ const StickyHeader = ({ onToggleSidebar }) => {
           <nav className="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row mobile-none">
             <div className="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
               <a className="navbar-brand brand-logo">
-                <img src="assets/img/logo.png" alt="logo" />
+                <img src="/assets/img/logo.png" alt="logo" />
               </a>
               <a className="navbar-brand brand-logo-mini p-0">
-                <img src="assets/img/fav.png" alt="logo" />
+                <img src="/assets/img/fav.png" alt="logo" />
               </a>
             </div>
             <div className="navbar-menu-wrapper d-flex align-items-stretch">
@@ -644,7 +644,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                             className="preview-item-content d-flex align-items-start flex-column justify-content-center"
                             onClick={() =>
                               handleSecureRoute(
-                                routes.transactions.depositHistory
+                                routes.transactions.all_deposit_history
                               )
                             }
                           >

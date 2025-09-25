@@ -1,14 +1,15 @@
 import React, { useContext, useEffect, useState } from "react";
-import BASE_URL from "../../../../API/api";
+import BASE_URL from "../../../../../API/api";
 import axios from "axios";
-import { depositHistory } from "../../../../API/depositAPI";
-import { verifyToken } from "../../../../API/authAPI";
-import AuthContext from "../../../../Auth/AuthContext";
+import { depositHistory } from "../../../../../API/depositAPI";
+import { verifyToken } from "../../../../../API/authAPI";
+import AuthContext from "../../../../../Auth/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
-import StickyHeader from "../../../layouts/Header/Header";
-import Sidebar from "../../../layouts/Header/Sidebar";
-import axiosInstance from "../../../../API/axiosConfig";
+import StickyHeader from "../../../../layouts/Header/Header";
+import Sidebar from "../../../../layouts/Header/Sidebar";
+import axiosInstance from "../../../../../API/axiosConfig";
 import { CURRENCY_SYMBOL } from "../../../../../constants";
+import { depositHistoryEwalletNamibia } from "../../../../../API/depositAPI";
 
 const DepositHistory = () => {
   const [history, setHistory] = useState([]);
@@ -54,7 +55,7 @@ const DepositHistory = () => {
       //   return;
       // }
 
-      const response = await depositHistory(token);
+      const response = await depositHistoryEwalletNamibia(token);
       if (response.status === "success") {
         setHistory(response.depositHistory);
         setError(null); // 🟢 clear old errors
@@ -273,7 +274,9 @@ const DepositHistory = () => {
                       </div>
 
                       {/* Centered Title */}
-                      <h5 className="m-0 text-white fs-16">Deposit History</h5>
+                      <h5 className="m-0 text-white fs-16">
+                        Ewallet Deposit History
+                      </h5>
                       <div className="d-flex justify-content-between align-items-center px-0">
                         <button
                           className="go_back_btn bg-grey"
@@ -297,7 +300,7 @@ const DepositHistory = () => {
                           "processing",
                           "verified",
                           "rejected",
-                          "orders list",
+                          // "orders list",
                         ].map((tab) => (
                           <button
                             key={tab}
@@ -316,7 +319,7 @@ const DepositHistory = () => {
                       </div>
                     </div>
 
-                    {selectedTab === "orders list" && (
+                    {/* {selectedTab === "orders list" && (
                       <div className="mt-3">
                         {ordersLoading && (
                           <p className="text-muted">Loading orders…</p>
@@ -354,7 +357,6 @@ const DepositHistory = () => {
                                     <th>Order ID</th>
                                     <th>Amount</th>
                                     <th>Status</th>
-                                    {/* <th>Payment Ref</th> */}
                                     <th>Created</th>
                                   </tr>
                                 </thead>
@@ -372,12 +374,6 @@ const DepositHistory = () => {
                                           {o.status || "—"}
                                         </span>
                                       </td>
-                                      {/* <td>
-                                        {o.payment_reference ||
-                                          o.txn_id ||
-                                          o.gateway_ref ||
-                                          "—"}
-                                      </td> */}
                                       <td>
                                         {o.created_at
                                           ? new Date(
@@ -393,7 +389,7 @@ const DepositHistory = () => {
                               </table>
                             </div>
 
-                            {/* Pagination */}
+                            
                             {ordersMeta?.last_page > 1 && (
                               <div className="d-flex justify-content-between align-items-center mt-2">
                                 <small className="text-muted">
@@ -430,7 +426,7 @@ const DepositHistory = () => {
                           </>
                         )}
                       </div>
-                    )}
+                    )} */}
 
                     <div className="tab-content px-3 mt-2 mb-3">
                       {loading ? (
@@ -474,20 +470,21 @@ const DepositHistory = () => {
                                     <p className="mb-0 fs-11">UTR NO</p>
                                     <p className="fs-14 mb-0">{bet.utr}</p>
                                     <p className="fs-11 mb-0 text-grey mt-2">
-                                      {new Date(
-                                        bet.created_date
-                                      ).toLocaleString("en-GB", {
-                                        day: "2-digit",
-                                        month: "short",
-                                        year: "numeric",
-                                      })}
+                                      {new Date(bet.created_at).toLocaleString(
+                                        "en-GB",
+                                        {
+                                          day: "2-digit",
+                                          month: "short",
+                                          year: "numeric",
+                                        }
+                                      )}
                                     </p>
                                   </div>
                                 </div>
 
                                 <div className="d-flex  align-items-end flex-column">
                                   <h4 className="mb-1 amount-fs-size">
-                                    {CURRENCY_SYMBOL} {bet.amount}
+                                    {CURRENCY_SYMBOL} {bet.deposit_amount}
                                   </h4>
 
                                   <span
@@ -515,7 +512,7 @@ const DepositHistory = () => {
                             </p> */}
                                   <p className="fs-11 mb-0 text-grey mt-1">
                                     {new Date(
-                                      bet.created_date
+                                      bet.created_at
                                     ).toLocaleTimeString("en-US", {
                                       hour: "2-digit",
                                       minute: "2-digit",

@@ -177,12 +177,12 @@ export const sendDepositRequestNamibiaEwallet = async ({
 
   const formData = new FormData();
   formData.append("player_id", player_id);
-  formData.append("manual_deposit_id", paymentSelectedMethod);
+  formData.append("manual_ewallet_id", paymentSelectedMethod);
   formData.append("amount", amount);
   formData.append("utr", utr_number);
 
   const response = await axios.post(
-    `${BASE_URL}/player/deposit-namibia/manual-deposit/send-deposit-request`,
+    `${BASE_URL}/player/deposit-namibia/ewallet-deposit/send-deposit-request`,
     formData,
     {
       headers: {
@@ -192,5 +192,27 @@ export const sendDepositRequestNamibiaEwallet = async ({
     }
   );
 
+  return response.data;
+};
+
+// Deposit History
+export const depositHistoryNamibia = async (token) => {
+  const response = await axiosInstance.get(
+    "/player/deposit-namibia/manual-deposit/history",
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+  return response.data;
+};
+
+// Deposit History Ewallet namibia
+export const depositHistoryEwalletNamibia = async (token) => {
+  const response = await axiosInstance.get(
+    "/player/deposit-namibia/ewallet-deposit/history",
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
   return response.data;
 };

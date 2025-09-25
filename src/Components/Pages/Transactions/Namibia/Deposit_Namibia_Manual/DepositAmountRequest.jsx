@@ -18,7 +18,7 @@ const DepositAmountRequest = ({
   const { user } = useContext(AuthContext);
   const token = user?.token;
   const User_id = user?.id;
-  console.log("user================", User_id);
+  // console.log("user================", User_id);
 
   const formik = useFormik({
     enableReinitialize: true, // 🟣 IMPORTANT!
@@ -294,7 +294,7 @@ const DepositAmountRequest = ({
                   Your Request <br />
                   Is In Our Queue!
                 </div>
-                <Link to={routes.transactions.depositHistory}>
+                <Link to={routes.transactions.manual_deposit_history}>
                   <span
                     className="btn text-white green-bg"
                     onClick={() => setShowModal(false)} // ❌ Don't use data-bs-dismiss
