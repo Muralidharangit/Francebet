@@ -202,7 +202,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                     {/* Coin Box */}
                     {profile ? (
                       <div className="coin-box d-flex align-items-center px-2 py-1 rounded-pill">
-                        <img src="assets/img/rupee.png" width="20" alt="Coin" />
+                        <img src="/assets/img/rupee.png" width="20" alt="Coin" />
                         <span className="ms-1 text-white">
                           {CURRENCY_SYMBOL} {Number(profile?.chips).toFixed(2)}
                         </span>
@@ -284,7 +284,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
           <nav className="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row mobile-none">
             <div className="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
               <a className="navbar-brand brand-logo">
-                <img src="assets/img/logo.png" alt="logo" />
+                <img src="/assets/img/logo.png" alt="logo" />
               </a>
               <a className="navbar-brand brand-logo-mini p-0">
                 <img src="assets/img/fav.png" alt="logo" />
