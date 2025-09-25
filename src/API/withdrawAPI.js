@@ -95,3 +95,58 @@ export const withdrawHistoryPage = async (token) => {
   });
   return response.data;
 };
+// ====================================================================
+// Get Bank Data namibia
+export const getBankDetailsNamibia = async (token, userId) => {
+  console.log(userId);
+
+  const response = await axiosInstance.get(
+    "/player/withdraw-namibia/manual-withdraw/get-player-banks",
+    {
+      headers: { Authorization: `Bearer ${token}` },
+      params: { player_id: userId }, // <-- goes here
+    }
+  );
+  return response.data;
+};
+
+// store Bank Data Namibia
+export const storeBankNamibia = async (token, values, userId) => {
+  const response = await axios.post(
+    `${BASE_URL}/player/withdraw-namibia/manual-withdraw/store-player-bank`,
+    values,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+
+      params: { player_id: userId },
+    }
+  );
+  return response.data;
+};
+
+// send-withdraw-request Namibia
+export const sendWithdrawRequestNamibia = async ({
+  token,
+  bankId,
+  amount,
+  userid,
+}) => {
+  const formData = new FormData();
+  formData.append("player_bank_id", bankId);
+  formData.append("amount", amount);
+  formData.append("player_id", userid);
+
+  const response = await axios.post(
+    `${BASE_URL}/player/withdraw-namibia/manual-withdraw/send-withdraw-request`,
+    formData,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+};

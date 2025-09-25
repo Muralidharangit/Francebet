@@ -5,6 +5,7 @@
 // const BASE_URL = "https://staging.syscorp.in/api/v1/test";
 
 // Namibia URL
-const BASE_URL = "https://staging.syscorp.in/api/v1/test2";
+// const BASE_URL = "https://staging.syscorp.in/api/v1/test2";
+const BASE_URL = "https://staging.syscorp.in/api/v1/betwin";
 
 export default BASE_URL;

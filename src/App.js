@@ -76,7 +76,11 @@ const WithdrawHistory = lazy(() =>
 const WithdrawIndex = lazy(() =>
   import("./Components/Pages/Transactions/Withdraw/WithdrawIndex")
 );
-
+const WithdrawIndex_Namibia = lazy(() =>
+  import(
+    "./Components/Pages/Transactions/Namibia/Withdraw - Namibia/WithdrawIndex"
+  )
+);
 const Deposit_Namibia = lazy(() =>
   import(
     "./Components/Pages/Transactions/Namibia/Deposit_Namibia_Manual/Deposit_Namibia"
@@ -185,6 +189,16 @@ function App() {
               path={routes.transactions.deposit_static}
               element={<DepositStatic />}
             />
+
+            <Route
+              path={routes.transactions.withdraw}
+              element={<WithdrawIndex />}
+            />
+
+            <Route
+              path={routes.transactions.manual_withdraw_namibia}
+              element={<WithdrawIndex_Namibia />}
+            />
             {/* =========================================================================== */}
             <Route path={routes.profile.main} element={<Profile />} />
             <Route path={routes.profile.edit} element={<ProfileEdit />} />
@@ -196,10 +210,6 @@ function App() {
             <Route
               path={routes.account.dashboard}
               element={<AccountDashboard />}
-            />
-            <Route
-              path={routes.transactions.withdraw}
-              element={<WithdrawIndex />}
             />
           </Route>
         </Routes>

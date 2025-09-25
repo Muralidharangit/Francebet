@@ -546,7 +546,9 @@ const StickyHeader = ({ onToggleSidebar }) => {
                           <div
                             className="preview-item-content d-flex align-items-start flex-column justify-content-center"
                             onClick={() =>
-                              handleSecureRoute(routes.transactions.deposit)
+                              handleSecureRoute(
+                                routes.transactions.paymentMethod
+                              )
                             }
                           >
                             <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
@@ -569,7 +571,9 @@ const StickyHeader = ({ onToggleSidebar }) => {
                           <div
                             className="preview-item-content d-flex align-items-start flex-column justify-content-center"
                             onClick={() =>
-                              handleSecureRoute(routes.transactions.withdraw)
+                              handleSecureRoute(
+                                routes.transactions.manual_withdraw_namibia
+                              )
                             }
                           >
                             <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
