@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import routes from "../routes/route";
 import AuthContext from "../../Auth/AuthContext";
+import { CURRENCY_SYMBOL } from "../../constants";
 
 const OffCanvas = () => {
   // const [isOpen, setIsOpen] = useState(false);
@@ -58,7 +59,7 @@ const OffCanvas = () => {
               </h5>
             </div>
             <div>
-              <h4>₹10,000.00</h4>
+              <h4>{CURRENCY_SYMBOL}10,000.00</h4>
             </div>
           </div>
           {/* Total Balance ends */}
@@ -1323,8 +1324,10 @@ const OffCanvas = () => {
                     <ul className="text-white mt-3">
                       <li>Share your refferal code</li>
                       <li>fadfvbdfdfd</li>
-                      <li>Friends get ₹10 on their first game</li>
-                      <li>you get ₹10 off coupon</li>
+                      <li>
+                        Friends get {CURRENCY_SYMBOL}10 on their first game
+                      </li>
+                      <li>you get {CURRENCY_SYMBOL}10 off coupon</li>
                     </ul>
                   </div>
                 </div>

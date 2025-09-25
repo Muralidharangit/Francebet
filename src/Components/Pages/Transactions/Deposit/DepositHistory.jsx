@@ -8,6 +8,7 @@ import { toast, ToastContainer } from "react-toastify";
 import StickyHeader from "../../../layouts/Header/Header";
 import Sidebar from "../../../layouts/Header/Sidebar";
 import axiosInstance from "../../../../API/axiosConfig";
+import { CURRENCY_SYMBOL } from "../../../../constants";
 
 const DepositHistory = () => {
   const [history, setHistory] = useState([]);
@@ -207,17 +208,17 @@ const DepositHistory = () => {
     }).format(Number(n || 0));
 
   const statusBadge = (s) => {
-  const v = (s ?? "").toString().trim().toLowerCase();
-  if (!v) return "badge bg-secondary";
+    const v = (s ?? "").toString().trim().toLowerCase();
+    if (!v) return "badge bg-secondary";
 
-  if (["success", "paid", "completed"].includes(v)) return "badge bg-success";
-  if (["failed", "rejected", "error", "cancelled", "canceled"].includes(v))
-    return "badge bg-danger";
-  if (["processing", "created", "pending", "initiated"].includes(v))
-    return "badge bg-warning text-dark";
+    if (["success", "paid", "completed"].includes(v)) return "badge bg-success";
+    if (["failed", "rejected", "error", "cancelled", "canceled"].includes(v))
+      return "badge bg-danger";
+    if (["processing", "created", "pending", "initiated"].includes(v))
+      return "badge bg-warning text-dark";
 
-  return "badge bg-secondary";
-};
+    return "badge bg-secondary";
+  };
 
   return (
     <div>
@@ -486,7 +487,7 @@ const DepositHistory = () => {
 
                                 <div className="d-flex  align-items-end flex-column">
                                   <h4 className="mb-1 amount-fs-size">
-                                    ₹ {bet.amount}
+                                    {CURRENCY_SYMBOL} {bet.amount}
                                   </h4>
 
                                   <span

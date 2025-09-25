@@ -27,6 +27,7 @@ import {
 } from "../../hooks/homePageApi";
 import { useQuery } from "@tanstack/react-query";
 import Sidebar from "./Header/Sidebar";
+import { CURRENCY_SYMBOL } from "../../constants";
 
 function Home() {
   const { isLoading } = useContext(AuthContext);
@@ -2098,7 +2099,7 @@ function Home() {
                                   className="fw-bold text-success mb-3"
                                   style={{ fontSize: 22 }}
                                 >
-                                  ₹
+                                  {CURRENCY_SYMBOL}
                                   {new Intl.NumberFormat("en-IN").format(
                                     result.amount
                                   )}

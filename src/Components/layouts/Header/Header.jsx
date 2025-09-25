@@ -6,6 +6,7 @@ import { verifyToken } from "../../../API/authAPI";
 import { toast, ToastContainer } from "react-toastify";
 import { Images } from "./constants/images";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import { CURRENCY_SYMBOL } from "../../../constants";
 const StickyHeader = ({ onToggleSidebar }) => {
   const [loading, setLoading] = useState(false);
   // console.log("onToggleSidebar", onToggleSidebar);
@@ -203,7 +204,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                       <div className="coin-box d-flex align-items-center px-2 py-1 rounded-pill">
                         <img src="assets/img/rupee.png" width="20" alt="Coin" />
                         <span className="ms-1 text-white">
-                          ₹ {Number(profile?.chips).toFixed(2)}
+                          {CURRENCY_SYMBOL} {Number(profile?.chips).toFixed(2)}
                         </span>
                         <button
                           className="btn btn-sm btn-add-coin ms-2"
@@ -316,7 +317,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
               </div>
               <ul className="navbar-nav navbar-nav-right">
                 {/* <li>
-    <button class="btn btn-outline-light rounded-2 me-2"> ₹50,000</button>
+    <button class="btn btn-outline-light rounded-2 me-2"> {CURRENCY_SYMBOL}50,000</button>
   </li> */}
                 {/* <li>
     <a href="./deposit_desktop.html">
@@ -334,7 +335,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                         <li>
                           <div className="deposit_btn_container">
                             <p className="text-light mb-0 px-3">
-                              <i className="fi fi-rs-coins" /> ₹{" "}
+                              <i className="fi fi-rs-coins" /> {CURRENCY_SYMBOL}{" "}
                               {Number(profile?.chips).toFixed(2)}
                             </p>
                             <button

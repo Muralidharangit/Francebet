@@ -6,6 +6,7 @@ import routes from "../../../../routes/route";
 import { Link } from "react-router-dom";
 import { sendDepositRequestNamibia } from "../../../../../API/depositAPI";
 import { verifyToken } from "../../../../../API/authAPI";
+import { CURRENCY_SYMBOL } from "../../../../../constants";
 const DepositAmountRequest = ({
   amount,
   paymentSelectedMethod,
@@ -144,7 +145,9 @@ const DepositAmountRequest = ({
           {amount && paymentSelectedMethod ? (
             <>
               <h5 className=" mb-0">Deposit Amount</h5>
-              <h3 className="text-success">₹ {amount}</h3>
+              <h3 className="text-success">
+                {CURRENCY_SYMBOL} {amount}
+              </h3>
               {/* <h5 className="mb-3">
                 You have selected the{" "}
                 {paymentSelectedMethod === 1 ? "BANK" : "UPI"} payment method.
@@ -175,7 +178,8 @@ const DepositAmountRequest = ({
                   style={{ display: "none" }}
                 >
                   <p className="mb-0">
-                    You have selected ₹{amount} to deposit.
+                    You have selected {CURRENCY_SYMBOL}
+                    {amount} to deposit.
                   </p>
                   <input
                     required

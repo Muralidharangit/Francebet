@@ -15,6 +15,7 @@ import {
   clearSelectedBank,
   loadSelectedBank,
 } from "../../../../../API/bankSelectionStorage";
+import { CURRENCY_SYMBOL } from "../../../../../constants";
 
 const WithdrawAmountRequest = ({ amount, bankId }) => {
   const [bankDetails, setBankDetails] = useState(null);
@@ -32,7 +33,7 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
     window.addEventListener("nm-bank-selected", refresh);
     return () => window.removeEventListener("nm-bank-selected", refresh);
   }, []);
-  
+
   useEffect(() => {
     setBank(loadSelectedBank());
   }, [location.key]); // 🔁 runs on each navigation to this route
@@ -182,7 +183,11 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
       <div className="card bg_light_grey account_input-textbox-container">
         <div className="card-body">
           <h5 className=" mb-0">Withdraw Amount</h5>
-          {amount && <h4>₹ {amount}</h4>}
+          {amount && (
+            <h4>
+              {CURRENCY_SYMBOL} {amount}
+            </h4>
+          )}
           {bankDetails && (
             <>
               <div className="mt-3">
@@ -226,7 +231,7 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
 
           {!bankId || !amount ? (
             <div className="text-danger mt-3">
-              {/* {amount && <h4>₹{amount}</h4>}
+              {/* {amount && <h4>{CURRENCY_SYMBOL}{amount}</h4>}
               {bankId && <h5>{bankId}</h5>} */}
               {!amount && (
                 <>
@@ -272,7 +277,10 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
                 className="input-field mb-3 mt-3"
                 style={{ display: "none" }}
               >
-                <p className="mb-0">You have selected ₹{amount} to deposit.</p>
+                <p className="mb-0">
+                  You have selected {CURRENCY_SYMBOL}
+                  {amount} to deposit.
+                </p>
                 <input
                   required
                   className="input readonly-input mt-1"

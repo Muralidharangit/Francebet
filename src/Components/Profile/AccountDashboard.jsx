@@ -186,7 +186,7 @@ const AccountDashboard = () => {
                   {portalSettings?.auto_deposit === 1 ? (
                     <button
                       className="btn btn-outline-light w-100"
-                      onClick={() => navigate(routes.transactions.deposit)}
+                      onClick={() => navigate(routes.transactions.paymentMethod)}
                       // onClick={() =>
                       //   handleSecureRoute(routes.transactions.deposit)
                       // }
@@ -203,7 +203,7 @@ const AccountDashboard = () => {
                       // onClick={() =>
                       //   handleSecureRoute(routes.transactions.withdraw)
                       // }
-                      onClick={() => navigate(routes.transactions.withdraw)}
+                      onClick={() => navigate(routes.transactions.manual_withdraw_namibia)}
                     >
                       Withdraw
                     </button>

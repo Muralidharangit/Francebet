@@ -105,23 +105,26 @@ const StickyHeader = () => {
   };
 
   return (
-<SkeletonTheme baseColor="#313131" highlightColor="#525252">
-  <>
-    <ToastContainer position="top-right" autoClose={5000} theme="dark" />
-    <header
-      className={`bgbody-color page-header container p-0 ${
-        isSticky ? "is-sticky" : ""
-      }`}
-    >
-      <nav className="navbar p-1">
-        <div className="container-fluid p-0">
-          <div className="d-flex justify-content-between w-100 align-items-center">
-            {/* Logo */}
-            <div className="logo_brand">
-              {Images?.Favlogo ? (
-                <Link className="navbar-brand m-0 position-relative" to={routes.home}>
-                  <img src={Images.Favlogo} alt="favicon" width="65%" />
-                  {/* <Link
+    <SkeletonTheme baseColor="#313131" highlightColor="#525252">
+      <>
+        <ToastContainer position="top-right" autoClose={5000} theme="dark" />
+        <header
+          className={`bgbody-color page-header container p-0 ${
+            isSticky ? "is-sticky" : ""
+          }`}
+        >
+          <nav className="navbar p-1">
+            <div className="container-fluid p-0">
+              <div className="d-flex justify-content-between w-100 align-items-center">
+                {/* Logo */}
+                <div className="logo_brand">
+                  {Images?.Favlogo ? (
+                    <Link
+                      className="navbar-brand m-0 position-relative"
+                      to={routes.home}
+                    >
+                      <img src={Images.Favlogo} alt="favicon" width="65%" />
+                      {/* <Link
                     to={routes.pages.testinginfo}
                     style={{
                       position: "absolute",
@@ -145,72 +148,74 @@ const StickyHeader = () => {
                   >
                     Testing app
                   </Link> */}
-                </Link>
-              ) : (
-                <Skeleton height={40} width={120} />
-              )}
-            </div>
-
-            {/* If Logged In */}
-            {user ? (
-              <div className="d-flex justify-content-center align-items-center mx-2">
-                {/* Coin Box */}
-                {profile ? (
-                  <div className="coin-box d-flex align-items-center px-2 py-1 rounded-pill">
-                    <img src="assets/img/rupee.png" width="20" alt="Coin" />
-                    <span className="ms-1 text-white">
-                      ₹ {Number(profile?.chips).toFixed(2)}
-                    </span>
-                    <button
-                      className="btn btn-sm btn-add-coin ms-2"
-                      onClick={handleDepositClick}
-                    >
-                      <i className="fa-solid fa-plus fs-12"></i>
-                    </button>
-                  </div>
-                ) : (
-                  <Skeleton height={32} width={120} borderRadius={30} />
-                )}
-
-                {/* Avatar */}
-                <div className="user-icon ms-2" onClick={handleProfileClick}>
-                  {avatar?.avatar?.image ? (
-                    <img
-                      src={avatar.avatar.image}
-                      alt={avatar.avatar.name || "Profile"}
-                      className="w-100"
-                      style={{ borderRadius: "10%" }}
-                    />
+                    </Link>
                   ) : (
-                    <Skeleton circle height={36} width={36} />
+                    <Skeleton height={40} width={120} />
                   )}
                 </div>
-              </div>
-            ) : (
-              // If Not Logged In
-              <div className="d-flex">
-                <Link to={routes.auth.login}>
-                  <button
-                    type="button"
-                    className="btn btn-index w-100 bgbody-color"
-                  >
-                    Log in
-                  </button>
-                </Link>
-                <Link to={routes.auth.register}>
-                  <button type="button" className="btn btn-index w-100">
-                    Sign up
-                  </button>
-                </Link>
-              </div>
-            )}
-          </div>
-        </div>
-      </nav>
-    </header>
-  </>
-</SkeletonTheme>
 
+                {/* If Logged In */}
+                {user ? (
+                  <div className="d-flex justify-content-center align-items-center mx-2">
+                    {/* Coin Box */}
+                    {profile ? (
+                      <div className="coin-box d-flex align-items-center px-2 py-1 rounded-pill">
+                        <img src="assets/img/rupee.png" width="20" alt="Coin" />
+                        <span className="ms-1 text-white">
+                          {CURRENCY_SYMBOL} {Number(profile?.chips).toFixed(2)}
+                        </span>
+                        <button
+                          className="btn btn-sm btn-add-coin ms-2"
+                          onClick={handleDepositClick}
+                        >
+                          <i className="fa-solid fa-plus fs-12"></i>
+                        </button>
+                      </div>
+                    ) : (
+                      <Skeleton height={32} width={120} borderRadius={30} />
+                    )}
+
+                    {/* Avatar */}
+                    <div
+                      className="user-icon ms-2"
+                      onClick={handleProfileClick}
+                    >
+                      {avatar?.avatar?.image ? (
+                        <img
+                          src={avatar.avatar.image}
+                          alt={avatar.avatar.name || "Profile"}
+                          className="w-100"
+                          style={{ borderRadius: "10%" }}
+                        />
+                      ) : (
+                        <Skeleton circle height={36} width={36} />
+                      )}
+                    </div>
+                  </div>
+                ) : (
+                  // If Not Logged In
+                  <div className="d-flex">
+                    <Link to={routes.auth.login}>
+                      <button
+                        type="button"
+                        className="btn btn-index w-100 bgbody-color"
+                      >
+                        Log in
+                      </button>
+                    </Link>
+                    <Link to={routes.auth.register}>
+                      <button type="button" className="btn btn-index w-100">
+                        Sign up
+                      </button>
+                    </Link>
+                  </div>
+                )}
+              </div>
+            </div>
+          </nav>
+        </header>
+      </>
+    </SkeletonTheme>
   );
 };
 export default StickyHeader;
