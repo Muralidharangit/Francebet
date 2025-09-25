@@ -7,6 +7,7 @@ import AuthContext from "../../../../Auth/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
 import StickyHeader from "../../../layouts/Header/Header";
 import Sidebar from "../../../layouts/Header/Sidebar";
+import { CURRENCY_SYMBOL } from "../../../../constants";
 
 const DepositHistory = () => {
   const [history, setHistory] = useState([]);
@@ -284,7 +285,7 @@ const DepositHistory = () => {
 
                                 <div className="d-flex  align-items-end flex-column">
                                   <h4 className="mb-1 amount-fs-size">
-                                    ₹ {bet.amount}
+                                    {CURRENCY_SYMBOL} {bet.amount}
                                   </h4>
 
                                   <span

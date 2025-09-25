@@ -76,17 +76,17 @@ const WithdrawHistory = lazy(() =>
 const WithdrawIndex = lazy(() =>
   import("./Components/Pages/Transactions/Withdraw/WithdrawIndex")
 );
-const WithdrawIndex_Namibia = lazy(() =>
+const WithdrawIndexNamibia = lazy(() =>
   import(
     "./Components/Pages/Transactions/Namibia/Withdraw - Namibia/WithdrawIndex"
   )
 );
-const Deposit_Namibia = lazy(() =>
+const DepositNamibia = lazy(() =>
   import(
     "./Components/Pages/Transactions/Namibia/Deposit_Namibia_Manual/Deposit_Namibia"
   )
 );
-const Deposit_Namibia_Ewallet = lazy(() =>
+const DepositNamibiaEwallet = lazy(() =>
   import(
     "./Components/Pages/Transactions/Namibia/Deposit_Namibia_Ewallet/Deposit_Namibia_Ewallet"
   )
@@ -178,11 +178,11 @@ function App() {
             <Route path={routes.transactions.deposit} element={<Deposit />} />
             <Route
               path={routes.transactions.deposit_namibia}
-              element={<Deposit_Namibia />}
+              element={<DepositNamibia />}
             />
             <Route
               path={routes.transactions.ewallet_deposit_namibia}
-              element={<Deposit_Namibia_Ewallet />}
+              element={<DepositNamibiaEwallet />}
             />
 
             <Route
@@ -197,7 +197,7 @@ function App() {
 
             <Route
               path={routes.transactions.manual_withdraw_namibia}
-              element={<WithdrawIndex_Namibia />}
+              element={<WithdrawIndexNamibia />}
             />
             {/* =========================================================================== */}
             <Route path={routes.profile.main} element={<Profile />} />

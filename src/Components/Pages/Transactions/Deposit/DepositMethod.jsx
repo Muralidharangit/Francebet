@@ -13,6 +13,7 @@ const DepositMethod = () => {
   const [methods, setMethods] = useState([]);
   const [loading, setLoading] = useState(true);
   const [err, setErr] = useState("");
+  const [nameMethod, setNameMethod] = useState("");
   const [clickingId, setClickingId] = useState(null);
 
   const navigate = useNavigate();
@@ -112,12 +113,12 @@ const DepositMethod = () => {
   }
 
   function handleChoose(method) {
-    const name = (method?.name || "").toLowerCase().trim();
-
-    console.log(name, "hhhhhhhhhhhh");
+    const name_method = (method?.name || "").toLowerCase().trim();
+    setNameMethod(name_method);
+    console.log(name_method, "hhhhhhhhhhhh");
 
     // name -> something like "Manual Deposit - Namibia"
-    const key = (name || "").toLowerCase().trim();
+    const key = (name_method || "").toLowerCase().trim();
 
     // Most specific FIRST
     if (key.includes("manual") && key.includes("namibia")) {
@@ -153,7 +154,7 @@ const DepositMethod = () => {
     //   return;
     // }
 
-    if (name.includes("apay")) {
+    if (name_method.includes("apay")) {
       if (!user?.token) {
         setErr("Please login again to start the payment.");
         return;
@@ -196,7 +197,7 @@ const DepositMethod = () => {
                   <div className="row px-2">
                     {/* Title Row */}
                     <div className="d-flex align-items-center justify-content-between position-relative px-0">
-                      <div className="d-flex justify-content-between align-items-center px-0">
+                      <div className="d-flex justify-content-between align-items-center px-1">
                         <button
                           className="go_back_btn bg-grey"
                           onClick={() => window.history.back()}
@@ -223,16 +224,18 @@ const DepositMethod = () => {
                         <div className="row g-4 align-items-start">
                           {/* LEFT: Methods */}
                           <div className="col-12 col-lg-12 ">
-                            <div className="row g-3 ">
+                            <div className="row g-3 justify-content-center">
                               {methods.map((m, idx) => {
                                 const key = m.id || m.code || m.name || idx;
                                 const isBusy = clickingId === key;
+                                const isLast = idx === methods.length - 1; // Check if it's the last item
+
                                 return (
-                                  <div className="col-12 col-md-4" key={key}>
-                                    <div className="p-3 rounded border h-100 d-flex flex-column ">
-                                      <div className="d-flex ">
+                                  <div className="col-12 col-lg-6 col-xl-4" key={key}>
+                                    <div className="p-3 rounded border h-100 d-flex flex-column">
+                                      <div className="d-flex">
                                         {m.name === "Manual Deposit - India" ? (
-                                          <div className=" card_bx ">
+                                          <div className="card_bx">
                                             <img
                                               src="assets/img/cash-payment_img.png"
                                               alt={m.name || "Method"}
@@ -268,27 +271,20 @@ const DepositMethod = () => {
                                             }}
                                           />
                                         )}
-
                                         <strong className="fs-4 text-white">
                                           {m.name || m.display_name || m.code}
                                         </strong>
                                       </div>
 
                                       {m.name === "Manual Deposit - India" ? (
-                                        <p
-                                          className=""
-                                          style={{ color: "#b1abab" }}
-                                        >
+                                        <p style={{ color: "#b1abab" }}>
                                           Manual Payment Transfer funds manually
                                           via bank transfer, UPI or cash. Upload
                                           receipt or add details after placing
                                           your order.
                                         </p>
                                       ) : (
-                                        <p
-                                          className=""
-                                          style={{ color: "#b1abab" }}
-                                        >
+                                        <p style={{ color: "#b1abab" }}>
                                           A-Pay Instant checkout using A-Pay
                                           wallet — fast, secure and one-tap
                                           payments. Balance will be debited
@@ -301,7 +297,6 @@ const DepositMethod = () => {
                                           {m.description}
                                         </p>
                                       )}
-
                                       {m.limits && (
                                         <small className="text-muted">
                                           Min: {m.limits.min} • Max:{" "}
@@ -311,9 +306,9 @@ const DepositMethod = () => {
 
                                       <button
                                         className="btn btn-red mt-auto w-50"
-                                        disabled={isBusy}
+                                        disabled={isLast} // Only disable the last button
                                         onClick={() => {
-                                          setClickingId(key);
+                                          setClickingId(m.id);
                                           handleChoose(m);
                                         }}
                                       >

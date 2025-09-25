@@ -8,6 +8,7 @@ import { toast, ToastContainer } from "react-toastify";
 import PaginatedData from "../../Pagination/PaginatedData";
 import StickyHeader from "../../../layouts/Header/Header";
 import Sidebar from "../../../layouts/Header/Sidebar";
+import { CURRENCY_SYMBOL } from "../../../../../constants";
 
 const WithdrawHistory = () => {
   const [withdrawHistory, setWithdrawHistory] = useState([]);
@@ -267,7 +268,7 @@ const WithdrawHistory = () => {
                           <ul className="bet-details">
                             <li>
                               <span>Withdraw Amount</span>
-                              <span>₹ {withdraw.amount}</span>
+                              <span>{CURRENCY_SYMBOL} {withdraw.amount}</span>
                             </li>
                             <li>
                               <span>Status</span>
@@ -321,7 +322,7 @@ const WithdrawHistory = () => {
 
                                   <div className="d-flex align-items-end flex-column">
                                     <h4 className="mb-1 amount-fs-size">
-                                      ₹ {withdraw.amount}
+                                      {CURRENCY_SYMBOL} {withdraw.amount}
                                     </h4>
 
                                     <span

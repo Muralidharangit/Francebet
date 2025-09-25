@@ -5,6 +5,7 @@ import BottomFooter from "../layouts/footer/BottomFooter";
 import Footer from "../layouts/footer/Footer";
 import StickyHeader from "../layouts/Header/Header";
 import Sidebar from "../layouts/Header/Sidebar";
+import { APP_NAME } from "../../constants";
 
 function TermsCondition() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -67,7 +68,7 @@ function TermsCondition() {
                       <strong>Country:</strong> Tamil Nadu, India.
                     </li>
                     <li>
-                      <strong>Company:</strong> Jiboomba (referred to as “the
+                      <strong>Company:</strong> {APP_NAME} (referred to as “the
                       Company”, “We”, “Us” or “Our”).
                     </li>
                     <li>
@@ -87,8 +88,8 @@ function TermsCondition() {
                       the Service.
                     </li>
                     <li>
-                      <strong>Website:</strong> Jiboomba, accessible from{" "}
-                      <a href="https://jiboomba.in/">https://jiboomba.in/</a>.
+                      <strong>Website:</strong> {APP_NAME}, accessible from{" "}
+                      
                     </li>
                     <li>
                       <strong>You:</strong> the individual accessing or using
@@ -200,7 +201,7 @@ function TermsCondition() {
                   </p>
                   <ul>
                     <li>
-                      <strong>Email:</strong> jiboomba@gmail.com
+                      <strong>Email:</strong> {APP_NAME}@gmail.com
                     </li>
                   </ul>
                 </section>

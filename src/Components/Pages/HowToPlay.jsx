@@ -5,6 +5,7 @@ import StickyHeader from "../layouts/Header/Header";
 import BottomFooter from "../layouts/footer/BottomFooter";
 import Footer from "../layouts/footer/Footer";
 import Sidebar from "../layouts/Header/Sidebar";
+import { APP_NAME } from "../../constants";
 
 const HowToPlay = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -46,7 +47,7 @@ const HowToPlay = () => {
                     Responsible Gaming & Player Protection Policy
                   </h1>
                   <p>
-                    At <strong>jiboomba.in</strong>, we are committed to
+                    At <strong>{APP_NAME}.in</strong>, we are committed to
                     promoting responsible gaming and ensuring the safety of our
                     players. Our goal is to raise awareness about problem
                     gambling while providing effective tools for prevention,
@@ -61,7 +62,7 @@ const HowToPlay = () => {
                   <h2>Our Commitment</h2>
                   <p>
                     We strive to make sure that while you enjoy your gaming
-                    experience on <strong>jiboomba.in</strong>, you remain fully
+                    experience on <strong>{APP_NAME}.in</strong>, you remain fully
                     aware of the potential{" "}
                     <strong>social and financial risks</strong> associated with
                     gambling.
@@ -98,8 +99,8 @@ const HowToPlay = () => {
                     </li>
                     <li>
                       Or contact our Customer Support team at{" "}
-                      <a href="mailto:support@jiboomba.in">
-                        support@jiboomba.in
+                      <a href="mailto:support@{APP_NAME}.in">
+                        support@{APP_NAME}.in
                       </a>
                       .
                     </li>
@@ -150,7 +151,7 @@ const HowToPlay = () => {
                     💡 You can monitor your deposits, withdrawals, and bets
                     under <strong>History &gt; Transactions</strong>. If you
                     notice unauthorized activity, contact{" "}
-                    <a href="mailto:support@jiboomba.in">support@jiboomba.in</a>{" "}
+                    <a href="mailto:support@jiboomba.in">support@{APP_NAME}.in</a>{" "}
                     immediately and update your password.
                   </div>
 
@@ -194,7 +195,7 @@ const HowToPlay = () => {
                     It is strictly prohibited for anyone{" "}
                     <strong>under the age of 18</strong> to register or gamble
                     on
-                    <strong>jiboomba.in</strong>.
+                    <strong>{APP_NAME}.in</strong>.
                   </p>
                   <p>To prevent underage gambling, we enforce:</p>
                   <ul>
@@ -211,14 +212,14 @@ const HowToPlay = () => {
 
                   <h2>Our Promise</h2>
                   <p>
-                    At <strong>jiboomba.in</strong>, we are dedicated to
+                    At <strong>{APP_NAME}.in</strong>, we are dedicated to
                     providing a safe, fair, and enjoyable gaming environment. We
                     strongly encourage players to stay informed, play
                     responsibly, and seek help if needed.
                   </p>
                   <p>
                     📧 For questions or support, contact us anytime at
-                    <a href="mailto:support@jiboomba.in">support@jiboomba.in</a>
+                    <a href="mailto:support@{APP_NAME}.in">support{APP_NAME}.in</a>
                     .
                   </p>
                 </section>

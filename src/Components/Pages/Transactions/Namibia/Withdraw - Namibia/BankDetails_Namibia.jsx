@@ -11,7 +11,7 @@ import {
   deleteBankDetails,
   EditBank,
   getBankDetailsNamibia,
-  storeBank,
+  // storeBank,
   storeBankNamibia,
   updateBank,
 } from "../../../../../API/withdrawAPI";

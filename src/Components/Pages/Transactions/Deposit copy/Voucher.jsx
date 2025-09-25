@@ -9,6 +9,7 @@ import { useFormik } from "formik";
 import AuthContext from "../../../../Auth/AuthContext";
 import * as Yup from "yup";
 import { verifyToken } from "../../../../API/authAPI";
+import { CURRENCY_SYMBOL } from "../../../../constants";
 const Voucher = ({
   amount,
   setAmount,
@@ -70,9 +71,13 @@ const Voucher = ({
     }
     const { min, max } = bounds;
     if (min != null && num < min) {
-      setError(`Minimum allowed is ₹ ${min.toLocaleString("en-IN")}`);
+      setError(
+        `Minimum allowed is {CURRENCY_SYMBOL} ${min.toLocaleString("en-IN")}`
+      );
     } else if (max != null && num > max) {
-      setError(`Maximum allowed is ₹ ${max.toLocaleString("en-IN")}`);
+      setError(
+        `Maximum allowed is {CURRENCY_SYMBOL} ${max.toLocaleString("en-IN")}`
+      );
     } else {
       setError("");
     }
@@ -267,7 +272,8 @@ const Voucher = ({
             <small className="text-danger d-block mb-3">{error}</small>
           ) : bounds.min != null && bounds.max != null ? (
             <small className="text-muted d-block mb-3">
-              Allowed range: ₹ {bounds.min.toLocaleString("en-IN")} – ₹{" "}
+              Allowed range: {CURRENCY_SYMBOL}{" "}
+              {bounds.min.toLocaleString("en-IN")} – {CURRENCY_SYMBOL}{" "}
               {bounds.max.toLocaleString("en-IN")}
             </small>
           ) : null}

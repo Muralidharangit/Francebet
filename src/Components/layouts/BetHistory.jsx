@@ -6,7 +6,7 @@ import PaginatedData from "../Pages/Pagination/PaginatedData";
 import { betStatement } from "../../API/betHistory";
 import StickyHeader from "./Header/Header";
 import Sidebar from "./Header/Sidebar";
-
+import { CURRENCY_SYMBOL } from "../../constants";
 const BetHistory = () => {
   const [history, setHistory] = useState([]);
   const [error, setError] = useState(null);
@@ -208,8 +208,8 @@ const BetHistory = () => {
                                   <h4 className="mb-1 amount-fs-size">
                                     {/* {transaction.id} */}
                                     {transaction.type === "DR"
-                                      ? `₹ ${transaction.amount}`
-                                      : `₹ ${transaction.amount}`}
+                                      ? `{CURRENCY_SYMBOL} ${transaction.amount}`
+                                      : `{CURRENCY_SYMBOL} ${transaction.amount}`}
                                   </h4>
 
                                   <span

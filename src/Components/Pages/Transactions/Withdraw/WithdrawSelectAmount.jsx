@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { getPortalSettings } from "../../../../API/depositAPI";
+import { CURRENCY_SYMBOL } from "../../../../constants";
 
 const WithdrawSelectAmount = ({ amount, setAmount, token }) => {
   const [amounts, setAmounts] = useState([]);
@@ -62,9 +63,13 @@ const WithdrawSelectAmount = ({ amount, setAmount, token }) => {
     }
     const { min, max } = bounds;
     if (min != null && num < min) {
-      setError(`Minimum allowed is ₹ ${min.toLocaleString("en-IN")}`);
+      setError(
+        `Minimum allowed is {CURRENCY_SYMBOL} ${min.toLocaleString("en-IN")}`
+      );
     } else if (max != null && num > max) {
-      setError(`Maximum allowed is ₹ ${max.toLocaleString("en-IN")}`);
+      setError(
+        `Maximum allowed is {CURRENCY_SYMBOL} ${max.toLocaleString("en-IN")}`
+      );
     } else {
       setError("");
     }
@@ -111,7 +116,8 @@ const WithdrawSelectAmount = ({ amount, setAmount, token }) => {
             <small className="text-danger d-block mb-3">{error}</small>
           ) : bounds.min != null && bounds.max != null ? (
             <small className="text-muted d-block mb-3">
-              Allowed range: ₹ {bounds.min.toLocaleString("en-IN")} – ₹{" "}
+              Allowed range: {CURRENCY_SYMBOL}{" "}
+              {bounds.min.toLocaleString("en-IN")} – {CURRENCY_SYMBOL}{" "}
               {bounds.max.toLocaleString("en-IN")}
             </small>
           ) : null}
@@ -131,10 +137,14 @@ const WithdrawSelectAmount = ({ amount, setAmount, token }) => {
                     onClick={() => handleSelectAmount(amt)}
                     title={
                       idx === 0
-                        ? `Min (₹ ${amt.toLocaleString("en-IN")})`
+                        ? `Min ({CURRENCY_SYMBOL} ${amt.toLocaleString(
+                            "en-IN"
+                          )})`
                         : idx === 3
-                        ? `Max (₹ ${amt.toLocaleString("en-IN")})`
-                        : `₹ ${amt.toLocaleString("en-IN")}`
+                        ? `Max ({CURRENCY_SYMBOL} ${amt.toLocaleString(
+                            "en-IN"
+                          )})`
+                        : `{CURRENCY_SYMBOL} ${amt.toLocaleString("en-IN")}`
                     }
                   >
                     {amt.toLocaleString("en-IN")}

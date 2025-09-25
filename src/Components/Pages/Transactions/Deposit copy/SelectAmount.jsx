@@ -9,6 +9,7 @@ import { useFormik } from "formik";
 import AuthContext from "../../../../Auth/AuthContext";
 import * as Yup from "yup";
 import { verifyToken } from "../../../../API/authAPI";
+import { CURRENCY_SYMBOL } from "../../../../constants";
 const SelectAmount = ({
   amount,
   setAmount,
@@ -80,9 +81,13 @@ const SelectAmount = ({
     }
     const { min, max } = bounds;
     if (min != null && num < min) {
-      setError(`Minimum allowed is ₹ ${min.toLocaleString("en-IN")}`);
+      setError(
+        `Minimum allowed is {CURRENCY_SYMBOL} ${min.toLocaleString("en-IN")}`
+      );
     } else if (max != null && num > max) {
-      setError(`Maximum allowed is ₹ ${max.toLocaleString("en-IN")}`);
+      setError(
+        `Maximum allowed is {CURRENCY_SYMBOL} ${max.toLocaleString("en-IN")}`
+      );
     } else {
       setError("");
     }
@@ -312,7 +317,8 @@ const SelectAmount = ({
             <small className="text-danger d-block mb-3">{error}</small>
           ) : bounds.min != null && bounds.max != null ? (
             <small className="text-muted d-block mb-3">
-              Allowed range: ₹ {bounds.min.toLocaleString("en-IN")} – ₹{" "}
+              Allowed range: {CURRENCY_SYMBOL}{" "}
+              {bounds.min.toLocaleString("en-IN")} – {CURRENCY_SYMBOL}{" "}
               {bounds.max.toLocaleString("en-IN")}
             </small>
           ) : null}
@@ -332,10 +338,14 @@ const SelectAmount = ({
                     onClick={() => handleSelectAmount(amt)}
                     title={
                       idx === 0
-                        ? `Min (₹ ${amt.toLocaleString("en-IN")})`
+                        ? `Min ({CURRENCY_SYMBOL} ${amt.toLocaleString(
+                            "en-IN"
+                          )})`
                         : idx === 3
-                        ? `Max (₹ ${amt.toLocaleString("en-IN")})`
-                        : `₹ ${amt.toLocaleString("en-IN")}`
+                        ? `Max ({CURRENCY_SYMBOL} ${amt.toLocaleString(
+                            "en-IN"
+                          )})`
+                        : `{CURRENCY_SYMBOL} ${amt.toLocaleString("en-IN")}`
                     }
                   >
                     {amt.toLocaleString("en-IN")}
@@ -459,116 +469,119 @@ const SelectAmount = ({
 
           {/* Upload Data Starts */}
           {/* {amount && paymentSelectedMethod ? ( */}
-            <div className="">
-              <h5 className=" mb-0">Deposit Amount</h5>
-              <h3 className="text-success">₹ {amount}</h3>
-              {/* <h5 className="mb-3">
+          <div className="">
+            <h5 className=" mb-0">Deposit Amount</h5>
+            <h3 className="text-success">
+              {CURRENCY_SYMBOL} {amount}
+            </h3>
+            {/* <h5 className="mb-3">
                 You have selected the{" "}
                 {paymentSelectedMethod === 1 ? "BANK" : "UPI"} payment method.
               </h5> */}
-              {/* test starts */}
+            {/* test starts */}
 
-              {/* test Ends */}
-              <form
-                className="form-control_container"
-                onSubmit={formik.handleSubmit}
-              >
-                {formik.errors.api &&
-                  (Array.isArray(formik.errors.api) ? (
-                    <p className="text-danger ">
-                      {formik.errors.api.map((err, index) => (
-                        <li key={index}>{err}</li>
-                      ))}
-                    </p>
-                  ) : (
-                    <p className="text-danger">{formik.errors.api}</p>
-                  ))}
-                {/* <p>Testing</p>
+            {/* test Ends */}
+            <form
+              className="form-control_container"
+              onSubmit={formik.handleSubmit}
+            >
+              {formik.errors.api &&
+                (Array.isArray(formik.errors.api) ? (
+                  <p className="text-danger ">
+                    {formik.errors.api.map((err, index) => (
+                      <li key={index}>{err}</li>
+                    ))}
+                  </p>
+                ) : (
+                  <p className="text-danger">{formik.errors.api}</p>
+                ))}
+              {/* <p>Testing</p>
                 {formik.errors.api && (
                   <p className="text-danger">{formik.errors.api}</p>
                 )} */}
-                <div
-                  className="input-field mb-3 mt-3"
-                  style={{ display: "none" }}
+              <div
+                className="input-field mb-3 mt-3"
+                style={{ display: "none" }}
+              >
+                <p className="mb-0">
+                  You have selected {CURRENCY_SYMBOL}
+                  {amount} to deposit.
+                </p>
+                <input
+                  required
+                  className="input readonly-input mt-1"
+                  type="text"
+                  name="amount"
+                  value={formik.values.amount}
+                  readOnly
+                  disabled
+                />
+              </div>
+
+              <div className="mb-2">
+                <label
+                  htmlFor="formFile"
+                  className="form-label text-white mb-0"
                 >
-                  <p className="mb-0">
-                    You have selected ₹{amount} to deposit.
-                  </p>
+                  Payment Screenshot
+                </label>
+                <div className="custom-file-input" style={{ marginTop: 0 }}>
+                  <label htmlFor="formFile">
+                    <span className="btn">Upload File</span>
+                    <span className="file-name">
+                      {formik.values.payment_screenshot
+                        ? formik.values.payment_screenshot.name
+                        : "No file chosen"}
+                    </span>
+                  </label>
                   <input
-                    required
-                    className="input readonly-input mt-1"
-                    type="text"
-                    name="amount"
-                    value={formik.values.amount}
-                    readOnly
-                    disabled
+                    type="file"
+                    id="formFile"
+                    className="form-control"
+                    hidden
+                    accept="image/*"
+                    onChange={handleFileChange}
                   />
                 </div>
+              </div>
 
-                <div className="mb-2">
-                  <label
-                    htmlFor="formFile"
-                    className="form-label text-white mb-0"
-                  >
-                    Payment Screenshot
-                  </label>
-                  <div className="custom-file-input" style={{ marginTop: 0 }}>
-                    <label htmlFor="formFile">
-                      <span className="btn">Upload File</span>
-                      <span className="file-name">
-                        {formik.values.payment_screenshot
-                          ? formik.values.payment_screenshot.name
-                          : "No file chosen"}
-                      </span>
-                    </label>
-                    <input
-                      type="file"
-                      id="formFile"
-                      className="form-control"
-                      hidden
-                      accept="image/*"
-                      onChange={handleFileChange}
-                    />
-                  </div>
-                </div>
+              <div className="input-field mb-3">
+                <input
+                  required
+                  className="input"
+                  type="text"
+                  name="utr_number"
+                  value={formik.values.utr_number}
+                  // onChange={formik.handleChange}
+                  onChange={(e) => {
+                    formik.handleChange(e);
+                    setFormData((prev) => ({
+                      ...prev,
+                      utr_number: e.target.value,
+                    }));
+                  }}
+                  onBlur={formik.handleBlur}
+                />
+                <label className="label" htmlFor="utr_number">
+                  Enter UTR No
+                </label>
+                {formik.touched.utr_number && formik.errors.utr_number && (
+                  <p className="text-danger">{formik.errors.utr_number}</p>
+                )}
+              </div>
 
-                <div className="input-field mb-3">
-                  <input
-                    required
-                    className="input"
-                    type="text"
-                    name="utr_number"
-                    value={formik.values.utr_number}
-                    // onChange={formik.handleChange}
-                    onChange={(e) => {
-                      formik.handleChange(e);
-                      setFormData((prev) => ({
-                        ...prev,
-                        utr_number: e.target.value,
-                      }));
-                    }}
-                    onBlur={formik.handleBlur}
-                  />
-                  <label className="label" htmlFor="utr_number">
-                    Enter UTR No
-                  </label>
-                  {formik.touched.utr_number && formik.errors.utr_number && (
-                    <p className="text-danger">{formik.errors.utr_number}</p>
-                  )}
-                </div>
+              <div className="d-flex justify-content-center">
+                <button
+                  type="submit"
+                  className="btn btn-login w-25 mt mb- text-capitalize"
+                  disabled={formik.isSubmitting}
+                >
+                  {formik.isSubmitting ? "Submitting ..." : "Submit"}
+                </button>
+              </div>
+            </form>
+          </div>
 
-                <div className="d-flex justify-content-center">
-                  <button
-                    type="submit"
-                    className="btn btn-login w-25 mt mb- text-capitalize"
-                    disabled={formik.isSubmitting}
-                  >
-                    {formik.isSubmitting ? "Submitting ..." : "Submit"}
-                  </button>
-                </div>
-              </form>
-            </div>
-          
           {/* Upload Data Ends */}
         </form>
       </div>

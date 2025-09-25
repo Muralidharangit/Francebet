@@ -9,6 +9,7 @@ import { useFormik } from "formik";
 import AuthContext from "../../../../Auth/AuthContext";
 import * as Yup from "yup";
 import { verifyToken } from "../../../../API/authAPI";
+import { CURRENCY_SYMBOL } from "../../../../constants";
 const EWallet = ({
   amount,
   setAmount,
@@ -70,9 +71,13 @@ const EWallet = ({
     }
     const { min, max } = bounds;
     if (min != null && num < min) {
-      setError(`Minimum allowed is ₹ ${min.toLocaleString("en-IN")}`);
+      setError(
+        `Minimum allowed is {CURRENCY_SYMBOL} ${min.toLocaleString("en-IN")}`
+      );
     } else if (max != null && num > max) {
-      setError(`Maximum allowed is ₹ ${max.toLocaleString("en-IN")}`);
+      setError(
+        `Maximum allowed is {CURRENCY_SYMBOL} ${max.toLocaleString("en-IN")}`
+      );
     } else {
       setError("");
     }
@@ -267,7 +272,8 @@ const EWallet = ({
             <small className="text-danger d-block mb-3">{error}</small>
           ) : bounds.min != null && bounds.max != null ? (
             <small className="text-muted d-block mb-3">
-              Allowed range: ₹ {bounds.min.toLocaleString("en-IN")} – ₹{" "}
+              Allowed range: {CURRENCY_SYMBOL}{" "}
+              {bounds.min.toLocaleString("en-IN")} – {CURRENCY_SYMBOL}{" "}
               {bounds.max.toLocaleString("en-IN")}
             </small>
           ) : null}
@@ -287,10 +293,14 @@ const EWallet = ({
                     onClick={() => handleSelectAmount(amt)}
                     title={
                       idx === 0
-                        ? `Min (₹ ${amt.toLocaleString("en-IN")})`
+                        ? `Min ({CURRENCY_SYMBOL} ${amt.toLocaleString(
+                            "en-IN"
+                          )})`
                         : idx === 3
-                        ? `Max (₹ ${amt.toLocaleString("en-IN")})`
-                        : `₹ ${amt.toLocaleString("en-IN")}`
+                        ? `Max ({CURRENCY_SYMBOL} ${amt.toLocaleString(
+                            "en-IN"
+                          )})`
+                        : `{CURRENCY_SYMBOL} ${amt.toLocaleString("en-IN")}`
                     }
                   >
                     {amt.toLocaleString("en-IN")}
@@ -302,7 +312,9 @@ const EWallet = ({
           {/* {amount && paymentSelectedMethod ? ( */}
           <div className="">
             <h5 className=" mb-0">Deposit Amount</h5>
-            <h3 className="text-success">₹ {amount}</h3>
+            <h3 className="text-success">
+              {CURRENCY_SYMBOL} {amount}
+            </h3>
             {/* <h5 className="mb-3">
                 You have selected the{" "}
                 {paymentSelectedMethod === 1 ? "BANK" : "UPI"} payment method.
@@ -332,7 +344,10 @@ const EWallet = ({
                 className="input-field mb-3 mt-3"
                 style={{ display: "none" }}
               >
-                <p className="mb-0">You have selected ₹{amount} to deposit.</p>
+                <p className="mb-0">
+                  You have selected {CURRENCY_SYMBOL}
+                  {amount} to deposit.
+                </p>
                 <input
                   required
                   className="input readonly-input mt-1"

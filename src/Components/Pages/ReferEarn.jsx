@@ -1,4 +1,5 @@
 import React from "react";
+import { CURRENCY_SYMBOL } from "../../constants";
 
 const ReferEarn = () => {
   return (
@@ -56,8 +57,8 @@ const ReferEarn = () => {
                               type="text"
                               id="copyInput"
                               className="input2"
-                              placeholder="https://jiboomba.com"
-                              defaultValue="https://jiboomba.com"
+                              placeholder=""
+                              defaultValue=""
                             />
                             <button className="Subscribe-btn" id="copyButton">
                               Copy
@@ -74,8 +75,11 @@ const ReferEarn = () => {
                           </div>
                           <ul className="text-white mt-3">
                             <li>Share your referral code</li>
-                            <li>Friends get ₹10 on their first game</li>
-                            <li>you get ₹10 off coupon</li>
+                            <li>
+                              Friends get {CURRENCY_SYMBOL}10 on their first
+                              game
+                            </li>
+                            <li>you get {CURRENCY_SYMBOL}10 off coupon</li>
                           </ul>
                         </div>
                       </div>
