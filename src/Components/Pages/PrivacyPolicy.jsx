@@ -5,6 +5,7 @@ import BottomFooter from "../layouts/footer/BottomFooter";
 import Footer from "../layouts/footer/Footer";
 import StickyHeader from "../layouts/Header/Header";
 import Sidebar from "../layouts/Header/Sidebar";
+import { APP_NAME } from "../../constants";
 
 function PrivacyPolicy() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -101,7 +102,7 @@ function PrivacyPolicy() {
                       <strong>Service:</strong> the Website.
                     </li>
                     <li>
-                      <strong>Website:</strong> Jiboomba, accessible from{" "}
+                      <strong>Website:</strong> {APP_NAME}, accessible from{" "}
                       <a href="https://jiboomba.in/">https://jiboomba.in/</a>.
                     </li>
                     <li>

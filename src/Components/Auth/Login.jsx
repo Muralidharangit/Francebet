@@ -6,6 +6,7 @@ import AuthContext from "../../Auth/AuthContext";
 import { getAuthType, loginUser } from "../../API/authAPI"; // Renamed verifyOTP import
 import routes from "../routes/route";
 import { Images } from "../layouts/Header/constants/images";
+import { APP_NAME } from "../../constants";
 const PENDING_CODE_KEY = "pendingGiftCode";
 const LoginPage = () => {
   const { login } = useContext(AuthContext);
@@ -287,7 +288,7 @@ const LoginPage = () => {
                 {/* Register Link */}
                 <div className="text-center mt-3">
                   <p className="text-gray ">
-                    <span className="text-gray "> New to jiboomba ? </span>
+                    <span className="text-gray "> New to {APP_NAME}? </span>
                     <Link
                       to={routes.auth.register}
                       className="link ms-2 fs-16 text-red z-2"

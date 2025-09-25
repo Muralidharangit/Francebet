@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import routes from "../routes/route";
 import AuthContext from "../../Auth/AuthContext";
-import { CURRENCY_SYMBOL } from "../../constants";
+import { APP_NAME, CURRENCY_SYMBOL } from "../../constants";
 
 const OffCanvas = () => {
   // const [isOpen, setIsOpen] = useState(false);
@@ -3092,7 +3092,7 @@ const OffCanvas = () => {
               </div>
               <span className="btn text-white green-bg">Thank You</span>
               <span className="text-dard-grey fs-10 fw-700 mt-3">
-                For Choosing jiboomba
+                For Choosing {APP_NAME}
               </span>
             </div>
           </div>

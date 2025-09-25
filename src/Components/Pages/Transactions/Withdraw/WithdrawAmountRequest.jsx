@@ -7,7 +7,7 @@ import routes from "../../../routes/route";
 import { EditBank, sendWithdrawRequest } from "../../../../API/withdrawAPI";
 import { verifyToken } from "../../../../API/authAPI";
 import { toast, ToastContainer } from "react-toastify";
-import { CURRENCY_SYMBOL } from "../../../../constants";
+import { APP_NAME, CURRENCY_SYMBOL } from "../../../../constants";
 
 const WithdrawAmountRequest = ({ amount, bankId }) => {
   const [bankDetails, setBankDetails] = useState(null);
@@ -144,7 +144,7 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
                   </span>
                 </Link>
                 <span className="text-dark-grey fs-10 fw-700 mt-3">
-                  For Choosing jiboomba
+                  For Choosing {APP_NAME}
                 </span>
               </div>
             </div>

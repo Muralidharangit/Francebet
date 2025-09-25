@@ -27,7 +27,7 @@ import {
 } from "../../hooks/homePageApi";
 import { useQuery } from "@tanstack/react-query";
 import Sidebar from "./Header/Sidebar";
-import { CURRENCY_SYMBOL } from "../../constants";
+import { APP_NAME, CURRENCY_SYMBOL } from "../../constants";
 
 function Home() {
   const { isLoading } = useContext(AuthContext);
@@ -2116,7 +2116,7 @@ function Home() {
                               </Link>
 
                               <span className="text-dark-grey fs-10 fw-700 mt-3">
-                                For Choosing jiboomba
+                                For Choosing {APP_NAME}
                               </span>
                             </div>
                           </div>

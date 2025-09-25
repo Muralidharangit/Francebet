@@ -81,7 +81,7 @@ function ResponsibleGaming() {
             </li>
             <li>
               Contact our Customer Support at{" "}
-              <a href="mailto:support@jiboomba.in" className="text-info">
+              <a href="" className="text-info">
                 support@jiboomba.in
               </a>
             </li>

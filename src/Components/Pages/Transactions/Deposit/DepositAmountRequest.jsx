@@ -8,7 +8,7 @@ import routes from "../../../routes/route";
 import { Link, useNavigate } from "react-router-dom";
 import { sendDepositRequest } from "../../../../API/depositAPI";
 import { verifyToken } from "../../../../API/authAPI";
-import { CURRENCY_SYMBOL } from "../../../../constants";
+import { APP_NAME, CURRENCY_SYMBOL } from "../../../../constants";
 const DepositAmountRequest = ({
   amount,
   paymentSelectedMethod,
@@ -359,7 +359,7 @@ const DepositAmountRequest = ({
                   </span>
                 </Link>
                 <span className="text-dark-grey fs-10 fw-700 mt-3">
-                  For Choosing jiboomba
+                  For Choosing {APP_NAME}
                 </span>
               </div>
             </div>

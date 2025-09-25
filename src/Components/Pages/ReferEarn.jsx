@@ -57,8 +57,8 @@ const ReferEarn = () => {
                               type="text"
                               id="copyInput"
                               className="input2"
-                              placeholder="https://jiboomba.com"
-                              defaultValue="https://jiboomba.com"
+                              placeholder=""
+                              defaultValue=""
                             />
                             <button className="Subscribe-btn" id="copyButton">
                               Copy
