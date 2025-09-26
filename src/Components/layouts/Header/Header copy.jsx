@@ -6,6 +6,7 @@ import { verifyToken } from "../../../API/authAPI";
 import { toast, ToastContainer } from "react-toastify";
 import { Images } from "./constants/images";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import { CURRENCY_SYMBOL } from "../../../constants";
 const StickyHeader = () => {
   const { user, profile, avatar, portalSettings } = useContext(AuthContext); // ✅ Get user authentication state
   const [isSticky, setIsSticky] = useState(false);
@@ -160,7 +161,7 @@ const StickyHeader = () => {
                     {/* Coin Box */}
                     {profile ? (
                       <div className="coin-box d-flex align-items-center px-2 py-1 rounded-pill">
-                        <img src="assets/img/rupee.png" width="20" alt="Coin" />
+                        <img src="/assets/img/rupee.png" width="20" alt="Coin" />
                         <span className="ms-1 text-white">
                           {CURRENCY_SYMBOL} {Number(profile?.chips).toFixed(2)}
                         </span>

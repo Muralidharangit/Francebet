@@ -28,12 +28,20 @@ const routes = {
 
     manual_withdraw_namibia: "/manual-withdraw-namibia",
 
+
+    manual_withdraw_india: "/manual-withdraw-india",
+
+    // India
+
+    deposit_India: "manual-deposit-india",
+
     manual_deposit_history: "/deposit-namibia-manual-history",
 
     ewallet_deposit_namibia:
       "/deposit-namibia/ewallet-deposit/get-payment-details",
     ewallet_deposit_history: "/deposit-namibia-ewallet-history",
     all_deposit_history: "/deposit_history",
+
   },
   account: {
     dashboard: "/account-dashboard",
