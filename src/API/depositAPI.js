@@ -121,7 +121,6 @@ export const getDepositMethodsNamibia = async (token) => {
 };
 
 
-
 // Send the Deposit Request
 export const sendDepositRequestNamibia = async ({
   token,
@@ -179,12 +178,12 @@ export const sendDepositRequestNamibiaEwallet = async ({
 
   const formData = new FormData();
   formData.append("player_id", player_id);
-  formData.append("manual_deposit_id", paymentSelectedMethod);
+  formData.append("manual_ewallet_id", paymentSelectedMethod);
   formData.append("amount", amount);
   formData.append("utr", utr_number);
 
   const response = await axios.post(
-    `${BASE_URL}/player/deposit-namibia/manual-deposit/send-deposit-request`,
+    `${BASE_URL}/player/deposit-namibia/ewallet-deposit/send-deposit-request`,
     formData,
     {
       headers: {
@@ -198,7 +197,6 @@ export const sendDepositRequestNamibiaEwallet = async ({
 };
 
 
-
 // India function
 export const getDepositMethodsIndia = async (token) => {
   const response = await axiosInstance.get(
@@ -208,6 +206,14 @@ export const getDepositMethodsIndia = async (token) => {
         Authorization: `Bearer ${token}`,
       },
       params: { payment_method_id: "1" },
+
+// Deposit History
+export const depositHistoryNamibia = async (token) => {
+  const response = await axiosInstance.get(
+    "/player/deposit-namibia/manual-deposit/history",
+    {
+      headers: { Authorization: `Bearer ${token}` },
+
     }
   );
   return response.data;
@@ -241,6 +247,16 @@ export const sendDepositRequestIndia = async ({
         Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
       },
+    }
+  );
+
+
+// Deposit History Ewallet namibia
+export const depositHistoryEwalletNamibia = async (token) => {
+  const response = await axiosInstance.get(
+    "/player/deposit-namibia/ewallet-deposit/history",
+    {
+      headers: { Authorization: `Bearer ${token}` },
     }
   );
 

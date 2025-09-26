@@ -5193,15 +5193,14 @@ section.container.black-red::after {
   }
   .coin-box {
     padding: 5px 8px;
-    width:160px;
+    width: 160px;
   }
 
   .coin-box {
-   font-size: 15px;
+    font-size: 15px;
     font-weight: 500;
-   justify-content: space-evenly;
+    justify-content: space-evenly;
   }
-
 }
 .btn-add-coin:hover {
   background: transparent;
@@ -5719,4 +5718,9 @@ a {
 }
 .text_grey_color {
   color: #818181 !important;
+}
+.btn:hover {
+  /* color: var(--bs-btn-hover-color); */
+  background-color: gray;
+  /* border-color: var(--bs-btn-hover-border-color); */
 }

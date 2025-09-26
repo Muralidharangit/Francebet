@@ -1,12 +1,13 @@
 // src/Components/Pages/Transactions/Deposit/DepositMethod.jsx
 import React, { useEffect, useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // Adjust these paths if your structure differs:
 import StickyHeader from "../../../layouts/Header/Header";
 import Sidebar from "../../../layouts/Header/Sidebar";
 import AuthContext from "../../../../Auth/AuthContext";
 import axiosInstance from "../../../../API/axiosConfig";
+import routes from "../../../routes/route";
 
 const DepositMethod = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -15,6 +16,8 @@ const DepositMethod = () => {
   const [err, setErr] = useState("");
   const [nameMethod, setNameMethod] = useState("");
   const [clickingId, setClickingId] = useState(null);
+
+  const [historyRoute, setHistoryRoute] = useState("");
 
   const navigate = useNavigate();
   const { user } = useContext(AuthContext); // expects user?.token (and optional user?.id)
@@ -123,6 +126,7 @@ const DepositMethod = () => {
     // Most specific FIRST
     if (key.includes("manual") && key.includes("namibia")) {
       navigate("/deposit-namibia/manual-deposit/get-payment-details");
+      setHistoryRoute(routes.transactions.manual_deposit_history);
       return;
     }
 
@@ -135,6 +139,7 @@ const DepositMethod = () => {
     // Generic manual
     if (key.includes("e-wallet")) {
       navigate("/deposit-namibia/ewallet-deposit/get-payment-details");
+      setHistoryRoute(routes.transactions.ewallet_deposit_history);
       return;
     }
     // A-Pay -> kickoff via axios (so token + JSON headers go along)
@@ -226,19 +231,59 @@ const DepositMethod = () => {
                           <div className="col-12 col-lg-12 ">
                             <div className="row g-3 justify-content-center">
                               {methods.map((m, idx) => {
-                                const key = m.id || m.code || m.name || idx;
+                                const key = String(
+                                  m.id ?? m.code ?? m.name ?? idx
+                                );
                                 const isBusy = clickingId === key;
-                                const isLast = idx === methods.length - 1; // Check if it's the last item
 
+                                // Normalize the title for robust matching (handles "E-Wallet", "e wallet", etc.)
+                                const title =
+                                  m?.name || m?.display_name || m?.code || "";
+                                const norm = (s) =>
+                                  (s || "")
+                                    .toLowerCase()
+                                    .replace(/[^a-z0-9]+/g, " ")
+                                    .trim();
+                                const nk = norm(title);
+
+                                const isManual = nk.includes("manual");
+                                const isNamibia = nk.includes("namibia");
+                                const isEwallet =
+                                  nk.includes("ewallet") ||
+                                  nk.includes("e wallet");
+                                const isApay =
+                                  nk.includes("apay") ||
+                                  nk.includes("a pay") ||
+                                  nk.includes("easypay") ||
+                                  nk.includes("easy pay");
+
+                                // History route selection:
+                                // 1) Manual -> manual history (or your manual-specific history)
+                                // 2) E-Wallet -> ewallet history (fallback to general history if not defined)
+                                // 3) A-Pay or anything else -> general deposit history
+                                const perCardHistoryRoute = isManual
+                                  ? routes.transactions.manual_deposit_history
+                                  : isEwallet
+                                  ? routes.transactions
+                                      .ewallet_deposit_history ??
+                                    routes.transactions.depositHistory
+                                  : "";
+
+                                // const disabled = isBusy || m?.disabled === true;
+                                const disabled =
+                                  isBusy || m?.disabled === true || isApay; // <- disable for A-Pay
                                 return (
-                                  <div className="col-12 col-lg-6 col-xl-4" key={key}>
+                                  <div
+                                    className="col-12 col-lg-6 col-xl-4"
+                                    key={key}
+                                  >
                                     <div className="p-3 rounded border h-100 d-flex flex-column">
-                                      <div className="d-flex">
-                                        {m.name === "Manual Deposit - India" ? (
+                                      <div className="d-flex justify-content-between">
+                                        {isManual ? (
                                           <div className="card_bx">
                                             <img
                                               src="assets/img/cash-payment_img.png"
-                                              alt={m.name || "Method"}
+                                              alt={title || "Method"}
                                               style={{
                                                 width: 50,
                                                 height: 50,
@@ -249,21 +294,33 @@ const DepositMethod = () => {
                                         ) : (
                                           <img
                                             src="assets/img/wallet_img.png"
-                                            alt={m.name || "Method"}
+                                            alt={title || "Method"}
                                             style={{
-                                              width: 50,
+                                              width: 60,
                                               height: 50,
                                               objectFit: "contain",
                                             }}
                                           />
                                         )}
+
+                                        <Link to={perCardHistoryRoute}>
+                                          <img
+                                            alt="bet_history"
+                                            style={{
+                                              width: 40,
+                                              height: 30,
+                                              objectFit: "contain",
+                                            }}
+                                            src="assets/img/icons/history.png"
+                                          />
+                                        </Link>
                                       </div>
 
                                       <div className="d-flex align-items-center gap-2 mb-2">
                                         {m.logo && (
                                           <img
                                             src={m.logo}
-                                            alt={m.name || "Method"}
+                                            alt={title || "Method"}
                                             style={{
                                               width: 36,
                                               height: 36,
@@ -272,23 +329,27 @@ const DepositMethod = () => {
                                           />
                                         )}
                                         <strong className="fs-4 text-white">
-                                          {m.name || m.display_name || m.code}
+                                          {title}
                                         </strong>
                                       </div>
 
-                                      {m.name === "Manual Deposit - India" ? (
+                                      {isManual ? (
                                         <p style={{ color: "#b1abab" }}>
-                                          Manual Payment Transfer funds manually
-                                          via bank transfer, UPI or cash. Upload
-                                          receipt or add details after placing
-                                          your order.
+                                          Manual Payment — transfer via
+                                          bank/UPI/cash and upload receipt.
+                                        </p>
+                                      ) : isEwallet ? (
+                                        <p style={{ color: "#b1abab" }}>
+                                          E-Wallet — fast and secure wallet
+                                          payments.
+                                        </p>
+                                      ) : isApay ? (
+                                        <p style={{ color: "#b1abab" }}>
+                                          A-Pay — instant one-tap checkout.
                                         </p>
                                       ) : (
                                         <p style={{ color: "#b1abab" }}>
-                                          A-Pay Instant checkout using A-Pay
-                                          wallet — fast, secure and one-tap
-                                          payments. Balance will be debited
-                                          immediately.
+                                          Select to continue.
                                         </p>
                                       )}
 
@@ -303,13 +364,14 @@ const DepositMethod = () => {
                                           {m.limits.max}
                                         </small>
                                       )}
-
+                                      {/* {isApay ? "hh" : "sssssss"} */}
                                       <button
+                                        type="button"
                                         className="btn btn-red mt-auto w-50"
-                                        disabled={isLast} // Only disable the last button
+                                        disabled={disabled}
                                         onClick={() => {
-                                          setClickingId(m.id);
-                                          handleChoose(m);
+                                          setClickingId(key); // 🔐 use the same 'key' you compare above
+                                          handleChoose(m, key); // pass key if your handler needs it
                                         }}
                                       >
                                         {isBusy ? "Redirecting..." : "Proceed"}
