@@ -92,6 +92,14 @@ const DepositNamibiaEwallet = lazy(() =>
   )
 );
 
+const WithdrawIndexIndia = lazy(() =>
+  import(
+    "./Components/Pages/Transactions/India/Deposit_India_Manual/DepositIndia"
+  )
+);
+
+;
+
 function App() {
   return (
     <>
@@ -199,7 +207,16 @@ function App() {
               path={routes.transactions.manual_withdraw_namibia}
               element={<WithdrawIndexNamibia />}
             />
+
             {/* =========================================================================== */}
+
+            {/* India  */}
+
+            <Route
+              path={routes.transactions.manual_withdraw_india}
+              element={<WithdrawIndexIndia />}
+            />
+
             <Route path={routes.profile.main} element={<Profile />} />
             <Route path={routes.profile.edit} element={<ProfileEdit />} />
             <Route

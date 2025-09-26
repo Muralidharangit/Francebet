@@ -29,8 +29,11 @@ const routes = {
       "/deposit-namibia/ewallet-deposit/get-payment-details",
     manual_withdraw_namibia: "/manual-withdraw-namibia",
 
-     manual_withdraw_india: "/manual-withdraw-india",
+    manual_withdraw_india: "/manual-withdraw-india",
 
+    // India
+
+    deposit_India: "manual-deposit-india",
   },
   account: {
     dashboard: "/account-dashboard",
