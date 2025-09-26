@@ -220,7 +220,7 @@ const AccountDashboard = () => {
                     // onClick={() =>
                     //   handleSecureRoute(routes.transactions.depositHistory)
                     // }
-                    onClick={() => navigate(routes.transactions.depositHistory)}
+                    onClick={() => navigate(routes.transactions.all_deposit_history)}
                   >
                     <img
                       src="assets/img/icons/rupee_2.png"

@@ -120,7 +120,6 @@ export const getDepositMethodsNamibia = async (token) => {
   return response.data;
 };
 
-
 // Send the Deposit Request
 export const sendDepositRequestNamibia = async ({
   token,
@@ -196,7 +195,6 @@ export const sendDepositRequestNamibiaEwallet = async ({
   return response.data;
 };
 
-
 // India function
 export const getDepositMethodsIndia = async (token) => {
   const response = await axiosInstance.get(
@@ -206,20 +204,20 @@ export const getDepositMethodsIndia = async (token) => {
         Authorization: `Bearer ${token}`,
       },
       params: { payment_method_id: "1" },
-
+    }
+  );
+  return response.data;
+};
 // Deposit History
 export const depositHistoryNamibia = async (token) => {
   const response = await axiosInstance.get(
     "/player/deposit-namibia/manual-deposit/history",
     {
       headers: { Authorization: `Bearer ${token}` },
-
     }
   );
   return response.data;
 };
-
-
 
 // Send the Deposit Request
 export const sendDepositRequestIndia = async ({
@@ -228,7 +226,7 @@ export const sendDepositRequestIndia = async ({
   utr_number,
   paymentSelectedMethod,
   player_id,
-  image
+  image,
 }) => {
   // console.log("paymentSelectedMethod", paymentSelectedMethod);
 
@@ -249,8 +247,8 @@ export const sendDepositRequestIndia = async ({
       },
     }
   );
-
-
+  return response.data;
+};
 // Deposit History Ewallet namibia
 export const depositHistoryEwalletNamibia = async (token) => {
   const response = await axiosInstance.get(

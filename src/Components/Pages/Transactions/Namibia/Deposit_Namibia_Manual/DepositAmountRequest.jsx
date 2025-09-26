@@ -29,9 +29,13 @@ const DepositAmountRequest = ({
       payment_screenshot: formData.payment_screenshot,
     },
     validationSchema: Yup.object({
-      utr_number: Yup.string().required("UTR number is required"),
+      utr_number: Yup.string()
+        .trim()
+        .matches(/^[A-Za-z0-9]{12,22}$/, "Only letters & digits (12–22)")
+        .required("UTR is required"),
       amount: Yup.string().required("Amount is required"),
     }),
+
     onSubmit: async (values, { setSubmitting, setErrors, resetForm }) => {
       try {
         // ✅ Step 1: Verify token with its own error handler

@@ -10,7 +10,8 @@ import {
   changeBankStatus,
   deleteBankDetails,
   EditBank,
-  getBankDetailsNamibia,
+  getBankDetailsIndia,
+  storeBankIndia,
   // storeBank,
   storeBankNamibia,
   updateBank,
@@ -60,7 +61,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
           return;
         }
 
-        const response = await getBankDetailsNamibia(token, userId); // ✅ No need to pass token if axiosInstance handles it
+        const response = await getBankDetailsIndia(token, userId); // ✅ No need to pass token if axiosInstance handles it
         if (
           response.status === "success" &&
           Array.isArray(response.playerBank)
@@ -152,23 +153,23 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
 
   //   validation
   const validationSchema = Yup.object({
+    account_number: Yup.string()
+      .matches(/^\d+$/, "Only numbers allowed")
+      .required("Account Number is required"),
     bank_name: Yup.string().required("Bank Name is required"),
     account_holder_name: Yup.string().required(
       "Account Holder Name is required"
     ),
-    account_number: Yup.string()
-      .matches(/^\d+$/, "Only numbers allowed")
-      .required("Account Number is required"),
-    branch_code: Yup.string().required("Branch Code is required"),
-    branch_name: Yup.string().required("Branch Name is required"),
+    ifsc_code: Yup.string()
+      .matches(/^[A-Z0-9]/, "Enter a valid IFSC code")
+      .required("IFSC Code is required"),
   });
 
   //   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
       account_number: "",
-      branch_code: "",
-      branch_name: "",
+      ifsc_code: "",
       bank_name: "",
       account_holder_name: "",
     },
@@ -207,7 +208,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
         }
 
         // ✅ Step 2: Submit bank form
-        const response = await storeBankNamibia(token, values, userId);
+        const response = await storeBankIndia(token, values, userId);
 
         if (response.status === "success") {
           toast.dismiss("bank-added"); // optional: clean before show
@@ -222,7 +223,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
           setActiveTab("bank");
           setLoading(true);
 
-          const refreshedBanks = await getBankDetailsNamibia(token, userId);
+          const refreshedBanks = await getBankDetailsIndia(token, userId);
           if (
             refreshedBanks.status === "success" &&
             Array.isArray(refreshedBanks.playerBank)
@@ -335,7 +336,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
           //   }
           // );
 
-          const refreshedBanks = await getBankDetailsNamibia(token, userId);
+          const refreshedBanks = await getBankDetailsIndia(token, userId);
 
           if (
             refreshedBanks.status === "success" &&
@@ -729,18 +730,15 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
                         required
                         className="input"
                         type="text"
-                        name="branch_code"
-                        value={formik.values.branch_code}
+                        name="ifsc_code"
+                        value={formik.values.ifsc_code}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                       />
-                      <label className="label">Branch Code</label>
-                      {formik.touched.branch_code &&
-                        formik.errors.branch_code && (
-                          <p className="text-danger">
-                            {formik.errors.branch_code}
-                          </p>
-                        )}
+                      <label className="label">IFSC Code</label>
+                      {formik.touched.ifsc_code && formik.errors.ifsc_code && (
+                        <p className="text-danger">{formik.errors.ifsc_code}</p>
+                      )}
                     </div>
 
                     <div className="input-field">
@@ -757,25 +755,6 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
                       {formik.touched.bank_name && formik.errors.bank_name && (
                         <p className="text-danger">{formik.errors.bank_name}</p>
                       )}
-                    </div>
-
-                    <div className="input-field">
-                      <input
-                        required
-                        className="input"
-                        type="text"
-                        name="branch_name"
-                        value={formik.values.branch_name}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                      />
-                      <label className="label">Branch Name</label>
-                      {formik.touched.branch_name &&
-                        formik.errors.branch_name && (
-                          <p className="text-danger">
-                            {formik.errors.branch_name}
-                          </p>
-                        )}
                     </div>
 
                     <div className="input-field">

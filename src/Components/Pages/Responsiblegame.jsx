@@ -4,6 +4,7 @@ import routes from "../routes/route";
 import BottomFooter from "../layouts/footer/BottomFooter";
 import Footer from "../layouts/footer/Footer";
 import StickyHeader from "../layouts/Header/Header";
+import { APP_NAME } from "../../constants";
 
 function ResponsibleGaming() {
   return (
@@ -32,10 +33,10 @@ function ResponsibleGaming() {
           <h1 className="mb-4">Responsible Gaming</h1>
 
           <h2>
-            Responsible Gaming and Player Protection Policy – jiboomba .in
+            Responsible Gaming and Player Protection Policy – {APP_NAME} .in
           </h2>
           <p>
-            At <strong>Jiboomba.in</strong>, we are fully committed to promoting
+            At <strong> {APP_NAME}.in</strong>, we are fully committed to promoting
             responsible gaming and ensuring our players are protected from the
             potential risks associated with gambling. Our Responsible Gaming
             Policy is designed to foster a safe, secure, and supportive
@@ -82,7 +83,7 @@ function ResponsibleGaming() {
             <li>
               Contact our Customer Support at{" "}
               <a href="" className="text-info">
-                support@jiboomba.in
+                support@ {APP_NAME}.in
               </a>
             </li>
           </ul>
@@ -162,7 +163,7 @@ function ResponsibleGaming() {
 
           <h2>Underage Gaming Prevention</h2>
           <p>
-            Gambling on jiboomba .in is strictly prohibited for individuals
+            Gambling on  {APP_NAME} .in is strictly prohibited for individuals
             under 18. To prevent underage access, we have implemented:
           </p>
           <ul>

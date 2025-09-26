@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import WithdrawSelectAmount from "./WithdrawSelectAmount";
-import BankDetails from "./BankDetails_Namibia";
+import BankDetails from "./BankDetailsIndia";
 import WithdrawAmountRequest from "./WithdrawAmountRequest";
 import StickyHeader from "../../../../layouts/Header/Header";
 import Sidebar from "../../../../layouts/Header/Sidebar";
@@ -98,7 +98,7 @@ const WithdrawIndex = () => {
 
                       {/* Centered Title */}
                       <h5 className="position-absolute start-50 translate-middle-x m-0 text-white fs-16">
-                        Manual Withdraw Namibia
+                        Manual Withdraw India
                       </h5>
                     </div>
                     {/* header Ends */}

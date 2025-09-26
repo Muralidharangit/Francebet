@@ -12,11 +12,9 @@ const ReferEarn = () => {
               style={{ paddingTop: 8 }}
             >
               <div className="position-absolute" style={{ left: 0 }}>
-                <a href="./sideMenu.html">
-                  <div className="back_icon">
-                    <i className="ri-arrow-left-s-line" />
-                  </div>
-                </a>
+                <div className="back_icon">
+                  <i className="ri-arrow-left-s-line" />
+                </div>
               </div>
               <div className="d-flex mx-2 justify-content-center align-items-center">
                 <h5 className="mb-0">Refer And Earn</h5>

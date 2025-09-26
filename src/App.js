@@ -109,14 +109,17 @@ const AllMethodDepositHistory = lazy(() =>
   )
 );
 
-const WithdrawIndexIndia = lazy(() =>
+const DepositIndexIndia = lazy(() =>
   import(
     "./Components/Pages/Transactions/India/Deposit_India_Manual/DepositIndia"
   )
 );
 
-;
-
+const WithdrawIndexIndia = lazy(() =>
+  import(
+    "./Components/Pages/Transactions/India/WithdrawIndia_Manual/WithdrawIndex"
+  )
+);
 function App() {
   return (
     <>
@@ -235,15 +238,16 @@ function App() {
               element={<WithdrawIndexNamibia />}
             />
 
-
             <Route
               path={routes.transactions.all_deposit_history}
               element={<AllMethodDepositHistory />}
             />
 
-
             {/* India  */}
-
+            <Route
+              path={routes.transactions.manual_deposit_India}
+              element={<DepositIndexIndia />}
+            />
             <Route
               path={routes.transactions.manual_withdraw_india}
               element={<WithdrawIndexIndia />}

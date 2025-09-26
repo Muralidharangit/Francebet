@@ -130,6 +130,13 @@ const DepositMethod = () => {
       return;
     }
 
+    // deposit
+
+    if (key.includes("manual") && key.includes("india")) {
+      navigate("/manual-deposit-india");
+      setHistoryRoute(routes.transactions.manual_deposit_history);
+      return;
+    }
     // Generic manual
     if (key.includes("manual")) {
       navigate("/deposit");
