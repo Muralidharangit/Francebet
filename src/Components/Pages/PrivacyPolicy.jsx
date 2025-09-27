@@ -81,14 +81,14 @@ function PrivacyPolicy() {
                       or ownership.
                     </li>
                     <li>
-                      <strong>Company:</strong> Jiboomba (“We”, “Us”, “Our”).
+                      <strong>Company:</strong> {APP_NAME} (“We”, “Us”, “Our”).
                     </li>
                     <li>
                       <strong>Cookies:</strong> small files stored on Your
                       device to track browsing activity.
                     </li>
                     <li>
-                      <strong>Country:</strong> Puducherry, India.
+                      <strong>Country:</strong> - .
                     </li>
                     <li>
                       <strong>Device:</strong> any device such as a computer,
@@ -103,7 +103,7 @@ function PrivacyPolicy() {
                     </li>
                     <li>
                       <strong>Website:</strong> {APP_NAME}, accessible from{" "}
-                      <a href="https://jiboomba.in/">https://jiboomba.in/</a>.
+                      <a href="https://jiboomba.in/">https://{APP_NAME}.in/</a>.
                     </li>
                     <li>
                       <strong>You:</strong> the individual using the Service, or
@@ -205,7 +205,7 @@ function PrivacyPolicy() {
                   <p>If you have questions, contact us:</p>
                   <ul>
                     <li>
-                      <strong>Email:</strong> jiboomba@gmail.com
+                      <strong>Email:</strong> {APP_NAME}@gmail.com
                     </li>
                   </ul>
                 </section>

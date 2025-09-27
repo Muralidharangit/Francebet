@@ -152,3 +152,59 @@ export const sendWithdrawRequestNamibia = async ({
   return response.data;
 };
 
+//
+// Get Bank Data India Manual
+export const getBankDetailsIndia = async (token, userId) => {
+  console.log(userId);
+
+  const response = await axiosInstance.get(
+    "/player/withdraw-india/manual-withdraw/get-player-bank",
+    {
+      headers: { Authorization: `Bearer ${token}` },
+      params: { player_id: userId }, // <-- goes here
+    }
+  );
+  return response.data;
+};
+
+// store Bank Data storeBankIndia
+export const storeBankIndia = async (token, values, userId) => {
+  const response = await axios.post(
+    `${BASE_URL}/player/withdraw-india/manual-withdraw/store-player-bank`,
+    values,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+
+      // params: { player_id: userId },
+    }
+  );
+  return response.data;
+};
+
+
+// send-withdraw-request India
+export const sendWithdrawRequestIndia = async ({
+  token,
+  bankId,
+  amount,
+  // userid,
+}) => {
+  const formData = new FormData();
+  formData.append("player_bank_id", bankId);
+  formData.append("amount", amount);
+  // formData.append("player_id", userid);
+
+  const response = await axios.post(
+    `${BASE_URL}/player/withdraw-india/manual-withdraw/send-withdraw-request`,
+    formData,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  return response.data;
+};

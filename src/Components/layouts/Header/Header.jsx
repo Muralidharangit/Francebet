@@ -202,7 +202,11 @@ const StickyHeader = ({ onToggleSidebar }) => {
                     {/* Coin Box */}
                     {profile ? (
                       <div className="coin-box d-flex align-items-center px-2 py-1 rounded-pill">
-                        <img src="/assets/img/rupee.png" width="20" alt="Coin" />
+                        <img
+                          src="/assets/img/rupee.png"
+                          width="20"
+                          alt="Coin"
+                        />
                         <span className="ms-1 text-white">
                           {CURRENCY_SYMBOL} {Number(profile?.chips).toFixed(2)}
                         </span>
@@ -573,7 +577,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                             className="preview-item-content d-flex align-items-start flex-column justify-content-center"
                             onClick={() =>
                               handleSecureRoute(
-                                routes.transactions.manual_withdraw_namibia
+                                routes.transactions.manual_deposit_India
                               )
                             }
                           >
@@ -584,29 +588,31 @@ const StickyHeader = ({ onToggleSidebar }) => {
                           </div>
                         </a>
                         {/* Withdraw ends */}
-                        {/* <h6 className="p-3 mb-0">Messages</h6> */}
+
                         <div className="dropdown-divider" />
                         <a className="dropdown-item preview-item">
                           <div className="preview-thumbnail">
                             {/* <img
-                          src="../assets/images/faces/face4.jpg"
-                          alt="image"
-                          className="profile-pic"
+                          src="assets/img/icons/rupee_2.png"
+                          alt="deposit"
+                          // // width={"12px"}
+                          // style={{width:}}
                         /> */}
                           </div>
                           <div
                             className="preview-item-content d-flex align-items-start flex-column justify-content-center"
                             onClick={() =>
-                              handleSecureRoute(routes.games.history)
+                              handleSecureRoute(
+                                routes.transactions.all_deposit_history
+                              )
                             }
                           >
                             <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
-                              Transaction History
+                              Deposit History
                             </h6>
-                            {/* <p className="text-gray mb-0"> 1 Minutes ago </p> */}
+                            {/* <p className="text-gray mb-0"> 18 Minutes ago </p> */}
                           </div>
                         </a>
-
                         <div className="dropdown-divider" />
                         <a className="dropdown-item preview-item">
                           <div className="preview-thumbnail">
@@ -630,28 +636,27 @@ const StickyHeader = ({ onToggleSidebar }) => {
                             {/* <p className="text-gray mb-0"> 15 Minutes ago </p> */}
                           </div>
                         </a>
+
+                        {/* <h6 className="p-3 mb-0">Messages</h6> */}
                         <div className="dropdown-divider" />
                         <a className="dropdown-item preview-item">
                           <div className="preview-thumbnail">
                             {/* <img
-                          src="assets/img/icons/rupee_2.png"
-                          alt="deposit"
-                          // // width={"12px"}
-                          // style={{width:}}
+                          src="../assets/images/faces/face4.jpg"
+                          alt="image"
+                          className="profile-pic"
                         /> */}
                           </div>
                           <div
                             className="preview-item-content d-flex align-items-start flex-column justify-content-center"
                             onClick={() =>
-                              handleSecureRoute(
-                                routes.transactions.all_deposit_history
-                              )
+                              handleSecureRoute(routes.games.history)
                             }
                           >
                             <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
-                              Deposit History
+                              Transaction History
                             </h6>
-                            {/* <p className="text-gray mb-0"> 18 Minutes ago </p> */}
+                            {/* <p className="text-gray mb-0"> 1 Minutes ago </p> */}
                           </div>
                         </a>
 

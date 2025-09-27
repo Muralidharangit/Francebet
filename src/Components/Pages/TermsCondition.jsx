@@ -89,7 +89,6 @@ function TermsCondition() {
                     </li>
                     <li>
                       <strong>Website:</strong> {APP_NAME}, accessible from{" "}
-                      
                     </li>
                     <li>
                       <strong>You:</strong> the individual accessing or using
@@ -107,7 +106,8 @@ function TermsCondition() {
                   </p>
                   <p>
                     You must be over the age of 18 to use the Service. You also
-                    agree to our <a href="privacy.html">Privacy Policy</a>{" "}
+                    agree to our{" "}
+                    <Link to={routes.pages.privacyPolicy}>Privacy Policy</Link>{" "}
                     before using Our Service.
                   </p>
 
