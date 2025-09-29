@@ -5724,3 +5724,234 @@ a {
   background-color: gray;
   /* border-color: var(--bs-btn-hover-border-color); */
 }
+
+/* wrapper */
+.nl-form {
+  width: 100%;
+}
+
+/* bar container */
+.nl-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #2c2c2c; /* dark card */
+  border-radius: 16px;
+  padding: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* input pill */
+.nl-input {
+  position: relative;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  background: #1e1e1e;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 999px;
+  padding: 10px 16px 10px 44px; /* left space for icon */
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.nl-input input {
+  width: 100%;
+  background: transparent;
+  border: none;
+  outline: none;
+  color: #f2f2f2;
+  font-size: 16px;
+  letter-spacing: 0.5px;
+}
+.nl-input input::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* leading icon */
+.nl-icon {
+  position: absolute;
+  left: 14px;
+  font-size: 18px;
+  opacity: 0.7;
+}
+
+/* focus + invalid */
+/* .nl-input:focus-within {
+  border-color: #e84a6a; 
+  box-shadow: 0 0 0 3px rgba(232, 74, 106, 0.15);
+} */
+/* .nl-input.is-invalid {
+  border-color: #ff4d4f;
+  box-shadow: 0 0 0 3px rgba(255, 77, 79, 0.15);
+} */
+
+/* button pill */
+.nl-btn {
+  flex: 0 0 auto;
+  min-width: 180px;
+  padding: 12px 22px;
+  border: none;
+  border-radius: 999px;
+  background: #a81435; /* your red tone */
+  color: #fff;
+  font-weight: 600;
+  transition: transform 0.08s ease, opacity 0.2s ease, background 0.2s ease;
+}
+.nl-btn:hover {
+  background: #e4063b;
+  color: white;
+}
+.nl-btn:active {
+  transform: translateY(1px);
+}
+.nl-btn:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* helper & error text */
+.nl-msg {
+  margin-top: 8px;
+  font-size: 13px;
+}
+.nl-msg-help {
+  color: rgba(255, 255, 255, 0.65);
+}
+.nl-msg-error {
+  color: #ff8587;
+}
+
+/* responsive: stack on small screens */
+@media (max-width: 576px) {
+  .nl-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 10px;
+  }
+  .nl-btn {
+    width: 100%;
+    min-width: 0;
+  }
+  .nl-input {
+    padding-left: 44px;
+  } /* keeps icon spacing */
+}
+
+/* wrapper */
+.nl-form {
+  width: 100%;
+}
+
+/* the dark capsule bar */
+.nl-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #1f1b1a;
+  border-radius: 14px;
+  padding: 2px 8px;
+  border: 2px solid #2b2624;
+  max-width: 620px;
+}
+
+/* input “bubble” with icon */
+.nl-input {
+  position: relative;
+  flex: 1 1 auto;
+  display: flex;
+  align-items: center;
+  background: #1f1b1a; /* slightly darker than bar */
+  border: none !important;
+  border-radius: 10px;
+  padding: 10px 14px 10px 42px; /* space for the icon */
+  transition: border-color 0.2s, box-shadow 0.2s;
+  color: white !important;
+}
+.nl-input input {
+  width: 100%;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  color: #eaeaea;
+  font-size: 16px;
+  color: white !important;
+}
+.nl-input input::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+/* the icon */
+.nl-icon {
+  position: absolute;
+  left: 12px;
+  font-size: 16px;
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+/* focus + error states */
+/* .nl-input:focus-within {
+  border-color: #e84a6a;
+  box-shadow: 0 0 0 3px rgba(232, 74, 106, 0.18);
+} */
+/* .nl-input.is-invalid {
+  border-color: #ff4d4f;
+  box-shadow: 0 0 0 3px rgba(255, 77, 79, 0.16);
+} */
+
+/* white button inside the bar */
+.nl-btn {
+  flex: 0 0 auto;
+  padding: 17px 20px;
+  background: #ffffff;
+  color: #1f1b1a;
+  border: 0;
+  border-radius: 12px;
+  font-weight: 600;
+  line-height: 1;
+  transition: transform 0.08s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.08);
+}
+.nl-btn:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+.nl-btn:active {
+  transform: translateY(1px);
+}
+.nl-btn:disabled {
+  opacity: 0.85;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* helper & error text */
+.nl-msg {
+  margin-top: 8px;
+  font-size: 13px;
+}
+.nl-msg-help {
+  color: rgba(255, 255, 255, 0.65);
+}
+.nl-msg-error {
+  color: #ff8688;
+}
+
+/* stack on small screens */
+@media (max-width: 576px) {
+  .nl-bar {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .nl-btn {
+    width: 100%;
+  }
+}
+code {
+  color: rgb(182, 5, 5);
+}
+.white-border {
+  border: 1px solid rgb(112, 111, 111) !important;
+  border-radius: 8px;
+}

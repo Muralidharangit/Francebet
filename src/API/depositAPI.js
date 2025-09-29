@@ -260,3 +260,40 @@ export const depositHistoryEwalletNamibia = async (token) => {
 
   return response.data;
 };
+
+// Kazang
+
+// Send the Deposit Request
+export const DepositKazangVoucher = async ({ token, pin }) => {
+  const formData = new FormData();
+  formData.append("pin", pin);
+  const response = await axios.post(
+    `${BASE_URL}/player/deposit-namibia/kazang-deposit/check-voucher-status`,
+    formData,
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+
+  console.log(response, "apin ");
+
+  return response.data;
+};
+
+export const redeemKazangVoucher = async ({ token, player_id, pin }) => {
+  const { data } = await axiosInstance.post(
+    "/player/deposit-namibia/kazang-deposit/redeem_voucher",
+    { player_id, pin },
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+  return data;
+};
+
+// deposit History
+export const depositKazangHistory = async (token) => {
+  const response = await axiosInstance.get(
+    "/player/deposit-namibia/kazang-deposit/history",
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+  return response.data;
+};
