@@ -577,7 +577,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                             className="preview-item-content d-flex align-items-start flex-column justify-content-center"
                             onClick={() =>
                               handleSecureRoute(
-                                routes.transactions.manual_deposit_India
+                                routes.transactions.manual_withdraw_namibia
                               )
                             }
                           >

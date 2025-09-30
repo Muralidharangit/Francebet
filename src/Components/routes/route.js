@@ -37,6 +37,10 @@ const routes = {
     ewallet_deposit_history: "/deposit-namibia-ewallet-history",
     all_deposit_history: "/deposit_history",
 
+    // Kazang
+    kazang_deposit_voucher: "/deposit-namibia-kazang",
+    kazang_deposit_history: "/deposit-namibia-kazang-history",
+    
     // India
     manual_deposit_India: "/manual-deposit-india",
     manual_withdraw_India: "/manual-withdraw-india",

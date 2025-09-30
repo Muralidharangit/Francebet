@@ -120,6 +120,14 @@ const WithdrawIndexIndia = lazy(() =>
     "./Components/Pages/Transactions/India/WithdrawIndia_Manual/WithdrawIndex"
   )
 );
+const DepositIndexKazang = lazy(() =>
+  import("./Components/Pages/Transactions/kazang/Deposit_kazang/DepositKazang")
+);
+
+const DepositKazangNamibiaHistory = lazy(() =>
+  import("./Components/Pages/Transactions/kazang/Deposit_kazang/DepositHistory")
+);
+
 function App() {
   return (
     <>
@@ -193,14 +201,11 @@ function App() {
               path={routes.transactions.depositHistory}
               element={<DepositHistory />}
             />
-
             <Route
               path={routes.transactions.paymentMethod}
               element={<DepositMethod />}
             />
-
             <Route path={routes.transactions.addBank} element={<AddBank />} />
-
             {/* ================================================================ */}
             {/* <Route path={routes.transactions.withdraw} element={<Withdraw />} /> */}
             <Route path={routes.transactions.deposit} element={<Deposit />} />
@@ -212,37 +217,30 @@ function App() {
               path={routes.transactions.ewallet_deposit_namibia}
               element={<DepositNamibiaEwallet />}
             />
-
             <Route
               path={routes.transactions.deposit_static}
               element={<DepositStatic />}
             />
-
             <Route
               path={routes.transactions.manual_deposit_history}
               element={<DepositManualNamibiaHistory />}
             />
-
             <Route
               path={routes.transactions.ewallet_deposit_history}
               element={<DepositEwalletNamibiaHistory />}
             />
-
             <Route
               path={routes.transactions.withdraw}
               element={<WithdrawIndex />}
             />
-
             <Route
               path={routes.transactions.manual_withdraw_namibia}
               element={<WithdrawIndexNamibia />}
             />
-
             <Route
               path={routes.transactions.all_deposit_history}
               element={<AllMethodDepositHistory />}
             />
-
             {/* India  */}
             <Route
               path={routes.transactions.manual_deposit_India}
@@ -251,6 +249,16 @@ function App() {
             <Route
               path={routes.transactions.manual_withdraw_india}
               element={<WithdrawIndexIndia />}
+            />
+            {/* Kazang deposit */}
+
+            <Route
+              path={routes.transactions.kazang_deposit_voucher}
+              element={<DepositIndexKazang />}
+            />
+            <Route
+              path={routes.transactions.kazang_deposit_history}
+              element={<DepositKazangNamibiaHistory />}
             />
 
             <Route path={routes.profile.main} element={<Profile />} />
@@ -270,5 +278,4 @@ function App() {
     </>
   );
 }
-
 export default App;
