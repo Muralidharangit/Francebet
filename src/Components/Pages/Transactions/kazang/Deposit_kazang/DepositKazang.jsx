@@ -147,7 +147,7 @@ function Deposit() {
                     {/* header */}
                     <div className="d-flex align-items-center justify-content-between position-relative px-0">
                       <h5 className="position-absolute start-50 translate-middle-x m-0 text-white fs-16">
-                        kazang Deposit
+                        Voucher Deposit
                       </h5>
                     </div>
                     <div className="d-flex justify-content-between align-items-center px-0">

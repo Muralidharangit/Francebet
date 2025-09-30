@@ -275,7 +275,7 @@ const DepositHistory = () => {
 
                       {/* Centered Title */}
                       <h5 className="m-0 text-white fs-16">
-                        kazang Deposit History
+                        Voucher Deposit History
                       </h5>
                       <div className="d-flex justify-content-between align-items-center px-0">
                         <button
@@ -300,7 +300,6 @@ const DepositHistory = () => {
                           "processing",
                           "verified",
                           "rejected",
-                          "orders list",
                         ].map((tab) => (
                           <button
                             key={tab}
@@ -318,122 +317,6 @@ const DepositHistory = () => {
                         ))}
                       </div>
                     </div>
-
-                    {selectedTab === "orders list" && (
-                      <div className="mt-3">
-                        {ordersLoading && (
-                          <p className="text-muted">Loading orders…</p>
-                        )}
-
-                        {ordersErr && (
-                          <div className="alert alert-danger d-flex justify-content-between">
-                            <span>{ordersErr}</span>
-                            <button
-                              className="btn btn-sm btn-outline-light"
-                              onClick={() => setCurrentPage((p) => p)} // retrigger effect
-                            >
-                              Retry
-                            </button>
-                          </div>
-                        )}
-
-                        {!ordersLoading &&
-                          !ordersErr &&
-                          orders.length === 0 && (
-                            <div className="text-center p-4 border rounded">
-                              <div className="mb-2">No orders yet</div>
-                              <small className="text-muted">
-                                Your A-Pay orders will appear here.
-                              </small>
-                            </div>
-                          )}
-
-                        {!ordersLoading && !ordersErr && orders.length > 0 && (
-                          <>
-                            <div className="table-responsive">
-                              <table className="table table-dark table-striped align-middle">
-                                <thead>
-                                  <tr>
-                                    <th>Order ID</th>
-                                    <th>Amount</th>
-                                    <th>Status</th>
-                                    {/* <th>Payment Ref</th> */}
-                                    <th>Created</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {orders.map((o, i) => (
-                                    <tr key={o.id || o.order_id || i}>
-                                      <td className="fw-semibold">
-                                        {o.order_id || o.id || "-"}
-                                      </td>
-                                      <td>
-                                        {fmtINR(o.amount || o.total || 0)}
-                                      </td>
-                                      <td>
-                                        <span className={statusBadge(o.status)}>
-                                          {o.status || "—"}
-                                        </span>
-                                      </td>
-                                      {/* <td>
-                                        {o.payment_reference ||
-                                          o.txn_id ||
-                                          o.gateway_ref ||
-                                          "—"}
-                                      </td> */}
-                                      <td>
-                                        {o.created_at
-                                          ? new Date(
-                                              o.created_at
-                                            ).toLocaleString("en-IN", {
-                                              hour12: false,
-                                            })
-                                          : "—"}
-                                      </td>
-                                    </tr>
-                                  ))}
-                                </tbody>
-                              </table>
-                            </div>
-
-                            {/* Pagination */}
-                            {ordersMeta?.last_page > 1 && (
-                              <div className="d-flex justify-content-between align-items-center mt-2">
-                                <small className="text-muted">
-                                  Page {ordersMeta.current_page} of{" "}
-                                  {ordersMeta.last_page} • Total{" "}
-                                  {ordersMeta.total}
-                                </small>
-                                <div className="btn-group">
-                                  <button
-                                    className="btn btn-outline-light btn-sm"
-                                    disabled={currentPage <= 1}
-                                    onClick={() =>
-                                      setCurrentPage((p) => Math.max(1, p - 1))
-                                    }
-                                  >
-                                    ‹ Prev
-                                  </button>
-                                  <button
-                                    className="btn btn-outline-light btn-sm"
-                                    disabled={
-                                      currentPage >= ordersMeta.last_page
-                                    }
-                                    onClick={() =>
-                                      setCurrentPage((p) =>
-                                        Math.min(ordersMeta.last_page, p + 1)
-                                      )
-                                    }
-                                  >
-                                    Next ›
-                                  </button>
-                                </div>
-                              </div>
-                            )}
-                          </>
-                        )}
-                      </div>
-                    )}
 
                     <div className="tab-content px-3 mt-2 mb-3">
                       {loading ? (
@@ -474,16 +357,20 @@ const DepositHistory = () => {
                                   </div>
                                   {/* ✅ Add margin-start (left) using ms-3 */}
                                   <div className="ms-3 ms-sm-2">
-                                    <p className="mb-0 fs-11">UTR NO</p>
-                                    <p className="fs-14 mb-0">{bet.utr}</p>
+                                    <p className="mb-0 fs-11">PIN NO</p>
+                                    <p className="fs-14 mb-0">
+                                      {bet.voucher_pin}
+                                    </p>
+                                    serial_number
                                     <p className="fs-11 mb-0 text-grey mt-2">
-                                      {new Date(
-                                        bet.created_date
-                                      ).toLocaleString("en-GB", {
-                                        day: "2-digit",
-                                        month: "short",
-                                        year: "numeric",
-                                      })}
+                                      {new Date(bet.created_at).toLocaleString(
+                                        "en-GB",
+                                        {
+                                          day: "2-digit",
+                                          month: "short",
+                                          year: "numeric",
+                                        }
+                                      )}
                                     </p>
                                   </div>
                                 </div>
@@ -518,7 +405,7 @@ const DepositHistory = () => {
                             </p> */}
                                   <p className="fs-11 mb-0 text-grey mt-1">
                                     {new Date(
-                                      bet.created_date
+                                      bet.created_at
                                     ).toLocaleTimeString("en-US", {
                                       hour: "2-digit",
                                       minute: "2-digit",

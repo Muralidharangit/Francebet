@@ -208,8 +208,8 @@ const BetHistory = () => {
                                   <h4 className="mb-1 amount-fs-size">
                                     {/* {transaction.id} */}
                                     {transaction.type === "DR"
-                                      ? `{CURRENCY_SYMBOL} ${transaction.amount}`
-                                      : `{CURRENCY_SYMBOL} ${transaction.amount}`}
+                                      ? `${CURRENCY_SYMBOL} ${transaction.amount}`
+                                      : `${CURRENCY_SYMBOL} ${transaction.amount}`}
                                   </h4>
 
                                   <span

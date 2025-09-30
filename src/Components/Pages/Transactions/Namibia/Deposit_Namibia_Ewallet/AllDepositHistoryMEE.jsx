@@ -129,6 +129,11 @@ const DepositMethod = () => {
       setHistoryRoute(routes.transactions.manual_deposit_history);
       return;
     }
+    if (key.includes("namibia") && key.includes("easypay")) {
+      navigate("/deposit-namibia-kazang-history");
+      setHistoryRoute(routes.transactions.kazang_deposit_history);
+      return;
+    }
 
     // Generic manual
     if (key.includes("manual")) {
@@ -267,7 +272,9 @@ const DepositMethod = () => {
                                   ? routes.transactions
                                       .ewallet_deposit_history ??
                                     routes.transactions.depositHistory
-                                  : "";
+                                  : isApay || isNamibia
+                                  ? routes.transactions.kazang_deposit_history
+                                  : routes.transactions.depositHistory;
 
                                 // const disabled = isBusy || m?.disabled === true;
                                 const disabled =
