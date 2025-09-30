@@ -47,19 +47,19 @@ const BottomFooter = () => {
                     <div className="social-links text-center w-100 justify-content-center my-2">
                       <Link
                         to={
-                          "https://www.facebook.com/people/Jiboomba/61579870741480/"
+                          "/"
                         }
                         target="new"
                       >
                         <i className="fab fa-facebook-f" />
                       </Link>
                       <Link
-                        to={"https://www.instagram.com/jiboomba.in/"}
+                        to={"/"}
                         target="new"
                       >
                         <i className="fab fa-instagram" />
                       </Link>
-                      <Link to={"https://x.com/jiboomba51633"} target="new">
+                      <Link to={"/"} target="new">
                         <i className="fab ri-twitter-x-line" />
                       </Link>
                       {/* <Link to={routes.home}>

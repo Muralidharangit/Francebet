@@ -124,7 +124,7 @@ const Sidebar = () => {
               <div className="d-flex justify-content-center  text-white fs-25 gap-3">
                 <Link
                   to={
-                    "https://www.facebook.com/people/Jiboomba/61579870741480/"
+                    "/"
                   }
                   target="new"
                   className="text-white"
@@ -132,7 +132,7 @@ const Sidebar = () => {
                   <i className="ri-facebook-fill" />
                 </Link>
                 <Link
-                  to={"https://www.instagram.com/jiboomba.in/"}
+                  to={"/"}
                   target="new"
                   className="text-white"
                 >
@@ -140,7 +140,7 @@ const Sidebar = () => {
                 </Link>
 
                 <Link
-                  to={"https://x.com/jiboomba51633"}
+                  to={"/"}
                   target="new"
                   className="text-white"
                 >
