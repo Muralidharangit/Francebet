@@ -91,6 +91,8 @@ function Deposit() {
   const onPinChange = (e) => {
     const formatted = fmtPin16(e.target.value);
     formik.setFieldValue("pin", formatted);
+    setDetails(null); // clear old details when entering new code
+    setApiError(""); // clear error if typing again
   };
 
   const onRedeem = async () => {
@@ -198,7 +200,8 @@ function Deposit() {
                                         🔒
                                       </span>
                                     </div>
-
+                                    {/* // Apply button - allow clicking even if
+                                    details exist */}
                                     <button
                                       type="submit"
                                       className="nl-btn"
@@ -206,8 +209,7 @@ function Deposit() {
                                         !formik.isValid ||
                                         !formik.values.pin ||
                                         checking ||
-                                        formik.isSubmitting ||
-                                        !!details
+                                        formik.isSubmitting
                                       }
                                     >
                                       {checking || formik.isSubmitting
