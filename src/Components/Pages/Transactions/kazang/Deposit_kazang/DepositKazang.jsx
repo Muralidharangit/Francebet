@@ -211,6 +211,7 @@ function Deposit() {
                           </button>
                         </div>
                       </form>
+
                       {formik.errors.api && (
                         <div className="nl-msg nl-msg-error">
                           {formik.errors.api}
@@ -324,6 +325,10 @@ function Deposit() {
                   </div>
                 </div>
 
+                
+
+              
+
                 {/* --- Success Modal --- */}
                 {showSuccessModal && (
                   <div
@@ -379,7 +384,8 @@ function Deposit() {
                         <div className="modal-footer border-0 justify-content-center">
                           <button
                             type="button"
-                            className="btn btn-light"
+                            className="btn swiper-scrollbar-drag w-50 bgbody-color text-white
+                    rounded-pill fs-15 fw-500"
                             onClick={() => setShowSuccessModal(false)}
                           >
                             OK
