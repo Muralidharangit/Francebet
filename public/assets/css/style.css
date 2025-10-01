@@ -5955,3 +5955,57 @@ code {
   border: 1px solid rgb(112, 111, 111) !important;
   border-radius: 8px;
 }
+
+
+/* popup design */
+.reddemd
+.modal-content {
+  border-radius: 1rem;
+  text-align: center;
+  background: #161616;
+  color: white;
+  box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
+  animation: pop 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+@keyframes pop {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.reddemd
+.modal-header {
+  border-bottom: none;
+  justify-content: center;
+  position: relative;
+}
+.reddemd
+.modal-footer {
+  border-top: none;
+  justify-content: center;
+}
+.reddemd
+.btn-close-white {
+  filter: invert(1);
+  position: absolute;
+  top: 15px;
+  right: 15px;
+}
+/* .reddemd */
+/* Confetti */
+.reddemd
+.confetti {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  top: -10px;
+  animation: fall 3s linear forwards;
+}
+
+@keyframes fall {
+  to {
+    transform: translateY(300px) rotate(360deg);
+    opacity: 0;
+  }
+}
