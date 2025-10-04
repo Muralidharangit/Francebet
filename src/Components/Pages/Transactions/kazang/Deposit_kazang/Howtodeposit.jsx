@@ -9,7 +9,7 @@ export default function DepositMethods() {
     {
       id: 1,
       title: "Kazang",
-      img: "https://m.castlebet.com.na/custom_content/translated/en-EN/img/th07a.jpg",
+      img: "/assets/img/footer_icon/1 (1).jpg",
       notice: (
         <div className="text-center my-3">
           <p style={{ fontSize: "20px", fontWeight: "bold", color: "#e4063b" }}>
@@ -32,7 +32,7 @@ export default function DepositMethods() {
     {
       id: 2,
       title: "FNB USSD",
-      img: "https://m.castlebet.com.na/custom_content/translated/en-EN/img/th02a.jpg",
+      img: "/assets/img/footer_icon/1 (2).jpg",
       notice: (
         <div className="text-center my-3">
           <p>
@@ -60,7 +60,7 @@ export default function DepositMethods() {
     {
       id: 3,
       title: "FNB App",
-      img: "https://m.castlebet.com.na/custom_content/translated/en-EN/img/th03a.jpg",
+      img: "/assets/img/footer_icon/1 (3).jpg",
       notice: (
         <div className="text-center my-3">
           <p>
@@ -84,7 +84,7 @@ export default function DepositMethods() {
     {
       id: 4,
       title: "Windhoek Easy Wallet",
-      img: "https://m.castlebet.com.na/custom_content/translated/en-EN/img/th05.jpg",
+      img: "/assets/img/footer_icon/1 (4).jpg",
       notice: (
         <div className="text-center my-3">
           <p>
