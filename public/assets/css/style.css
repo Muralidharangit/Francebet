@@ -6009,3 +6009,8 @@ code {
     opacity: 0;
   }
 }
+
+
+.bg-clr{
+background: #292524 !important;
+}

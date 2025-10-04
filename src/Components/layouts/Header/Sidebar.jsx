@@ -73,6 +73,18 @@ const Sidebar = () => {
 
           <li className="nav-item">
             <NavLink
+              to={routes.transactions.kazang_how_to_deposit}
+              className={({ isActive }) =>
+                `nav-link ${isActive ? "active" : ""}`
+              }
+            >
+              <span className="menu-title">How To Deposite</span>
+              <i className="fi fi-sr-dice-alt menu-icon" />
+            </NavLink>
+          </li>
+
+          <li className="nav-item">
+            <NavLink
               to={routes.pages.howToPlay}
               className={({ isActive }) =>
                 `nav-link ${isActive ? "active" : ""}`
@@ -122,28 +134,14 @@ const Sidebar = () => {
           <div className="text-center  bottom-0 w-100 my-3 start-0">
             <div className="icon-social">
               <div className="d-flex justify-content-center  text-white fs-25 gap-3">
-                <Link
-                  to={
-                    "/"
-                  }
-                  target="new"
-                  className="text-white"
-                >
+                <Link to={"/"} target="new" className="text-white">
                   <i className="ri-facebook-fill" />
                 </Link>
-                <Link
-                  to={"/"}
-                  target="new"
-                  className="text-white"
-                >
+                <Link to={"/"} target="new" className="text-white">
                   <i className="ri-instagram-line" />
                 </Link>
 
-                <Link
-                  to={"/"}
-                  target="new"
-                  className="text-white"
-                >
+                <Link to={"/"} target="new" className="text-white">
                   <i className="ri-twitter-x-line" />
                 </Link>
               </div>

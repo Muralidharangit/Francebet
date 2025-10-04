@@ -127,7 +127,9 @@ const DepositIndexKazang = lazy(() =>
 const DepositKazangNamibiaHistory = lazy(() =>
   import("./Components/Pages/Transactions/kazang/Deposit_kazang/DepositHistory")
 );
-
+const KazangHowtodeposit = lazy(() =>
+  import("./Components/Pages/Transactions/kazang/Deposit_kazang/Howtodeposit")
+);
 function App() {
   return (
     <>
@@ -259,6 +261,10 @@ function App() {
             <Route
               path={routes.transactions.kazang_deposit_history}
               element={<DepositKazangNamibiaHistory />}
+            />
+            <Route
+              path={routes.transactions.kazang_how_to_deposit}
+              element={<KazangHowtodeposit />}
             />
 
             <Route path={routes.profile.main} element={<Profile />} />
