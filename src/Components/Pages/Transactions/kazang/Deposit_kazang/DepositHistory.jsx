@@ -296,10 +296,10 @@ const DepositHistory = () => {
                       >
                         {[
                           "all",
-                          "pending",
-                          "processing",
-                          "verified",
-                          "rejected",
+                          // "pending",
+                          // "processing",
+                          // "verified",
+                          // "rejected",
                         ].map((tab) => (
                           <button
                             key={tab}
@@ -339,124 +339,105 @@ const DepositHistory = () => {
                         </>
                       ) : paginatedData.length > 0 ? (
                         paginatedData.map((bet) => (
-                          <div className="bet-card" key={bet.id}>
-                            <div
-                              className="mybet-single-card"
-                              style={{
-                                padding: "15px 11px 6px",
-                                marginTop: "6px",
-                              }}
-                            >
-                              <div className="d-flex justify-content-between">
-                                <div className="d-flex justify-content-center align-items-center">
-                                  <div className="bg-secondary py-2 px-3 rounded-2">
-                                    <i
-                                      class="fa-solid fa-arrow-down"
-                                      style={{ transform: "rotate(45deg)" }}
-                                    ></i>
+                          <div className="bet-card mb-3" key={bet.id}>
+                            <div className="mybet-single-card p-3 p-md-4 rounded shadow-sm border ">
+                              {/* Primary Row: Left + Right */}
+                              <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+                                {/* Left Section */}
+                                <div className="d-flex mb-3 mb-md-0 align-items-start align-items-md-center">
+                                  {/* Icon */}
+                                  <div
+                                    className="bg-secondary rounded d-flex align-items-center justify-content-center me-3"
+                                    style={{ width: "50px", height: "50px" }}
+                                  >
+                                    <i className="ri-arrow-down-s-line fs-4 text-white"></i>
                                   </div>
-                                  {/* ✅ Add margin-start (left) using ms-3 */}
-                                  <div className="ms-3 ms-sm-2">
-                                    <p className="mb-0 fs-11">PIN NO</p>
-                                    <p className="fs-14 mb-0">
-                                      {bet.voucher_pin}
-                                    </p>
-                                    serial_number
-                                    <p className="fs-11 mb-0 text-grey mt-2">
-                                      {new Date(bet.created_at).toLocaleString(
-                                        "en-GB",
-                                        {
-                                          day: "2-digit",
-                                          month: "short",
-                                          year: "numeric",
-                                        }
-                                      )}
-                                    </p>
+
+                                  {/* PIN & Serial */}
+                                  <div className="ms-0 ms-md-3 w-100">
+                                    {/* PIN Section */}
+                                    <div
+                                      className="mb-2 p-2 rounded"
+                                      style={{ backgroundColor: "#f0fff4" }}
+                                    >
+                                      <p className="mb-0 d-flex align-items-center text-danger fw-semibold fs-14">
+                                        <i className="ri-lock-2-line me-1 text-danger"></i>{" "}
+                                        PIN NO
+                                      </p>
+                                      <p className="mb-0 fw-600 fs-16 text-danger">
+                                        {bet.voucher_pin}
+                                      </p>
+                                    </div>
+
+                                    {/* Serial Section */}
+                                    <div
+                                      className="p-2 rounded"
+                                      style={{ backgroundColor: "#f0fff4" }}
+                                    >
+                                      <p className="mb-1 d-flex align-items-center text-success fw-semibold fs-14">
+                                        <svg
+                                          xmlns="http://www.w3.org/2000/svg"
+                                          width="16"
+                                          height="16"
+                                          fill="currentColor"
+                                          className="me-1"
+                                          viewBox="0 0 24 24"
+                                        >
+                                          <path d="M4 4h16v16H4V4zm2 2v12h12V6H6zm2 2h2v2H8V8zm0 4h2v2H8v-2zm4-4h4v2h-4V8zm0 4h4v2h-4v-2z" />
+                                        </svg>{" "}
+                                        Serial No
+                                      </p>
+                                      <p className="mb-0 fw-600 fs-16 text-success">
+                                        {bet.serial_number}
+                                      </p>
+                                    </div>
                                   </div>
                                 </div>
 
-                                <div className="d-flex  align-items-end flex-column">
-                                  <h4 className="mb-1 amount-fs-size">
+                                {/* Right Section */}
+                                <div className="d-flex flex-column align-items-start align-items-md-end">
+                                  <h4 className="mb-1 fw-bold fs-5">
                                     {CURRENCY_SYMBOL} {bet.amount}
                                   </h4>
-
                                   <span
-                                    className={`fw-bold ${
+                                    className={`badge ${
                                       bet.status === "pending"
-                                        ? "history_badge pending_badge"
+                                        ? "bg-warning text-dark"
                                         : bet.status === "verified"
-                                        ? "history_badge success_badge"
+                                        ? "bg-success"
                                         : bet.status === "processing"
-                                        ? "history_badge processing_badge"
-                                        : "text-danger"
-                                    }`}
+                                        ? "bg-info text-dark"
+                                        : "bg-danger"
+                                    } fw-bold mb-2`}
                                   >
-                                    {bet.status}
+                                    {bet.status.toUpperCase()}
                                   </span>
-                                  {/* <p className="fs-11 mb-0 text-grey mt-1">
-                              {new Date(bet.created_at).toLocaleString(
-                                "en-GB",
-                                {
-                                  hour: "2-digit",
-                                  minute: "2-digit",
-                                  hour12: true,
-                                }
-                              )}
-                            </p> */}
-                                  <p className="fs-11 mb-0 text-grey mt-1">
-                                    {new Date(
-                                      bet.created_at
-                                    ).toLocaleTimeString("en-US", {
-                                      hour: "2-digit",
-                                      minute: "2-digit",
-                                      hour12: true,
-                                    })}
-                                  </p>
+
+                                  <div className="d-flex gap-2 flex-wrap text-white">
+                                    <p className="mb-0 d-flex align-items-center  fs-14">
+                                      <i className="ri-calendar-line me-1"></i>
+                                      {new Date(
+                                        bet.created_at
+                                      ).toLocaleDateString("en-GB", {
+                                        day: "2-digit",
+                                        month: "short",
+                                        year: "numeric",
+                                      })}
+                                    </p>
+                                    <p className="mb-0 d-flex align-items-center  fs-14">
+                                      <i className="ri-time-line me-1"></i>
+                                      {new Date(
+                                        bet.created_at
+                                      ).toLocaleTimeString("en-US", {
+                                        hour: "2-digit",
+                                        minute: "2-digit",
+                                        hour12: true,
+                                      })}
+                                    </p>
+                                  </div>
                                 </div>
                               </div>
-
-                              {/* <div>
-                          <i class="fa-solid fa-arrow-down"></i>
-                        </div>
-                        <div className="card-title">
-                          <h6>UTR NO</h6>
-                          <span>{bet.utr}</span>
-                        </div>
-                        <ul className="bet-details">
-                          <li>
-                            <span>Deposit Amt</span>
-                            <span>{bet.amount}</span>
-                          </li>
-                          <li>
-                            <span>Status</span>
-                            <span
-                              className={`fw-bold ${
-                                bet.status === "pending"
-                                  ? "history_badge pending_badge"
-                                  : bet.status === "verified"
-                                  ? "history_badge success_badge"
-                                  : bet.status === "processing"
-                                  ? "history_badge processing_badge"
-                                  : "text-danger"
-                              }`}
-                            >
-                              {bet.status}
-                            </span>
-                          </li>
-                        </ul> */}
                             </div>
-
-                            {/* <div className="d-flex flex-column justify-content-center align-items-center px-2">
-                        <div className="text-bold mb-3">Screenshot</div>
-
-                        <div className=" d-flex justify-content-center px-2">
-                          <img
-                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSCHzy2sdDsoabC5DYf5IwEkch1uyaffsXO8w&s"
-                            alt="Payment_screenshot"
-                            className="w-25"
-                          />
-                        </div>
-                      </div> */}
                           </div>
                         ))
                       ) : (

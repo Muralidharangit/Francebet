@@ -4,34 +4,56 @@ import { Link } from "react-router-dom";
 import OffCanvas from "../../offcanvapages/Offcanva";
 import { Images } from "../Header/constants/images";
 import { APP_NAME } from "../../../constants";
+
+const paymentImages = [
+  "/assets/img/footer_icon/1 (1).jpg", // Kazang
+  "/assets/img/footer_icon/1 (2).jpg", // FNB USSD
+  "/assets/img/footer_icon/1 (3).jpg", // FNB App
+  "/assets/img/footer_icon/1 (4).jpg", // Windhoek Easy Wallet
+];
+
 const BottomFooter = () => {
   return (
     <div>
       <footer>
         {/* Footer start */}
-        {/*- footer-sec ---*/}
         <div className="footer_section">
           <footer className="pt-10 pb-12 pb-md-0">
-            {/*--provider---*/}
+            {/* Payment Services Section */}
+            <div className="container text-start my-4">
+              <h5 className="text-white mb-3">Payment Services</h5>
+              <div className="d-flex justify-content-start flex-wrap gap-3">
+                {paymentImages.map((img, index) => (
+                  <div key={index} style={{ maxWidth: "120px" }}>
+                    <img
+                      src={img}
+                      alt={`Payment Service ${index + 1}`}
+                      style={{
+                        width: "100%",
+                        height: "auto",
+                        objectFit: "contain",
+                        borderRadius: "8px",
+                        boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
+                      }}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
 
-            {/*--provider-end*/}
+            {/* Logo and Description */}
             <div className="container px-1">
               <div className="d-flex justify-content-center my-3">
                 <div className="logo_brand">
                   <Link to={routes.home} className="navbar-brand m-0">
-                    <img
-                      src={Images.Favlogo2}
-                      alt="Logo"
-                      srcSet=""
-                      width="100%"
-                    />
+                    <img src={Images.Favlogo2} alt="Logo" width="100%" />
                   </Link>
                 </div>
               </div>
               <div className="row">
                 <div className="col-lg-12 px-3">
                   <div className="footer_section__sports">
-                    <div className="top-matches-title d-flex align-items-center gap-2  my-3">
+                    <div className="top-matches-title d-flex align-items-center gap-2 my-3">
                       <h5 className="m-0 mt-1">{APP_NAME}</h5>
                     </div>
                     <p className="text-justify">
@@ -39,47 +61,35 @@ const BottomFooter = () => {
                       players who love the thrill of the game. With exciting
                       sports, live matches, and casino-style games, we bring
                       nonstop entertainment and bigger chances to win. Simple to
-                      use, fast, and secure, {APP_NAME} .TOP is the place where
+                      use, fast, and secure, {APP_NAME}.TOP is the place where
                       every bet brings you closer to victory.
                     </p>
                   </div>
                   <div>
                     <div className="social-links text-center w-100 justify-content-center my-2">
-                      <Link
-                        to={
-                          "https://www.facebook.com/people/Jiboomba/61579870741480/"
-                        }
-                        target="new"
-                      >
+                      <Link to={"/"} target="new">
                         <i className="fab fa-facebook-f" />
                       </Link>
-                      <Link
-                        to={"https://www.instagram.com/jiboomba.in/"}
-                        target="new"
-                      >
+                      <Link to={"/"} target="new">
                         <i className="fab fa-instagram" />
                       </Link>
-                      <Link to={"https://x.com/jiboomba51633"} target="new">
+                      <Link to={"/"} target="new">
                         <i className="fab ri-twitter-x-line" />
                       </Link>
-                      {/* <Link to={routes.home}>
-                        <i className="fab fa-github" />
-                      </Link>
-                      <Link to={routes.home}>
-                        <i className="fab ri-youtube-line" />
-                      </Link> */}
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+
+            
           </footer>
+
           <OffCanvas />
           <div className="row">
             <div className="col-12">
               <div className="copy_right">
                 <p>
-                  {" "}
                   Copyright © 2025 {APP_NAME} <br /> All rights are reserved and
                   protected by law
                 </p>
@@ -87,7 +97,8 @@ const BottomFooter = () => {
             </div>
           </div>
         </div>
-        {/*- footer-sec-end ---*/}
+
+        
         {/* Footer end */}
       </footer>
     </div>

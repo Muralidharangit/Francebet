@@ -9,6 +9,7 @@ const BottomProvider = () => {
           className="row justify-content-center"
           style={{ marginBottom: "100px" }}
         >
+          
           <div className="col-lg-4  col-md-6 px-1">
             <div className="game_provider_item">
               <img src="assets/img/footer_icon/spribe.svg" alt="spribe" />
@@ -49,9 +50,15 @@ const BottomProvider = () => {
           </div>
           <div className="col-lg-3 col-md-6 px-1">
             <div className="game_provider_item">
-              <img src="assets/img/footer_icon/betgames.svg" alt="betGames" />
+              <img
+                src="assets/img/footer_icon/betgames.svg"
+                alt="betGames"
+                className="object-contain"
+              />
+             
             </div>
           </div>
+
           {/* <div className="col-4 px-1">
             <div className="game_provider_item">
               <img src="assets/img/footer_icon/pgsoft.svg" alt="pgSoft" />

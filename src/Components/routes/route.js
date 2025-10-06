@@ -39,8 +39,9 @@ const routes = {
 
     // Kazang
     kazang_deposit_voucher: "/deposit-namibia-kazang",
-    kazang_deposit_history: "/deposit-namibia-kazang-history",
-    
+    kazang_deposit_history: "/Voucher-Deposit-History",
+    kazang_how_to_deposit: "/How-to-deposit",
+
     // India
     manual_deposit_India: "/manual-deposit-india",
     manual_withdraw_India: "/manual-withdraw-india",

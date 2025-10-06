@@ -226,12 +226,12 @@ const DepositMethod = () => {
                       </div>
 
                       <h5 className="position-absolute start-50 translate-middle-x m-0 text-white fs-16">
-                        Deposit Payment Method
+                        Deposit Payment Method xddd
                       </h5>
                     </div>
 
                     {/* Card */}
-                    <div className="card  bg_light_grey account_input-textbox-container mt-5">
+                    <div className="card bg_light_grey account_input-textbox-container mt-5">
                       <div className="card-body py-4 pb-5">
                         {loading && <p className="text-muted">Loading…</p>}
                         {err && <p className="text-danger mb-3">{err}</p>}
@@ -242,7 +242,7 @@ const DepositMethod = () => {
                         {/* Left (methods) | Right (image) */}
                         <div className="row g-4 align-items-start">
                           {/* LEFT: Methods */}
-                          <div className="col-12 col-lg-12 ">
+                          <div className="col-12 col-lg-12">
                             <div className="row g-3 justify-content-center">
                               {methods.map((m, idx) => {
                                 const key = String(
@@ -250,7 +250,6 @@ const DepositMethod = () => {
                                 );
                                 const isBusy = clickingId === key;
 
-                                // Normalize the title for robust matching (handles "E-Wallet", "e wallet", etc.)
                                 const title =
                                   m?.name || m?.display_name || m?.code || "";
                                 const norm = (s) =>
@@ -271,10 +270,6 @@ const DepositMethod = () => {
                                   nk.includes("easypay") ||
                                   nk.includes("easy pay");
 
-                                // History route selection:
-                                // 1) Manual -> manual history (or your manual-specific history)
-                                // 2) E-Wallet -> ewallet history (fallback to general history if not defined)
-                                // 3) A-Pay or anything else -> general deposit history
                                 const perCardHistoryRoute = isManual
                                   ? routes.transactions.manual_deposit_history
                                   : isEwallet
@@ -285,9 +280,6 @@ const DepositMethod = () => {
                                   ? routes.transactions.kazang_deposit_history
                                   : routes.transactions.depositHistory;
 
-                                // const disabled = isBusy || m?.disabled === true;
-                                // const disabled =
-                                //   isBusy || m?.disabled === true || isApay; // <- disable for A-Pay
                                 return (
                                   <div
                                     className="col-12 col-lg-6 col-xl-4"
@@ -349,6 +341,7 @@ const DepositMethod = () => {
                                         </strong>
                                       </div>
 
+                                      {/* Descriptions */}
                                       {isManual ? (
                                         <p style={{ color: "#b1abab" }}>
                                           Manual Payment — transfer via
@@ -360,9 +353,15 @@ const DepositMethod = () => {
                                           payments.
                                         </p>
                                       ) : isApay ? (
-                                        <p style={{ color: "#b1abab" }}>
-                                          A-Pay — instant one-tap checkout.
-                                        </p>
+                                        <>
+                                          <p style={{ color: "#b1abab" }}>
+                                            A-Pay — instant one-tap checkout.
+                                          </p>
+                                          <p className="text-danger fw-semibold">
+                                            How to Play: Follow the A-Pay
+                                            deposit steps carefully.
+                                          </p>
+                                        </>
                                       ) : (
                                         <p style={{ color: "#b1abab" }}>
                                           Select to continue.
@@ -380,14 +379,13 @@ const DepositMethod = () => {
                                           {m.limits.max}
                                         </small>
                                       )}
-                                      {/* {isApay ? "hh" : "sssssss"} */}
+
                                       <button
                                         type="button"
                                         className="btn btn-red mt-auto w-50"
-                                        // disabled={disabled}
                                         onClick={() => {
-                                          setClickingId(key); // 🔐 use the same 'key' you compare above
-                                          handleChoose(m, key); // pass key if your handler needs it
+                                          setClickingId(key);
+                                          handleChoose(m, key);
                                         }}
                                       >
                                         {isBusy ? "Redirecting..." : "Proceed"}
@@ -399,15 +397,15 @@ const DepositMethod = () => {
                             </div>
                           </div>
 
-                          {/* RIGHT: Image */}
+                          {/* RIGHT: Image (optional) */}
                           {/* <div className="col-12 col-lg-4 d-flex justify-content-center">
-                            <img
-                              src="https://cdni.iconscout.com/illustration/premium/thumb/credit-card-bill-payment-app-illustration-svg-png-download-4525614.png"
-                              alt="Payment methods"
-                              className="img-fluid"
-                              style={{ maxHeight: 620, objectFit: "contain" }}
-                            />
-                          </div> */}
+        <img
+          src="https://cdni.iconscout.com/illustration/premium/thumb/credit-card-bill-payment-app-illustration-svg-png-download-4525614.png"
+          alt="Payment methods"
+          className="img-fluid"
+          style={{ maxHeight: 620, objectFit: "contain" }}
+        />
+      </div> */}
                         </div>
                         {/* /Row */}
                       </div>
