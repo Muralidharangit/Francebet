@@ -201,13 +201,13 @@ function PrivacyPolicy() {
                     email or a service notice.
                   </p>
 
-                  <h2>Contact Us</h2>
+                  {/* <h2>Contact Us</h2>
                   <p>If you have questions, contact us:</p>
                   <ul>
                     <li>
                       <strong>Email:</strong> {APP_NAME}@gmail.com
                     </li>
-                  </ul>
+                  </ul> */}
                 </section>
               </div>
             </div>

@@ -97,13 +97,13 @@ const HowToPlay = () => {
                       Go to <strong>Profile &gt; Player Protection</strong> in
                       your account.
                     </li>
-                    <li>
+                    {/* <li>
                       Or contact our Customer Support team at{" "}
                       <a href="mailto:support@{APP_NAME}.in">
                         support@{APP_NAME}.in
                       </a>
                       .
-                    </li>
+                    </li> */}
                   </ul>
                   <p>
                     <strong>Important:</strong>
