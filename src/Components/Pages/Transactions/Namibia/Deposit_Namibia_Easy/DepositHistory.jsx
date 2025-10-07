@@ -278,7 +278,7 @@ const DepositHistory = () => {
 
                       {/* Centered Title */}
                       <h5 className="m-0 text-white fs-16">
-                        Ewallet Deposit History
+                        Easy wallet Deposit History
                       </h5>
                       <div className="d-flex justify-content-between align-items-center px-0">
                         <button

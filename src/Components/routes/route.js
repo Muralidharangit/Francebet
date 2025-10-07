@@ -56,6 +56,16 @@ const routes = {
     blue_wallet_deposit:
       "/deposit-namibia/blue-wallet-deposit/get-payment-details",
     blue_wallet_history: "/deposit-namibia/blue-wallet-history",
+
+    // nedBank-wallet
+    nedbank_wallet_deposit:
+      "/deposit-namibia/nedbank-wallet-deposit/get-payment-details",
+    nedbank_wallet_history: "/deposit-namibia/nedbank-wallet-history",
+
+    // Access-wallet
+    access_money_wallet_deposit:
+      "/deposit-namibia/access-money-wallet-deposit/get-payment-details",
+    access_money_wallet_history: "/deposit-namibia/access-money-wallet-history",
   },
   account: {
     dashboard: "/account-dashboard",
