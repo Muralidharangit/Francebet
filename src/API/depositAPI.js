@@ -297,3 +297,116 @@ export const depositKazangHistory = async (token) => {
   );
   return response.data;
 };
+
+// Easy Wallet getDepositMethodsNamibiaEasywallet
+
+export const getDepositMethodsNamibiaEasywallet = async (token) => {
+  const response = await axiosInstance.get(
+    "/player/deposit-namibia/easy-wallet-deposit/get-payment-details",
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};
+
+export const sendDepositRequestNamibiaEasywallet = async ({
+  token,
+  amount,
+  utr_number,
+  paymentSelectedMethod,
+  // player_id,
+  payment_screenshot,
+}) => {
+  console.log("paymentSelectedMethod", paymentSelectedMethod);
+
+  const formData = new FormData();
+  // formData.append("player_id", player_id);
+  formData.append("manual_easy_wallet_id", paymentSelectedMethod);
+  formData.append("amount", amount);
+  formData.append("utr", utr_number);
+  if (payment_screenshot) {
+    formData.append("image", payment_screenshot);
+  }
+  const response = await axios.post(
+    `${BASE_URL}/player/deposit-namibia/easy-wallet-deposit/send-deposit-request`,
+    formData,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+
+  return response.data;
+};
+
+export const depositHistoryEasyNamibia = async (token) => {
+  const response = await axiosInstance.get(
+    "/player/deposit-namibia/easy-wallet-deposit/history",
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+
+  return response.data;
+};
+
+// blue wallet method
+export const getDepositMethodsNamibiaBluewallet = async (token) => {
+  const response = await axiosInstance.get(
+    "/player/deposit-namibia/blue-wallet-deposit/get-payment-details",
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};
+
+export const sendDepositRequestNamibiaBlueWallet = async ({
+  token,
+  amount,
+  utr_number,
+  paymentSelectedMethod,
+  // player_id,
+  payment_screenshot,
+}) => {
+  console.log("paymentSelectedMethod", paymentSelectedMethod);
+
+  const formData = new FormData();
+  // formData.append("player_id", player_id);
+  formData.append("manual_blue_wallet_id", paymentSelectedMethod);
+  formData.append("amount", amount);
+  formData.append("utr", utr_number);
+  if (payment_screenshot) {
+    formData.append("image", payment_screenshot);
+  }
+  const response = await axios.post(
+    `${BASE_URL}/player/deposit-namibia/blue-wallet-deposit/send-deposit-request`,
+    formData,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  );
+
+  return response.data;
+};
+
+export const depositHistoryBlueNamibia = async (token) => {
+  const response = await axiosInstance.get(
+    "/player/deposit-namibia/blue-wallet-deposit/history",
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+
+  return response.data;
+};

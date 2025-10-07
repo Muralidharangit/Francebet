@@ -3,11 +3,11 @@ import React, { useEffect, useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 // Adjust these paths if your structure differs:
-import StickyHeader from "../../../layouts/Header/Header";
-import Sidebar from "../../../layouts/Header/Sidebar";
-import AuthContext from "../../../../Auth/AuthContext";
-import axiosInstance from "../../../../API/axiosConfig";
-import routes from "../../../routes/route";
+import StickyHeader from "../../../../layouts/Header/Header";
+import Sidebar from "../../../../layouts/Header/Sidebar";
+import AuthContext from "../../../../../Auth/AuthContext";
+import axiosInstance from "../../../../../API/axiosConfig";
+import routes from "../../../../routes/route";
 
 const DepositMethod = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -129,32 +129,12 @@ const DepositMethod = () => {
       setHistoryRoute(routes.transactions.manual_deposit_history);
       return;
     }
-
-    // deposit
-
-    if (key.includes("manual") && key.includes("india")) {
-      navigate("/manual-deposit-india");
-      setHistoryRoute(routes.transactions.manual_deposit_history);
-      return;
-    }
-
     if (key.includes("namibia") && key.includes("easypay")) {
-      navigate("/deposit-namibia-kazang");
-      setHistoryRoute(routes.transactions.kazang_deposit_voucher);
+      navigate("/deposit-namibia-kazang-history");
+      setHistoryRoute(routes.transactions.kazang_deposit_history);
       return;
     }
 
-    if (key.includes("namibia") && key.includes("easy wallet")) {
-      navigate("/deposit-namibia/easy-wallet-deposit/get-payment-details");
-      setHistoryRoute(routes.transactions.easy_wallet_history);
-      return;
-    }
-
-    if (key.includes("namibia") && key.includes("blue wallet")) {
-      navigate("/deposit-namibia/blue-wallet-deposit/get-payment-details");
-      setHistoryRoute(routes.transactions.blue_wallet_history);
-      return;
-    }
     // Generic manual
     if (key.includes("manual")) {
       navigate("/deposit");
@@ -204,6 +184,7 @@ const DepositMethod = () => {
       });
       return;
     }
+
     // Fallback
     console.log("Unhandled method:", method);
   }
@@ -241,7 +222,7 @@ const DepositMethod = () => {
                     </div>
 
                     {/* Card */}
-                    <div className="card bg_light_grey account_input-textbox-container mt-5">
+                    <div className="card  bg_light_grey account_input-textbox-container mt-5">
                       <div className="card-body py-4 pb-5">
                         {loading && <p className="text-muted">Loading…</p>}
                         {err && <p className="text-danger mb-3">{err}</p>}
@@ -252,7 +233,7 @@ const DepositMethod = () => {
                         {/* Left (methods) | Right (image) */}
                         <div className="row g-4 align-items-start">
                           {/* LEFT: Methods */}
-                          <div className="col-12 col-lg-12">
+                          <div className="col-12 col-lg-12 ">
                             <div className="row g-3 justify-content-center">
                               {methods.map((m, idx) => {
                                 const key = String(
@@ -260,6 +241,7 @@ const DepositMethod = () => {
                                 );
                                 const isBusy = clickingId === key;
 
+                                // Normalize the title for robust matching (handles "E-Wallet", "e wallet", etc.)
                                 const title =
                                   m?.name || m?.display_name || m?.code || "";
                                 const norm = (s) =>
@@ -267,84 +249,68 @@ const DepositMethod = () => {
                                     .toLowerCase()
                                     .replace(/[^a-z0-9]+/g, " ")
                                     .trim();
-                                const nk = norm(title); // lowercases + trims
+                                const nk = norm(title);
 
-                                const tx = routes?.transactions ?? {};
-
-                                // 🔎 robust matchers to avoid substring collisions
                                 const isManual = nk.includes("manual");
                                 const isNamibia = nk.includes("namibia");
-                                const isEasyWallet =
-                                  /(?:^|\b)easy[-\s]?wallet\b/.test(nk);
-                                const isBlueWallet =
-                                  /(?:^|\b)blue[-\s]?wallet\b/.test(nk);
                                 const isEwallet =
-                                  /\bewallet\b|(?:^|\b)e[-\s]?wallet\b/.test(
-                                    nk
-                                  );
+                                  nk.includes("ewallet") ||
+                                  nk.includes("e wallet");
                                 const isApay =
-                                  /\b(a\s?pay|apay|easypay|easy\s?pay)\b/.test(
-                                    nk
-                                  );
+                                  nk.includes("apay") ||
+                                  nk.includes("a pay") ||
+                                  nk.includes("easypay") ||
+                                  nk.includes("easy pay");
 
-                                let perCardHistoryRoute;
+                                // History route selection:
+                                // 1) Manual -> manual history (or your manual-specific history)
+                                // 2) E-Wallet -> ewallet history (fallback to general history if not defined)
+                                // 3) A-Pay or anything else -> general deposit history
+                                const perCardHistoryRoute = isManual
+                                  ? routes.transactions.manual_deposit_history
+                                  : isEwallet
+                                  ? routes.transactions
+                                      .ewallet_deposit_history ??
+                                    routes.transactions.depositHistory
+                                  : isApay || isNamibia
+                                  ? routes.transactions.kazang_deposit_history
+                                  : routes.transactions.depositHistory;
 
-                                if (isManual) {
-                                  perCardHistoryRoute =
-                                    tx.manual_deposit_history ??
-                                    tx.depositHistory;
-                                } else if (isEasyWallet) {
-                                  // ✅ specific before generic
-                                  perCardHistoryRoute =
-                                    tx.easy_wallet_history ?? tx.depositHistory;
-                                } else if (isBlueWallet) {
-                                  // ✅ specific before generic
-                                  perCardHistoryRoute =
-                                    tx.blue_wallet_history ?? tx.depositHistory;
-                                } else if (isEwallet) {
-                                  perCardHistoryRoute =
-                                    tx.ewallet_deposit_history ??
-                                    tx.depositHistory;
-                                } else if (isApay || isNamibia) {
-                                  perCardHistoryRoute =
-                                    tx.kazang_deposit_history ??
-                                    tx.depositHistory;
-                                } else {
-                                  perCardHistoryRoute = tx.depositHistory;
-                                }
-                                console.log(perCardHistoryRoute);
+                                // const disabled = isBusy || m?.disabled === true;
+                                const disabled =
+                                  isBusy || m?.disabled === true || isApay; // <- disable for A-Pay
                                 return (
                                   <div
                                     className="col-12 col-lg-6 col-xl-4"
                                     key={key}
                                   >
-                                    <div className="p-3 rounded border h-100 d-flex flex-column">
-                                      <div className="d-flex justify-content-between">
-                                        {isManual ? (
-                                          <div className="card_bx">
+                                    <Link to={perCardHistoryRoute}>
+                                      <div className="p-3 rounded border h-100 d-flex flex-column">
+                                        <div className="d-flex justify-content-between">
+                                          {isManual ? (
+                                            <div className="card_bx">
+                                              <img
+                                                src="assets/img/cash-payment_img.png"
+                                                alt={title || "Method"}
+                                                style={{
+                                                  width: 50,
+                                                  height: 50,
+                                                  objectFit: "contain",
+                                                }}
+                                              />
+                                            </div>
+                                          ) : (
                                             <img
-                                              src="assets/img/cash-payment_img.png"
+                                              src="assets/img/wallet_img.png"
                                               alt={title || "Method"}
                                               style={{
-                                                width: 50,
+                                                width: 60,
                                                 height: 50,
                                                 objectFit: "contain",
                                               }}
                                             />
-                                          </div>
-                                        ) : (
-                                          <img
-                                            src="assets/img/wallet_img.png"
-                                            alt={title || "Method"}
-                                            style={{
-                                              width: 60,
-                                              height: 50,
-                                              objectFit: "contain",
-                                            }}
-                                          />
-                                        )}
+                                          )}
 
-                                        <Link to={perCardHistoryRoute}>
                                           <img
                                             alt="bet_history"
                                             style={{
@@ -354,91 +320,85 @@ const DepositMethod = () => {
                                             }}
                                             src="assets/img/icons/history.png"
                                           />
-                                        </Link>
-                                      </div>
+                                        </div>
 
-                                      <div className="d-flex align-items-center gap-2 mb-2">
-                                        {m.logo && (
-                                          <img
-                                            src={m.logo}
-                                            alt={title || "Method"}
-                                            style={{
-                                              width: 36,
-                                              height: 36,
-                                              objectFit: "contain",
-                                            }}
-                                          />
-                                        )}
-                                        <strong className="fs-4 text-white">
-                                          {title}
-                                        </strong>
-                                      </div>
+                                        <div className="d-flex align-items-center gap-2 mb-2">
+                                          {m.logo && (
+                                            <img
+                                              src={m.logo}
+                                              alt={title || "Method"}
+                                              style={{
+                                                width: 36,
+                                                height: 36,
+                                                objectFit: "contain",
+                                              }}
+                                            />
+                                          )}
+                                          <strong className="fs-4 text-white">
+                                            {title}
+                                          </strong>
+                                        </div>
 
-                                      {/* Descriptions */}
-                                      {isManual ? (
-                                        <p style={{ color: "#b1abab" }}>
-                                          Manual Payment — transfer via
-                                          bank/UPI/cash and upload receipt.
-                                        </p>
-                                      ) : isEwallet ? (
-                                        <p style={{ color: "#b1abab" }}>
-                                          E-Wallet — fast and secure wallet
-                                          payments.
-                                        </p>
-                                      ) : isApay ? (
-                                        <>
+                                        {isManual ? (
+                                          <p style={{ color: "#b1abab" }}>
+                                            Manual Payment — transfer via
+                                            bank/UPI/cash and upload receipt.
+                                          </p>
+                                        ) : isEwallet ? (
+                                          <p style={{ color: "#b1abab" }}>
+                                            E-Wallet — fast and secure wallet
+                                            payments.
+                                          </p>
+                                        ) : isApay ? (
                                           <p style={{ color: "#b1abab" }}>
                                             A-Pay — instant one-tap checkout.
                                           </p>
-                                          <p className="text-danger fw-semibold">
-                                            How to Play: Follow the A-Pay
-                                            deposit steps carefully.
+                                        ) : (
+                                          <p style={{ color: "#b1abab" }}>
+                                            Select to continue.
                                           </p>
-                                        </>
-                                      ) : (
-                                        <p style={{ color: "#b1abab" }}>
-                                          Select to continue.
-                                        </p>
-                                      )}
+                                        )}
 
-                                      {m.description && (
-                                        <p className="text-muted mb-2">
-                                          {m.description}
-                                        </p>
-                                      )}
-                                      {m.limits && (
-                                        <small className="text-muted">
-                                          Min: {m.limits.min} • Max:{" "}
-                                          {m.limits.max}
-                                        </small>
-                                      )}
-
-                                      <button
+                                        {m.description && (
+                                          <p className="text-muted mb-2">
+                                            {m.description}
+                                          </p>
+                                        )}
+                                        {m.limits && (
+                                          <small className="text-muted">
+                                            Min: {m.limits.min} • Max:{" "}
+                                            {m.limits.max}
+                                          </small>
+                                        )}
+                                        {/* {isApay ? "hh" : "sssssss"} */}
+                                        {/* <button
                                         type="button"
                                         className="btn btn-red mt-auto w-50"
+                                        disabled={disabled}
                                         onClick={() => {
-                                          setClickingId(key);
-                                          handleChoose(m, key);
+                                          setClickingId(key); // 🔐 use the same 'key' you compare above
+                                          handleChoose(m, key); // pass key if your handler needs it
                                         }}
                                       >
                                         {isBusy ? "Redirecting..." : "Proceed"}
-                                      </button>
-                                    </div>
+                                      </button> */}
+                                      </div>
+                                    </Link>
                                   </div>
                                 );
                               })}
                             </div>
                           </div>
 
-                          {/* RIGHT: Image (optional) */}
+                          {/* RIGHT: Image */}
                           {/* <div className="col-12 col-lg-4 d-flex justify-content-center">
-        <img
-          src="https://cdni.iconscout.com/illustration/premium/thumb/credit-card-bill-payment-app-illustration-svg-png-download-4525614.png"
-          alt="Payment methods"
-          className="img-fluid"
-          style={{ maxHeight: 620, objectFit: "contain" }}
-        />
-      </div> */}
+                            <img
+                              src="https://cdni.iconscout.com/illustration/premium/thumb/credit-card-bill-payment-app-illustration-svg-png-download-4525614.png"
+                              alt="Payment methods"
+                              className="img-fluid"
+                              style={{ maxHeight: 620, objectFit: "contain" }}
+                            />
+                          </div> */}
                         </div>
                         {/* /Row */}
                       </div>
