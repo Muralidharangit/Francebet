@@ -103,6 +103,30 @@ const DepositEwalletNamibiaHistory = lazy(() =>
   )
 );
 
+// EasyWallet
+const DepositNamibiaEasyWallet = lazy(() =>
+  import(
+    "./Components/Pages/Transactions/Namibia/Deposit_Namibia_Easy/Deposit_Namibia_Easy_wallet"
+  )
+);
+const DepositEwalletEasyWalletHistory = lazy(() =>
+  import(
+    "./Components/Pages/Transactions/Namibia/Deposit_Namibia_Easy/DepositHistory"
+  )
+);
+
+// Blue wallet
+
+const DepositNamibiaBlueWallet = lazy(() =>
+  import(
+    "./Components/Pages/Transactions/Namibia/Deposit_Namibia_BlueWallet/DepositNamibiaBlueWallet"
+  )
+);
+const DepositEwalletBlueWalletHistory = lazy(() =>
+  import(
+    "./Components/Pages/Transactions/Namibia/Deposit_Namibia_BlueWallet/DepositHistory"
+  )
+);
 const AllMethodDepositHistory = lazy(() =>
   import(
     "./Components/Pages/Transactions/Namibia/Deposit_Namibia_Ewallet/AllDepositHistoryMEE"
@@ -243,6 +267,27 @@ function App() {
               path={routes.transactions.all_deposit_history}
               element={<AllMethodDepositHistory />}
             />
+
+            {/* easy_wallet */}
+            <Route
+              path={routes.transactions.easy_wallet_deposit}
+              element={<DepositNamibiaEasyWallet />}
+            />
+            <Route
+              path={routes.transactions.easy_wallet_history}
+              element={<DepositEwalletEasyWalletHistory />}
+            />
+
+            {/* blue_wallet */}
+            <Route
+              path={routes.transactions.blue_wallet_deposit}
+              element={<DepositNamibiaBlueWallet />}
+            />
+            <Route
+              path={routes.transactions.blue_wallet_history}
+              element={<DepositEwalletBlueWalletHistory />}
+            />
+
             {/* India  */}
             <Route
               path={routes.transactions.manual_deposit_India}

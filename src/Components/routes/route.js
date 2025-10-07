@@ -35,6 +35,7 @@ const routes = {
     ewallet_deposit_namibia:
       "/deposit-namibia/ewallet-deposit/get-payment-details",
     ewallet_deposit_history: "/deposit-namibia-ewallet-history",
+
     all_deposit_history: "/deposit_history",
 
     // Kazang
@@ -45,6 +46,16 @@ const routes = {
     // India
     manual_deposit_India: "/manual-deposit-india",
     manual_withdraw_India: "/manual-withdraw-india",
+
+    // easy-wallet
+    easy_wallet_deposit:
+      "/deposit-namibia/easy-wallet-deposit/get-payment-details",
+    easy_wallet_history: "/deposit-namibia-easy-wallet-history",
+
+    // blue-wallet
+    blue_wallet_deposit:
+      "/deposit-namibia/blue-wallet-deposit/get-payment-details",
+    blue_wallet_history: "/deposit-namibia/blue-wallet-history",
   },
   account: {
     dashboard: "/account-dashboard",
