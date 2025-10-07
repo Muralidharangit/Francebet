@@ -186,7 +186,9 @@ const AccountDashboard = () => {
                   {portalSettings?.auto_deposit === 1 ? (
                     <button
                       className="btn btn-outline-light w-100"
-                      onClick={() => navigate(routes.transactions.paymentMethod)}
+                      onClick={() =>
+                        navigate(routes.transactions.paymentMethod)
+                      }
                       // onClick={() =>
                       //   handleSecureRoute(routes.transactions.deposit)
                       // }
@@ -203,7 +205,9 @@ const AccountDashboard = () => {
                       // onClick={() =>
                       //   handleSecureRoute(routes.transactions.withdraw)
                       // }
-                      onClick={() => navigate(routes.transactions.manual_withdraw_namibia)}
+                      onClick={() =>
+                        navigate(routes.transactions.manual_withdraw_namibia)
+                      }
                     >
                       Withdraw
                     </button>
@@ -220,7 +224,9 @@ const AccountDashboard = () => {
                     // onClick={() =>
                     //   handleSecureRoute(routes.transactions.depositHistory)
                     // }
-                    onClick={() => navigate(routes.transactions.all_deposit_history)}
+                    onClick={() =>
+                      navigate(routes.transactions.all_deposit_history)
+                    }
                   >
                     <img
                       src="assets/img/icons/rupee_2.png"

@@ -127,6 +127,7 @@ export const sendDepositRequestNamibia = async ({
   utr_number,
   paymentSelectedMethod,
   player_id,
+  payment_screenshot,
 }) => {
   // console.log("paymentSelectedMethod", paymentSelectedMethod);
 
@@ -135,6 +136,9 @@ export const sendDepositRequestNamibia = async ({
   formData.append("manual_deposit_id", paymentSelectedMethod);
   formData.append("amount", amount);
   formData.append("utr", utr_number);
+  if (payment_screenshot) {
+    formData.append("image", payment_screenshot);
+  }
 
   const response = await axios.post(
     `${BASE_URL}/player/deposit-namibia/manual-deposit/send-deposit-request`,
@@ -172,6 +176,7 @@ export const sendDepositRequestNamibiaEwallet = async ({
   utr_number,
   paymentSelectedMethod,
   player_id,
+  payment_screenshot,
 }) => {
   // console.log("paymentSelectedMethod", paymentSelectedMethod);
 
@@ -180,6 +185,9 @@ export const sendDepositRequestNamibiaEwallet = async ({
   formData.append("manual_ewallet_id", paymentSelectedMethod);
   formData.append("amount", amount);
   formData.append("utr", utr_number);
+  if (payment_screenshot) {
+    formData.append("image", payment_screenshot);
+  }
 
   const response = await axios.post(
     `${BASE_URL}/player/deposit-namibia/ewallet-deposit/send-deposit-request`,

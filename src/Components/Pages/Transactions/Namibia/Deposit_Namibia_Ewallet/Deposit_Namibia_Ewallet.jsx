@@ -106,13 +106,13 @@ function Deposit() {
                     </div>
                     {/* header Ends */}
                     <div className="d-flex justify-content-between align-items-center px-0">
-                <button
-                  className="go_back_btn bg-grey"
-                  onClick={() => window.history.back()}
-                >
-                  <i className="ri-arrow-left-s-line text-white fs-24" />
-                </button>
-              </div>
+                      <button
+                        className="go_back_btn bg-grey"
+                        onClick={() => window.history.back()}
+                      >
+                        <i className="ri-arrow-left-s-line text-white fs-24" />
+                      </button>
+                    </div>
 
                     {/* Wizard */}
                     <div className="container mt-4 px-0">
@@ -158,6 +158,21 @@ function Deposit() {
                         <div className="tab-content">
                           {steps.map((step, index) => {
                             const isActive = activeStep === step.id;
+
+                            const hasBack = index > 0;
+                            const hasNext = index < steps.length - 1;
+
+                            const justifyClass =
+                              hasBack && hasNext
+                                ? "justify-content-between"
+                                : hasNext
+                                ? "justify-content-end" // only Continue → right end
+                                : "justify-content-start"; // only Back → left start
+
+                            const nextDisabled =
+                              (step.id === "step1" && !selectedAmount) ||
+                              (step.id === "step2" && !paymentSelectedMethod);
+
                             return (
                               <div
                                 key={step.id}
@@ -167,8 +182,9 @@ function Deposit() {
                                 id={step.id}
                               >
                                 {step.content()}
-                                <div className="d-flex justify-content-between mt-3">
-                                  {index > 0 && (
+
+                                <div className={`d-flex ${justifyClass} mt-3`}>
+                                  {hasBack && (
                                     <button
                                       className="btn btn-secondary previous"
                                       onClick={goPrevious}
@@ -176,16 +192,12 @@ function Deposit() {
                                       <i className="fas fa-angle-left" /> Back
                                     </button>
                                   )}
-                                  {index < steps.length - 1 && (
+
+                                  {hasNext && (
                                     <button
                                       className="btn btn-light next"
                                       onClick={goNext}
-                                      disabled={
-                                        (step.id === "step1" &&
-                                          !selectedAmount) ||
-                                        (step.id === "step2" &&
-                                          !paymentSelectedMethod)
-                                      }
+                                      disabled={nextDisabled}
                                     >
                                       Continue{" "}
                                       <i className="fas fa-angle-right" />

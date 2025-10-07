@@ -549,7 +549,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                         /> */}
                           </div>
                           <div
-                            className="preview-item-content d-flex align-items-start flex-column justify-content-center"
+                            className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
                             onClick={() =>
                               handleSecureRoute(
                                 routes.transactions.paymentMethod
@@ -574,7 +574,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                         /> */}
                           </div>
                           <div
-                            className="preview-item-content d-flex align-items-start flex-column justify-content-center"
+                            className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
                             onClick={() =>
                               handleSecureRoute(
                                 routes.transactions.manual_withdraw_namibia
@@ -600,7 +600,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                         /> */}
                           </div>
                           <div
-                            className="preview-item-content d-flex align-items-start flex-column justify-content-center"
+                            className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
                             onClick={() =>
                               handleSecureRoute(
                                 routes.transactions.all_deposit_history
@@ -623,7 +623,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                         /> */}
                           </div>
                           <div
-                            className="preview-item-content d-flex align-items-start flex-column justify-content-center"
+                            className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
                             onClick={() =>
                               handleSecureRoute(
                                 routes.transactions.withdrawHistory
@@ -648,7 +648,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                         /> */}
                           </div>
                           <div
-                            className="preview-item-content d-flex align-items-start flex-column justify-content-center"
+                            className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
                             onClick={() =>
                               handleSecureRoute(routes.games.history)
                             }
@@ -669,7 +669,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                         /> */}
                           </div>
                           <div
-                            className="preview-item-content d-flex align-items-start flex-column justify-content-center"
+                            className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
                             onClick={handleProfileClick}
                           >
                             <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
@@ -681,7 +681,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
 
                         <div className="dropdown-item preview-item">
                           <div className="preview-thumbnail"></div>
-                          <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                          <div className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible">
                             <h6
                               className="preview-subject ellipsis mb-1 font-weight-normal w-100"
                               onClick={() => logout(navigate)}

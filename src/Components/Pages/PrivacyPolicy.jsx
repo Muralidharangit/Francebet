@@ -42,7 +42,7 @@ function PrivacyPolicy() {
                     </nav>
                   </div>
                 </div>
-                <section class="privacy-container px-2">
+                <section class="privacy-container px-2 pt-0">
                   <h1 className="text-white">Privacy Policy</h1>
 
                   <p>
@@ -103,7 +103,7 @@ function PrivacyPolicy() {
                     </li>
                     <li>
                       <strong>Website:</strong> {APP_NAME}, accessible from{" "}
-                      <a href="https://jiboomba.in/">https://{APP_NAME}.in/</a>.
+                      <a href="#">https://{APP_NAME}.in/</a>.
                     </li>
                     <li>
                       <strong>You:</strong> the individual using the Service, or

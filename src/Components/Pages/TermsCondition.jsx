@@ -42,7 +42,7 @@ function TermsCondition() {
                     </nav>
                   </div>
                 </div>
-                <section class="privacy-container px-2 m-0">
+                <section class="privacy-container px-2 m-0 pt-0">
                   <h1 className="text-white">Terms & Conditions</h1>
 
                   <h2>Interpretation and Definitions</h2>

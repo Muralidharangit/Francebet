@@ -165,6 +165,23 @@ function Deposit() {
           <div className="content-wrapper">
             <div className="max-1250 mx-auto">
               <div className="h-100">
+                {/* header Starts */}
+                <div className="d-flex align-items-center justify-content-between position-relative  px-0 mt-3">
+                  <h5 className="position-absolute start-50 translate-middle-x m-0 text-white fs-16">
+                    kazang Voucher Deposit
+                  </h5>
+                </div>
+
+                <div className="d-flex justify-content-between align-items-center px-0">
+                  <button
+                    className="go_back_btn bg-grey"
+                    onClick={() => window.history.back()}
+                  >
+                    <i className="ri-arrow-left-s-line text-white fs-24" />
+                  </button>
+                </div>
+                {/* header Ends */}
+
                 {/* --- Voucher Form Section --- */}
                 <div className="wizard my-5 px-2">
                   <div className="card bg_light_grey account_input-textbox-container">
@@ -324,10 +341,6 @@ function Deposit() {
                     </div>
                   </div>
                 </div>
-
-                
-
-              
 
                 {/* --- Success Modal --- */}
                 {showSuccessModal && (

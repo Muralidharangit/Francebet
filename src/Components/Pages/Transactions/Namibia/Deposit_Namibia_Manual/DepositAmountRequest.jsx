@@ -29,13 +29,34 @@ const DepositAmountRequest = ({
       payment_screenshot: formData.payment_screenshot,
     },
     validationSchema: Yup.object({
+      amount: Yup.string().required("Amount is required"),
+
+      // UTR is OPTIONAL, but if provided it must be 12–22 alphanumeric
       utr_number: Yup.string()
         .trim()
-        .matches(/^[A-Za-z0-9]{12,22}$/, "Only letters & digits (12–22)")
-        .required("UTR is required"),
-      amount: Yup.string().required("Amount is required"),
-    }),
+        .nullable()
+        .notRequired()
+        .test(
+          "utr-format",
+          "If entered, UTR must be 12–22 characters (A–Z, 0–9).",
+          (v) => !v || /^[A-Za-z0-9]{12,22}$/.test(v)
+        ),
 
+      // Image is REQUIRED
+      payment_screenshot: Yup.mixed()
+        .required("Payment screenshot is required")
+        .test(
+          "fileType",
+          "Only image files are allowed",
+          (file) =>
+            !file || (file && file.type && file.type.startsWith("image/"))
+        )
+        .test(
+          "fileSize",
+          "Max file size is 5MB",
+          (file) => !file || file.size <= 5 * 1024 * 1024
+        ),
+    }),
     onSubmit: async (values, { setSubmitting, setErrors, resetForm }) => {
       try {
         // ✅ Step 1: Verify token with its own error handler
@@ -72,6 +93,7 @@ const DepositAmountRequest = ({
           amount: values.amount,
           utr_number: values.utr_number,
           paymentSelectedMethod: paymentSelectedMethod,
+          payment_screenshot: values.payment_screenshot,
           player_id: User_id,
         });
 
@@ -138,6 +160,15 @@ const DepositAmountRequest = ({
   //     payment_screenshot: file,
   //   }));
   // };
+  const handleFileChange = (event) => {
+    const file = event.currentTarget.files[0];
+    formik.setFieldValue("payment_screenshot", file);
+
+    setFormData((prev) => ({
+      ...prev,
+      payment_screenshot: file,
+    }));
+  };
   return (
     <>
       {/* card 1 Starts */}
@@ -196,13 +227,15 @@ const DepositAmountRequest = ({
                   />
                 </div>
 
-                {/* <div className="mb-2">
+                {/* image REQUIRED */}
+                <div className="mb-2">
                   <label
                     htmlFor="formFile"
                     className="form-label text-white mb-0"
                   >
-                    Payment Screenshot
+                    Payment Screenshot <span className="text-danger">*</span>
                   </label>
+
                   <div className="custom-file-input" style={{ marginTop: 0 }}>
                     <label htmlFor="formFile">
                       <span className="btn">Upload File</span>
@@ -212,6 +245,7 @@ const DepositAmountRequest = ({
                           : "No file chosen"}
                       </span>
                     </label>
+
                     <input
                       type="file"
                       id="formFile"
@@ -219,11 +253,21 @@ const DepositAmountRequest = ({
                       hidden
                       accept="image/*"
                       onChange={handleFileChange}
+                      onBlur={() =>
+                        formik.setFieldTouched("payment_screenshot", true)
+                      }
                     />
                   </div>
-                </div> */}
 
-                <div className="input-field mb-3">
+                  {formik.touched.payment_screenshot &&
+                    formik.errors.payment_screenshot && (
+                      <p className="text-danger">
+                        {formik.errors.payment_screenshot}
+                      </p>
+                    )}
+                </div>
+
+                {/* <div className="input-field mb-3">
                   <input
                     required
                     className="input"
@@ -246,7 +290,7 @@ const DepositAmountRequest = ({
                   {formik.touched.utr_number && formik.errors.utr_number && (
                     <p className="text-danger">{formik.errors.utr_number}</p>
                   )}
-                </div>
+                </div> */}
 
                 <div className="d-flex justify-content-center">
                   <button
