@@ -101,7 +101,7 @@ function Deposit() {
 
                       {/* Centered Title */}
                       <h5 className="position-absolute start-50 translate-middle-x m-0 text-white fs-16">
-                        Easy Wallet Deposit
+                        NedBank Deposit
                       </h5>
                     </div>
                     {/* header Ends */}

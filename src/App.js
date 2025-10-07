@@ -127,6 +127,31 @@ const DepositEwalletBlueWalletHistory = lazy(() =>
     "./Components/Pages/Transactions/Namibia/Deposit_Namibia_BlueWallet/DepositHistory"
   )
 );
+
+// nedBank Wallet
+const DepositNamibiaNedBankWallet = lazy(() =>
+  import(
+    "./Components/Pages/Transactions/Namibia/Deposit_Namibia_NedbankWallet/DepositNamibiaAccessMoneyBankWallet"
+  )
+);
+const DepositNamibiaNedBankWalletHistory = lazy(() =>
+  import(
+    "./Components/Pages/Transactions/Namibia/Deposit_Namibia_NedbankWallet/DepositHistory"
+  )
+);
+
+// AccessMoneyBank Wallet
+const DepositNamibiaAccessMoneyWallet = lazy(() =>
+  import(
+    "./Components/Pages/Transactions/Namibia/Deposit_Namibia_AccessMoneyWallet/DepositNamibiaAccessMoneyWallet"
+  )
+);
+const DepositNamibiaAccessMoneyWalletHistory = lazy(() =>
+  import(
+    "./Components/Pages/Transactions/Namibia/Deposit_Namibia_AccessMoneyWallet/DepositHistory"
+  )
+);
+
 const AllMethodDepositHistory = lazy(() =>
   import(
     "./Components/Pages/Transactions/Namibia/Deposit_Namibia_Ewallet/AllDepositHistoryMEE"
@@ -267,7 +292,6 @@ function App() {
               path={routes.transactions.all_deposit_history}
               element={<AllMethodDepositHistory />}
             />
-
             {/* easy_wallet */}
             <Route
               path={routes.transactions.easy_wallet_deposit}
@@ -277,7 +301,6 @@ function App() {
               path={routes.transactions.easy_wallet_history}
               element={<DepositEwalletEasyWalletHistory />}
             />
-
             {/* blue_wallet */}
             <Route
               path={routes.transactions.blue_wallet_deposit}
@@ -288,6 +311,25 @@ function App() {
               element={<DepositEwalletBlueWalletHistory />}
             />
 
+            {/* nedBank_wallet */}
+            <Route
+              path={routes.transactions.nedbank_wallet_deposit}
+              element={<DepositNamibiaNedBankWallet />}
+            />
+            <Route
+              path={routes.transactions.nedbank_wallet_history}
+              element={<DepositNamibiaNedBankWalletHistory />}
+            />
+
+            {/* AccessMoney_wallet */}
+            <Route
+              path={routes.transactions.access_money_wallet_deposit}
+              element={<DepositNamibiaAccessMoneyWallet />}
+            />
+            <Route
+              path={routes.transactions.access_money_wallet_history}
+              element={<DepositNamibiaAccessMoneyWalletHistory />}
+            />
             {/* India  */}
             <Route
               path={routes.transactions.manual_deposit_India}
@@ -298,7 +340,6 @@ function App() {
               element={<WithdrawIndexIndia />}
             />
             {/* Kazang deposit */}
-
             <Route
               path={routes.transactions.kazang_deposit_voucher}
               element={<DepositIndexKazang />}
@@ -311,7 +352,6 @@ function App() {
               path={routes.transactions.kazang_how_to_deposit}
               element={<KazangHowtodeposit />}
             />
-
             <Route path={routes.profile.main} element={<Profile />} />
             <Route path={routes.profile.edit} element={<ProfileEdit />} />
             <Route

@@ -1,11 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import BASE_URL from "../../../../../API/api";
 import axios from "axios";
-import {
-  depositHistory,
-  depositHistoryBlueNamibia,
-  depositHistoryEasyNamibia,
-} from "../../../../../API/depositAPI";
+import { depositHistoryNedBankNamibia } from "../../../../../API/depositAPI";
 import { verifyToken } from "../../../../../API/authAPI";
 import AuthContext from "../../../../../Auth/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
@@ -13,7 +9,7 @@ import StickyHeader from "../../../../layouts/Header/Header";
 import Sidebar from "../../../../layouts/Header/Sidebar";
 import axiosInstance from "../../../../../API/axiosConfig";
 import { CURRENCY_SYMBOL } from "../../../../../constants";
-import { depositHistoryEwalletNamibia } from "../../../../../API/depositAPI";
+// import { depositHistoryEwalletNamibia } from "../../../../../API/depositAPI";
 
 const DepositHistory = () => {
   const [history, setHistory] = useState([]);
@@ -59,7 +55,7 @@ const DepositHistory = () => {
       //   return;
       // }
 
-      const response = await depositHistoryBlueNamibia(token);
+      const response = await depositHistoryNedBankNamibia(token);
       if (response.status === "success") {
         setHistory(response.depositHistory);
         setError(null); // 🟢 clear old errors
@@ -279,7 +275,7 @@ const DepositHistory = () => {
 
                       {/* Centered Title */}
                       <h5 className="m-0 text-white fs-16">
-                        Blue Wallet Deposit History
+                        Access Money Deposit History
                       </h5>
                       <div className="d-flex justify-content-between align-items-center px-0">
                         <button
