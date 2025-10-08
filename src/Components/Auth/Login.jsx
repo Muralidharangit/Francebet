@@ -51,9 +51,7 @@ const LoginPage = () => {
       static_otp: "",
     },
     validationSchema: Yup.object().shape({
-      user_mobile: Yup.string()
-        .matches(/^\d{10}$/, "Mobile number must be 10 digits")
-        .required("Mobile number is required"),
+      user_mobile: Yup.string().required("Mobile number is required"),
       user_password:
         authType === "default"
           ? Yup.string()

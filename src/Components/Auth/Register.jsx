@@ -68,9 +68,7 @@ const Register = () => {
     //   }
     // })
 
-    mobile: Yup.string()
-      .matches(/^\d{10}$/, "Enter a valid 10-digit mobile number") //   Enforce exactly 11 digits
-      .required("Mobile number is required"),
+    mobile: Yup.string().required("Mobile number is required"),
     password: Yup.string()
       .min(6, "Password must be at least 6 characters")
       .required("Password is required"),
