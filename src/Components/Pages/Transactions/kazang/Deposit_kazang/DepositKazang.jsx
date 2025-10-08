@@ -31,10 +31,9 @@ function Deposit() {
   const [details, setDetails] = useState(null);
   const [checking, setChecking] = useState(false);
   const [redeeming, setRedeeming] = useState(false);
-  const { user } = useContext(AuthContext);
+  const { user, fetchUser } = useContext(AuthContext);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [confetti, setConfetti] = useState([]);
-
   const formik = useFormik({
     initialValues: { pin: "" },
     validationSchema: schema,
@@ -72,6 +71,10 @@ function Deposit() {
           pin: cleanPin,
         });
         if (String(response?.response_code) !== "0") {
+          setApiError(response?.response_message || "Check status failed");
+          return;
+        }
+        if (String(response?.response_code) === "4") {
           setApiError(response?.response_message || "Check status failed");
           return;
         }
@@ -113,6 +116,8 @@ function Deposit() {
         );
       }
 
+      // ✅ refresh profile so Header updates chips
+      await fetchUser(currentToken);
       // Show success modal
       setShowSuccessModal(true);
     } catch (e) {
@@ -228,6 +233,7 @@ function Deposit() {
                           </button>
                         </div>
                       </form>
+                      <p className="text-danger">{apiError}</p>
 
                       {formik.errors.api && (
                         <div className="nl-msg nl-msg-error">
@@ -397,8 +403,7 @@ function Deposit() {
                         <div className="modal-footer border-0 justify-content-center">
                           <button
                             type="button"
-                            className="btn swiper-scrollbar-drag w-50 bgbody-color text-white
-                    rounded-pill fs-15 fw-500"
+                            className="btn swiper-scrollbar-drag w-50 bgbody-color text-white rounded-pill fs-15 fw-500"
                             onClick={() => setShowSuccessModal(false)}
                           >
                             OK

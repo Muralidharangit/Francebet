@@ -105,6 +105,7 @@ const Register = () => {
       .required("Mobile number is required"),
     agreement: Yup.boolean().oneOf([true], "You must accept the terms"),
   });
+  
   const handleRegister = async (values, { setSubmitting }) => {
     setErrorMessage(""); // Reset previous errors
 
