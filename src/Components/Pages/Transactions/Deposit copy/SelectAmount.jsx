@@ -272,8 +272,8 @@ const SelectAmount = ({
 
   // ✅ Handle File Upload
   // const handleFileChange = (event) => {
-  //   const file = event.currentTarget.files[0];
-  //   formik.setFieldValue("payment_screenshot", file);
+  // const file = event.currentTarget.files[0];
+  // formik.setFieldValue("payment_screenshot", file);
   // };
   const handleFileChange = (event) => {
     const file = event.currentTarget.files[0];

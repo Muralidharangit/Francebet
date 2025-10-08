@@ -449,7 +449,7 @@ const DepositMethod = () => {
                                           <p style={{ color: "#b1abab" }}>
                                             EasyPay — instant one-tap checkout.
                                           </p>
-                                          <p className="text-danger fw-semibold">
+                                          <p className="text-white">
                                             How to Play: Follow the A-Pay
                                             deposit steps carefully.
                                           </p>
