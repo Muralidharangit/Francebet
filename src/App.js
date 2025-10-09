@@ -241,6 +241,10 @@ function App() {
           <Route path={routes.pages.provider} element={<Provider />} />
           <Route path={routes.games.bonus} element={<Bonus />} />
           <Route path={routes.games.gift_envelope} element={<Envelope />} />
+          <Route
+            path={routes.transactions.kazang_how_to_deposit}
+            element={<KazangHowtodeposit />}
+          />
           {/* Protected Routes */}
           <Route element={<ProtectedRoute />}>
             <Route path={routes.games.history} element={<BetHistory />} />
@@ -348,10 +352,7 @@ function App() {
               path={routes.transactions.kazang_deposit_history}
               element={<DepositKazangNamibiaHistory />}
             />
-            <Route
-              path={routes.transactions.kazang_how_to_deposit}
-              element={<KazangHowtodeposit />}
-            />
+
             <Route path={routes.profile.main} element={<Profile />} />
             <Route path={routes.profile.edit} element={<ProfileEdit />} />
             <Route

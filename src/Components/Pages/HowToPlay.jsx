@@ -62,8 +62,8 @@ const HowToPlay = () => {
                   <h2>Our Commitment</h2>
                   <p>
                     We strive to make sure that while you enjoy your gaming
-                    experience on <strong>{APP_NAME}.in</strong>, you remain fully
-                    aware of the potential{" "}
+                    experience on <strong>{APP_NAME}.in</strong>, you remain
+                    fully aware of the potential{" "}
                     <strong>social and financial risks</strong> associated with
                     gambling.
                   </p>
@@ -97,13 +97,13 @@ const HowToPlay = () => {
                       Go to <strong>Profile &gt; Player Protection</strong> in
                       your account.
                     </li>
-                    <li>
+                    {/* <li>
                       Or contact our Customer Support team at{" "}
                       <a href="mailto:support@{APP_NAME}.in">
                         support@{APP_NAME}.in
                       </a>
                       .
-                    </li>
+                    </li> */}
                   </ul>
                   <p>
                     <strong>Important:</strong>
@@ -151,7 +151,9 @@ const HowToPlay = () => {
                     💡 You can monitor your deposits, withdrawals, and bets
                     under <strong>History &gt; Transactions</strong>. If you
                     notice unauthorized activity, contact{" "}
-                    <a href="mailto:support@jiboomba.in">support@{APP_NAME}.in</a>{" "}
+                    <a href="#">
+                      support@{APP_NAME}.in
+                    </a>{" "}
                     immediately and update your password.
                   </div>
 
@@ -180,11 +182,11 @@ const HowToPlay = () => {
                     👉 If you answered <strong>yes</strong> to several of these
                     questions, we strongly encourage you to seek support from
                     trusted organizations like{" "}
-                    <a href="https://www.gamcare.org.uk/" target="_blank">
+                    <a href="#" target="_blank">
                       GamCare
                     </a>{" "}
-                    or
-                    <a href="https://www.gamblingtherapy.org/" target="_blank">
+                    or{" "}
+                    <a href="#" target="_blank">
                       Gambling Therapy
                     </a>
                     .
@@ -219,7 +221,10 @@ const HowToPlay = () => {
                   </p>
                   <p>
                     📧 For questions or support, contact us anytime at
-                    <a href="mailto:support@{APP_NAME}.in">support{APP_NAME}.in</a>
+                    <a href="mailto:support@{APP_NAME}.in">
+                      {" "}
+                      support{APP_NAME}.in
+                    </a>
                     .
                   </p>
                 </section>

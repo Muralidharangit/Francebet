@@ -78,7 +78,7 @@ const Sidebar = () => {
                 `nav-link ${isActive ? "active" : ""}`
               }
             >
-              <span className="menu-title">How To Deposite</span>
+              <span className="menu-title">How To Deposit</span>
               <i className="fi fi-sr-dice-alt menu-icon" />
             </NavLink>
           </li>

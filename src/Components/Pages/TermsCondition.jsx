@@ -42,7 +42,7 @@ function TermsCondition() {
                     </nav>
                   </div>
                 </div>
-                <section class="privacy-container px-2 m-0">
+                <section class="privacy-container px-2 m-0 pt-0">
                   <h1 className="text-white">Terms & Conditions</h1>
 
                   <h2>Interpretation and Definitions</h2>
@@ -194,7 +194,7 @@ function TermsCondition() {
                     the new terms.
                   </p>
 
-                  <h2>Contact Us</h2>
+                  {/* <h2>Contact Us</h2>
                   <p>
                     If you have any questions about these Terms and Conditions,
                     You can contact us:
@@ -203,7 +203,7 @@ function TermsCondition() {
                     <li>
                       <strong>Email:</strong> {APP_NAME}@gmail.com
                     </li>
-                  </ul>
+                  </ul> */}
                 </section>
               </div>
             </div>

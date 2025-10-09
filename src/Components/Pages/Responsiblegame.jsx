@@ -80,12 +80,12 @@ function ResponsibleGaming() {
               Access <strong>Profile &gt; Player Protection</strong> to request
               temporary or permanent exclusion
             </li>
-            <li>
+            {/* <li>
               Contact our Customer Support at{" "}
               <a href="" className="text-info">
                 support@ {APP_NAME}.in
               </a>
-            </li>
+            </li> */}
           </ul>
           <p>
             Once activated, your exclusion or account block will be effective

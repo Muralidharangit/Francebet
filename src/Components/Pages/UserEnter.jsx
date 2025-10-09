@@ -142,7 +142,7 @@ const UserEnter = () => {
                     <input
                       type="text"
                       className="input2"
-                      defaultValue="https://jiboomba.com"
+                      defaultValue="#"
                       readOnly
                     />
                     <button className="Subscribe-btn">Copy</button>

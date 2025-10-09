@@ -190,10 +190,10 @@ const DepositMethod = () => {
                       </div>
 
                       <h5 className="position-absolute start-50 translate-middle-x m-0 text-white fs-16">
-                        Deposit Payment Method
+                        Deposit Payment Method 
                       </h5>
                     </div>
-                   
+
                     {/* Card */}
                     <div className="card  bg_light_grey account_input-textbox-container mt-5">
                       <div className="card-body py-4 pb-5">

@@ -156,46 +156,51 @@ function Deposit() {
 
                         {/* Single Tab Content (keep just this one) */}
                         <div className="tab-content">
-                          {steps.map((step, index) => {
-                            const isActive = activeStep === step.id;
-                            return (
-                              <div
-                                key={step.id}
-                                className={`tab-pane fade ${
-                                  isActive ? "show active" : ""
-                                }`}
-                                id={step.id}
-                              >
-                                {step.content()}
-                                <div className="d-flex justify-content-between mt-3">
-                                  {index > 0 && (
-                                    <button
-                                      className="btn btn-secondary previous"
-                                      onClick={goPrevious}
-                                    >
-                                      <i className="fas fa-angle-left" /> Back
-                                    </button>
-                                  )}
-                                  {index < steps.length - 1 && (
-                                    <button
-                                      className="btn btn-light next"
-                                      onClick={goNext}
-                                      disabled={
-                                        (step.id === "step1" &&
-                                          !selectedAmount) ||
-                                        (step.id === "step2" &&
-                                          !paymentSelectedMethod)
-                                      }
-                                    >
-                                      Continue{" "}
-                                      <i className="fas fa-angle-right" />
-                                    </button>
-                                  )}
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
+  {steps.map((step, index) => {
+    const isActive = activeStep === step.id;
+
+    const hasBack = index > 0;
+    const hasNext = index < steps.length - 1;
+
+    const justifyClass = hasBack && hasNext
+      ? "justify-content-between"
+      : hasNext
+      ? "justify-content-end"     // only Continue → right end
+      : "justify-content-start";  // only Back → left start
+
+    const nextDisabled =
+      (step.id === "step1" && !selectedAmount) ||
+      (step.id === "step2" && !paymentSelectedMethod);
+
+    return (
+      <div
+        key={step.id}
+        className={`tab-pane fade ${isActive ? "show active" : ""}`}
+        id={step.id}
+      >
+        {step.content()}
+
+        <div className={`d-flex ${justifyClass} mt-3`}>
+          {hasBack && (
+            <button className="btn btn-secondary previous" onClick={goPrevious}>
+              <i className="fas fa-angle-left" /> Back
+            </button>
+          )}
+
+          {hasNext && (
+            <button
+              className="btn btn-light next"
+              onClick={goNext}
+              disabled={nextDisabled}
+            >
+              Continue <i className="fas fa-angle-right" />
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  })}
+</div>
                         {/* end .tab-content */}
                       </div>
                     </div>

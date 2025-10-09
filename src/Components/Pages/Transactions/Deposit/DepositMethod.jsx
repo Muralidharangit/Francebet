@@ -222,6 +222,27 @@ const DepositMethod = () => {
     console.log("Unhandled method:", method);
   }
 
+  // Put this helper above your component (or in a utils file)
+  const getMethodIcon = (name = "") => {
+    const n = name.toLowerCase().trim();
+
+    // exact/regex matches in priority order
+    if (/manual deposit .*india/i.test(name))
+      return "assets/img/cash-payment_img.png";
+    if (/manual deposit .*namibia/i.test(name))
+      return "assets/img/cash-payment_img.png";
+
+    if (n.includes("easy wallet")) return "assets/img/wallet.png"; // easy wallet deposit
+    if (n.includes("blue wallet")) return "assets/img/blue_wallet.png"; // blue wallet deposit
+    if (n.includes("nedbank") && n.includes("wallet"))
+      return "assets/img/mobile-payment.png"; // nedbank wallet deposit
+    if (n.includes("access money") && n.includes("wallet"))
+      return "assets/img/coin_1.png"; // access money wallet deposit
+    if (n.includes("easypay")) return "assets/img/easypay.png"; // easypay deposit - namibia
+
+    return "assets/img/wallet_img.png"; // default
+  };
+
   /* ---------------- UI ---------------- */
   return (
     <>
@@ -345,7 +366,7 @@ const DepositMethod = () => {
                                   >
                                     <div className="p-3 rounded border h-100 d-flex flex-column">
                                       <div className="d-flex justify-content-between">
-                                        {isManual ? (
+                                        {/* {isManual ? (
                                           <div className="card_bx">
                                             <img
                                               src="assets/img/cash-payment_img.png"
@@ -367,7 +388,19 @@ const DepositMethod = () => {
                                               objectFit: "contain",
                                             }}
                                           />
-                                        )}
+
+                                          
+                                        )} */}
+
+                                        <img
+                                          src={getMethodIcon(m.name)}
+                                          alt={m.name || "Method"}
+                                          style={{
+                                            width: 50,
+                                            height: 50,
+                                            objectFit: "contain",
+                                          }}
+                                        />
 
                                         <Link to={perCardHistoryRoute}>
                                           <img
@@ -395,7 +428,8 @@ const DepositMethod = () => {
                                           />
                                         )}
                                         <strong className="fs-4 text-white">
-                                          {title}
+                                          {/* {title} */}
+                                          {m.display_name}
                                         </strong>
                                       </div>
 
@@ -413,12 +447,9 @@ const DepositMethod = () => {
                                       ) : isApay ? (
                                         <>
                                           <p style={{ color: "#b1abab" }}>
-                                            A-Pay — instant one-tap checkout.
+                                            EasyPay — instant one-tap checkout.
                                           </p>
-                                          <p className="text-danger fw-semibold">
-                                            How to Play: Follow the A-Pay
-                                            deposit steps carefully.
-                                          </p>
+                                          
                                         </>
                                       ) : (
                                         <p style={{ color: "#b1abab" }}>

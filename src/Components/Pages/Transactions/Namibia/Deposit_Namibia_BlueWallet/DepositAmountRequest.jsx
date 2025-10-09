@@ -255,7 +255,7 @@ const DepositAmountRequest = ({
                 </div>
 
                 {/* UTR OPTIONAL */}
-                <div className="input-field mb-3">
+                {/* <div className="input-field mb-3">
                   <input
                     className="input"
                     type="text"
@@ -277,7 +277,7 @@ const DepositAmountRequest = ({
                   {formik.touched.utr_number && formik.errors.utr_number && (
                     <p className="text-danger">{formik.errors.utr_number}</p>
                   )}
-                </div>
+                </div> */}
 
                 <div className="d-flex justify-content-center">
                   <button
