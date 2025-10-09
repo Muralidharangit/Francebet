@@ -265,16 +265,16 @@ const DepositHistory = () => {
                     <div className="d-flex align-items-center justify-content-between position-relative  px-2">
                       {/* Back Button on Left */}
                       <div className="d-flex justify-content-between align-items-center px-2">
-                        {/* <button
+                        <button
                           className="go_back_btn bg-grey"
                           onClick={() => window.history.back()}
                         >
                           <i className="ri-arrow-left-s-line text-white fs-20" />
-                        </button> */}
+                        </button>
                       </div>
 
                       {/* Centered Title */}
-                      <h5 className="m-0 text-white fs-16">
+                      <h5 className="m-0 text-white fs-16 text-center">
                         Ewallet Deposit History
                       </h5>
                       <div className="d-flex justify-content-between align-items-center px-0">

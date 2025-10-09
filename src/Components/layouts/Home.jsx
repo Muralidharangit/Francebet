@@ -697,7 +697,17 @@ function Home() {
                                   alt="Gaming Banner Slide 5"
                                 />
                               </SwiperSlide>
-
+                              <SwiperSlide
+                                onClick={() =>
+                                  navigate(`/filtered-games?type=card`)
+                                }
+                              >
+                                <img
+                                  src="assets/img/slider/first6.png"
+                                  className="w-100 rounded-2"
+                                  alt="Gaming Banner Slide 6"
+                                />
+                              </SwiperSlide>
                               <SwiperSlide
                                 onClick={() =>
                                   navigate(`/filtered-games?type=slots`)
@@ -769,18 +779,6 @@ function Home() {
                                   alt="Gaming Banner Slide 4" xfd
                                 />
                               </SwiperSlide> */}
-
-                              <SwiperSlide
-                                onClick={() =>
-                                  navigate(`/filtered-games?type=card`)
-                                }
-                              >
-                                <img
-                                  src="assets/img/slider/first6.png"
-                                  className="w-100 rounded-2"
-                                  alt="Gaming Banner Slide 6"
-                                />
-                              </SwiperSlide>
 
                               <SwiperSlide
                                 onClick={() =>

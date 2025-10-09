@@ -38,7 +38,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
       const res = await verifyToken();
 
       if (res?.type === "valid" && portalSettings?.auto_deposit === 1) {
-        navigate(routes.transactions.deposit); // ✅ Go to deposit
+        navigate(routes.transactions.paymentMethod); // ✅ Go to deposit
       } else if (res?.type === "valid" && portalSettings?.auto_deposit !== 1) {
         toast.error(
           "Deposits are temporarily unavailable. Please reach out to the support team.",

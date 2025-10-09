@@ -183,7 +183,12 @@ const SearchTopGames = () => {
   useEffect(() => {
     fetchAllGames();
   }, []);
-
+  useEffect(() => {
+    if (sessionStorage.getItem("refreshTopGames") === "1") {
+      sessionStorage.removeItem("refreshTopGames"); // clear first to avoid loops
+      window.location.reload(); // hard refresh once
+    }
+  }, []);
   useEffect(() => {
     const fixedSearchTerm = searchTerm.trim();
 
@@ -371,6 +376,7 @@ const SearchTopGames = () => {
     }
 
     const token = localStorage.getItem("token");
+    sessionStorage.setItem("refreshTopGames", "1"); // 🔁 ask TopGames to reload once
 
     try {
       setIsLaunchingGame(true);
@@ -382,7 +388,8 @@ const SearchTopGames = () => {
         )}/${game.uuid}`,
         {
           params: {
-            return_url: `${window.location.origin}/all-games?is_mobile=${isMobileParam}`,
+            // return_url: `${window.location.origin}/all-games?is_mobile=${isMobileParam}`,
+            return_url: `${window.location.origin}/top-games`,
           },
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -669,26 +676,33 @@ const SearchTopGames = () => {
             <div className="max-1250 mx-auto">
               <div>
                 {showFullScreenGame && selectedGameUrl ? (
-                  <div
-                    className="iframe-container"
-                    style={{
-                      position: "fixed",
-                      top: "0px",
-                      left: 0,
-                      width: "100vw",
-                      height: "100vh",
-                      backgroundColor: "#000",
-                      zIndex: 9999,
-                    }}
-                  >
-                    <iframe
-                      ref={iframeRef}
-                      src={selectedGameUrl}
-                      title="Game"
-                      style={{ width: "100%", height: "100%", border: "none" }}
-                      allowFullScreen
-                    />
-                  </div>
+                  <>
+                    <button>Back</button>
+                    <div
+                      className="iframe-container"
+                      style={{
+                        position: "fixed",
+                        top: "0px",
+                        left: 0,
+                        width: "100vw",
+                        height: "100vh",
+                        backgroundColor: "#000",
+                        zIndex: 9999,
+                      }}
+                    >
+                      <iframe
+                        ref={iframeRef}
+                        src={selectedGameUrl}
+                        title="Game"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          border: "none",
+                        }}
+                        allowFullScreen
+                      />
+                    </div>
+                  </>
                 ) : (
                   <>
                     {/* 🔍 Search Bar */}
@@ -1074,7 +1088,7 @@ const SearchTopGames = () => {
                                                 <img
                                                   src={
                                                     game.image ||
-                                                    "/assets/img/placeholder.png"
+                                                    "/assets/img/play_now.png"
                                                   }
                                                   className="game-card-img"
                                                   alt={game.name}
@@ -1129,7 +1143,7 @@ const SearchTopGames = () => {
                                                   <img
                                                     src={
                                                       game.image ||
-                                                      "/assets/img/placeholder.png"
+                                                      "/assets/img/play_now.png"
                                                     }
                                                     className="game-card-img"
                                                     alt={game.name}
@@ -1223,7 +1237,7 @@ const SearchTopGames = () => {
                                           <img
                                             src={
                                               game.image ||
-                                              "/assets/img/placeholder.png"
+                                              "/assets/img/play_now.png"
                                             }
                                             className="w-100 m-0"
                                             alt={game.name}
@@ -1299,7 +1313,6 @@ const SearchTopGames = () => {
               )} */}
               <div style={{ marginTop: "100px" }}></div>
               <Footer />
-            
             </div>
           </div>
         </div>

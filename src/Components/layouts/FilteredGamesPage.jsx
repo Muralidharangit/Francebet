@@ -480,7 +480,7 @@ const FilteredGamesPage = () => {
                                           <img
                                             src={
                                               game.image ||
-                                              "/assets/img/placeholder.png"
+                                              "/assets/img/play_now.png"
                                             }
                                             className="game-card-img"
                                             alt={game.name}
@@ -525,7 +525,7 @@ const FilteredGamesPage = () => {
                                             <img
                                               src={
                                                 game.image ||
-                                                "/assets/img/placeholder.png"
+                                                "/assets/img/play_now.png"
                                               }
                                               className="game-card-img"
                                               alt={game.name}

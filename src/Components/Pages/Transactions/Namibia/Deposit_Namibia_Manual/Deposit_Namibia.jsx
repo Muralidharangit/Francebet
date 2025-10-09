@@ -10,7 +10,8 @@ function Deposit() {
   const [selectedAmount, setSelectedAmount] = useState(""); // 🟣 Add this line
   const [paymentSelectedMethod, setPaymentSelectedMethod] = useState(""); // 🟣 Add this line
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
+  // const [selectedAmount, setSelectedAmount] = useState("");
+  const [isAmountValid, setIsAmountValid] = useState(false);
   const [depositFormData, setDepositFormData] = useState({
     amount: "", // selected in Step 1
     paymentSelectedMethod: "", // selected in Step 2
@@ -28,6 +29,7 @@ function Deposit() {
           amount={selectedAmount}
           setAmount={setSelectedAmount}
           count={4}
+          onValidityChange={setIsAmountValid}
         />
       ),
     },
@@ -194,10 +196,24 @@ function Deposit() {
                                   )}
 
                                   {hasNext && (
+                                    // <button
+                                    //   className="btn btn-light next"
+                                    //   onClick={goNext}
+                                    //   disabled={nextDisabled}
+                                    // >
+                                    //   Continue{" "}
+                                    //   <i className="fas fa-angle-right" />
+                                    // </button>
+
                                     <button
                                       className="btn btn-light next"
                                       onClick={goNext}
-                                      disabled={nextDisabled}
+                                      disabled={
+                                        (step.id === "step1" &&
+                                          !isAmountValid) ||
+                                        (step.id === "step2" &&
+                                          !paymentSelectedMethod)
+                                      }
                                     >
                                       Continue{" "}
                                       <i className="fas fa-angle-right" />
