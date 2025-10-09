@@ -189,6 +189,27 @@ const DepositMethod = () => {
     console.log("Unhandled method:", method);
   }
 
+  // Put this helper above your component (or in a utils file)
+  const getMethodIcon = (name = "") => {
+    const n = name.toLowerCase().trim();
+
+    // exact/regex matches in priority order
+    if (/manual deposit .*india/i.test(name))
+      return "assets/img/cash-payment_img.png";
+    if (/manual deposit .*namibia/i.test(name))
+      return "assets/img/cash-payment_img.png";
+
+    if (n.includes("easy wallet")) return "assets/img/wallet.png"; // easy wallet deposit
+    if (n.includes("blue wallet")) return "assets/img/blue_wallet.png"; // blue wallet deposit
+    if (n.includes("nedbank") && n.includes("wallet"))
+      return "assets/img/mobile-payment.png"; // nedbank wallet deposit
+    if (n.includes("access money") && n.includes("wallet"))
+      return "assets/img/coin_1.png"; // access money wallet deposit
+    if (n.includes("easypay")) return "assets/img/easypay.png"; // easypay deposit - namibia
+
+    return "assets/img/wallet_img.png"; // default
+  };
+
   /* ---------------- UI ---------------- */
   return (
     <>
@@ -249,36 +270,63 @@ const DepositMethod = () => {
                                     .toLowerCase()
                                     .replace(/[^a-z0-9]+/g, " ")
                                     .trim();
-                                const nk = norm(title);
+                                const nk = norm(title); // lowercases + trims
 
+                                const tx = routes?.transactions ?? {};
+
+                                // 🔎 robust matchers to avoid substring collisions
                                 const isManual = nk.includes("manual");
                                 const isNamibia = nk.includes("namibia");
+                                const isEasyWallet =
+                                  /(?:^|\b)easy[-\s]?wallet\b/.test(nk);
+                                const isBlueWallet =
+                                  /(?:^|\b)blue[-\s]?wallet\b/.test(nk);
                                 const isEwallet =
-                                  nk.includes("ewallet") ||
-                                  nk.includes("e wallet");
-                                const isApay =
-                                  nk.includes("apay") ||
-                                  nk.includes("a pay") ||
-                                  nk.includes("easypay") ||
-                                  nk.includes("easy pay");
+                                  /\bewallet\b|(?:^|\b)e[-\s]?wallet\b/.test(
+                                    nk
+                                  );
+                                const isNedBank =
+                                  /\bnedbank \b|(?:^|\b)e[-\s]?wallet\b/.test(
+                                    nk
+                                  );
+                                const isAccessMoney =
+                                  /\baccess \b|(?:^|\b)e[-\s]?money\b/.test(nk);
+                                const isApay = /\b(easypay)\b/.test(nk);
 
-                                // History route selection:
-                                // 1) Manual -> manual history (or your manual-specific history)
-                                // 2) E-Wallet -> ewallet history (fallback to general history if not defined)
-                                // 3) A-Pay or anything else -> general deposit history
-                                const perCardHistoryRoute = isManual
-                                  ? routes.transactions.manual_deposit_history
-                                  : isEwallet
-                                  ? routes.transactions
-                                      .ewallet_deposit_history ??
-                                    routes.transactions.depositHistory
-                                  : isApay || isNamibia
-                                  ? routes.transactions.kazang_deposit_history
-                                  : routes.transactions.depositHistory;
+                                let perCardHistoryRoute;
 
-                                // const disabled = isBusy || m?.disabled === true;
-                                const disabled =
-                                  isBusy || m?.disabled === true || isApay; // <- disable for A-Pay
+                                if (isManual) {
+                                  perCardHistoryRoute =
+                                    tx.manual_deposit_history ??
+                                    tx.depositHistory;
+                                } else if (isEasyWallet) {
+                                  // ✅ specific before generic
+                                  perCardHistoryRoute =
+                                    tx.easy_wallet_history ?? tx.depositHistory;
+                                } else if (isBlueWallet) {
+                                  // ✅ specific before generic
+                                  perCardHistoryRoute =
+                                    tx.blue_wallet_history ?? tx.depositHistory;
+                                } else if (isEwallet) {
+                                  perCardHistoryRoute =
+                                    tx.ewallet_deposit_history ??
+                                    tx.depositHistory;
+                                } else if (isNedBank) {
+                                  perCardHistoryRoute =
+                                    tx.nedbank_wallet_history ??
+                                    tx.depositHistory;
+                                } else if (isAccessMoney) {
+                                  perCardHistoryRoute =
+                                    tx.access_money_wallet_history ??
+                                    tx.depositHistory;
+                                } else if (isApay || isNamibia) {
+                                  perCardHistoryRoute =
+                                    tx.kazang_deposit_history ??
+                                    tx.depositHistory;
+                                } else {
+                                  perCardHistoryRoute = tx.depositHistory;
+                                }
+                                console.log(perCardHistoryRoute);
                                 return (
                                   <div
                                     className="col-12 col-lg-6 col-xl-4"
@@ -287,55 +335,33 @@ const DepositMethod = () => {
                                     <Link to={perCardHistoryRoute}>
                                       <div className="p-3 rounded border h-100 d-flex flex-column">
                                         <div className="d-flex justify-content-between">
-                                          {isManual ? (
-                                            <div className="card_bx">
-                                              <img
-                                                src="assets/img/cash-payment_img.png"
-                                                alt={title || "Method"}
-                                                style={{
-                                                  width: 50,
-                                                  height: 50,
-                                                  objectFit: "contain",
-                                                }}
-                                              />
-                                            </div>
-                                          ) : (
-                                            <img
-                                              src="assets/img/wallet_img.png"
-                                              alt={title || "Method"}
-                                              style={{
-                                                width: 60,
-                                                height: 50,
-                                                objectFit: "contain",
-                                              }}
-                                            />
-                                          )}
-
                                           <img
-                                            alt="bet_history"
+                                            src={getMethodIcon(m.name)}
+                                            alt={m.name || "Method"}
                                             style={{
-                                              width: 40,
-                                              height: 30,
+                                              width: 50,
+                                              height: 50,
                                               objectFit: "contain",
                                             }}
-                                            src="assets/img/icons/history.png"
                                           />
+
+                                          <Link to={perCardHistoryRoute}>
+                                            <img
+                                              alt="bet_history"
+                                              style={{
+                                                width: 40,
+                                                height: 30,
+                                                objectFit: "contain",
+                                              }}
+                                              src="assets/img/icons/history.png"
+                                            />
+                                          </Link>
                                         </div>
 
                                         <div className="d-flex align-items-center gap-2 mb-2">
-                                          {m.logo && (
-                                            <img
-                                              src={m.logo}
-                                              alt={title || "Method"}
-                                              style={{
-                                                width: 36,
-                                                height: 36,
-                                                objectFit: "contain",
-                                              }}
-                                            />
-                                          )}
                                           <strong className="fs-4 text-white">
-                                            {title}
+                                            {/* {title} */}
+                                            {m.display_name}
                                           </strong>
                                         </div>
 
