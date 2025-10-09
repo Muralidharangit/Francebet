@@ -131,7 +131,6 @@ const DepositMethod = () => {
     }
 
     // deposit
-
     if (key.includes("manual") && key.includes("india")) {
       navigate("/manual-deposit-india");
       setHistoryRoute(routes.transactions.manual_deposit_history);
@@ -261,7 +260,7 @@ const DepositMethod = () => {
                   <div className="row px-2">
                     {/* Title Row */}
                     <div className="d-flex align-items-center justify-content-between position-relative px-0">
-                      <div className="d-flex justify-content-between align-items-center px-1">
+                      <div className="d-flex justify-content-between align-items-center px-1 mx-2">
                         <button
                           className="go_back_btn bg-grey"
                           onClick={() => window.history.back()}
@@ -270,7 +269,7 @@ const DepositMethod = () => {
                         </button>
                       </div>
 
-                      <h5 className="position-absolute start-50 translate-middle-x m-0 text-white fs-16">
+                      <h5 className="position-absolute start-50 translate-middle-x m-0 text-white fs-16 text-center">
                         Deposit Payment Method
                       </h5>
                     </div>
@@ -434,7 +433,7 @@ const DepositMethod = () => {
                                       </div>
 
                                       {/* Descriptions */}
-                                      {isManual ? (
+                                      {/* {isManual ? (
                                         <p style={{ color: "#b1abab" }}>
                                           Manual Payment — transfer via
                                           bank/UPI/cash and upload receipt.
@@ -455,13 +454,18 @@ const DepositMethod = () => {
                                         <p style={{ color: "#b1abab" }}>
                                           Select to continue.
                                         </p>
-                                      )}
+                                      )} */}
 
-                                      {m.description && (
+                                      {m.description ? (
                                         <p className="text-muted mb-2">
                                           {m.description}
                                         </p>
+                                      ) : (
+                                        <p style={{ color: "#b1abab" }}>
+                                          Select to continue.
+                                        </p>
                                       )}
+
                                       {m.limits && (
                                         <small className="text-muted">
                                           Min: {m.limits.min} • Max:{" "}

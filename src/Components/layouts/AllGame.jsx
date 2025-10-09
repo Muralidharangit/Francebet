@@ -1224,7 +1224,7 @@ const SearchTopGames = () => {
                                           <img
                                             src={
                                               game.image ||
-                                              "/assets/img/placeholder.png"
+                                              "/assets/img/play_now.png"
                                             }
                                             className="w-100 m-0"
                                             alt={game.name}
