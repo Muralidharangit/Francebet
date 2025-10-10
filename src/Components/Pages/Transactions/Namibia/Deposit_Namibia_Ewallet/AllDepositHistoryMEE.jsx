@@ -243,7 +243,7 @@ const DepositMethod = () => {
                     </div>
 
                     {/* Card */}
-                    <div className="card  account_input-textbox-container">
+                    <div className="card  account_input-textbox-container border-0">
                       <div className="card-body  py-4 pb-5">
                         {loading && <p className="text-white text-center">Loading…</p>}
                         {err && <p className="text-danger mb-3">{err}</p>}
@@ -386,7 +386,7 @@ const DepositMethod = () => {
                                         )} */}
 
                                         {m.description ? (
-                                          <p className="text-muted mb-2">
+                                          <p className="text-grey mb-2" style={{ color: "#b1abab" }}>
                                             {m.description}
                                           </p>
                                         ) : (
