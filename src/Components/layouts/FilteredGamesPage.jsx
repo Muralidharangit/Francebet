@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import {
   useSearchParams,
   useNavigate,
@@ -26,6 +26,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { getIsMobileParam } from "../../hooks/homePageApi";
+import AuthContext from "../../Auth/AuthContext";
 
 const FilteredGamesPage = () => {
   const [games, setGames] = useState([]);
@@ -54,6 +55,8 @@ const FilteredGamesPage = () => {
   const [totalPages, setTotalPages] = useState(1);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   // ===== SEARCH via hook (unchanged) =====
+
+  const { fetchUser, user } = useContext(AuthContext);
   const {
     data: searchData,
     isLoading: isSearchLoading,
@@ -241,72 +244,169 @@ const FilteredGamesPage = () => {
   }, [showFullScreenGame, selectedGameUrl, filterType, queryClient]);
 
   // ====== GAME LAUNCH (unchanged) ======
-  const handleGameClick = async (game) => {
-    if (!game.provider || !game.name || !game.uuid) {
-      toast.error("Missing game info.");
-      return;
-    }
+  // const handleGameClick = async (game) => {
+  //   if (!game.provider || !game.name || !game.uuid) {
+  //     toast.error("Missing game info.");
+  //     return;
+  //   }
 
-    const token = localStorage.getItem("token");
+  //   const token = localStorage.getItem("token");
 
-    try {
-      setIsLaunchingGame(true);
+  //   try {
+  //     setIsLaunchingGame(true);
 
-      // const response = await axios.get(
-      //   `${BASE_URL}/player/${game.provider}/launch/${encodeURIComponent(
-      //     game.name
-      //   )}/${game.uuid}`,
-      //   {
-      //     params: {
-      //       return_url: `${window.location.origin}/all-games?is_mobile=1`,
-      //       has_lobby: game.has_lobby,
-      //       has_tables: game.has_tables,
-      //     },
-      //     headers: { Authorization: `Bearer ${token}` },
-      //   }
-      // );
-      const isMobileParam = getIsMobileParam();
+  //     // const response = await axios.get(
+  //     //   `${BASE_URL}/player/${game.provider}/launch/${encodeURIComponent(
+  //     //     game.name
+  //     //   )}/${game.uuid}`,
+  //     //   {
+  //     //     params: {
+  //     //       return_url: `${window.location.origin}/all-games?is_mobile=1`,
+  //     //       has_lobby: game.has_lobby,
+  //     //       has_tables: game.has_tables,
+  //     //     },
+  //     //     headers: { Authorization: `Bearer ${token}` },
+  //     //   }
+  //     // );
+  //     const isMobileParam = getIsMobileParam();
+  //     // inside component
 
-      const response = await axios.get(
-        `${BASE_URL}/player/${game.provider}/launch/${encodeURIComponent(
-          game.name
-        )}/${game.uuid}`,
-        {
-          params: {
-            return_url: `${window.location.origin}/all-games?is_mobile=${isMobileParam}`,
-            has_lobby: game.has_lobby,
-            has_tables: game.has_tables,
-          },
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+  //     const returnUrl = `${window.location.origin}${location.pathname}${
+  //       location.search || ""
+  //     }`;
 
-      const gameUrl = response.data?.game?.gameUrl || response.data?.game_url;
-      if (gameUrl) {
-        sessionStorage.setItem("prevPage", location.pathname + location.search);
-        window.history.pushState(
-          { isGameOpen: true },
-          "",
-          window.location.href
-        );
-        setSelectedGameUrl(gameUrl);
-        setShowFullScreenGame(true);
-      } else {
-        toast.error("Failed to get game URL.");
-      }
-    } catch (error) {
-      setIsLaunchingGame(false);
-      const errMsg = error.response?.data?.message;
-      if (errMsg === "Unauthenticated." || error.response?.status === 401) {
-        toast.error("Please login to jump into the Game World! 🎮🚀");
-        localStorage.removeItem("token");
-        setTimeout(() => navigate("/login"), 3000);
-        return;
-      }
-      console.error("Error launching game:", error);
-      toast.error("Game launch failed. Try again later.");
-    }
-  };
+  //     const response = await axios.get(
+  //       `${BASE_URL}/player/${game.provider}/launch/${encodeURIComponent(
+  //         game.name
+  //       )}/${game.uuid}`,
+  //       {
+  //         params: {
+  //           return_url: returnUrl,
+  //           has_lobby: game.has_lobby,
+  //           has_tables: game.has_tables,
+  //         }, // ⬅️ use the exact current URL
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       }
+  //     );
+
+  //     // const response = await axios.get(
+  //     //   `${BASE_URL}/player/${game.provider}/launch/${encodeURIComponent(
+  //     //     game.name
+  //     //   )}/${game.uuid}`,
+  //     //   {
+  //     //     params: {
+  //     //       // return_url: `${window.location.origin}/all-games?is_mobile=${isMobileParam}`,
+  //     //       return_url: `${window.location.origin}/top-games`,
+  //     //       has_lobby: game.has_lobby,
+  //     //       has_tables: game.has_tables,
+  //     //     },
+  //     //     headers: { Authorization: `Bearer ${token}` },
+  //     //   }
+  //     // );
+
+  //     const gameUrl = response.data?.game?.gameUrl || response.data?.game_url;
+  //     if (gameUrl) {
+  //       sessionStorage.setItem("prevPage", location.pathname + location.search);
+  //       window.history.pushState(
+  //         { isGameOpen: true },
+  //         "",
+  //         window.location.href
+  //       );
+  //       setSelectedGameUrl(gameUrl);
+  //       setShowFullScreenGame(true);
+  //     } else {
+  //       toast.error("Failed to get game URL.");
+  //     }
+  //   } catch (error) {
+  //     setIsLaunchingGame(false);
+  //     const errMsg = error.response?.data?.message;
+  //     if (errMsg === "Unauthenticated." || error.response?.status === 401) {
+  //       toast.error("Please login to jump into the Game World! 🎮🚀");
+  //       localStorage.removeItem("token");
+  //       setTimeout(() => navigate("/login"), 3000);
+  //       return;
+  //     }
+  //     console.error("Error launching game:", error);
+  //     toast.error("Game launch failed. Try again later.");
+  //   }
+  // };
+  const RETURN_URL_KEY = "returnUrl";
+
+  // const buildReturnUrl = (location) => {
+  //   // If you use HashRouter, prefer: return window.location.href;
+  //   const base = import.meta?.env?.BASE_URL || process.env.PUBLIC_URL || "";
+  //   const baseTrim = base.replace(/\/$/, ""); // e.g. '/app'
+  //   const path = `${baseTrim}${location.pathname}${location.search || ""}`;
+  //   return new URL(path, window.location.origin).toString();
+  // };
+
+  // const handleGameClick = async (game) => {
+  //   if (!game?.provider || !game?.name || !game?.uuid) {
+  //     toast.error("Missing game info.");
+  //     return;
+  //   }
+
+  //   const token = localStorage.getItem("token");
+  //   if (!token) {
+  //     toast.error("Please login to jump into the Game World! 🎮🚀");
+  //     navigate("/login");
+  //     return;
+  //   }
+
+  //   try {
+  //     setIsLaunchingGame(true);
+
+  //     // Build & save exact return URL for later (Back / popstate / iframe return)
+  //     const returnUrl = buildReturnUrl(location);
+  //     sessionStorage.setItem(RETURN_URL_KEY, returnUrl);
+
+  //     const response = await axios.get(
+  //       `${BASE_URL}/player/${game.provider}/launch/${encodeURIComponent(
+  //         game.name
+  //       )}/${game.uuid}`,
+  //       {
+  //         params: {
+  //           return_url: returnUrl,
+  //           ...(game.has_lobby !== undefined && { has_lobby: game.has_lobby }),
+  //           ...(game.has_tables !== undefined && {
+  //             has_tables: game.has_tables,
+  //           }),
+  //         },
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       }
+  //     );
+
+  //     const gameUrl = response.data?.game?.gameUrl || response.data?.game_url;
+  //     if (gameUrl) {
+  //       // (optional) keep this if you use it elsewhere
+  //       sessionStorage.setItem("prevPage", location.pathname + location.search);
+
+  //       // Push a state so browser Back triggers your popstate handler
+  //       window.history.pushState(
+  //         { isGameOpen: true },
+  //         "",
+  //         window.location.href
+  //       );
+
+  //       setSelectedGameUrl(gameUrl);
+  //       setShowFullScreenGame(true); // keep spinner until iframe onLoad sets it false
+  //     } else {
+  //       setIsLaunchingGame(false); // <-- stop overlay here too
+  //       toast.error("Failed to get game URL.");
+  //     }
+  //   } catch (error) {
+  //     setIsLaunchingGame(false);
+  //     const errMsg = error.response?.data?.message;
+  //     if (errMsg === "Unauthenticated." || error.response?.status === 401) {
+  //       toast.error("Please login to jump into the Game World! 🎮🚀");
+  //       localStorage.removeItem("token");
+  //       setTimeout(() => navigate("/login"), 3000);
+  //       return;
+  //     }
+  //     console.error("Error launching game:", error);
+  //     toast.error("Game launch failed. Try again later.");
+  //   }
+  // };
 
   // ====== Auto search (your existing code) ======
   const handleAutoSearch = async (fixedSearchTerm, pageNo = 1) => {
@@ -367,6 +467,137 @@ const FilteredGamesPage = () => {
     }
   };
 
+  // back btn setup starts
+  const buildReturnUrl = (location) => {
+    const base = import.meta?.env?.BASE_URL || process.env.PUBLIC_URL || "";
+    const baseTrim = base.replace(/\/$/, "");
+    const path = `${baseTrim}${location.pathname}${location.search || ""}`;
+    return new URL(path, window.location.origin).toString();
+  };
+
+  // back btn / overlay state (OUTSIDE the function)
+  const [showModal, setShowModal] = useState(false);
+  const [iframeLoaded, setIframeLoaded] = useState(false);
+  const [iframeError, setIframeError] = useState(false);
+  // const iframeRef = useRef(null);
+
+  const handleConfirm = async () => {
+    setShowModal(false);
+    setIsLaunchingGame(false);
+    setShowFullScreenGame(false);
+    setSelectedGameUrl("");
+    await fetchUser(user?.token);
+    // go back to saved returnUrl
+    const target = sessionStorage.getItem(RETURN_URL_KEY) || "/";
+    window.location.replace(target);
+  };
+
+  const handleCancel = () => setShowModal(false);
+
+  const handleIframeLoad = () => {
+    setIframeLoaded(true);
+    setIsLaunchingGame(false);
+
+    const el = iframeRef.current;
+    if (!el) return;
+
+    try {
+      // if same-origin (provider redirected to our app)
+      const href = el.contentWindow.location.href;
+      if (href.startsWith(window.location.origin)) {
+        setShowFullScreenGame(false);
+        setSelectedGameUrl("");
+        setIframeError(false);
+        setIframeLoaded(false);
+        const target = sessionStorage.getItem(RETURN_URL_KEY) || href;
+        window.location.replace(target);
+      }
+    } catch {
+      // still cross-origin; ignore
+    }
+  };
+
+  // ---- keep popstate too (optional but nice) ----
+  useEffect(() => {
+    const onPop = () => {
+      setShowFullScreenGame(false);
+      setSelectedGameUrl("");
+      setIsLaunchingGame(false);
+      const target = sessionStorage.getItem(RETURN_URL_KEY) || "/";
+      window.location.replace(target);
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+
+  // ====== GAME LAUNCH (ENTIRE function body stays together) ======
+  const handleGameClick = async (game) => {
+    if (!game?.provider || !game?.name || !game?.uuid) {
+      toast.error("Missing game info.");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Please login to jump into the Game World! 🎮🚀");
+      navigate("/login");
+      return;
+    }
+
+    try {
+      setIsLaunchingGame(true);
+
+      const returnUrl = buildReturnUrl(location);
+      sessionStorage.setItem(RETURN_URL_KEY, returnUrl);
+
+      const response = await axios.get(
+        `${BASE_URL}/player/${game.provider}/launch/${encodeURIComponent(
+          game.name
+        )}/${game.uuid}`,
+        {
+          params: {
+            return_url: returnUrl,
+            ...(game.has_lobby !== undefined && { has_lobby: game.has_lobby }),
+            ...(game.has_tables !== undefined && {
+              has_tables: game.has_tables,
+            }),
+          },
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const gameUrl = response.data?.game?.gameUrl || response.data?.game_url;
+      if (gameUrl) {
+        // (optional)
+        sessionStorage.setItem("prevPage", location.pathname + location.search);
+
+        // push state so Back triggers our popstate handler
+        window.history.pushState(
+          { isGameOpen: true },
+          "",
+          window.location.href
+        );
+
+        setSelectedGameUrl(gameUrl);
+        setShowFullScreenGame(true);
+      } else {
+        setIsLaunchingGame(false);
+        toast.error("Failed to get game URL.");
+      }
+    } catch (error) {
+      setIsLaunchingGame(false);
+      const errMsg = error.response?.data?.message;
+      if (errMsg === "Unauthenticated." || error.response?.status === 401) {
+        toast.error("Please login to jump into the Game World! 🎮🚀");
+        localStorage.removeItem("token");
+        setTimeout(() => navigate("/login"), 3000);
+        return;
+      }
+      console.error("Error launching game:", error);
+      toast.error("Game launch failed. Try again later.");
+    }
+  };
+  // back btn setup Ends
   return (
     <>
       {isLaunchingGame && (
@@ -689,6 +920,7 @@ const FilteredGamesPage = () => {
             </div>
             {showFullScreenGame && selectedGameUrl && (
               <div
+                className="iframe-container"
                 style={{
                   position: "fixed",
                   top: 0,
@@ -699,51 +931,122 @@ const FilteredGamesPage = () => {
                   zIndex: 9999,
                 }}
               >
-                {/* <nav className="navbar px-2">
-            <div className="container-fluid p-0">
-              <div className="d-flex justify-content-between w-100 align-items-center">
+                {/* Navbar only appears if iframe loaded successfully */}
+                {iframeLoaded && !iframeError && (
+                  <nav
+                    className="navbar py-1 navbar-dark bg-black sticky-top shadow-sm d-flex align-items-center"
+                    style={{ height: "50px" }}
+                  >
+                    <div className="container-fluid d-flex align-items-center">
+                      <button
+                        className="btn btn-index w-100 deposit-btn text-white py-2"
+                        style={{ background: "#292524" }}
+                        onClick={() => setShowModal(true)}
+                      >
+                        Back
+                      </button>
+                    </div>
+                  </nav>
+                )}
 
-                <div className="d-flex align-items-center">
-                  <button
-                    className="btn text-white p-0 me-2"
-                    onClick={() => {
-                      setShowFullScreenGame(false);
-                      setSelectedGameUrl(null);
-                      navigate("/all-games?is_mobile=1");
+                {/* Iframe or Error Message */}
+                <div
+                  className="flex-grow-1 d-flex justify-content-center align-items-center"
+                  style={{ height: "calc(100vh - 50px)" }}
+                >
+                  {!iframeError ? (
+                    <iframe
+                      ref={iframeRef}
+                      src={selectedGameUrl}
+                      title="Game"
+                      allowFullScreen
+                      // onLoad={() => setIframeLoaded(true)}
+                      onError={() => setIframeError(true)}
+                      onLoad={handleIframeLoad}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        border: "none",
+                      }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        color: "red",
+                        fontSize: "1.5rem",
+                        textAlign: "center",
+                      }}
+                    >
+                      Game not visible
+                    </div>
+                  )}
+                </div>
+
+                {/* Modal */}
+                {showModal && (
+                  <div
+                    className="modal-backdrop d-flex justify-content-center align-items-center"
+                    style={{
+                      backgroundColor: "rgba(0,0,0,0.8)",
+                      position: "fixed",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: "100%",
+                      zIndex: 99999,
                     }}
                   >
-                    <i className="fa-solid fa-arrow-left fs-5"></i>
-                  </button>
-                </div>
-                <div
-                  className="text-center"
-                  style={{ position: "absolute", left: 0, right: 0 }}
-                >
-                  <div
-                    className="navbar-brand m-0 w-100"
-                    role="button"
-                    onClick={() => navigate(-1)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <img
-                      src={Images.Favlogo}
-                      alt="favicon"
-                      width="100"
-                      className="mx-auto "
-                    />
+                    <div
+                      className="modal-dialog modal-dialog-centered m-2"
+                      style={{ maxWidth: "400px", color: "white" }}
+                    >
+                      <div
+                        className="modal-content text-center p-4"
+                        style={{
+                          borderRadius: "1rem",
+                          background:
+                            "linear-gradient(145deg, #0f0f0f, #1a1a1a)",
+                          border: "1px solid #ff0055",
+                          boxShadow: "0 0 20px #ff0055ae",
+                        }}
+                      >
+                        <div className="modal-header border-0 justify-content-end">
+                          <button
+                            type="button"
+                            className="btn-close btn-close-white"
+                            onClick={handleCancel}
+                          />
+                        </div>
+
+                        <div className="modal-body">
+                          <h5 className="modal-title fs-2 text-warning mb-3">
+                            Go Back?
+                          </h5>
+                          <p className="fs-5 text-light">
+                            Are you sure you want to leave this game?
+                          </p>
+                        </div>
+
+                        <div className="modal-footer border-0 justify-content-center gap-2">
+                          <button
+                            type="button"
+                            className="btn btn-index w-100 deposit-btn text-white py-2"
+                            onClick={handleConfirm}
+                          >
+                            OK
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-index w-100 deposit-btn text-white py-2"
+                            onClick={handleCancel}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <div style={{ width: "35px" }}></div>
-              </div>
-            </div>
-          </nav> */}
-                <iframe
-                  ref={iframeRef}
-                  src={selectedGameUrl}
-                  title="Game"
-                  style={{ width: "100%", height: "100%", border: "none" }}
-                  allowFullScreen
-                />
+                )}
               </div>
             )}
             <div className="" style={{ marginTop: "100px" }}></div>

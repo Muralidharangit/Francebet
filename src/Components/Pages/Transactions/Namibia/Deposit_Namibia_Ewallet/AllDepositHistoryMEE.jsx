@@ -220,7 +220,7 @@ const DepositMethod = () => {
         {/* Sidebar */}
         <Sidebar />
 
-        <div className="main-panel">
+        <div className="main-panel overflow-hidden">
           <div className="content-wrapper">
             <div className="max-1250 mx-auto">
               <div className="h-100">
@@ -243,9 +243,9 @@ const DepositMethod = () => {
                     </div>
 
                     {/* Card */}
-                    <div className="card  bg_light_grey account_input-textbox-container mt-5">
-                      <div className="card-body py-4 pb-5">
-                        {loading && <p className="text-muted">Loading…</p>}
+                    <div className="card  account_input-textbox-container">
+                      <div className="card-body  py-4 pb-5">
+                        {loading && <p className="text-white text-center">Loading…</p>}
                         {err && <p className="text-danger mb-3">{err}</p>}
                         {!loading && !err && methods.length === 0 && (
                           <p className="text-muted">No methods available.</p>
@@ -329,7 +329,7 @@ const DepositMethod = () => {
                                 console.log(perCardHistoryRoute);
                                 return (
                                   <div
-                                    className="col-12 col-lg-6 col-xl-4"
+                                    className="col-12 col-lg-6 col-xl-4 "
                                     key={key}
                                   >
                                     <Link to={perCardHistoryRoute}>

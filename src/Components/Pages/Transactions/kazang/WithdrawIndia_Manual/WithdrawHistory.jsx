@@ -139,24 +139,24 @@ const WithdrawHistory = () => {
                     <div className="d-flex align-items-center justify-content-between position-relative  px-3">
                       {/* Back Button on Left */}
                       <div className="d-flex justify-content-between align-items-center px-0">
-                        {/* <button
+                        <button
                           className="go_back_btn bg-grey"
                           onClick={() => window.history.back()}
                         >
                           <i className="ri-arrow-left-s-line text-white fs-20" />
-                        </button> */}
+                        </button>
                       </div>
 
                       {/* Centered Title */}
                       <h5 className="m-0 text-white fs-16">Withdraw History</h5>
-                      <div className="d-flex justify-content-between align-items-center px-3">
+                      {/* <div className="d-flex justify-content-between align-items-center px-3">
                         <button
                           className="go_back_btn bg-grey"
                           onClick={fetchWithdrawHistory}
                         >
                           <i class="fa-solid fa-arrows-rotate text-white fs-16"></i>
                         </button>
-                      </div>
+                      </div> */}
                     </div>
                     {/* header Ends */}
 

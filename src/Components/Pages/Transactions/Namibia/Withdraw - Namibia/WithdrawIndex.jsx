@@ -70,7 +70,7 @@ const WithdrawIndex = () => {
         {/* Sidebar Nav Starts */}
         <Sidebar />
         {/* Sidebar Nav Ends */}
-        <div className="main-panel">
+        <div className="main-panel overflow-hidden">
           <div className="content-wrapper">
             <div className="max-1250 mx-auto">
               <div className="h-100">
@@ -87,7 +87,7 @@ const WithdrawIndex = () => {
                     {/* header Starts */}
                     <div className="d-flex align-items-center justify-content-between position-relative  px-0">
                       {/* Back Button on Left */}
-                      <div className="d-flex justify-content-between align-items-center px-0">
+                      <div className="d-flex justify-content-between align-items-center px-2">
                         <button
                           className="go_back_btn bg-grey"
                           onClick={() => window.history.back()}
@@ -104,7 +104,7 @@ const WithdrawIndex = () => {
                     {/* header Ends */}
 
                     {/* test Starts */}
-                    <div className="container mt-4 px-0">
+                    <div className="container mt-4 px-2">
                       <div className="wizard my-5">
                         <ul className="nav nav-tabs justify-content-center">
                           {steps.map((step, index) => (
