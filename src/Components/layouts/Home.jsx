@@ -111,17 +111,31 @@ function Home() {
     }
   }, []);
 
+  // useEffect(() => {
+  //   if (location.state?.showLoginSuccess) {
+  //     toast.success("Login successful! 🎉", {
+  //       toastId: "login-success",
+  //       position: "top-right",
+  //       autoClose: 3000,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       onClose: () => {
+  //         // Navigate after toast is closed automatically
+  //         navigate(location.pathname, { replace: true, state: {} });
+  //       },
+  //     });
+  //   }
+  // }, [location, navigate]);
   useEffect(() => {
     if (location.state?.showLoginSuccess) {
       toast.success("Login successful! 🎉", {
         toastId: "login-success",
-        position: "top-right",
         autoClose: 3000,
-        closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
         onClose: () => {
-          // Navigate after toast is closed automatically
+          // runs if user clicks X OR after timeout
           navigate(location.pathname, { replace: true, state: {} });
         },
       });
@@ -630,11 +644,14 @@ function Home() {
                     <p>Launching game, please wait...</p>
                   </div>
                 )}
+
                 <ToastContainer
                   position="top-right"
                   autoClose={5000}
                   theme="dark"
+                  closeButton={<MyClose />}
                 />
+
                 {isLoading ? (
                   <FullPageLoader message="" />
                 ) : (
@@ -2133,3 +2150,13 @@ function Home() {
 }
 
 export default Home;
+
+const MyClose = ({ closeToast }) => (
+  <button
+    onClick={closeToast}
+    
+ className="toaster_close_btn"
+ >
+    ×
+  </button>
+);

@@ -1,12 +1,15 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import routes from "../routes/route";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import StickyHeader from "../layouts/Header/Header";
 import Footer from "../layouts/footer/Footer";
 import AuthContext from "../../Auth/AuthContext";
+import { Toast, ToastContainer } from "react-bootstrap";
+import "bootstrap/dist/css/bootstrap.min.css";
 
 const Menu = () => {
   const { user, logout } = useContext(AuthContext);
+  const [show, setShow] = useState(false);
   const navigate = useNavigate(); // useNavigate hook for redirection
   const handleLogout = async () => {
     await logout(navigate);
@@ -28,6 +31,26 @@ const Menu = () => {
             <i className="ri-close-large-line text-white fs-17" />
           </button> */}
         </div>
+
+        <button className="btn btn-primary" onClick={() => setShow(true)}>
+          Show toast
+        </button>
+
+        <ToastContainer position="top-center" className="p-3">
+          <Toast
+            onClose={() => setShow(false)}
+            show={show}
+            delay={2500}
+            autohide
+            bg="dark"
+          >
+            <Toast.Header closeButton>
+              <strong className="me-auto">Notice</strong>
+            </Toast.Header>
+            <Toast.Body className="text-white">Saved successfully!</Toast.Body>
+          </Toast>
+        </ToastContainer>
+
         <div className="offcanvas-body">
           <NavLink
             to={routes.home}
