@@ -2,7 +2,7 @@ const routes = {
   home: "/",
   games: {
     all: "/all-games",
-    topGames: "/top-games",
+  topGames: "/top-games",
     turbo: "/turbo-games",
     spribe: "/spribe-games",
     providers: "/providers",

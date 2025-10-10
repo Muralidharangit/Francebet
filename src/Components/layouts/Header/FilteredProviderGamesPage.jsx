@@ -193,13 +193,13 @@ const FilteredProviderGamesPage = () => {
         <div className="main-panel">
           <div className="content-wrapper">
             <div className="max-1250 mx-auto">
-              <div className="game-list px-1 container">
+              <div className="game-list px-2 container">
                 <h5 className="text-white text-capitalize my-2">
                   {filterType ? `${filterType} Games` : "Games"}
                 </h5>
 
                 <div className="">
-                  <div className="row">
+                  <div className="row px-2">
                     {loading ? (
                       <p className="text-white text-center">
                         🎮 Loading games...

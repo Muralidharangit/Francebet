@@ -1,6 +1,7 @@
 import { useState } from "react";
 import StickyHeader from "../../../../layouts/Header/Header";
 import Sidebar from "../../../../layouts/Header/Sidebar";
+import Footer from "../../../../layouts/footer/Footer";
 
 export default function DepositMethods() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -211,6 +212,8 @@ export default function DepositMethods() {
             </div>
           </div>
         </div>
+
+        <Footer />
       </div>
     </>
   );

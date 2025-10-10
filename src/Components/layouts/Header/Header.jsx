@@ -165,7 +165,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                       className="navbar-brand m-0 position-relative"
                       to={routes.home}
                     >
-                      <img src={Images.Favlogo} alt="favicon" width="65%" />
+                      <img src={Images.Favlogo} alt="favicon" width="55%" />
                       {/* <Link
                         to={routes.pages.testinginfo}
                         style={{

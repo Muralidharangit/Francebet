@@ -79,7 +79,7 @@ const Sidebar = () => {
               }
             >
               <span className="menu-title">How To Deposit</span>
-              <i className="fi fi-sr-dice-alt menu-icon" />
+              <i className="fi fi-rs-memo-pad menu-icon" />
             </NavLink>
           </li>
 
@@ -102,7 +102,7 @@ const Sidebar = () => {
                 `nav-link ${isActive ? "active" : ""}`
               }
             >
-              <span className="menu-title">Terms and Condition</span>
+              <span className="menu-title">Terms and Conditions</span>
               <i className="fi fi-rs-memo-pad menu-icon" />
             </NavLink>
           </li>
