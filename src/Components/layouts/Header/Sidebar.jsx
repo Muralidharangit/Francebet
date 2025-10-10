@@ -134,14 +134,14 @@ const Sidebar = () => {
           <div className="text-center  bottom-0 w-100 my-3 start-0">
             <div className="icon-social">
               <div className="d-flex justify-content-center  text-white fs-25 gap-3">
-                <Link to={"/"} target="new" className="text-white">
+                <Link to={"/"} className="text-white">
                   <i className="ri-facebook-fill" />
                 </Link>
-                <Link to={"/"} target="new" className="text-white">
+                <Link to={"/"} className="text-white">
                   <i className="ri-instagram-line" />
                 </Link>
 
-                <Link to={"/"} target="new" className="text-white">
+                <Link to={"/"} className="text-white">
                   <i className="ri-twitter-x-line" />
                 </Link>
               </div>

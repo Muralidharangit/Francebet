@@ -163,7 +163,9 @@ const Menu = () => {
                     width={24}
                   />
                   {/* Icon for "LIVE" */}
-                  <span className="mx-3 text-white">Term &amp; Condition</span>
+                  <span className="mx-3 text-white">
+                    Terms &amp; Conditions
+                  </span>
                 </div>
                 {/* <div class="icon-box">
 <i class="ri-arrow-right-s-line text-white"></i>
