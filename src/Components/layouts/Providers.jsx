@@ -187,18 +187,18 @@ const Providers = () => {
 
   return (
     <>
-      {isPageLoading && (
+      {/* {isPageLoading && (
         <div className="text-white text-center my-3 w-100">
           <span className="spinner-border text-light" role="status" />
         </div>
-      )}
+      )} */}
 
       <ToastContainer position="top-right" autoClose={5000} theme="dark" />
 
       {/* header */}
       <StickyHeader onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
 
-      <div className="container-fluid page-body-wrapper">
+      <div className="container-fluid page-body-wrapper position-relative">
         {/* Sidebar */}
         <Sidebar />
 

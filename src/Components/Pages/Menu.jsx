@@ -53,6 +53,20 @@ const Menu = () => {
               </div>
             </div>
           </NavLink>
+
+          <NavLink to={routes.games.providers}>
+            <div className="d-flex align-items-center menu_list_item justify-content-between">
+              <div className="">
+                <img
+                  src="assets/img/SIDEMENU/club.png"
+                  alt="menu"
+                  srcSet=""
+                  width={24}
+                />
+                <span className="mx-3 text-white">Providers</span>
+              </div>
+            </div>
+          </NavLink>
           {/*--accordion--*/}
 
           {/* <div className="accordion accordion_sec" id="accordionExample">
@@ -152,6 +166,28 @@ const Menu = () => {
 */}
               </div>
             </Link>
+
+            {/* how to deposit */}
+            <Link to={routes.transactions.kazang_how_to_deposit}>
+              <div className="d-flex align-items-center menu_list_item justify-content-between">
+                <div>
+                  <img
+                    src="assets/img/SIDEMENU/deposit.png"
+                    alt="deposit"
+                    srcSet=""
+                    width={24}
+                  />
+                  {/* Icon for "Main" */}
+                  <span className="mx-3 text-white">How to Deposit</span>
+                </div>
+                {/* 
+<div class="icon-box">
+<i class="ri-arrow-right-s-line text-white"></i>
+</div>
+*/}
+              </div>
+            </Link>
+
             {/* LIVE */}
             <Link to={routes.pages.terms}>
               <div className="d-flex align-items-center menu_list_item justify-content-between">
