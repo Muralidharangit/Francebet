@@ -83,23 +83,23 @@ function Deposit() {
         {/* Sidebar Nav Ends */}
         {/* 🔍 Search Bar */}
 
-        <div className="main-panel">
+        <div className="main-panel overflow-hidden">
           <div className="content-wrapper">
             <div className="max-1250 mx-auto">
               <div className="h-100">
                 <div className="pt-3 pb-2">
                   <div className="row px-2">
                     {/* header Starts */}
-                    <div className="d-flex align-items-center justify-content-between position-relative  px-0">
+                    <div className="d-flex align-items-center justify-content-between position-relative  px-0 ">
                       {/* Back Button on Left */}
-                      {/* <div className="d-flex justify-content-between align-items-center px-0">
+                      <div className="d-flex justify-content-between align-items-center px-2">
                         <button
                           className="go_back_btn bg-grey"
                           onClick={() => window.history.back()}
                         >
                           <i className="ri-arrow-left-s-line text-white fs-20" />
                         </button>
-                      </div> */}
+                      </div>
 
                       {/* Centered Title */}
                       <h5 className="position-absolute start-50 translate-middle-x m-0 text-white fs-16">
@@ -107,14 +107,14 @@ function Deposit() {
                       </h5>
                     </div>
                     {/* header Ends */}
-                    <div className="d-flex justify-content-between align-items-center px-0">
+                    {/* <div className="d-flex justify-content-between align-items-center px-0">
                       <button
                         className="go_back_btn bg-grey"
                         onClick={() => window.history.back()}
                       >
                         <i className="ri-arrow-left-s-line text-white fs-24" />
                       </button>
-                    </div>
+                    </div> */}
 
                     {/* Wizard */}
                     <div className="container mt-4 px-0">

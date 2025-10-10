@@ -1714,8 +1714,8 @@ ul.nav.my-2.bonus_filter {
 }
 /* notification style Starts */
 .back_icon {
-  width: 40px;
-  height: 40px;
+  width: 36px;
+  height: 36px;
   background: #454545;
   border-radius: 20%;
   display: flex;
@@ -6015,4 +6015,7 @@ code {
 }
 .overflow-visible h6 {
   overflow: visible !important;
+}
+.p-3.rounded.border.h-100.d-flex.flex-column {
+  border: 1px solid #6c6c6cee !important;
 }

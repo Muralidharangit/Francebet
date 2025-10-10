@@ -232,7 +232,7 @@ const DepositHistory = () => {
         <Sidebar />
         {/* Sidebar Nav Ends */}
 
-        <div className="main-panel">
+        <div className="main-panel overflow-hidden">
           <div className="content-wrapper">
             <div className="max-1250 mx-auto">
               <div className="h-100">

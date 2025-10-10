@@ -233,7 +233,7 @@ const DepositHistory = () => {
         <Sidebar />
         {/* Sidebar Nav Ends */}
 
-        <div className="main-panel">
+        <div className="main-panel overflow-hidden">
           <div className="content-wrapper">
             <div className="max-1250 mx-auto">
               <div className="h-100">
@@ -264,7 +264,7 @@ const DepositHistory = () => {
                     {/* header Starts */}
                     <div className="d-flex align-items-center justify-content-between position-relative  px-2">
                       {/* Back Button on Left */}
-                      <div className="d-flex justify-content-between align-items-center px-2">
+                      <div className="d-flex justify-content-between align-items-center px-1">
                         <button
                           className="go_back_btn bg-grey"
                           onClick={() => window.history.back()}
@@ -277,7 +277,7 @@ const DepositHistory = () => {
                       <h5 className="m-0 text-white fs-16 text-center">
                         Voucher Deposit History
                       </h5>
-                      <div className="d-flex justify-content-between align-items-center px-0">
+                      <div className="d-flex justify-content-between align-items-center px-1">
                         <button
                           className="go_back_btn bg-grey"
                           onClick={fetchPlayerData}

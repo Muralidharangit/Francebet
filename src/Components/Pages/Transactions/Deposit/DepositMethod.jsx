@@ -252,7 +252,7 @@ const DepositMethod = () => {
         {/* Sidebar */}
         <Sidebar />
 
-        <div className="main-panel">
+        <div className="main-panel overflow-hidden">
           <div className="content-wrapper">
             <div className="max-1250 mx-auto">
               <div className="h-100">
@@ -260,7 +260,7 @@ const DepositMethod = () => {
                   <div className="row px-2">
                     {/* Title Row */}
                     <div className="d-flex align-items-center justify-content-between position-relative px-0">
-                      <div className="d-flex justify-content-between align-items-center px-1 mx-2">
+                      <div className="d-flex justify-content-between align-items-center px-1 mx-1">
                         <button
                           className="go_back_btn bg-grey"
                           onClick={() => window.history.back()}
@@ -275,9 +275,11 @@ const DepositMethod = () => {
                     </div>
 
                     {/* Card */}
-                    <div className="card bg_light_grey account_input-textbox-container mt-5">
+                    <div className="card  account_input-textbox-container">
                       <div className="card-body py-4 pb-5">
-                        {loading && <p className="text-muted">Loading…</p>}
+                        {loading && (
+                          <p className="text-white text-center">Loading…</p>
+                        )}
                         {err && <p className="text-danger mb-3">{err}</p>}
                         {!loading && !err && methods.length === 0 && (
                           <p className="text-muted">No methods available.</p>
