@@ -407,7 +407,7 @@ const FilteredGamesPage = () => {
         <div className="main-panel">
           <div className="content-wrapper new">
             <div className="max-1250 mx-auto">
-              <div className="search_container_box">
+              <div className="search_container_box mx-2">
                 <form className="form my-2" onSubmit={handleSubmit}>
                   <button type="submit">
                     <i className="ri-search-2-line fs-18" />

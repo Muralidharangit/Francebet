@@ -62,7 +62,7 @@ const SearchTopGames = () => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { setProfile } = useContext(AuthContext);
+  const { setProfile, fetchUser, user } = useContext(AuthContext);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const {
@@ -183,12 +183,7 @@ const SearchTopGames = () => {
   useEffect(() => {
     fetchAllGames();
   }, []);
-  useEffect(() => {
-    if (sessionStorage.getItem("refreshTopGames") === "1") {
-      sessionStorage.removeItem("refreshTopGames"); // clear first to avoid loops
-      window.location.reload(); // hard refresh once
-    }
-  }, []);
+
   useEffect(() => {
     const fixedSearchTerm = searchTerm.trim();
 
@@ -376,7 +371,6 @@ const SearchTopGames = () => {
     }
 
     const token = localStorage.getItem("token");
-    sessionStorage.setItem("refreshTopGames", "1"); // 🔁 ask TopGames to reload once
 
     try {
       setIsLaunchingGame(true);
@@ -386,6 +380,7 @@ const SearchTopGames = () => {
         `${BASE_URL}/player/${game.provider}/launch/${encodeURIComponent(
           game.name
         )}/${game.uuid}`,
+
         {
           params: {
             // return_url: `${window.location.origin}/all-games?is_mobile=${isMobileParam}`,
@@ -635,6 +630,59 @@ const SearchTopGames = () => {
     }, 1000); // Simulate a 1-second load time
     return () => clearTimeout(timer);
   }, []);
+
+  // Add this state with your other state variables
+  const [showModal, setShowModal] = useState(false);
+
+  // ... other code ...
+  // 1) Verify token
+  const currentToken = user?.token;
+  // Define the handler functions
+  const handleConfirm = async () => {
+    setShowModal(false);
+    // Programmatically trigger the back action to close the game
+    window.history.back();
+    // This will trigger your existing useEffect handlePopState logic
+    // ✅ refresh profile so Header updates chips
+    await fetchUser(currentToken);
+  };
+
+  const handleCancel = () => {
+    setShowModal(false);
+  };
+  const [iframeLoaded, setIframeLoaded] = useState(false);
+  const [iframeError, setIframeError] = useState(false);
+  // put this near your component state
+  const handleIframeLoad = () => {
+    setIframeLoaded(true);
+    setIsLaunchingGame(false); // hide "Launching game..." overlay
+
+    const el = iframeRef.current;
+    if (!el) return;
+
+    try {
+      // If the iframe is same-origin now, we can read its URL
+      const href = el.contentWindow.location.href;
+      const u = new URL(href);
+
+      // If provider redirected iframe back to your app route
+      if (
+        u.origin === window.location.origin &&
+        u.pathname.startsWith("/top-games")
+      ) {
+        // close overlay + hard refresh parent page
+        setShowFullScreenGame(false);
+        setSelectedGameUrl("");
+        setIframeError(false);
+        setIframeLoaded(false);
+
+        window.location.replace("/top-games");
+      }
+    } catch {
+      // Still cross-origin (normal gameplay) — ignore
+    }
+  };
+
   return (
     <>
       {isLaunchingGame && (
@@ -675,403 +723,545 @@ const SearchTopGames = () => {
           <div className="content-wrapper new">
             <div className="max-1250 mx-auto">
               <div>
-                {showFullScreenGame && selectedGameUrl ? (
-                  <>
-                    <button>Back</button>
-                    <div
-                      className="iframe-container"
-                      style={{
-                        position: "fixed",
-                        top: "0px",
-                        left: 0,
-                        width: "100vw",
-                        height: "100vh",
-                        backgroundColor: "#000",
-                        zIndex: 9999,
-                      }}
-                    >
-                      <iframe
-                        ref={iframeRef}
-                        src={selectedGameUrl}
-                        title="Game"
-                        style={{
-                          width: "100%",
-                          height: "100%",
-                          border: "none",
-                        }}
-                        allowFullScreen
-                      />
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    {/* 🔍 Search Bar */}
-                    <div className="search_container_box">
-                      <form className="form my-2" onSubmit={handleSubmit}>
-                        <button type="submit">
-                          <i className="ri-search-2-line fs-18" />
-                        </button>
-                        <input
-                          type="text"
-                          placeholder="Search games..."
-                          value={searchTerm}
-                          onChange={(e) => setSearchTerm(e.target.value)}
-                          onInput={(e) => setSearchTerm(e.target.value)} // ✅ extra support for mobile
-                          className="my-3 input"
-                        />
-                        {isSearchMode && (
-                          <button
-                            type="button"
-                            className="reset"
-                            onClick={() => {
-                              setSearchTerm("");
-                              setSearchByNameResults([]); // ✅ Clear actual search result state
-                              setSearchByProviderResults([]); // ✅ Clear provider results
-                              setSearchPage(1); // ✅ Reset pagination
-                              setIsSearchMode(false);
-                              setHasMore(true); // ✅ Enable future searching
-                            }}
-                          >
-                            ❌
-                          </button>
-                        )}
-                      </form>
-                    </div>
-
-                    {/* 🔘 Filters */}
-                    {!isSearchMode && (
-                      <div
-                        ref={scrollRef}
-                        className="scroll-hide overflow-x-auto mt-2"
-                        style={{
-                          cursor: isDragging ? "grabbing" : "grab",
-                          overflowX: "auto",
-                        }}
-                        onMouseDown={handleMouseDown}
-                        onMouseMove={handleMouseMove}
-                        onMouseLeave={handleMouseUp}
-                        onMouseUp={handleMouseUp}
+                {showFullScreenGame && selectedGameUrl && (
+                  <div
+                    className="iframe-container"
+                    style={{
+                      position: "fixed",
+                      top: 0,
+                      left: 0,
+                      width: "100vw",
+                      height: "100vh",
+                      backgroundColor: "#000",
+                      zIndex: 9999,
+                    }}
+                  >
+                    {/* Navbar only appears if iframe loaded successfully */}
+                    {iframeLoaded && !iframeError && (
+                      <nav
+                        className="navbar py-1 navbar-dark bg-black sticky-top shadow-sm d-flex align-items-center"
+                        style={{ height: "50px" }}
                       >
-                        <SkeletonTheme
-                          baseColor="#313131"
-                          highlightColor="#525252"
-                        >
-                          <ul className="nav my-2 bonus_filter d-flex flex-nowrap bg-transparent">
-                            {isLoadingFilter ? (
-                              // Skeleton loading state for filter buttons
-                              <>
-                                {Array.from({ length: 7 }).map(
-                                  (
-                                    _,
-                                    index // Assuming 7 buttons in your list
-                                  ) => (
-                                    <li
-                                      className="nav-item"
-                                      key={`filter-skeleton-${index}`}
-                                    >
-                                      <Skeleton
-                                        width={120} // Approximate width of your buttons
-                                        height={40} // Approximate height of your buttons
-                                        style={{ margin: "5px" }}
-                                      />
-                                    </li>
-                                  )
-                                )}
-                              </>
-                            ) : (
-                              // Actual filter buttons when loaded
-                              <>
-                                <li className="nav-item">
-                                  <button
-                                    className={`nav-link bg-transparent ${
-                                      selectedType === "all" ? "active" : ""
-                                    }`}
-                                    onClick={() => {
-                                      handleTypeChange("all");
-                                    }}
-                                    style={{
-                                      margin: "5px",
-                                      padding: "10px",
-                                      background:
-                                        selectedType === "all"
-                                          ? "blue"
-                                          : "gray",
-                                      color: "white",
-                                      border: "none",
-                                      cursor: "pointer",
-                                    }}
-                                  >
-                                    <img
-                                      src="/assets/img/icons/all.png"
-                                      alt=""
-                                      srcSet=""
-                                      className="me-1"
-                                      style={{ width: "20px" }}
-                                    />{" "}
-                                    All Games
-                                  </button>
-                                </li>
-                                <li className="nav-item">
-                                  <button
-                                    className={`d-flex align-items-center nav-link bg-transparent me-2 ${
-                                      selectedType === "hot" ? "active" : ""
-                                    }`}
-                                    onClick={() => {
-                                      handleTypeChange("hot");
-                                    }}
-                                    style={{
-                                      margin: "5px",
-                                      padding: "10px",
-                                      background:
-                                        selectedType === "hot"
-                                          ? "blue"
-                                          : "gray",
-                                      color: "white",
-                                      border: "none",
-                                      cursor: "pointer",
-                                    }}
-                                  >
-                                    <img
-                                      src="/assets/img/icons/hot.png"
-                                      alt=""
-                                      srcSet=""
-                                      className="me-1"
-                                      style={{ width: "22px" }}
-                                    />{" "}
-                                    Hot Games
-                                  </button>
-                                </li>
-                                <li className="nav-item">
-                                  <button
-                                    className={`nav-link bg-transparent ${
-                                      selectedType === "card" ? "active" : ""
-                                    }`}
-                                    onClick={() => {
-                                      handleTypeChange("card");
-                                    }}
-                                    style={{
-                                      margin: "5px",
-                                      padding: "10px",
-                                      background:
-                                        selectedType === "card"
-                                          ? "blue"
-                                          : "gray",
-                                      color: "white",
-                                      border: "none",
-                                      cursor: "pointer",
-                                    }}
-                                  >
-                                    <img
-                                      src="/assets/img/icons/black.png"
-                                      alt=""
-                                      srcSet=""
-                                      className="me-1"
-                                      style={{ width: "22px" }}
-                                    />{" "}
-                                    Live Casino
-                                  </button>
-                                </li>
-                                <li className="nav-item">
-                                  <button
-                                    className={`nav-link bg-transparent ${
-                                      selectedType === "crash" ? "active" : ""
-                                    }`}
-                                    onClick={() => {
-                                      handleTypeChange("crash");
-                                    }}
-                                    style={{
-                                      margin: "5px",
-                                      padding: "10px",
-                                      background:
-                                        selectedType === "crash"
-                                          ? "blue"
-                                          : "gray",
-                                      color: "white",
-                                      border: "none",
-                                      cursor: "pointer",
-                                    }}
-                                  >
-                                    <img
-                                      src="/assets/img/icons/crash.png"
-                                      alt=""
-                                      srcSet=""
-                                      className="me-1"
-                                      style={{ width: "22px" }}
-                                    />{" "}
-                                    Crash Games
-                                  </button>
-                                </li>
-                                <li className="nav-item">
-                                  <button
-                                    className={`nav-link bg-transparent ${
-                                      selectedType === "table" ? "active" : ""
-                                    }`}
-                                    onClick={() => {
-                                      handleTypeChange("table");
-                                    }}
-                                    style={{
-                                      margin: "5px",
-                                      padding: "10px",
-                                      background:
-                                        selectedType === "table"
-                                          ? "blue"
-                                          : "gray",
-                                      color: "white",
-                                      border: "none",
-                                      cursor: "pointer",
-                                    }}
-                                  >
-                                    <img
-                                      src="/assets/img/icons/table.png"
-                                      alt=""
-                                      srcSet=""
-                                      className="me-1"
-                                      style={{ width: "22px" }}
-                                    />{" "}
-                                    Table Games
-                                  </button>
-                                </li>
-                                {/* roulette */}
-                                <li className="nav-item">
-                                  <button
-                                    className={`nav-link bg-transparent ${
-                                      selectedType === "roulette"
-                                        ? "active"
-                                        : ""
-                                    }`}
-                                    onClick={() => {
-                                      handleTypeChange("roulette");
-                                    }}
-                                    style={{
-                                      margin: "5px",
-                                      padding: "10px",
-                                      background:
-                                        selectedType === "roulette"
-                                          ? "blue"
-                                          : "gray",
-                                      color: "white",
-                                      border: "none",
-                                      cursor: "pointer",
-                                    }}
-                                  >
-                                    <img
-                                      src="/assets/img/icons/roul.png"
-                                      alt=""
-                                      srcSet=""
-                                      className="me-1"
-                                      style={{ width: "22px" }}
-                                    />{" "}
-                                    Roulette
-                                  </button>
-                                </li>
-                                {/* baccarat */}
-                                <li className="nav-item">
-                                  <button
-                                    className={`nav-link bg-transparent ${
-                                      selectedType === "baccarat"
-                                        ? "active"
-                                        : ""
-                                    }`}
-                                    onClick={() => {
-                                      handleTypeChange("baccarat");
-                                    }}
-                                    style={{
-                                      margin: "5px",
-                                      padding: "10px",
-                                      background:
-                                        selectedType === "baccarat"
-                                          ? "blue"
-                                          : "gray",
-                                      color: "white",
-                                      border: "none",
-                                      cursor: "pointer",
-                                    }}
-                                  >
-                                    <img
-                                      src="/assets/img/icons/bac.png"
-                                      alt=""
-                                      srcSet=""
-                                      className="me-1"
-                                      style={{ width: "22px" }}
-                                    />{" "}
-                                    Baccarat
-                                  </button>
-                                </li>
-                                {/* blackjack */}
-                                <li className="nav-item">
-                                  <button
-                                    className={`nav-link bg-transparent ${
-                                      selectedType === "blackjack"
-                                        ? "active"
-                                        : ""
-                                    }`}
-                                    onClick={() => {
-                                      handleTypeChange("blackjack");
-                                    }}
-                                    style={{
-                                      margin: "5px",
-                                      padding: "10px",
-                                      background:
-                                        selectedType === "blackjack"
-                                          ? "blue"
-                                          : "gray",
-                                      color: "white",
-                                      border: "none",
-                                      cursor: "pointer",
-                                    }}
-                                  >
-                                    <img
-                                      src="/assets/img/icons/black.png"
-                                      alt=""
-                                      srcSet=""
-                                      className="me-1"
-                                      style={{ width: "22px" }}
-                                    />{" "}
-                                    Blackjack
-                                  </button>
-                                </li>
-                              </>
-                            )}
-                          </ul>
-                        </SkeletonTheme>
-                        <style jsx>{`
-                          .scroll-hide::-webkit-scrollbar {
-                            display: none;
-                          }
-                          .scroll-hide {
-                            -ms-overflow-style: none;
-                            scrollbar-width: none;
-                            white-space: nowrap;
-                          }
-                        `}</style>
-                      </div>
+                        <div className="container-fluid d-flex align-items-center">
+                          <button
+                            className="btn btn-index w-100 deposit-btn text-white py-2"
+                            style={{ background: "#292524" }}
+                            onClick={() => setShowModal(true)}
+                          >
+                            Back
+                          </button>
+                        </div>
+                      </nav>
                     )}
 
-                    {/* 🕹️ Game List */}
-                    {isSearchMode ? (
-                      <>
-                        {searchLoading && searchPage === 1 ? (
-                          <p className="text-white text-center mt-5">
-                            🎮 Loading games...
-                          </p>
-                        ) : (
-                          <>
-                            {searchByNameResults.length > 0 ||
-                            searchByProviderResults.length > 0 ? (
-                              <>
-                                {/* 🔍 Search by Game Name Section */}
-                                {searchByNameResults.length > 0 && (
+                    {/* Iframe or Error Message */}
+                    <div
+                      className="flex-grow-1 d-flex justify-content-center align-items-center"
+                      style={{ height: "calc(100vh - 50px)" }}
+                    >
+                      {!iframeError ? (
+                        <iframe
+                          ref={iframeRef}
+                          src={selectedGameUrl}
+                          title="Game"
+                          allowFullScreen
+                          // onLoad={() => setIframeLoaded(true)}
+                          onError={() => setIframeError(true)}
+                          onLoad={handleIframeLoad}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            border: "none",
+                          }}
+                        />
+                      ) : (
+                        <div
+                          style={{
+                            color: "red",
+                            fontSize: "1.5rem",
+                            textAlign: "center",
+                          }}
+                        >
+                          Game not visible
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Modal */}
+                    {showModal && (
+                      <div
+                        className="modal-backdrop d-flex justify-content-center align-items-center"
+                        style={{
+                          backgroundColor: "rgba(0,0,0,0.8)",
+                          position: "fixed",
+                          top: 0,
+                          left: 0,
+                          width: "100%",
+                          height: "100%",
+                          zIndex: 99999,
+                        }}
+                      >
+                        <div
+                          className="modal-dialog modal-dialog-centered m-2"
+                          style={{ maxWidth: "400px", color: "white" }}
+                        >
+                          <div
+                            className="modal-content text-center p-4"
+                            style={{
+                              borderRadius: "1rem",
+                              background:
+                                "linear-gradient(145deg, #0f0f0f, #1a1a1a)",
+                              border: "1px solid #ff0055",
+                              boxShadow: "0 0 20px #ff0055ae",
+                            }}
+                          >
+                            <div className="modal-header border-0 justify-content-end">
+                              <button
+                                type="button"
+                                className="btn-close btn-close-white"
+                                onClick={handleCancel}
+                              />
+                            </div>
+
+                            <div className="modal-body">
+                              <h5 className="modal-title fs-2 text-warning mb-3">
+                                Go Back?
+                              </h5>
+                              <p className="fs-5 text-light">
+                                Are you sure you want to leave this game?
+                              </p>
+                            </div>
+
+                            <div className="modal-footer border-0 justify-content-center gap-2">
+                              <button
+                                type="button"
+                                className="btn btn-index w-100 deposit-btn text-white py-2"
+                                onClick={handleConfirm}
+                              >
+                                OK
+                              </button>
+                              <button
+                                type="button"
+                                className="btn btn-index w-100 deposit-btn text-white py-2"
+                                onClick={handleCancel}
+                              >
+                                Cancel
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+                {/* ) : ( */}
+                <>
+                  {/* 🔍 Search Bar */}
+                  <div className="search_container_box mx-2">
+                    <form className="form my-2" onSubmit={handleSubmit}>
+                      <button type="submit">
+                        <i className="ri-search-2-line fs-18" />
+                      </button>
+                      <input
+                        type="text"
+                        placeholder="Search games..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        onInput={(e) => setSearchTerm(e.target.value)} // ✅ extra support for mobile
+                        className="my-3 input"
+                      />
+                      {isSearchMode && (
+                        <button
+                          type="button"
+                          className="reset"
+                          onClick={() => {
+                            setSearchTerm("");
+                            setSearchByNameResults([]); // ✅ Clear actual search result state
+                            setSearchByProviderResults([]); // ✅ Clear provider results
+                            setSearchPage(1); // ✅ Reset pagination
+                            setIsSearchMode(false);
+                            setHasMore(true); // ✅ Enable future searching
+                          }}
+                        >
+                          ❌
+                        </button>
+                      )}
+                    </form>
+                  </div>
+
+                  {/* 🔘 Filters */}
+                  {!isSearchMode && (
+                    <div
+                      ref={scrollRef}
+                      className="scroll-hide overflow-x-auto mt-2"
+                      style={{
+                        cursor: isDragging ? "grabbing" : "grab",
+                        overflowX: "auto",
+                      }}
+                      onMouseDown={handleMouseDown}
+                      onMouseMove={handleMouseMove}
+                      onMouseLeave={handleMouseUp}
+                      onMouseUp={handleMouseUp}
+                    >
+                      <SkeletonTheme
+                        baseColor="#313131"
+                        highlightColor="#525252"
+                      >
+                        <ul className="nav my-2 bonus_filter d-flex flex-nowrap bg-transparent">
+                          {isLoadingFilter ? (
+                            // Skeleton loading state for filter buttons
+                            <>
+                              {Array.from({ length: 7 }).map(
+                                (
+                                  _,
+                                  index // Assuming 7 buttons in your list
+                                ) => (
+                                  <li
+                                    className="nav-item"
+                                    key={`filter-skeleton-${index}`}
+                                  >
+                                    <Skeleton
+                                      width={120} // Approximate width of your buttons
+                                      height={40} // Approximate height of your buttons
+                                      style={{ margin: "5px" }}
+                                    />
+                                  </li>
+                                )
+                              )}
+                            </>
+                          ) : (
+                            // Actual filter buttons when loaded
+                            <>
+                              <li className="nav-item">
+                                <button
+                                  className={`nav-link bg-transparent ${
+                                    selectedType === "all" ? "active" : ""
+                                  }`}
+                                  onClick={() => {
+                                    handleTypeChange("all");
+                                  }}
+                                  style={{
+                                    margin: "5px",
+                                    padding: "10px",
+                                    background:
+                                      selectedType === "all" ? "blue" : "gray",
+                                    color: "white",
+                                    border: "none",
+                                    cursor: "pointer",
+                                  }}
+                                >
+                                  <img
+                                    src="/assets/img/icons/all.png"
+                                    alt=""
+                                    srcSet=""
+                                    className="me-1"
+                                    style={{ width: "20px" }}
+                                  />{" "}
+                                  All Games
+                                </button>
+                              </li>
+                              <li className="nav-item">
+                                <button
+                                  className={`d-flex align-items-center nav-link bg-transparent me-2 ${
+                                    selectedType === "hot" ? "active" : ""
+                                  }`}
+                                  onClick={() => {
+                                    handleTypeChange("hot");
+                                  }}
+                                  style={{
+                                    margin: "5px",
+                                    padding: "10px",
+                                    background:
+                                      selectedType === "hot" ? "blue" : "gray",
+                                    color: "white",
+                                    border: "none",
+                                    cursor: "pointer",
+                                  }}
+                                >
+                                  <img
+                                    src="/assets/img/icons/hot.png"
+                                    alt=""
+                                    srcSet=""
+                                    className="me-1"
+                                    style={{ width: "22px" }}
+                                  />{" "}
+                                  Hot Games
+                                </button>
+                              </li>
+                              <li className="nav-item">
+                                <button
+                                  className={`nav-link bg-transparent ${
+                                    selectedType === "card" ? "active" : ""
+                                  }`}
+                                  onClick={() => {
+                                    handleTypeChange("card");
+                                  }}
+                                  style={{
+                                    margin: "5px",
+                                    padding: "10px",
+                                    background:
+                                      selectedType === "card" ? "blue" : "gray",
+                                    color: "white",
+                                    border: "none",
+                                    cursor: "pointer",
+                                  }}
+                                >
+                                  <img
+                                    src="/assets/img/icons/black.png"
+                                    alt=""
+                                    srcSet=""
+                                    className="me-1"
+                                    style={{ width: "22px" }}
+                                  />{" "}
+                                  Live Casino
+                                </button>
+                              </li>
+                              <li className="nav-item">
+                                <button
+                                  className={`nav-link bg-transparent ${
+                                    selectedType === "crash" ? "active" : ""
+                                  }`}
+                                  onClick={() => {
+                                    handleTypeChange("crash");
+                                  }}
+                                  style={{
+                                    margin: "5px",
+                                    padding: "10px",
+                                    background:
+                                      selectedType === "crash"
+                                        ? "blue"
+                                        : "gray",
+                                    color: "white",
+                                    border: "none",
+                                    cursor: "pointer",
+                                  }}
+                                >
+                                  <img
+                                    src="/assets/img/icons/crash.png"
+                                    alt=""
+                                    srcSet=""
+                                    className="me-1"
+                                    style={{ width: "22px" }}
+                                  />{" "}
+                                  Crash Games
+                                </button>
+                              </li>
+                              <li className="nav-item">
+                                <button
+                                  className={`nav-link bg-transparent ${
+                                    selectedType === "table" ? "active" : ""
+                                  }`}
+                                  onClick={() => {
+                                    handleTypeChange("table");
+                                  }}
+                                  style={{
+                                    margin: "5px",
+                                    padding: "10px",
+                                    background:
+                                      selectedType === "table"
+                                        ? "blue"
+                                        : "gray",
+                                    color: "white",
+                                    border: "none",
+                                    cursor: "pointer",
+                                  }}
+                                >
+                                  <img
+                                    src="/assets/img/icons/table.png"
+                                    alt=""
+                                    srcSet=""
+                                    className="me-1"
+                                    style={{ width: "22px" }}
+                                  />{" "}
+                                  Table Games
+                                </button>
+                              </li>
+                              {/* roulette */}
+                              <li className="nav-item">
+                                <button
+                                  className={`nav-link bg-transparent ${
+                                    selectedType === "roulette" ? "active" : ""
+                                  }`}
+                                  onClick={() => {
+                                    handleTypeChange("roulette");
+                                  }}
+                                  style={{
+                                    margin: "5px",
+                                    padding: "10px",
+                                    background:
+                                      selectedType === "roulette"
+                                        ? "blue"
+                                        : "gray",
+                                    color: "white",
+                                    border: "none",
+                                    cursor: "pointer",
+                                  }}
+                                >
+                                  <img
+                                    src="/assets/img/icons/roul.png"
+                                    alt=""
+                                    srcSet=""
+                                    className="me-1"
+                                    style={{ width: "22px" }}
+                                  />{" "}
+                                  Roulette
+                                </button>
+                              </li>
+                              {/* baccarat */}
+                              <li className="nav-item">
+                                <button
+                                  className={`nav-link bg-transparent ${
+                                    selectedType === "baccarat" ? "active" : ""
+                                  }`}
+                                  onClick={() => {
+                                    handleTypeChange("baccarat");
+                                  }}
+                                  style={{
+                                    margin: "5px",
+                                    padding: "10px",
+                                    background:
+                                      selectedType === "baccarat"
+                                        ? "blue"
+                                        : "gray",
+                                    color: "white",
+                                    border: "none",
+                                    cursor: "pointer",
+                                  }}
+                                >
+                                  <img
+                                    src="/assets/img/icons/bac.png"
+                                    alt=""
+                                    srcSet=""
+                                    className="me-1"
+                                    style={{ width: "22px" }}
+                                  />{" "}
+                                  Baccarat
+                                </button>
+                              </li>
+                              {/* blackjack */}
+                              <li className="nav-item">
+                                <button
+                                  className={`nav-link bg-transparent ${
+                                    selectedType === "blackjack" ? "active" : ""
+                                  }`}
+                                  onClick={() => {
+                                    handleTypeChange("blackjack");
+                                  }}
+                                  style={{
+                                    margin: "5px",
+                                    padding: "10px",
+                                    background:
+                                      selectedType === "blackjack"
+                                        ? "blue"
+                                        : "gray",
+                                    color: "white",
+                                    border: "none",
+                                    cursor: "pointer",
+                                  }}
+                                >
+                                  <img
+                                    src="/assets/img/icons/black.png"
+                                    alt=""
+                                    srcSet=""
+                                    className="me-1"
+                                    style={{ width: "22px" }}
+                                  />{" "}
+                                  Blackjack
+                                </button>
+                              </li>
+                            </>
+                          )}
+                        </ul>
+                      </SkeletonTheme>
+                      <style jsx>{`
+                        .scroll-hide::-webkit-scrollbar {
+                          display: none;
+                        }
+                        .scroll-hide {
+                          -ms-overflow-style: none;
+                          scrollbar-width: none;
+                          white-space: nowrap;
+                        }
+                      `}</style>
+                    </div>
+                  )}
+
+                  {/* 🕹️ Game List */}
+                  {isSearchMode ? (
+                    <>
+                      {searchLoading && searchPage === 1 ? (
+                        <p className="text-white text-center mt-5">
+                          🎮 Loading games...
+                        </p>
+                      ) : (
+                        <>
+                          {searchByNameResults.length > 0 ||
+                          searchByProviderResults.length > 0 ? (
+                            <>
+                              {/* 🔍 Search by Game Name Section */}
+                              {searchByNameResults.length > 0 && (
+                                <>
+                                  <h5 className="text-white mt-4">
+                                    Search by Game Name
+                                  </h5>
+                                  <div className="row">
+                                    {searchByNameResults.map((game, index) => (
+                                      <motion.div
+                                        className="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6  px-1"
+                                        key={game.uuid}
+                                        initial={{ opacity: 0, scale: 0.8 }}
+                                        animate={{ opacity: 1, scale: 1 }}
+                                        transition={{
+                                          duration: 0.3,
+                                          delay: index * 0.002,
+                                        }}
+                                      >
+                                        <div
+                                          className="game-card-wrapper rounded-2 new-cardclr mt-2 hover-group"
+                                          onClick={() => handleGameClick(game)}
+                                        >
+                                          <div className="game-card position-relative p-0 m-0 overflow-hidden">
+                                            <img
+                                              src={
+                                                game.image ||
+                                                "/assets/img/placeholder.png"
+                                              }
+                                              className="game-card-img"
+                                              alt={game.name}
+                                            />
+                                            {/* <div className="d-flex flex-column text-white text-center py-2 px-1">
+                                        <span className="fs-12 fw-bold text-truncate">
+                                          {game.name}
+                                        </span>
+                                      </div> */}
+                                          </div>
+                                          <div className="btn-play position-absolute top-50 start-50 translate-middle">
+                                            <i className="fa-solid fa-play"></i>
+                                          </div>
+                                        </div>
+                                      </motion.div>
+                                    ))}
+                                  </div>
+                                </>
+                              )}
+
+                              {/* ✅ Provider section shown ONLY on first search page */}
+                              {searchPage === 1 &&
+                                searchByProviderResults.length > 0 && (
                                   <>
-                                    <h5 className="text-white mt-4">
-                                      Search by Game Name
+                                    <h5 className="text-white mt-6">
+                                      Search by Provider
                                     </h5>
                                     <div className="row">
-                                      {searchByNameResults.map(
+                                      {searchByProviderResults.map(
                                         (game, index) => (
                                           <motion.div
                                             className="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6  px-1"
                                             key={game.uuid}
-                                            initial={{ opacity: 0, scale: 0.8 }}
+                                            initial={{
+                                              opacity: 0,
+                                              scale: 0.8,
+                                            }}
                                             animate={{ opacity: 1, scale: 1 }}
                                             transition={{
                                               duration: 0.3,
@@ -1088,16 +1278,16 @@ const SearchTopGames = () => {
                                                 <img
                                                   src={
                                                     game.image ||
-                                                    "/assets/img/play_now.png"
+                                                    "/assets/img/placeholder.png"
                                                   }
                                                   className="game-card-img"
                                                   alt={game.name}
                                                 />
                                                 {/* <div className="d-flex flex-column text-white text-center py-2 px-1">
-                                        <span className="fs-12 fw-bold text-truncate">
-                                          {game.name}
-                                        </span>
-                                      </div> */}
+                                          <span className="fs-12 fw-bold text-truncate">
+                                            {game.name}
+                                          </span>
+                                        </div> */}
                                               </div>
                                               <div className="btn-play position-absolute top-50 start-50 translate-middle">
                                                 <i className="fa-solid fa-play"></i>
@@ -1109,77 +1299,22 @@ const SearchTopGames = () => {
                                     </div>
                                   </>
                                 )}
-
-                                {/* ✅ Provider section shown ONLY on first search page */}
-                                {searchPage === 1 &&
-                                  searchByProviderResults.length > 0 && (
-                                    <>
-                                      <h5 className="text-white mt-6">
-                                        Search by Provider
-                                      </h5>
-                                      <div className="row">
-                                        {searchByProviderResults.map(
-                                          (game, index) => (
-                                            <motion.div
-                                              className="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6  px-1"
-                                              key={game.uuid}
-                                              initial={{
-                                                opacity: 0,
-                                                scale: 0.8,
-                                              }}
-                                              animate={{ opacity: 1, scale: 1 }}
-                                              transition={{
-                                                duration: 0.3,
-                                                delay: index * 0.002,
-                                              }}
-                                            >
-                                              <div
-                                                className="game-card-wrapper rounded-2 new-cardclr mt-2 hover-group"
-                                                onClick={() =>
-                                                  handleGameClick(game)
-                                                }
-                                              >
-                                                <div className="game-card position-relative p-0 m-0 overflow-hidden">
-                                                  <img
-                                                    src={
-                                                      game.image ||
-                                                      "/assets/img/play_now.png"
-                                                    }
-                                                    className="game-card-img"
-                                                    alt={game.name}
-                                                  />
-                                                  {/* <div className="d-flex flex-column text-white text-center py-2 px-1">
-                                          <span className="fs-12 fw-bold text-truncate">
-                                            {game.name}
-                                          </span>
-                                        </div> */}
-                                                </div>
-                                                <div className="btn-play position-absolute top-50 start-50 translate-middle">
-                                                  <i className="fa-solid fa-play"></i>
-                                                </div>
-                                              </div>
-                                            </motion.div>
-                                          )
-                                        )}
-                                      </div>
-                                    </>
-                                  )}
-                              </>
-                            ) : searchLoading && searchPage === 1 ? (
-                              <p className="text-white text-center mt-5">
-                                🎮 Loading games...
-                              </p>
-                            ) : (
-                              <p className="text-center text-gray-400 mt-4">
-                                No results found.
-                              </p>
-                            )}
-                          </>
-                        )}
-                      </>
-                    ) : (
-                      <>
-                        {/* {isAllGamesLoading ? (
+                            </>
+                          ) : searchLoading && searchPage === 1 ? (
+                            <p className="text-white text-center mt-5">
+                              🎮 Loading games...
+                            </p>
+                          ) : (
+                            <p className="text-center text-gray-400 mt-4">
+                              No results found.
+                            </p>
+                          )}
+                        </>
+                      )}
+                    </>
+                  ) : (
+                    <>
+                      {/* {isAllGamesLoading ? (
                           <p>Loading...</p>
                         ) : games.length > 0 ? (
                           <>
@@ -1192,87 +1327,83 @@ const SearchTopGames = () => {
                         ) : (
                           <p>No games found</p>
                         )} */}
-                        <SkeletonTheme
-                          baseColor="#313131"
-                          highlightColor="#525252"
-                        >
-                          <h5>Filtered Games</h5>
-                          <div className="px-2">
-                            {loading && page === 1 ? (
-                              // Skeleton loader for the first page
-                              <div className="row px-8leftright">
-                                {Array.from({ length: 6 }).map((_, index) => (
-                                  <div
-                                    className="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 px-1 col-custom-3"
-                                    key={index}
-                                  >
-                                    <div className="game-card-wrapper rounded-2 new-cardclr mt-2">
-                                      <Skeleton
-                                        height={112}
-                                        borderRadius={10}
-                                      />
-                                    </div>
+                      <SkeletonTheme
+                        baseColor="#313131"
+                        highlightColor="#525252"
+                      >
+                        <h5>Filtered Games</h5>
+                        <div className="px-2">
+                          {loading && page === 1 ? (
+                            // Skeleton loader for the first page
+                            <div className="row px-8leftright">
+                              {Array.from({ length: 6 }).map((_, index) => (
+                                <div
+                                  className="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 px-1 col-custom-3"
+                                  key={index}
+                                >
+                                  <div className="game-card-wrapper rounded-2 new-cardclr mt-2">
+                                    <Skeleton height={112} borderRadius={10} />
                                   </div>
+                                </div>
+                              ))}
+                            </div>
+                          ) : (
+                            <>
+                              <div className="row px-8leftright">
+                                {games.map((game, index) => (
+                                  <motion.div
+                                    className="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 px-1 col-custom-3"
+                                    key={game.uuid || game.name + index}
+                                    initial={{ opacity: 0, scale: 0.8 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    transition={{
+                                      duration: 0.3,
+                                      delay: index * 0.002,
+                                    }}
+                                  >
+                                    <div
+                                      className="game-card-wrapper rounded-2 new-cardclr mt-2 hover-group"
+                                      onClick={() => handleGameClick(game)}
+                                    >
+                                      <div className="game-card position-relative p-0 m-0 overflow-hidden">
+                                        <img
+                                          src={
+                                            game.image ||
+                                            "/assets/img/placeholder.png"
+                                          }
+                                          className="w-100 m-0"
+                                          alt={game.name}
+                                        />
+                                      </div>
+                                      <div className="btn-play position-absolute top-50 start-50 translate-middle">
+                                        <i className="fa-solid fa-play"></i>
+                                      </div>
+                                    </div>
+                                  </motion.div>
                                 ))}
                               </div>
-                            ) : (
-                              <>
-                                <div className="row px-8leftright">
-                                  {games.map((game, index) => (
-                                    <motion.div
-                                      className="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 px-1 col-custom-3"
-                                      key={game.uuid || game.name + index}
-                                      initial={{ opacity: 0, scale: 0.8 }}
-                                      animate={{ opacity: 1, scale: 1 }}
-                                      transition={{
-                                        duration: 0.3,
-                                        delay: index * 0.002,
-                                      }}
-                                    >
-                                      <div
-                                        className="game-card-wrapper rounded-2 new-cardclr mt-2 hover-group"
-                                        onClick={() => handleGameClick(game)}
-                                      >
-                                        <div className="game-card position-relative p-0 m-0 overflow-hidden">
-                                          <img
-                                            src={
-                                              game.image ||
-                                              "/assets/img/play_now.png"
-                                            }
-                                            className="w-100 m-0"
-                                            alt={game.name}
-                                          />
-                                        </div>
-                                        <div className="btn-play position-absolute top-50 start-50 translate-middle">
-                                          <i className="fa-solid fa-play"></i>
-                                        </div>
-                                      </div>
-                                    </motion.div>
-                                  ))}
-                                </div>
 
-                                {/* Show loading while fetching more */}
-                                {isFetching && (
-                                  <p className="text-white text-center mt-3">
-                                    Loading more games...
-                                  </p>
-                                )}
-                              </>
-                            )}
-                          </div>
-                        </SkeletonTheme>
+                              {/* Show loading while fetching more */}
+                              {isFetching && (
+                                <p className="text-white text-center mt-3">
+                                  Loading more games...
+                                </p>
+                              )}
+                            </>
+                          )}
+                        </div>
+                      </SkeletonTheme>
 
-                        {/* {!loading && totalPages > 1 && (
+                      {/* {!loading && totalPages > 1 && (
                   <PaginatedData
                     totalPages={totalPages}
                     currentPage={currentPage}
                     setCurrentPage={setCurrentPage}
                   />
                 )} */}
-                      </>
-                    )}
-                  </>
-                )}
+                    </>
+                  )}
+                </>
               </div>
 
               {/* {games.map((game, index) => (
