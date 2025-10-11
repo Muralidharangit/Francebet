@@ -872,7 +872,7 @@ function Home() {
                               </SwiperSlide>
                               <SwiperSlide
                                 onClick={() =>
-                                  navigate(`/filtered-games?type=card`)
+                                  navigate(`/filtered-games?search=card`)
                                 }
                               >
                                 <img
@@ -883,7 +883,7 @@ function Home() {
                               </SwiperSlide>
                               <SwiperSlide
                                 onClick={() =>
-                                  navigate(`/filtered-games?type=slots`)
+                                  navigate(`/filtered-games?search=slots`)
                                 }
                               >
                                 <img
@@ -897,7 +897,7 @@ function Home() {
 
                               <SwiperSlide
                                 onClick={() =>
-                                  navigate(`/filtered-games?type=bingo`)
+                                  navigate(`/filtered-games?search=bingo`)
                                 }
                               >
                                 <img
@@ -909,7 +909,7 @@ function Home() {
 
                               <SwiperSlide
                                 onClick={() =>
-                                  navigate(`/filtered-games?type=roulette`)
+                                  navigate(`/filtered-games?search=roulette`)
                                 }
                               >
                                 <img
@@ -921,7 +921,7 @@ function Home() {
 
                               <SwiperSlide
                                 onClick={() =>
-                                  navigate(`/filtered-games?type=blackjack`)
+                                  navigate(`/filtered-games?search=blackjack`)
                                 }
                               >
                                 <img
@@ -933,7 +933,7 @@ function Home() {
 
                               <SwiperSlide
                                 onClick={() =>
-                                  navigate(`/filtered-games?type=lucky`)
+                                  navigate(`/filtered-games?search=lucky`)
                                 }
                               >
                                 <img
@@ -955,7 +955,7 @@ function Home() {
 
                               <SwiperSlide
                                 onClick={() =>
-                                  navigate(`/filtered-games?type=card`)
+                                  navigate(`/filtered-games?search=card`)
                                 }
                               >
                                 <img
@@ -1371,7 +1371,7 @@ function Home() {
                                       className="card bg-cardtrans p-1"
                                       onClick={() =>
                                         navigate(
-                                          `/filtered-games?type=${game.type}`
+                                          `/filtered-games?search=${game.type}`
                                         )
                                       }
                                       role="button"
@@ -1383,7 +1383,7 @@ function Home() {
                                         ) {
                                           // Added spacebar for accessibility
                                           navigate(
-                                            `/filtered-games?type=${game.type}`
+                                            `/filtered-games?search=${game.type}`
                                           );
                                         }
                                       }}
@@ -1413,7 +1413,7 @@ function Home() {
                                         className="card bg-cardtrans p-1"
                                         onClick={() =>
                                           navigate(
-                                            `/filtered-games?type=${game.type}`
+                                            `/filtered-games?search=${game.type}`
                                           )
                                         }
                                         role="button"
@@ -1424,7 +1424,7 @@ function Home() {
                                             e.key === " "
                                           ) {
                                             navigate(
-                                              `/filtered-games?type=${game.type}`
+                                              `/filtered-games?search=${game.type}`
                                             );
                                           }
                                         }}
@@ -1454,7 +1454,7 @@ function Home() {
                                       className="card bg-cardtrans p-1"
                                       onClick={() =>
                                         navigate(
-                                          `/filtered-games?type=${game.type}`
+                                          `/filtered-games?search=${game.type}`
                                         )
                                       }
                                       role="button"
@@ -1465,7 +1465,7 @@ function Home() {
                                           e.key === " "
                                         ) {
                                           navigate(
-                                            `/filtered-games?type=${game.type}`
+                                            `/filtered-games?search=${game.type}`
                                           );
                                         }
                                       }}
@@ -1647,7 +1647,7 @@ function Home() {
                                         "linear-gradient(to left, rgb(123 64 14 / 49%), transparent 75%) !important",
                                     }}
                                     onClick={() =>
-                                      navigate(`/filtered-games?type=bingo`)
+                                      navigate(`/filtered-games?search=bingo`)
                                     }
                                   >
                                     <div className="flex-column d-flex">
