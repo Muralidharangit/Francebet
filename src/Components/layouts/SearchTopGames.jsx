@@ -737,7 +737,7 @@ const SearchTopGames = () => {
         {/* Sidebar Nav Ends */}
         <div className="main-panel overflow-hidden">
           <div className="content-wrapper new">
-            <div className="max-1250 mx-auto">
+            <div className="max-1250 mx-auto ">
               <div>
                 {showFullScreenGame && selectedGameUrl && (
                   <div
@@ -755,7 +755,7 @@ const SearchTopGames = () => {
                     {/* Navbar only appears if iframe loaded successfully */}
                     {iframeLoaded && !iframeError && (
                       <nav
-                        className="navbar py-1 navbar-dark bg-black sticky-top shadow-sm d-flex align-items-center"
+                        className="navbar py-1 navbar-dark bg-black sticky-top shadow-sm d-flex align-items-center position-relative top-0 w-100"
                         style={{ height: "50px" }}
                       >
                         <div className="container-fluid d-flex align-items-center">

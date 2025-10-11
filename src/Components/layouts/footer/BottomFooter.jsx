@@ -22,16 +22,20 @@ const BottomFooter = () => {
             {/* Payment Services Section */}
             <div className="container text-start my-4">
               <h5 className="text-white mb-3">Payment Services</h5>
-              <div className="d-flex justify-content-start flex-wrap gap-3 gapmobile-0">
+              <div className="row g-2">
+                {" "}
+                {/* g-2 = gap between items */}
                 {paymentImages.map((img, index) => (
                   <div
                     key={index}
-                    className="d-flex mb-3 gap-3 justify-content-center"
+                    className="col-2 col-sm-3 col-md-3 col-lg-2 col-xl-2 col-2 d-flex justify-content-start"
+                    /* col-3 = 4 per row on xs/mobile, col-md-2 = 6 per row on desktop */
                   >
                     <img
                       src={img}
                       alt={`Payment Service ${index + 1}`}
-                      className="payment-img"
+                      className="payment-img w-100 w-md-75"
+                      /* w-100 = full width on mobile, w-md-75 = 75% width on md+ screens */
                     />
                   </div>
                 ))}
@@ -63,7 +67,7 @@ const BottomFooter = () => {
                     </p>
                   </div>
                   <div>
-                    {/* <div className="social-links text-center w-100 justify-content-center my-2">
+                    <div className="social-links text-center w-100 justify-content-center my-2">
                       <Link to={"/"} target="new">
                         <i className="fab fa-facebook-f" />
                       </Link>
@@ -73,7 +77,7 @@ const BottomFooter = () => {
                       <Link to={"/"} target="new">
                         <i className="fab ri-twitter-x-line" />
                       </Link>
-                    </div> */}
+                    </div>
                   </div>
                 </div>
               </div>
