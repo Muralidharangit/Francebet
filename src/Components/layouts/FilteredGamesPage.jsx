@@ -330,7 +330,7 @@ const FilteredGamesPage = () => {
   //     toast.error("Game launch failed. Try again later.");
   //   }
   // };
-  const RETURN_URL_KEY = "returnUrl";
+  // const RETURN_URL_KEY = "returnUrl";
 
   // const buildReturnUrl = (location) => {
   //   // If you use HashRouter, prefer: return window.location.href;
@@ -467,6 +467,26 @@ const FilteredGamesPage = () => {
     }
   };
 
+  const RETURN_URL_KEY = "returnUrl";
+
+  const navigateToSavedReturnUrl = React.useCallback(() => {
+    const target = sessionStorage.getItem(RETURN_URL_KEY) || "/";
+
+    // Strip origin so React Router can handle it
+    const origin = window.location.origin;
+    const toPath = target.startsWith(origin)
+      ? target.slice(origin.length)
+      : target;
+
+    // If we’re already at that path+query, just close overlay; don’t navigate again
+    const here = window.location.pathname + window.location.search;
+    const url = new URL(target, origin);
+    const there = url.pathname + url.search;
+    if (here === there) return;
+
+    navigate(toPath, { replace: true }); // soft navigate (no full reload)
+  }, [navigate]);
+
   // back btn setup starts
   const buildReturnUrl = (location) => {
     const base = import.meta?.env?.BASE_URL || process.env.PUBLIC_URL || "";
@@ -489,7 +509,8 @@ const FilteredGamesPage = () => {
     await fetchUser(user?.token);
     // go back to saved returnUrl
     const target = sessionStorage.getItem(RETURN_URL_KEY) || "/";
-    window.location.replace(target);
+    // window.location.replace(target);
+    navigateToSavedReturnUrl();
   };
 
   const handleCancel = () => setShowModal(false);
@@ -510,7 +531,8 @@ const FilteredGamesPage = () => {
         setIframeError(false);
         setIframeLoaded(false);
         const target = sessionStorage.getItem(RETURN_URL_KEY) || href;
-        window.location.replace(target);
+        // window.location.replace(target);
+        navigateToSavedReturnUrl();
       }
     } catch {
       // still cross-origin; ignore
@@ -523,8 +545,9 @@ const FilteredGamesPage = () => {
       setShowFullScreenGame(false);
       setSelectedGameUrl("");
       setIsLaunchingGame(false);
-      const target = sessionStorage.getItem(RETURN_URL_KEY) || "/";
-      window.location.replace(target);
+      // const target = sessionStorage.getItem(RETURN_URL_KEY) || "/";
+      // window.location.replace(target);
+      navigateToSavedReturnUrl();
     };
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);

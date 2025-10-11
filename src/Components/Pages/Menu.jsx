@@ -1,12 +1,14 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import routes from "../routes/route";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import StickyHeader from "../layouts/Header/Header";
 import Footer from "../layouts/footer/Footer";
 import AuthContext from "../../Auth/AuthContext";
+import { Toast, ToastContainer } from "react-bootstrap";
 
 const Menu = () => {
   const { user, logout } = useContext(AuthContext);
+  const [show, setShow] = useState(false);
   const navigate = useNavigate(); // useNavigate hook for redirection
   const handleLogout = async () => {
     await logout(navigate);
@@ -28,6 +30,7 @@ const Menu = () => {
             <i className="ri-close-large-line text-white fs-17" />
           </button> */}
         </div>
+
         <div className="offcanvas-body">
           <NavLink
             to={routes.home}

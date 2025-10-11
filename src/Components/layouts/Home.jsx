@@ -59,6 +59,8 @@ function Home() {
 
   const location = useLocation();
   const navigate = useNavigate();
+
+  const { fetchUser, user } = useContext(AuthContext);
   // const { data: , isLoading_data } = useProviders();
   // Fetch Dice Games Effect
   const {
@@ -111,17 +113,31 @@ function Home() {
     }
   }, []);
 
+  // useEffect(() => {
+  //   if (location.state?.showLoginSuccess) {
+  //     toast.success("Login successful! 🎉", {
+  //       toastId: "login-success",
+  //       position: "top-right",
+  //       autoClose: 3000,
+  //       closeOnClick: true,
+  //       pauseOnHover: true,
+  //       draggable: true,
+  //       onClose: () => {
+  //         // Navigate after toast is closed automatically
+  //         navigate(location.pathname, { replace: true, state: {} });
+  //       },
+  //     });
+  //   }
+  // }, [location, navigate]);
   useEffect(() => {
     if (location.state?.showLoginSuccess) {
       toast.success("Login successful! 🎉", {
         toastId: "login-success",
-        position: "top-right",
         autoClose: 3000,
-        closeOnClick: true,
         pauseOnHover: true,
         draggable: true,
         onClose: () => {
-          // Navigate after toast is closed automatically
+          // runs if user clicks X OR after timeout
           navigate(location.pathname, { replace: true, state: {} });
         },
       });
@@ -435,62 +451,62 @@ function Home() {
   };
 
   // game URL Iframe Opens here
-  const handleGameClick = async (game) => {
-    if (!game.provider || !game.name || !game.uuid) {
-      toast.error("Missing game info.");
-      return;
-    }
-    // console.log(game.has_lobby, "testing....................");
-    const token = localStorage.getItem("token");
+  // const handleGameClick = async (game) => {
+  //   if (!game.provider || !game.name || !game.uuid) {
+  //     toast.error("Missing game info.");
+  //     return;
+  //   }
+  //   // console.log(game.has_lobby, "testing....................");
+  //   const token = localStorage.getItem("token");
 
-    try {
-      setIsLaunchingGame(true);
-      const isMobileParam = getIsMobileParam();
+  //   try {
+  //     setIsLaunchingGame(true);
+  //     const isMobileParam = getIsMobileParam();
 
-      const response = await axios.get(
-        `${BASE_URL}/player/${game.provider}/launch/${encodeURIComponent(
-          game.name
-        )}/${game.uuid}`,
-        {
-          params: {
-            return_url: `${window.location.origin}/all-games?is_mobile=${isMobileParam}`,
-            has_lobby: game.has_lobby,
-            has_tables: game.has_tables,
-          },
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+  //     const response = await axios.get(
+  //       `${BASE_URL}/player/${game.provider}/launch/${encodeURIComponent(
+  //         game.name
+  //       )}/${game.uuid}`,
+  //       {
+  //         params: {
+  //           return_url: `${window.location.origin}/all-games?is_mobile=${isMobileParam}`,
+  //           has_lobby: game.has_lobby,
+  //           has_tables: game.has_tables,
+  //         },
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       }
+  //     );
 
-      const gameUrl = response.data?.game?.gameUrl || response.data?.game_url;
-      if (gameUrl) {
-        // Store current location so user can return later
-        sessionStorage.setItem("prevPage", location.pathname + location.search);
+  //     const gameUrl = response.data?.game?.gameUrl || response.data?.game_url;
+  //     if (gameUrl) {
+  //       // Store current location so user can return later
+  //       sessionStorage.setItem("prevPage", location.pathname + location.search);
 
-        // Push a new state so back button will return here
-        window.history.pushState(
-          { isGameOpen: true },
-          "",
-          window.location.href
-        );
+  //       // Push a new state so back button will return here
+  //       window.history.pushState(
+  //         { isGameOpen: true },
+  //         "",
+  //         window.location.href
+  //       );
 
-        setSelectedGameUrl(gameUrl);
-        setShowFullScreenGame(true);
-      } else {
-        toast.error("Failed to get game URL.");
-      }
-    } catch (error) {
-      setIsLaunchingGame(false);
-      const errMsg = error.response?.data?.message;
-      if (errMsg === "Unauthenticated." || error.response?.status === 401) {
-        toast.error("Please login to jump into the Game World! 🎮🚀");
-        localStorage.removeItem("token");
-        setTimeout(() => navigate("/login"), 3000);
-        return;
-      }
-      // console.error("Error launching game:", error);
-      toast.error("Game launch failed. Try again later.");
-    }
-  };
+  //       setSelectedGameUrl(gameUrl);
+  //       setShowFullScreenGame(true);
+  //     } else {
+  //       toast.error("Failed to get game URL.");
+  //     }
+  //   } catch (error) {
+  //     setIsLaunchingGame(false);
+  //     const errMsg = error.response?.data?.message;
+  //     if (errMsg === "Unauthenticated." || error.response?.status === 401) {
+  //       toast.error("Please login to jump into the Game World! 🎮🚀");
+  //       localStorage.removeItem("token");
+  //       setTimeout(() => navigate("/login"), 3000);
+  //       return;
+  //     }
+  //     // console.error("Error launching game:", error);
+  //     toast.error("Game launch failed. Try again later.");
+  //   }
+  // };
 
   // const handleFilterClick = async (type) => {
   //   try {
@@ -589,6 +605,160 @@ function Home() {
     }
   };
 
+  const RETURN_URL_KEY = "returnUrl";
+
+  const navigateToSavedReturnUrl = React.useCallback(() => {
+    const target = sessionStorage.getItem(RETURN_URL_KEY) || "/";
+
+    // Strip origin so React Router can handle it
+    const origin = window.location.origin;
+    const toPath = target.startsWith(origin)
+      ? target.slice(origin.length)
+      : target;
+
+    // If we’re already at that path+query, just close overlay; don’t navigate again
+    const here = window.location.pathname + window.location.search;
+    const url = new URL(target, origin);
+    const there = url.pathname + url.search;
+    if (here === there) return;
+
+    navigate(toPath, { replace: true }); // soft navigate (no full reload)
+  }, [navigate]);
+
+  // back btn setup starts
+  const buildReturnUrl = (location) => {
+    const base = import.meta?.env?.BASE_URL || process.env.PUBLIC_URL || "";
+    const baseTrim = base.replace(/\/$/, "");
+    const path = `${baseTrim}${location.pathname}${location.search || ""}`;
+    return new URL(path, window.location.origin).toString();
+  };
+
+  // back btn / overlay state (OUTSIDE the function)
+  // const [showModal, setShowModal] = useState(false);
+  const [iframeLoaded, setIframeLoaded] = useState(false);
+  const [iframeError, setIframeError] = useState(false);
+  // const iframeRef = useRef(null);
+
+  const handleConfirm = async () => {
+    setShowModal(false);
+    setIsLaunchingGame(false);
+    setShowFullScreenGame(false);
+    setSelectedGameUrl("");
+    await fetchUser(user?.token);
+    // go back to saved returnUrl
+    const target = sessionStorage.getItem(RETURN_URL_KEY) || "/";
+    // window.location.replace(target);
+    navigateToSavedReturnUrl();
+  };
+
+  const handleCancel = () => setShowModal(false);
+
+  const handleIframeLoad = () => {
+    setIframeLoaded(true);
+    setIsLaunchingGame(false);
+
+    const el = iframeRef.current;
+    if (!el) return;
+
+    try {
+      // if same-origin (provider redirected to our app)
+      const href = el.contentWindow.location.href;
+      if (href.startsWith(window.location.origin)) {
+        setShowFullScreenGame(false);
+        setSelectedGameUrl("");
+        setIframeError(false);
+        setIframeLoaded(false);
+        const target = sessionStorage.getItem(RETURN_URL_KEY) || href;
+        // window.location.replace(target);
+        navigateToSavedReturnUrl();
+      }
+    } catch {
+      // still cross-origin; ignore
+    }
+  };
+
+  // ---- keep popstate too (optional but nice) ----
+  useEffect(() => {
+    const onPop = () => {
+      setShowFullScreenGame(false);
+      setSelectedGameUrl("");
+      setIsLaunchingGame(false);
+      // const target = sessionStorage.getItem(RETURN_URL_KEY) || "/";
+      // window.location.replace(target);
+      navigateToSavedReturnUrl();
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
+
+  // ====== GAME LAUNCH (ENTIRE function body stays together) ======
+  const handleGameClick = async (game) => {
+    if (!game?.provider || !game?.name || !game?.uuid) {
+      toast.error("Missing game info.");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Please login to jump into the Game World! 🎮🚀");
+      navigate("/login");
+      return;
+    }
+
+    try {
+      setIsLaunchingGame(true);
+
+      const returnUrl = buildReturnUrl(location);
+      sessionStorage.setItem(RETURN_URL_KEY, returnUrl);
+
+      const response = await axios.get(
+        `${BASE_URL}/player/${game.provider}/launch/${encodeURIComponent(
+          game.name
+        )}/${game.uuid}`,
+        {
+          params: {
+            return_url: returnUrl,
+            ...(game.has_lobby !== undefined && { has_lobby: game.has_lobby }),
+            ...(game.has_tables !== undefined && {
+              has_tables: game.has_tables,
+            }),
+          },
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const gameUrl = response.data?.game?.gameUrl || response.data?.game_url;
+      if (gameUrl) {
+        // (optional)
+        sessionStorage.setItem("prevPage", location.pathname + location.search);
+
+        // push state so Back triggers our popstate handler
+        window.history.pushState(
+          { isGameOpen: true },
+          "",
+          window.location.href
+        );
+
+        setSelectedGameUrl(gameUrl);
+        setShowFullScreenGame(true);
+      } else {
+        setIsLaunchingGame(false);
+        toast.error("Failed to get game URL.");
+      }
+    } catch (error) {
+      setIsLaunchingGame(false);
+      const errMsg = error.response?.data?.message;
+      if (errMsg === "Unauthenticated." || error.response?.status === 401) {
+        toast.error("Please login to jump into the Game World! 🎮🚀");
+        localStorage.removeItem("token");
+        setTimeout(() => navigate("/login"), 3000);
+        return;
+      }
+      console.error("Error launching game:", error);
+      toast.error("Game launch failed. Try again later.");
+    }
+  };
+  // back btn setup Ends
   return (
     <>
       {/* header  */}
@@ -630,11 +800,14 @@ function Home() {
                     <p>Launching game, please wait...</p>
                   </div>
                 )}
+
                 <ToastContainer
                   position="top-right"
                   autoClose={5000}
                   theme="dark"
+                  closeButton={<MyClose />}
                 />
+
                 {isLoading ? (
                   <FullPageLoader message="" />
                 ) : (
@@ -917,6 +1090,7 @@ function Home() {
                           {/* Fullscreen Game Iframe */}
                           {showFullScreenGame && selectedGameUrl && (
                             <div
+                              className="iframe-container"
                               style={{
                                 position: "fixed",
                                 top: 0,
@@ -927,16 +1101,126 @@ function Home() {
                                 zIndex: 9999,
                               }}
                             >
-                              <iframe
-                                src={selectedGameUrl}
-                                title="Game"
-                                style={{
-                                  width: "100%",
-                                  height: "100%",
-                                  border: "none",
-                                }}
-                                allowFullScreen
-                              />
+                              {/* Navbar only appears if iframe loaded successfully */}
+                              {iframeLoaded && !iframeError && (
+                                <nav
+                                  className="navbar py-1 navbar-dark bg-black sticky-top shadow-sm d-flex align-items-center"
+                                  style={{ height: "50px" }}
+                                >
+                                  <div className="container-fluid d-flex align-items-center">
+                                    <button
+                                      className="btn btn-index w-100 deposit-btn text-white py-2"
+                                      style={{ background: "#292524" }}
+                                      onClick={() => setShowModal(true)}
+                                    >
+                                      Back
+                                    </button>
+                                  </div>
+                                </nav>
+                              )}
+
+                              {/* Iframe or Error Message */}
+                              <div
+                                className="flex-grow-1 d-flex justify-content-center align-items-center"
+                                style={{ height: "calc(100vh - 50px)" }}
+                              >
+                                {!iframeError ? (
+                                  <iframe
+                                    ref={iframeRef}
+                                    src={selectedGameUrl}
+                                    title="Game"
+                                    allowFullScreen
+                                    // onLoad={() => setIframeLoaded(true)}
+                                    onError={() => setIframeError(true)}
+                                    onLoad={handleIframeLoad}
+                                    style={{
+                                      width: "100%",
+                                      height: "100%",
+                                      border: "none",
+                                    }}
+                                  />
+                                ) : (
+                                  <div
+                                    style={{
+                                      color: "red",
+                                      fontSize: "1.5rem",
+                                      textAlign: "center",
+                                    }}
+                                  >
+                                    Game not visible
+                                  </div>
+                                )}
+                              </div>
+
+                              {/* Modal */}
+                              {showModal && (
+                                <div
+                                  className="modal-backdrop d-flex justify-content-center align-items-center"
+                                  style={{
+                                    backgroundColor: "rgba(0,0,0,0.8)",
+                                    position: "fixed",
+                                    top: 0,
+                                    left: 0,
+                                    width: "100%",
+                                    height: "100%",
+                                    zIndex: 99999,
+                                  }}
+                                >
+                                  <div
+                                    className="modal-dialog modal-dialog-centered m-2"
+                                    style={{
+                                      maxWidth: "400px",
+                                      color: "white",
+                                    }}
+                                  >
+                                    <div
+                                      className="modal-content text-center p-4"
+                                      style={{
+                                        borderRadius: "1rem",
+                                        background:
+                                          "linear-gradient(145deg, #0f0f0f, #1a1a1a)",
+                                        border: "1px solid #ff0055",
+                                        boxShadow: "0 0 20px #ff0055ae",
+                                      }}
+                                    >
+                                      <div className="modal-header border-0 justify-content-end">
+                                        <button
+                                          type="button"
+                                          className="btn-close btn-close-white"
+                                          onClick={handleCancel}
+                                        />
+                                      </div>
+
+                                      <div className="modal-body">
+                                        <h5 className="modal-title fs-2 text-warning mb-3">
+                                          Go Back?
+                                        </h5>
+                                        <p className="fs-5 text-light">
+                                          Are you sure you want to leave this
+                                          game?
+                                        </p>
+                                      </div>
+
+                                      <div className="modal-footer border-0 justify-content-center gap-2">
+                                        <button
+                                          type="button"
+                                          className="btn btn-index w-100 deposit-btn text-white py-2"
+                                          onClick={handleConfirm}
+                                        >
+                                          OK
+                                        </button>
+                                        <button
+                                          type="button"
+                                          className="btn btn-index w-100 deposit-btn text-white py-2"
+                                          onClick={handleCancel}
+                                        >
+                                          Cancel
+                                        </button>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              )}
                             </div>
                           )}
                         </div>
@@ -2133,3 +2417,9 @@ function Home() {
 }
 
 export default Home;
+
+const MyClose = ({ closeToast }) => (
+  <button onClick={closeToast} className="toaster_close_btn">
+    ×
+  </button>
+);

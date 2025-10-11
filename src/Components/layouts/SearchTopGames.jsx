@@ -417,7 +417,18 @@ const SearchTopGames = () => {
         return;
       }
       console.error("Error launching game:", error);
-      toast.error("Game launch failed. Try again later.");
+      // toast.error("Game launch failed. Try again later.");
+      // 👇 Add onClose here:
+      toast.error("Game launch failed. Try again later.", {
+        toastId: "game-launch-failed",
+        autoClose: 3000, // optional
+        closeOnClick: true, // optional
+        pauseOnHover: true, // optional
+        onClose: () => {
+          // runs if user clicks X OR after autoClose timeout
+          navigate(location.pathname, { replace: true, state: {} });
+        },
+      });
     }
   };
   useEffect(() => {
@@ -710,7 +721,12 @@ const SearchTopGames = () => {
         </div>
       )}
 
-      <ToastContainer position="top-right" autoClose={5000} theme="dark" />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        theme="dark"
+        closeButton={<MyClose />}
+      />
       {/* header  */}
       <StickyHeader onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
       {/* header end */}
@@ -1453,3 +1469,8 @@ const SearchTopGames = () => {
 };
 
 export default SearchTopGames;
+const MyClose = ({ closeToast }) => (
+  <button onClick={closeToast} className="toaster_close_btn">
+    ×
+  </button>
+);

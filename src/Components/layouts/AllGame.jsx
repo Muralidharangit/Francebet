@@ -710,7 +710,12 @@ const SearchTopGames = () => {
         </div>
       )}
 
-      <ToastContainer position="top-right" autoClose={5000} theme="dark" />
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        theme="dark"
+        closeButton={<MyClose />}
+      />
       {/* header  */}
       <StickyHeader onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
       {/* header end */}
@@ -1453,3 +1458,8 @@ const SearchTopGames = () => {
 };
 
 export default SearchTopGames;
+const MyClose = ({ closeToast }) => (
+  <button onClick={closeToast} className="toaster_close_btn">
+    ×
+  </button>
+);
