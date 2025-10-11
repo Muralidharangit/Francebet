@@ -4,7 +4,6 @@ import { Link, NavLink, useNavigate } from "react-router-dom";
 import StickyHeader from "../layouts/Header/Header";
 import Footer from "../layouts/footer/Footer";
 import AuthContext from "../../Auth/AuthContext";
-import { Toast, ToastContainer } from "react-bootstrap";
 
 const Menu = () => {
   const { user, logout } = useContext(AuthContext);

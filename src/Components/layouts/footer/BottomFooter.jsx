@@ -22,19 +22,16 @@ const BottomFooter = () => {
             {/* Payment Services Section */}
             <div className="container text-start my-4">
               <h5 className="text-white mb-3">Payment Services</h5>
-              <div className="d-flex justify-content-start flex-wrap gap-3">
+              <div className="d-flex justify-content-start flex-wrap gap-3 gapmobile-0">
                 {paymentImages.map((img, index) => (
-                  <div key={index} style={{ maxWidth: "120px" }}>
+                  <div
+                    key={index}
+                    className="d-flex mb-3 gap-3 justify-content-center"
+                  >
                     <img
                       src={img}
                       alt={`Payment Service ${index + 1}`}
-                      style={{
-                        width: "100%",
-                        height: "auto",
-                        objectFit: "contain",
-                        borderRadius: "8px",
-                        boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
-                      }}
+                      className="payment-img"
                     />
                   </div>
                 ))}
@@ -66,7 +63,7 @@ const BottomFooter = () => {
                     </p>
                   </div>
                   <div>
-                    <div className="social-links text-center w-100 justify-content-center my-2">
+                    {/* <div className="social-links text-center w-100 justify-content-center my-2">
                       <Link to={"/"} target="new">
                         <i className="fab fa-facebook-f" />
                       </Link>
@@ -76,13 +73,11 @@ const BottomFooter = () => {
                       <Link to={"/"} target="new">
                         <i className="fab ri-twitter-x-line" />
                       </Link>
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               </div>
             </div>
-
-            
           </footer>
 
           <OffCanvas />
@@ -98,7 +93,6 @@ const BottomFooter = () => {
           </div>
         </div>
 
-        
         {/* Footer end */}
       </footer>
     </div>

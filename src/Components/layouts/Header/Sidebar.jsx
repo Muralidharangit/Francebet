@@ -133,7 +133,7 @@ const Sidebar = () => {
           </div>
           <div className="text-center  bottom-0 w-100 my-3 start-0">
             <div className="icon-social">
-              <div className="d-flex justify-content-center  text-white fs-25 gap-3">
+              {/* <div className="d-flex justify-content-center  text-white fs-25 gap-3">
                 <Link to={"/"} className="text-white">
                   <i className="ri-facebook-fill" />
                 </Link>
@@ -144,7 +144,7 @@ const Sidebar = () => {
                 <Link to={"/"} className="text-white">
                   <i className="ri-twitter-x-line" />
                 </Link>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>
