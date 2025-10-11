@@ -6031,53 +6031,7 @@ code {
     position: absolute;
     right: 14px;
 }
- /* @media(min-width:560px){
-.payment-img {
-  width: 100%;
-  max-width: 120px;
-  height: 100px;
-  object-fit: contain;
-  -o-object-fit: contain;        
-  -webkit-object-fit: contain;   
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  display: block;                
-}
-} */
-
-
-/* Mobile: ≤ 576px */
-/* @media (max-width: 576px) {
-  .payment-img {
-    width: 100% !important;
-    max-width: 100% !important;
-    height: 50px !important;
-    max-height: 40px !important;
-    object-fit: contain;
-    -webkit-object-fit: contain;
-    border-radius: 2px;
-  }
-
-  .gapmobile-0 {
-    gap: 3px !important;
-  }
-} */
-
-/* Extra small devices: ≤ 340px */
-/* @media (max-width: 340px) {
-  .payment-img {
-    width: 100% !important;
-    max-width: 100% !important;
-    height: 36px !important;
-    object-fit: contain;
-    -webkit-object-fit: contain;
-    border-radius: 2px;
-  }
-
-  .gapmobile-0 {
-    gap: 1px !important;
-  }
-}  */
+ 
 
 nav.navbar.py-1.navbar-dark.bg-black.sticky-top.shadow-sm.d-flex.align-items-center div {
     justify-content: end;
@@ -6100,3 +6054,128 @@ iframe {
   overscroll-behavior: contain;      /* ✅ Prevents bounce outside container */
   touch-action: pan-x;               /* ✅ Allow only horizontal touch drag */
 }
+
+/* === UXCard Design === */
+
+
+
+
+.uxcard-upload-box {
+  position: relative;
+  background: #2a2a2a;
+  border: 1px dashed #ff2e63; /* Pink accent */
+  border-radius: 10px;
+  padding: 10px;
+  transition: all 0.2s ease;
+}
+
+.uxcard-upload-box:hover {
+  border-color: #ff2e63;
+  background: #3a3a3a;
+}
+
+.uxcard-upload-label {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #fff;
+  font-size: 0.95rem;
+}
+
+
+
+
+
+
+
+
+.uxcard-body {
+  background: #2a2a2a;
+  backdrop-filter: blur(12px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 30px 20px;
+  width: 100%;
+  max-width: 700px;
+  margin: auto;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+  color: #fff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.uxcard-body:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 12px 40px rgba(0,0,0,0.7);
+}
+
+.uxcard-header {
+  margin-bottom: 25px;
+}
+
+.uxcard-title {
+  font-size: 1.2rem;
+  font-weight: 500;
+  /* color: #00f0ff; */
+} 
+
+.uxcard-amount {
+  font-size: 2.2rem;
+  font-weight: bold;
+ color: #00c851; 
+  font-weight: 700;
+  font-size: 2rem;
+  background: linear-gradient(90deg, #00ff87, #00e0ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}  
+
+.uxcard-upload {
+  margin-bottom: 20px;
+}
+
+.uxcard-upload-box {
+  border: 2px dashed rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  padding: 15px;
+  text-align: center;
+  cursor: pointer;
+  transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.uxcard-upload-box:hover {
+  background: rgba(0, 255, 255, 0.1);
+  border-color: #00f0ff;
+}
+
+.uxcard-upload-label {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-weight: 500;
+}
+
+.uxcard-error-text {
+  color: #ff6b6b;
+  animation: shake 0.2s linear;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  50% { transform: translateX(4px); }
+  75% { transform: translateX(-4px); }
+}
+
+
+@media(max-width:992px){
+  .w-md-50{
+    width: 50% !important;
+  }
+}
+
+
