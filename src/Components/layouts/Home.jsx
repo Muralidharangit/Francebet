@@ -1522,7 +1522,7 @@ function Home() {
                                 <div
                                   className="flex-column d-flex"
                                   onClick={() =>
-                                    navigate(`/filtered-games?type=card`)
+                                    navigate(`/filtered-games?search=card`)
                                   }
                                 >
                                   <span className="text-white fw-500 fs-13  py-2 px-1">
@@ -1547,7 +1547,7 @@ function Home() {
                                 <div
                                   className="flex-column d-flex"
                                   onClick={() =>
-                                    navigate(`/filtered-games?type=instant`)
+                                    navigate(`/filtered-games?search=instant`)
                                   }
                                 >
                                   <span className="text-white fw-500 fs-13  py-2 px-1">
@@ -1574,7 +1574,9 @@ function Home() {
                                     <div
                                       className="flex-column d-flex"
                                       onClick={() =>
-                                        navigate(`/filtered-games?type=lottery`)
+                                        navigate(
+                                          `/filtered-games?search=lottery`
+                                        )
                                       }
                                     >
                                       <span className="text-white fw-500 fs-13 py-2 px-1">
@@ -1600,7 +1602,7 @@ function Home() {
                                     <div
                                       className="flex-column d-flex"
                                       onClick={() =>
-                                        navigate(`/filtered-games?type=slots`)
+                                        navigate(`/filtered-games?search=slots`)
                                       }
                                     >
                                       <span className="text-white fw-500 fs-13  py-2 px-1">
@@ -1622,7 +1624,7 @@ function Home() {
                                         "linear-gradient(to left, rgb(190 191 183 / 27%), transparent 75%) !important",
                                     }}
                                     onClick={() =>
-                                      navigate(`/filtered-games?type=dice`)
+                                      navigate(`/filtered-games?search=dice`)
                                     }
                                   >
                                     <div className="flex-column d-flex">
