@@ -198,11 +198,11 @@ const Providers = () => {
       {/* header */}
       <StickyHeader onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
 
-      <div className="container-fluid page-body-wrapper position-relative">
+      <div className="container-fluid  ">
         {/* Sidebar */}
         <Sidebar />
 
-        <div className="main-panel">
+        <div className="main-panel overflow-hiddenpro">
           <div className="content-wrapper new" ref={contentRef}>
             <div className="max-1250 mx-auto px-2">
               {/* 🔍 Search Bar */}
