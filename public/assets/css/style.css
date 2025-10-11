@@ -6031,3 +6031,55 @@ code {
     position: absolute;
     right: 14px;
 }
+
+
+.payment-img {
+  width: 100%;
+  max-width: 120px;
+  height: 100px;
+  object-fit: contain;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+
+
+
+@media (max-width: 576px) {
+  .payment-img {
+    height: 50px;
+  }
+
+  .payment-img {
+  width: 100% !important;
+  max-width:100% !important;
+  max-height: 40px;
+  object-fit: contain;
+  border-radius: 2px;
+
+}
+
+.gapmobile-0{
+gap:3px !important;
+}
+}
+
+@media(max-width: 340px) {
+  .gapmobile-0{
+gap:1px !important;
+}
+
+  .payment-img {
+  width: 100% !important;
+  max-width: 100% !important;
+    height: 36px !important;
+  object-fit: contain;
+  border-radius: 2px;
+
+}
+}
+nav.navbar.py-1.navbar-dark.bg-black.sticky-top.shadow-sm.d-flex.align-items-center div {
+    justify-content: end;
+    /* padding: 0 20px; */
+    margin: 0 15px;
+}

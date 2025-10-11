@@ -52,7 +52,7 @@ export default function DepositMethods() {
         "https://m.castlebet.com.na/custom_content/translated/en-EN/img/dep_fnbussd-step02.jpg",
         "https://m.castlebet.com.na/custom_content/translated/en-EN/img/dep_fnbussd-step03.jpg",
         "https://m.castlebet.com.na/custom_content/translated/en-EN/img/dep_fnbussd-step04.jpg",
-        "https://m.castlebet.com.na/custom_content/translated/en-EN/img/dep_fnbussd-step05.jpg",
+        "/assets/img/pay.png",
         "https://m.castlebet.com.na/custom_content/translated/en-EN/img/dep_fnbussd-step06.jpg",
         "https://m.castlebet.com.na/custom_content/translated/en-EN/img/dep_fnbussd-step07.jpg",
         "https://m.castlebet.com.na/custom_content/translated/en-EN/img/dep_fnbussd-step08.jpg",
