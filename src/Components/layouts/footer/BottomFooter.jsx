@@ -21,7 +21,14 @@ const BottomFooter = () => {
           <footer className="pt-10 pb-12 pb-md-0">
             {/* Payment Services Section */}
             <div className="container text-start my-4">
-              <h5 className="text-white mb-3">Payment Services</h5>
+              {/* <span className="dot" />
+              <h5 className="text-white mb-3">Payment Services</h5> */}
+              <div className="d-flex align-items-center pb-3">
+                <span className="dot" />
+                <h5 className="mb-0 ms-2 d-flex align-items-center">
+                  Payment Services
+                </h5>
+              </div>
               <div className="row g-2">
                 {" "}
                 {/* g-2 = gap between items */}
