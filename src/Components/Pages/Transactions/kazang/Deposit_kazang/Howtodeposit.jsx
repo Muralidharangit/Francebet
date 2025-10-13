@@ -9,25 +9,103 @@ export default function DepositMethods() {
   const methods = [
     {
       id: 1,
-      title: "Kazang",
+      title: "EasyPay Voucher (Kazang)",
       img: "/assets/img/footer_icon/1 (1).jpg",
       notice: (
         <div className="text-center my-3">
           <p style={{ fontSize: "20px", fontWeight: "bold", color: "#e4063b" }}>
-            To Make an INSTANT KAZANG DEPOSIT, you must be logged in.
+            EASYPAY VOUCHER NOW AVAILABLE AT KAZANG RETAILERS{" "}
+            {/* <a
+              href="https://play.betwin.co.na/"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{ color: "#e4063b", textDecoration: "underline" }}
+            >
+              play.betwin.co.na
+            </a> */}
+            .
           </p>
         </div>
       ),
       steps: [
-        "https://m.castlebet.com.na/custom_content/translated/en-EN/img/dep_kazang-step00.jpg",
-        "https://m.castlebet.com.na/custom_content/translated/en-EN/img/dep_kazang-step01.jpg",
-        "https://m.castlebet.com.na/custom_content/translated/en-EN/img/dep_kazang-step02a.jpg",
-        "https://m.castlebet.com.na/custom_content/translated/en-EN/img/dep_kazang-step03.jpg",
-        "https://m.castlebet.com.na/custom_content/translated/en-EN/img/dep_kazang-step04.jpg",
-        "https://m.castlebet.com.na/custom_content/translated/en-EN/img/dep_kazang-step05.jpg",
-        "https://m.castlebet.com.na/custom_content/translated/en-EN/img/dep_kazang-step06a.jpg",
-        "https://m.castlebet.com.na/custom_content/translated/en-EN/img/dep_kazang-step07.jpg",
-        "https://m.castlebet.com.na/custom_content/translated/en-EN/img/dep_kazang-step10c.jpg",
+        {
+          title: "Step 1: Purchase an EasyPay Voucher",
+          description: `Visit any participating KAZANG retailer that sells EasyPay Vouchers. Request a voucher for your preferred amount and keep the receipt safe—it contains a unique 16-digit PIN.`,
+        },
+        {
+          title: "Step 2: Log into Your Account",
+          description: (
+            <>
+              Go to{" "}
+              <a
+                href="https://play.betwin.co.na/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "#e4063b", textDecoration: "underline" }}
+              >
+                https://play.betwin.co.na/
+              </a>{" "}
+              on your browser and log in with your Username and Password.
+            </>
+          ),
+        },
+        {
+          title: "Step 3: Navigate to the Deposit Page",
+          description: (
+            <>
+              Once logged in, go to the Deposit section on{" "}
+              <a
+                href="https://play.betwin.co.na/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "#e4063b", textDecoration: "underline" }}
+              >
+                play.betwin.co.na
+              </a>{" "}
+              and select EasyPay Voucher as your deposit method.
+            </>
+          ),
+        },
+        {
+          title: "Step 4: Enter Your EasyPay Voucher Details",
+          description: `Input the 16-digit PIN from your voucher and confirm the amount matches the voucher value.`,
+        },
+        {
+          title: "Step 5: Confirm and Complete Your Deposit",
+          description: (
+            <>
+              Click <strong>Submit</strong> or <strong>Confirm Deposit</strong>{" "}
+              to process the transaction. Your{" "}
+              <a
+                href="https://play.betwin.co.na/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "#e4063b", textDecoration: "underline" }}
+              >
+                play.betwin.co.na
+              </a>{" "}
+              account will be credited instantly or within a few minutes.
+            </>
+          ),
+        },
+        {
+          title: "Step 6: Start Betting!",
+          description: (
+            <>
+              Once the deposit is successful, start placing bets on your
+              favorite sports or casino games at{" "}
+              <a
+                href="https://play.betwin.co.na/"
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{ color: "#e4063b", textDecoration: "underline" }}
+              >
+                play.betwin.co.na
+              </a>
+              .
+            </>
+          ),
+        },
       ],
     },
     {
@@ -125,7 +203,7 @@ export default function DepositMethods() {
                 How to Deposit
               </h3>
 
-              {/* --- Method Cards Row --- */}
+              {/* --- Method Cards --- */}
               <div className="row g-4 justify-content-center mb-5">
                 {methods.map((method) => (
                   <div
@@ -142,17 +220,13 @@ export default function DepositMethods() {
                       style={{
                         cursor: "pointer",
                         transition: "transform 0.3s, box-shadow 0.3s",
-                        background: "#292524 !important",
                       }}
                     >
                       <img
                         src={method.img}
                         className="card-img-top rounded-top p-2"
                         alt={method.title}
-                        style={{
-                          objectFit: "contain",
-                          background: "#292524 !important",
-                        }}
+                        style={{ objectFit: "contain" }}
                       />
                       <div className="card-body p-2">
                         <h5 className="card-title mb-0 text-white">
@@ -164,47 +238,56 @@ export default function DepositMethods() {
                 ))}
               </div>
 
-              {/* --- Notice + Steps Section --- */}
+              {/* --- Notice + Steps --- */}
               {methods.map(
                 (method) =>
                   activeMethod === method.id && (
-                    <div key={method.id} className="mb-5">
-                      {/* Notice */}
+                    <div key={method.id} className="mb-5 text-white">
                       {method.notice}
 
-                      {/* Steps */}
                       <div className="row g-4">
-                        {method.steps.map((stepImg, index) => (
-                          <div
-                            key={index}
-                            className="col-12 col-sm-6 col-md-4 col-lg-3"
-                          >
-                            <div
-                              className="card h-100 text-white shadow-sm hover-shadow bg-clr p-2"
-                              style={{ background: "#292524 !important" }}
-                            >
-                              <div className="position-relative">
-                                <span className="badge bg-danger position-absolute top-0 start-0 m-2">
-                                  Step {index + 1}
-                                </span>
-                                <img
-                                  src={stepImg}
-                                  className="card-img-top rounded-top"
-                                  alt={`Step ${index + 1}`}
+                        {method.id === 1 ? (
+                          <div className="col-12">
+                            <ol className="list-group list-group-numbered bg-transparent">
+                              {method.steps.map((step, index) => (
+                                <li
+                                  key={index}
+                                  className="list-group-item bg-dark text-white mb-3 rounded shadow-sm"
                                   style={{
-                                    objectFit: "cover",
-                                    background: "#292524 !important",
+                                    lineHeight: "1.6",
+                                    fontSize: "16px",
+                                    border: "1px solid #333",
                                   }}
-                                />
-                              </div>
-                              {/* <div className="card-body p-2 text-center">
-                                <p className="mb-0 text-white">
-                                  Step {index + 1}
-                                </p>
-                              </div> */}
-                            </div>
+                                >
+                                  <strong>{step.title}</strong>
+                                  <p className="mb-0 mt-2">
+                                    {step.description}
+                                  </p>
+                                </li>
+                              ))}
+                            </ol>
                           </div>
-                        ))}
+                        ) : (
+                          method.steps.map((img, index) => (
+                            <div
+                              key={index}
+                              className="col-12 col-sm-6 col-md-4 col-lg-3"
+                            >
+                              <div className="card h-100 bg-dark text-white shadow-sm p-2">
+                                <div className="position-relative">
+                                  <span className="badge bg-danger position-absolute top-0 start-0 m-2">
+                                    Step {index + 1}
+                                  </span>
+                                  <img
+                                    src={img}
+                                    alt={`Step ${index + 1}`}
+                                    className="card-img-top rounded"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          ))
+                        )}
                       </div>
                     </div>
                   )
@@ -212,7 +295,6 @@ export default function DepositMethods() {
             </div>
           </div>
         </div>
-
         <Footer />
       </div>
     </>
