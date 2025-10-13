@@ -602,12 +602,13 @@ const FilteredGamesPage = () => {
                   height: "100vh",
                   backgroundColor: "#000",
                   zIndex: 9999,
+                  height: "100dvh",
                 }}
               >
                 {iframeLoaded && !iframeError && (
                   <nav
                     className="navbar py-1 navbar-dark bg-black sticky-top shadow-sm d-flex align-items-center position-relative top-0 justify-content-end"
-                    style={{ height: "50px" }}
+                    style={{ height: "5%" }}
                   >
                     <div className="container-fluid d-flex align-items-center">
                       <button
@@ -623,7 +624,7 @@ const FilteredGamesPage = () => {
 
                 <div
                   className="flex-grow-1 d-flex justify-content-center align-items-center"
-                  style={{ height: "calc(100vh - 50px)" }}
+                  style={{ height: "95%" }}
                 >
                   {!iframeError ? (
                     <iframe

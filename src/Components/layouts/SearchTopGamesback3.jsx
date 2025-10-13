@@ -701,6 +701,7 @@ const [iframeError, setIframeError] = useState(false);
                       height: "100vh",
                       backgroundColor: "#000",
                       zIndex: 9999,
+                      height: "100dvh",
                     }}
                   >
                     {/* Navbar only appears if iframe loaded successfully */}
@@ -1370,7 +1371,6 @@ const [iframeError, setIframeError] = useState(false);
                     </>
                   )}
                 </>
-              
               </div>
 
               {/* {games.map((game, index) => (
