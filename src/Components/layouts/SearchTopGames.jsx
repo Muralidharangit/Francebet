@@ -776,20 +776,22 @@ const SearchTopGames = () => {
                       style={{ height: "calc(100vh - 50px)" }}
                     >
                       {!iframeError ? (
-                        <iframe
-                          ref={iframeRef}
-                          src={selectedGameUrl}
-                          title="Game"
-                          allowFullScreen
-                          // onLoad={() => setIframeLoaded(true)}
-                          onError={() => setIframeError(true)}
-                          onLoad={handleIframeLoad}
-                          style={{
-                            width: "100%",
-                            height: "100%",
-                            border: "none",
-                          }}
-                        />
+                        // **NEW Container for scaling**
+                        <div className="game-wrapper">
+                          <iframe
+                            ref={iframeRef}
+                            src={selectedGameUrl}
+                            title="Game"
+                            allowFullScreen
+                            onError={() => setIframeError(true)}
+                            onLoad={handleIframeLoad}
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              border: "none",
+                            }}
+                          />
+                        </div>
                       ) : (
                         <div
                           style={{
@@ -870,6 +872,12 @@ const SearchTopGames = () => {
                     )}
                   </div>
                 )}
+
+
+
+
+
+                
                 {/* ) : ( */}
                 <>
                   {/* 🔍 Search Bar */}
