@@ -6094,18 +6094,15 @@ iframe {
 }
 
 .overflow-hiddenpro {
-  overflow-x: hidden; /* ✅ Allow horizontal scroll */
-  overflow-y: auto; /* 🚫 Hide vertical scroll */
+  overflow-x: hidden; 
+  overflow-y: auto; 
 
-  -webkit-overflow-scrolling: touch; /* ✅ Smooth scroll in iOS Safari */
+  -webkit-overflow-scrolling: touch; 
+  overscroll-behavior: contain; 
+  touch-action: pan-x; 
+  object-fit: contain !important;
+}
 
-  overscroll-behavior: contain; /* ✅ Prevents bounce outside container */
-  touch-action: pan-x; /* ✅ Allow only horizontal touch drag */
-}
-=======
-  overscroll-behavior: contain;      /* ✅ Prevents bounce outside container */
-  touch-action: pan-x;               /* ✅ Allow only horizontal touch drag */
-}
 
 /* === UXCard Design === */
 

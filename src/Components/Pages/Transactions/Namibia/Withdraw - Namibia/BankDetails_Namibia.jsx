@@ -612,7 +612,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
                                     </div>
                                     <div>
                                       <p className="mb-0 text-grey">
-                                        IFSC Code
+                                        Branch Code
                                       </p>
                                       <h6>{bank.ifsc_code || "N/A"}</h6>
                                     </div>

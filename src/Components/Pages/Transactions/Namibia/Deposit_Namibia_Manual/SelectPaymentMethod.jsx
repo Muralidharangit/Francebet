@@ -228,7 +228,7 @@ const SelectPaymentMethod = ({
 
                 {/* Branch Code (ifsc_code in your API) */}
                 <div className="input-field mb-3 position-relative">
-                  <label className="text_grey_color">IFSC Code</label>
+                  <label className="text_grey_color">Branch Code</label>
                   <input
                     required
                     className="input mt-1"
