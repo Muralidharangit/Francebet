@@ -2357,14 +2357,14 @@ function Home() {
                         role="dialog"
                         style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
                       >
-                        <div className="modal-dialog modal-dialog-centered modal-sm justify-content-center">
+                        <div className="modal-dialog modal-dialog-centered modal-sm justify-content-center voucher_pop_up">
                           <div
                             className="modal-content"
                             style={{ width: "240px" }}
                           >
                             <div className="modal-body d-flex flex-column align-items-center">
                               <img
-                                src="assets/img/icons/rupee.gif"
+                                src="https://static.vecteezy.com/system/resources/thumbnails/045/822/274/small/discount-voucher-with-golden-coins-icon-3d-render-concept-of-3d-discount-coupon-icon-illustration-png.png"
                                 alt="rupee"
                                 className="mb-2 w-75"
                               />
@@ -2373,7 +2373,7 @@ function Home() {
                                 className={`fw-700 fs-13 text-center mb-1 ${
                                   result?.type === "error"
                                     ? "text-danger"
-                                    : "text-black"
+                                    : "text-white"
                                 }`}
                               >
                                 {result?.message}
@@ -2400,7 +2400,7 @@ function Home() {
                                 </span>
                               </Link>
 
-                              <span className="text-dark-grey fs-10 fw-700 mt-3">
+                              <span className="text-white fs-10 fw-700 mt-3">
                                 For Choosing {APP_NAME}
                               </span>
                             </div>

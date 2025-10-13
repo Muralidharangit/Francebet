@@ -445,10 +445,10 @@ const DepositHistory = () => {
                           >
                             Retry
                           </button>
-                          <img
+                          {/* <img
                             src="https://cdni.iconscout.com/illustration/premium/thumb/unauthorized-access-illustration-download-in-svg-png-gif-file-formats--hacker-attack-cyber-intrusion-security-breach-data-pack-crime-illustrations-7706304.png"
                             alt="unauth"
-                          />
+                          /> */}
                         </>
                       ) : paginatedData.length > 0 ? (
                         paginatedData.map((bet) => (
