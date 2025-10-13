@@ -14,16 +14,15 @@ export default function DepositMethods() {
       notice: (
         <div className="text-center my-3">
           <p style={{ fontSize: "20px", fontWeight: "bold", color: "#e4063b" }}>
-            To Make an INSTANT DEPOSIT using EasyPay Voucher, you must be logged
-            in to{" "}
-            <a
+            EASYPAY VOUCHER NOW AVAILABLE AT KAZANG RETAILERS{" "}
+            {/* <a
               href="https://play.betwin.co.na/"
               target="_blank"
               rel="noopener noreferrer"
               style={{ color: "#e4063b", textDecoration: "underline" }}
             >
               play.betwin.co.na
-            </a>
+            </a> */}
             .
           </p>
         </div>
