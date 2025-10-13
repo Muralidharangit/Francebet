@@ -1209,7 +1209,7 @@ const SearchTopGames = () => {
                                   <h5 className="text-white mt-4">
                                     Search by Game Name
                                   </h5>
-                                  <div className="row">
+                                  <div className="row px-3">
                                     {searchByNameResults.map((game, index) => (
                                       <motion.div
                                         className="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6  px-1"
