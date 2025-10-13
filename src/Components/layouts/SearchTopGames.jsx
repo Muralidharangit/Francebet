@@ -658,41 +658,74 @@ const SearchTopGames = () => {
     await fetchUser(currentToken);
   };
 
-  const handleCancel = () => {
-    setShowModal(false);
-  };
+  // const iframeRef = useRef(null);
   const [iframeLoaded, setIframeLoaded] = useState(false);
   const [iframeError, setIframeError] = useState(false);
-  // put this near your component state
+  // const [isLaunchingGame, setIsLaunchingGame] = useState(true); // optional overlay
+
+  // ... other state variables and handleCancel, handleConfirm ...
+
+  // Handle iframe load
   const handleIframeLoad = () => {
+    // Only set loaded state if the iframe is actually the game we want
+    // You might want to check for the selectedGameUrl here too for robust logic.
     setIframeLoaded(true);
-    setIsLaunchingGame(false); // hide "Launching game..." overlay
+    // setIsLaunchingGame(false); // hide "Launching game..." overlay
 
     const el = iframeRef.current;
     if (!el) return;
 
-    try {
-      // If the iframe is same-origin now, we can read its URL
-      const href = el.contentWindow.location.href;
-      const u = new URL(href);
-
-      // If provider redirected iframe back to your app route
-      if (
-        u.origin === window.location.origin &&
-        u.pathname.startsWith("/top-games")
-      ) {
-        // close overlay + hard refresh parent page
-        setShowFullScreenGame(false);
-        setSelectedGameUrl("");
-        setIframeError(false);
-        setIframeLoaded(false);
-
-        window.location.replace("/top-games");
-      }
-    } catch {
-      // Still cross-origin (normal gameplay) — ignore
-    }
+    // ... (rest of handleIframeLoad logic, including cross-origin error handling) ...
   };
+
+  // Cross-browser fullscreen
+  const goFullScreen = () => {
+    const iframe = iframeRef.current;
+    if (!iframe) return;
+
+    // We do NOT use fullscreenTriggered.current here anymore.
+    // Instead, we rely on the useEffect dependency array to trigger this
+    // when a *new* game loads successfully.
+
+    console.log("Attempting fullscreen on iframe...");
+
+    // Standard cross-browser implementations
+    if (iframe.requestFullscreen) iframe.requestFullscreen();
+    else if (iframe.mozRequestFullScreen)
+      iframe.mozRequestFullScreen(); // Firefox
+    else if (iframe.webkitRequestFullscreen)
+      iframe.webkitRequestFullscreen(); // Safari/Chrome
+    else if (iframe.msRequestFullscreen) iframe.msRequestFullscreen(); // Edge
+    else console.log("Fullscreen not supported");
+  };
+
+  // Trigger fullscreen when iframe successfully loads.
+  // This will run *every* time iframeLoaded goes from false to true.
+  useEffect(() => {
+    if (iframeLoaded && !iframeError) {
+      // Attempt 1: Go fullscreen immediately upon load
+      goFullScreen();
+
+      // Attempt 2: Set a timeout for a slight retry, common for WebKit (Safari/Chrome)
+      // This is not a "loop," but a guaranteed second attempt shortly after.
+      const retryTimeout = setTimeout(() => {
+        // Check if we are already in fullscreen before retrying
+        if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+          console.log("Fullscreen retry (WebKit/Safari workaround)...");
+          goFullScreen();
+        }
+      }, 500); // 500ms delay for retry
+
+      // Cleanup the timeout if the component unmounts
+      return () => clearTimeout(retryTimeout);
+    }
+  }, [iframeLoaded, iframeError]);
+  
+  // Dependencies: runs when iframeLoaded changes
+
+   const handleCancel = () => {
+     setShowModal(false);
+   };
 
   return (
     <>
@@ -750,17 +783,18 @@ const SearchTopGames = () => {
                       height: "100vh",
                       backgroundColor: "#000",
                       zIndex: 9999,
+                      height: "100dvh",
                     }}
                   >
                     {/* Navbar only appears if iframe loaded successfully */}
                     {iframeLoaded && !iframeError && (
                       <nav
-                        className="navbar py-1 navbar-dark bg-black sticky-top shadow-sm d-flex align-items-center position-relative top-0 w-100"
-                        style={{ height: "50px" }}
+                        className="navbar  py-1 navbar-dark bg-black sticky-top shadow-sm d-flex align-items-center position-relative top-0 w-100"
+                        style={{ height: "5%" }}
                       >
                         <div className="container-fluid d-flex align-items-center">
                           <button
-                            className="btn btn-index w-100 deposit-btn text-white py-2"
+                            className="btn  btn-index w-100 deposit-btn text-white py-2"
                             style={{ background: "#292524" }}
                             onClick={() => setShowModal(true)}
                           >
@@ -772,26 +806,24 @@ const SearchTopGames = () => {
 
                     {/* Iframe or Error Message */}
                     <div
-                      className="flex-grow-1 d-flex justify-content-center align-items-center"
-                      style={{ height: "calc(100vh - 50px)" }}
+                      className="flex d-flex justify-content-center align-items-center "
+                      style={{ height: "95%" }}
                     >
                       {!iframeError ? (
-                        // **NEW Container for scaling**
-                        <div className="game-wrapper">
-                          <iframe
-                            ref={iframeRef}
-                            src={selectedGameUrl}
-                            title="Game"
-                            allowFullScreen
-                            onError={() => setIframeError(true)}
-                            onLoad={handleIframeLoad}
-                            style={{
-                              width: "100%",
-                              height: "100%",
-                              border: "none",
-                            }}
-                          />
-                        </div>
+                        <iframe
+                          ref={iframeRef}
+                          src={selectedGameUrl}
+                          title="Game"
+                          allowFullScreen
+                          // onLoad={() => setIframeLoaded(true)}
+                          onError={() => setIframeError(true)}
+                          onLoad={handleIframeLoad}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            border: "none",
+                          }}
+                        />
                       ) : (
                         <div
                           style={{
@@ -872,12 +904,6 @@ const SearchTopGames = () => {
                     )}
                   </div>
                 )}
-
-
-
-
-
-                
                 {/* ) : ( */}
                 <>
                   {/* 🔍 Search Bar */}

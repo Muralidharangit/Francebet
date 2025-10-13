@@ -185,7 +185,7 @@ function Deposit() {
                     <i className="ri-arrow-left-s-line text-white fs-24" />
                   </button>
                 </div> */}
-                 {/* Title Row */}
+                {/* Title Row */}
                 <div className="d-flex align-items-center justify-content-between position-relative px-0 mt-3">
                   <div className="d-flex justify-content-between align-items-center px-1 mx-1">
                     <button
@@ -201,8 +201,6 @@ function Deposit() {
                   </h5>
                 </div>
                 {/* header Ends */}
-
-               
 
                 {/* --- Voucher Form Section --- */}
                 <div className="wizard my-5 px-2">
@@ -294,7 +292,7 @@ function Deposit() {
                               <div className="row g-2">
                                 <div className="col-6">
                                   <div className="text-grey small">
-                                    Face Value
+                                    Currency Value
                                   </div>
                                   <div className="fw-semibold text-white">
                                     {(details.face_value ?? 0).toFixed(2)}

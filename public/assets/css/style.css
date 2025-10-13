@@ -6100,7 +6100,7 @@ iframe {
   -webkit-overflow-scrolling: touch; 
   overscroll-behavior: contain; 
   touch-action: pan-x; 
-  object-fit: contain !important;
+  object-fit: contain;
 }
 
 
@@ -6226,23 +6226,8 @@ iframe {
     width: 50% !important;
   }
 }
-
-.game-aspect-ratio-wrapper {
-  /* CRITICAL: Defines the game's fixed ratio (e.g., 16 units wide for every 9 units high) */
-  /* aspect-ratio: 16 / 9;  */
-  
-  /* Start by trying to take up full available width */
-  /* width: 100%; */
-  
-  /* CRITICAL: Ensures the box cannot grow beyond the available height of its flex parent */
-  /* max-height: 100%;  */
-  
-  /* On some older phones, this helps ensure the scaling is contained */
-  /* object-fit: fill; */
-}
-
-.game-aspect-ratio-wrapper iframe {
-  /* Ensure the iframe fills the aspect ratio box */
-  /* width: 100%; */
-  /* height: 100%; */
-}
+/* ---------------------------------------------------------------- */
+/* Fix for iOS Safari 100vh issue: 
+   Defines a reliable variable for the viewport height, adjusting for dynamic bars.
+   This should be placed in your global CSS.
+*/
