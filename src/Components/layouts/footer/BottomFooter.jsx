@@ -75,13 +75,19 @@ const BottomFooter = () => {
                   </div>
                   <div>
                     <div className="social-links text-center w-100 justify-content-center my-2">
-                      <Link to={"/"} target="new">
+                      <Link
+                        to={"https://www.facebook.com/betwinnamibia"}
+                        target="new"
+                      >
                         <i className="fab fa-facebook-f" />
                       </Link>
-                      <Link to={"/"} target="new">
+                      <Link
+                        to={"https://www.instagram.com/betwin_namibia"}
+                        target="new"
+                      >
                         <i className="fab fa-instagram" />
                       </Link>
-                      <Link to={"/"} target="new">
+                      <Link to={"https://x.com/BetWin2025"} target="new">
                         <i className="fab ri-twitter-x-line" />
                       </Link>
                     </div>
