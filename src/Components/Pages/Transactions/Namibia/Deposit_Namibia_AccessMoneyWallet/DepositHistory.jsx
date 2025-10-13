@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import BASE_URL from "../../../../../API/api";
 import axios from "axios";
-import { depositHistoryNedBankNamibia } from "../../../../../API/depositAPI";
+import { depositHistoryAccessMoneyNamibia, depositHistoryNedBankNamibia } from "../../../../../API/depositAPI";
 import { verifyToken } from "../../../../../API/authAPI";
 import AuthContext from "../../../../../Auth/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
@@ -55,7 +55,7 @@ const DepositHistory = () => {
       //   return;
       // }
 
-      const response = await depositHistoryNedBankNamibia(token);
+      const response = await depositHistoryAccessMoneyNamibia(token);
       if (response.status === "success") {
         setHistory(response.depositHistory);
         setError(null); // 🟢 clear old errors

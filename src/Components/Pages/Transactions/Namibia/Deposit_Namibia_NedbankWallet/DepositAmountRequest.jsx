@@ -173,67 +173,48 @@ const DepositAmountRequest = ({
         {/* <div className="p-3 red-gradient rounded-top d-flex justify-content-center align-items-center">
             <h5 className="text-center mb-0">***Deposit Amount Form***</h5>
           </div> */}
-        <div className="card-body">
+        <div className="uxcard-body">
           {amount && paymentSelectedMethod ? (
             <>
-              <h5 className=" mb-0">Deposit Amount</h5>
-              <h3 className="text-success">
-                {CURRENCY_SYMBOL} {amount}
-              </h3>
-              {/* <h5 className="mb-3">
-                You have selected the{" "}
-                {paymentSelectedMethod === 1 ? "BANK" : "UPI"} payment method.
-              </h5> */}
-              <form
-                className="form-control_container"
-                onSubmit={
-                  formik.handleSubmit
-                } /* encType optional if using FormData */
-              >
-                {/* amount (hidden/disabled) */}
-                <div
-                  className="input-field mb-3 mt-3"
-                  style={{ display: "none" }}
-                >
-                  <p className="mb-0">
-                    You have selected {CURRENCY_SYMBOL}
-                    {amount} to deposit.
-                  </p>
-                  <input
-                    className="input readonly-input mt-1"
-                    type="text"
-                    name="amount"
-                    value={formik.values.amount}
-                    readOnly
-                    disabled
-                  />
-                </div>
+              <div className="uxcard-header text-center mb-4">
+                <h5 className="uxcard-title mb-1">Deposit Amount</h5>
+                <h3 className="uxcard-amount">
+                  {CURRENCY_SYMBOL} {amount}
+                </h3>
+              </div>
 
-                {/* image REQUIRED */}
-                <div className="mb-2">
-                  <label
-                    htmlFor="formFile"
-                    className="form-label text-white mb-0"
-                  >
+              <form onSubmit={formik.handleSubmit} className="uxcard-form">
+                {/* API Error */}
+                {formik.errors.api && (
+                  <div className="uxcard-alert-error mb-3">
+                    {Array.isArray(formik.errors.api)
+                      ? formik.errors.api.map((err, index) => (
+                          <li key={index}>{err}</li>
+                        ))
+                      : formik.errors.api}
+                  </div>
+                )}
+
+                {/* Screenshot Upload */}
+                <div className="uxcard-upload mb-3">
+                  <label htmlFor="formFile" className="uxcard-label">
                     Payment Screenshot <span className="text-danger">*</span>
                   </label>
 
-                  <div className="custom-file-input" style={{ marginTop: 0 }}>
-                    <label htmlFor="formFile">
-                      <span className="btn">Upload File</span>
-                      <span className="file-name">
+                  <div className="uxcard-upload-box">
+                    <label htmlFor="formFile" className="uxcard-upload-label">
+                      <i className="fa-solid fa-upload me-2"></i>
+                      <span>
                         {formik.values.payment_screenshot
                           ? formik.values.payment_screenshot.name
                           : "No file chosen"}
                       </span>
                     </label>
-
                     <input
                       type="file"
                       id="formFile"
-                      className="form-control"
-                      hidden
                       accept="image/*"
+                      hidden
                       onChange={handleFileChange}
                       onBlur={() =>
                         formik.setFieldTouched("payment_screenshot", true)
@@ -243,61 +224,44 @@ const DepositAmountRequest = ({
 
                   {formik.touched.payment_screenshot &&
                     formik.errors.payment_screenshot && (
-                      <p className="text-danger">
+                      <small className="uxcard-error-text mt-1 d-block">
                         {formik.errors.payment_screenshot}
-                      </p>
+                      </small>
                     )}
                 </div>
 
-                {/* UTR OPTIONAL */}
-                {/* <div className="input-field mb-3">
-                  <input
-                    className="input"
-                    type="text"
-                    name="utr_number"
-                    value={formik.values.utr_number}
-                    onChange={(e) => {
-                      formik.handleChange(e);
-                      setFormData((prev) => ({
-                        ...prev,
-                        utr_number: e.target.value,
-                      }));
-                    }}
-                    onBlur={formik.handleBlur}
-                  />
-                  <label className="label" htmlFor="utr_number">
-                    Enter UTR No (optional)
-                  </label>
-
-                  {formik.touched.utr_number && formik.errors.utr_number && (
-                    <p className="text-danger">{formik.errors.utr_number}</p>
-                  )}
-                </div> */}
-
-                <div className="d-flex justify-content-center">
+                {/* Submit Button */}
+                <div className="text-center mt-4">
                   <button
                     type="submit"
-                    className="btn btn-login w-50 mt mb- text-capitalize"
+                    className="btn btn-login w-25 mt mb- text-capitalize w-md-50"
                     disabled={formik.isSubmitting}
                   >
-                    {formik.isSubmitting ? "Submitting ..." : "Submit"}
+                    {formik.isSubmitting ? (
+                      <>
+                        <i className="fa-solid fa-spinner fa-spin me-2"></i>
+                        Submitting...
+                      </>
+                    ) : (
+                      "Submit"
+                    )}
                   </button>
                 </div>
               </form>
             </>
           ) : (
-            <div className="text-danger mt-3">
+            <div className="uxcard-empty text-center mt-3">
               {!amount && (
                 <p>
-                  <i className="fa-solid fa-hand-point-right"></i> Please select
-                  an amount in <strong>Step 1</strong> before continuing.
+                  <i className="fa-solid fa-hand-point-right text-warning me-2"></i>
+                  Please select an amount in <strong>Step 1</strong> before
+                  continuing.
                 </p>
               )}
               {!paymentSelectedMethod && (
                 <p>
-                  <i className="fa-solid fa-hand-point-right"></i> Please select
-                  a payment method and deposit the amount in{" "}
-                  <strong>Step 2</strong> before continuing.
+                  <i className="fa-solid fa-hand-point-right text-warning me-2"></i>
+                  Please select a payment method in <strong>Step 2</strong>.
                 </p>
               )}
             </div>

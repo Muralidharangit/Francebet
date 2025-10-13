@@ -6231,3 +6231,6 @@ iframe {
    Defines a reliable variable for the viewport height, adjusting for dynamic bars.
    This should be placed in your global CSS.
 */
+.voucher_pop_up .modal-content {
+    background-color: #1c1c1c;
+}
