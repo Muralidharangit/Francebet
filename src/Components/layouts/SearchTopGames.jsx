@@ -678,50 +678,7 @@ const SearchTopGames = () => {
     // ... (rest of handleIframeLoad logic, including cross-origin error handling) ...
   };
 
-  // Cross-browser fullscreen
-  const goFullScreen = () => {
-    const iframe = iframeRef.current;
-    if (!iframe) return;
 
-    // We do NOT use fullscreenTriggered.current here anymore.
-    // Instead, we rely on the useEffect dependency array to trigger this
-    // when a *new* game loads successfully.
-
-    console.log("Attempting fullscreen on iframe...");
-
-    // Standard cross-browser implementations
-    if (iframe.requestFullscreen) iframe.requestFullscreen();
-    else if (iframe.mozRequestFullScreen)
-      iframe.mozRequestFullScreen(); // Firefox
-    else if (iframe.webkitRequestFullscreen)
-      iframe.webkitRequestFullscreen(); // Safari/Chrome
-    else if (iframe.msRequestFullscreen) iframe.msRequestFullscreen(); // Edge
-    else console.log("Fullscreen not supported");
-  };
-
-  // Trigger fullscreen when iframe successfully loads.
-  // This will run *every* time iframeLoaded goes from false to true.
-  useEffect(() => {
-    if (iframeLoaded && !iframeError) {
-      // Attempt 1: Go fullscreen immediately upon load
-      goFullScreen();
-
-      // Attempt 2: Set a timeout for a slight retry, common for WebKit (Safari/Chrome)
-      // This is not a "loop," but a guaranteed second attempt shortly after.
-      const retryTimeout = setTimeout(() => {
-        // Check if we are already in fullscreen before retrying
-        if (!document.fullscreenElement && !document.webkitFullscreenElement) {
-          console.log("Fullscreen retry (WebKit/Safari workaround)...");
-          goFullScreen();
-        }
-      }, 500); // 500ms delay for retry
-
-      // Cleanup the timeout if the component unmounts
-      return () => clearTimeout(retryTimeout);
-    }
-  }, [iframeLoaded, iframeError]);
-  
-  // Dependencies: runs when iframeLoaded changes
 
    const handleCancel = () => {
      setShowModal(false);
