@@ -229,45 +229,42 @@ export const AuthProvider = ({ children }) => {
 
   // ✅ paste the effect here, inside AuthProvider
   useEffect(() => {
-    const code = localStorage.getItem("pendingGiftCode");
-    if (!user?.token || !code) return;
+  const code = localStorage.getItem("pendingGiftCode");
+  if (!user?.token || !code) return;
 
-    (async () => {
-      try {
-        const upper = code;
-        await axiosInstance.get("/gift-envelope/validate", {
-          params: { id: upper },
-        });
+  (async () => {
+    try {
+      const upper = code;
 
-        const payload = { mobile: user?.mobile, code: upper };
-        const claimRes = await axiosInstance.post(
-          "/gift-envelope/claim",
-          payload
-        );
+      await axiosInstance.get("/gift-envelope/validate", { params: { id: upper } });
 
-        sessionStorage.setItem(
-          "giftFlash",
-          JSON.stringify({
-            type: "success",
-            message: claimRes?.data?.message || "Gift claimed successfully 🎉",
-            amount: claimRes?.data?.amount,
-          })
-        );
-      } catch (err) {
-        const msg =
-          err?.message ||
-          err?.response?.data?.error ||
-          err?.message ||
-          "Gift link invalid, used, or claim failed.";
-        sessionStorage.setItem(
-          "giftFlash",
-          JSON.stringify({ type: "error", message: msg })
-        );
-      } finally {
-        localStorage.removeItem("pendingGiftCode");
-      }
-    })();
-  }, [user?.token, user?.mobile]);
+      const payload = { mobile: user?.mobile, code: upper };
+      const claimRes = await axiosInstance.post("/gift-envelope/claim", payload);
+
+      sessionStorage.setItem(
+        "giftFlash",
+        JSON.stringify({
+          type: "success",
+          message: claimRes?.data?.message || "Gift claimed successfully 🎉",
+          amount: claimRes?.data?.amount,
+        })
+      );
+      window.dispatchEvent(new Event("giftFlash"));  // ✅ notify success
+    } catch (err) {
+      const msg =
+        err?.response?.data?.error ||
+        err?.message ||
+        "Gift link invalid, used, or claim failed.";
+      sessionStorage.setItem(
+        "giftFlash",
+        JSON.stringify({ type: "error", message: msg })
+      );
+      window.dispatchEvent(new Event("giftFlash"));  // ✅ notify error
+    } finally {
+      localStorage.removeItem("pendingGiftCode");
+    }
+  })();
+}, [user?.token, user?.mobile]);
   // --- Fetch user data ---
   const fetchUser = useCallback(async (token) => {
     try {
