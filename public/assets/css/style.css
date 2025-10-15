@@ -5195,7 +5195,7 @@ section.container.black-red::after {
   }
   .coin-box {
     padding: 5px 8px;
-    width: 160px;
+    width: 180px;
   }
 
   .coin-box {
@@ -6437,4 +6437,46 @@ iframe {
 }
 .green_light {
   color: #65d14b;
+}
+
+
+.withdraw_card {
+  background: #343434 !important;
+  border-radius: 4px;
+  color: #fff;
+  padding: 20px;
+  backdrop-filter: blur(8px);
+  transition: all 0.3s ease;
+}
+
+
+.text-gradient {
+  /* background: linear-gradient(90deg, #00c6ff, #0072ff);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent; */
+}
+
+.bg-glass {
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(10px);
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.btn-gradient {
+  background: #e4063b;
+  color: #fff !important;
+  border: none;
+  transition: all 0.3s ease;
+}
+
+
+
+.text-grey {
+  color: #d0d0d0 !important;
+}
+
+.alert-light {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 10px;
 }

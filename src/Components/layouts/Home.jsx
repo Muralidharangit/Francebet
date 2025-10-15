@@ -1410,7 +1410,7 @@ function Home() {
                                       className="card bg-cardtrans p-1"
                                       onClick={() =>
                                         navigate(
-                                          `/filtered-games?search=${game.type}`
+                                          `/filtered-games?type=${game.type}`
                                         )
                                       }
                                       role="button"
