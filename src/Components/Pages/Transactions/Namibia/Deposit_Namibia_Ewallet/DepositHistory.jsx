@@ -484,7 +484,10 @@ const DepositHistory = () => {
 
                                 <div className="d-flex  align-items-end flex-column">
                                   <h4 className="mb-1 amount-fs-size">
-                                    {CURRENCY_SYMBOL} {bet.deposit_amount}
+                                    {CURRENCY_SYMBOL} {""}
+                                    {Number(bet?.deposit_amount ?? 0).toFixed(
+                                      2
+                                    )}
                                   </h4>
 
                                   <span

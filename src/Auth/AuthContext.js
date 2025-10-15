@@ -238,6 +238,7 @@ export const AuthProvider = ({ children }) => {
 
       await axiosInstance.get("/gift-envelope/validate", { params: { id: upper } });
 
+      
       const payload = { mobile: user?.mobile, code: upper };
       const claimRes = await axiosInstance.post("/gift-envelope/claim", payload);
 
