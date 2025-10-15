@@ -1,7 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import BASE_URL from "../../../../../API/api";
 import axios from "axios";
-import { depositHistoryAccessMoneyNamibia, depositHistoryNedBankNamibia } from "../../../../../API/depositAPI";
+import {
+  depositHistoryAccessMoneyNamibia,
+  depositHistoryNedBankNamibia,
+} from "../../../../../API/depositAPI";
 import { verifyToken } from "../../../../../API/authAPI";
 import AuthContext from "../../../../../Auth/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
@@ -484,7 +487,10 @@ const DepositHistory = () => {
 
                                 <div className="d-flex  align-items-end flex-column">
                                   <h4 className="mb-1 amount-fs-size">
-                                    {CURRENCY_SYMBOL} {bet.deposit_amount}
+                                    {CURRENCY_SYMBOL} {""}
+                                    {Number(bet?.deposit_amount ?? 0).toFixed(
+                                      2
+                                    )}
                                   </h4>
 
                                   <span
