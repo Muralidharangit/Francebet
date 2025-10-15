@@ -127,6 +127,21 @@ export const storeBankNamibia = async (token, values, userId) => {
   return response.data;
 };
 
+// active in-active status changing
+export const changeBankNamibiaStatus = async (token, bank_id, newStatus) => {
+  const formData = new FormData();
+  formData.append("bank_id", bank_id);
+  formData.append("status", newStatus);
+  const response = await axiosInstance.post(
+    "/player/withdraw-namibia/manual-withdraw/change-player-bank-status",
+    formData,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+  return response.data;
+};
+
 // send-withdraw-request Namibia
 export const sendWithdrawRequestNamibia = async ({
   token,
@@ -182,7 +197,6 @@ export const storeBankIndia = async (token, values, userId) => {
   );
   return response.data;
 };
-
 
 // send-withdraw-request India
 export const sendWithdrawRequestIndia = async ({

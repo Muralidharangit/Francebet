@@ -7,6 +7,7 @@ import { useContext } from "react";
 import { useFormik } from "formik";
 import AuthContext from "../../../../../Auth/AuthContext";
 import {
+  changeBankNamibiaStatus,
   changeBankStatus,
   deleteBankDetails,
   EditBank,
@@ -107,7 +108,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
       }
 
       // ✅ Step 2: Proceed with status change
-      const response = await changeBankStatus(token, bank_id, newStatus);
+      const response = await changeBankNamibiaStatus(token, bank_id, newStatus);
 
       // console.log("newStatus", newStatus);
 
@@ -892,14 +893,14 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
                           className={`btn ${
                             bank.status === "1" ? "btn-success" : "btn-danger"
                           }`}
-                          // onClick={() => toggleBankStatus(bank.id, bank.status)}
-                          onClick={handlePopUP}
+                          onClick={() => toggleBankStatus(bank.id, bank.status)}
+                          // onClick={handlePopUP}
                         >
                           {bank.status === "1" ? "Active" : "Inactive"}
                         </button>
 
                         {/* Edit Button */}
-                        <button
+                        {/* <button
                           className="btn mt-2"
                           onClick={handlePopUP}
                           // onClick={() => handleEditBankClick(bank.id)}
@@ -907,17 +908,17 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
                           // data-bs-target="#edit_bank_details"
                         >
                           <i class="fa-solid fa-pen-to-square fs-4 text-white"></i>
-                        </button>
+                        </button> */}
                         {/* Edit Button */}
-                        <button
+                        {/* <button
                           className="btn mt-2"
                           // onClick={() => handleDeleteBankClick(bank.id)}
                           onClick={handlePopUP}
                         >
                           <i class="fa-regular fa-trash-can fs-4 text-danger">
-                            {/* {bank.id} */}
+                            {bank.id}
                           </i>
-                        </button>
+                        </button> */}
                       </div>
                     </div>
                   </div>
