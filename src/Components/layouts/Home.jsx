@@ -59,7 +59,7 @@ function Home() {
 
   const location = useLocation();
   const navigate = useNavigate();
-
+  const hasShownRef = useRef(false);
   const { fetchUser, user } = useContext(AuthContext);
   // const { data: , isLoading_data } = useProviders();
   // Fetch Dice Games Effect
@@ -98,19 +98,57 @@ function Home() {
     staleTime: 5 * 60 * 1000, // optional 5 minutes cache
   });
 
+  // useEffect(() => {
+  //   const flash = sessionStorage.getItem("giftFlash");
+  //   if (flash) {
+  //     try {
+  //       const parsed = JSON.parse(flash);
+  //       setResult(parsed);
+  //       setShowModal(true);
+  //     } catch {
+  //       setResult({ type: "error", message: flash });
+  //       setShowModal(true);
+  //     }
+  //     sessionStorage.removeItem("giftFlash");
+  //   }
+  // }, []);
+
   useEffect(() => {
-    const flash = sessionStorage.getItem("giftFlash");
-    if (flash) {
+    const showFromStorage = () => {
+      const flash = sessionStorage.getItem("giftFlash");
+      if (!flash) return;
       try {
-        const parsed = JSON.parse(flash);
-        setResult(parsed);
-        setShowModal(true);
+        setResult(JSON.parse(flash));
       } catch {
         setResult({ type: "error", message: flash });
-        setShowModal(true);
       }
+      setShowModal(true);
+      sessionStorage.removeItem("giftFlash"); // consume
+    };
+
+    showFromStorage(); // show if it was already set before mount
+    window.addEventListener("giftFlash", showFromStorage);
+    return () => window.removeEventListener("giftFlash", showFromStorage);
+  }, []);
+  useEffect(() => {
+    const showFromStorage = () => {
+      if (hasShownRef.current) return;
+      const flash = sessionStorage.getItem("giftFlash");
+      if (!flash) return;
+
+      hasShownRef.current = true;
+      try {
+        setResult(JSON.parse(flash));
+      } catch {
+        setResult({ type: "error", message: flash });
+      }
+      setShowModal(true);
       sessionStorage.removeItem("giftFlash");
-    }
+    };
+
+    showFromStorage();
+    window.addEventListener("giftFlash", showFromStorage);
+    return () => window.removeEventListener("giftFlash", showFromStorage);
   }, []);
 
   // useEffect(() => {
@@ -2363,21 +2401,98 @@ function Home() {
                             style={{ width: "240px" }}
                           >
                             <div className="modal-body d-flex flex-column align-items-center">
+                              {/* =================================================================== */}
+                              {/* <!-- Overlay --> */}
+                              <div class="modal-overlay">
+                                {/* <!-- Voucher Card --> */}
+                                <div class="voucher-card">
+                                  <img
+                                    src="https://static.vecteezy.com/system/resources/thumbnails/045/822/274/small/discount-voucher-with-golden-coins-icon-3d-render-concept-of-3d-discount-coupon-icon-illustration-png.png"
+                                    alt="Voucher Icon"
+                                  />
+
+                                  <div class="voucher-info mt-0">
+                                    {result?.type === "error" ? (
+                                      <div className="fw-700 fs-13  mb-1 text-danger">
+                                        {/* {result?.message} */}
+                                        <div class="voucher-title">
+                                          🎁 Already Claimed Bonus!
+                                        </div>
+                                        <div class="voucher-message">
+                                          Enjoy your games and win big! 🎮💰
+                                        </div>
+                                        {/* <p>Bonus Added Successfully!</p> */}
+                                      </div>
+                                    ) : (
+                                      <>
+                                        <div className="fw-700 fs-13 mb-1 text-white">
+                                          {/* {result?.message} */}
+                                          <div class="voucher-title green_light">
+                                            🎉 Congratulations!
+                                          </div>
+                                          <div class="voucher-message">
+                                            🎁 Bonus Added Successfully!
+                                          </div>
+                                          <p className="fw-400 fs-14 mb-1 text-white">
+                                            Your free bonus has been credited —
+                                            start playing and win big with
+                                            Betwin Namibia! 💎💰
+                                          </p>
+                                        </div>
+                                      </>
+                                    )}
+
+                                    <div className="text-center">
+
+                                      </div>
+
+                                    {typeof result?.amount !== "undefined" && (
+                                      <div
+                                        className="fw-bold text-success mb-3"
+                                        style={{ fontSize: 22 }}
+                                      >
+                                        {CURRENCY_SYMBOL}
+                                        {new Intl.NumberFormat("en-IN").format(
+                                          result.amount
+                                        )}
+                                      </div>
+                                    )}
+
+                                    <Link to={routes.home}>
+                                      <span
+                                        className="btn text-white green-bg"
+                                        onClick={() => setShowModal(false)}
+                                      >
+                                        Thank You
+                                      </span>
+                                    </Link>
+
+                                    <div class="footer-note">
+                                      For Choosing Betwin Nambia
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              {/* ================================================================================================== */}
                               <img
                                 src="https://static.vecteezy.com/system/resources/thumbnails/045/822/274/small/discount-voucher-with-golden-coins-icon-3d-render-concept-of-3d-discount-coupon-icon-illustration-png.png"
                                 alt="rupee"
                                 className="mb-2 w-75"
                               />
 
-                              <div
-                                className={`fw-700 fs-13 text-center mb-1 ${
-                                  result?.type === "error"
-                                    ? "text-danger"
-                                    : "text-white"
-                                }`}
-                              >
-                                {result?.message}
-                              </div>
+                              {result?.type === "error" ? (
+                                <div className="fw-700 fs-13 text-center mb-1 text-danger">
+                                  {result?.message}
+                                  <p>Bonus Already Claimed!</p>
+                                </div>
+                              ) : (
+                                <>
+                                  <div className="fw-400 fs-10 text-center mb-1 text-white">
+                                    {/* {result?.message} */}
+                                    <p>Bonus Added Successfully!</p>
+                                  </div>
+                                </>
+                              )}
 
                               {typeof result?.amount !== "undefined" && (
                                 <div
@@ -2401,7 +2516,7 @@ function Home() {
                               </Link>
 
                               <span className="text-white fs-10 fw-700 mt-3">
-                                For Choosing {APP_NAME}
+                                For Choosing Betwin Nambia
                               </span>
                             </div>
                           </div>

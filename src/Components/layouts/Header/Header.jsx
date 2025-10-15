@@ -206,9 +206,11 @@ const StickyHeader = ({ onToggleSidebar }) => {
                           src="/assets/img/rupee.png"
                           width="20"
                           alt="Coin"
+                          className="mx-1"
                         />
-                        <span className="ms-1 text-white">
-                          {CURRENCY_SYMBOL} {Number(profile?.chips).toFixed(2)}
+                        <span className="text-white">
+                          {/* {CURRENCY_SYMBOL} */}
+                          {Number(profile?.chips).toFixed(2)}
                         </span>
                         <button
                           className="btn btn-sm btn-add-coin ms-2"
@@ -340,8 +342,16 @@ const StickyHeader = ({ onToggleSidebar }) => {
                       <div className="d-flex align-items-center px-2 py-1 rounded-pill">
                         <li>
                           <div className="deposit_btn_container">
-                            <p className="text-light mb-0 px-3">
-                              <i className="fi fi-rs-coins" /> {CURRENCY_SYMBOL}{" "}
+                            <img
+                              src="/assets/img/rupee.png"
+                              width="20"
+                              alt="Coin"
+                              className="mx-1"
+                            />
+                            <p className="text-light mb-0 px-1">
+                              {/* <i className="fi fi-rs-coins" /> */}
+                              {/* {CURRENCY_SYMBOL}{" "} */}
+
                               {Number(profile?.chips).toFixed(2)}
                             </p>
                             <button
