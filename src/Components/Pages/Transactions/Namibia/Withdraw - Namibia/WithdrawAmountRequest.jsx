@@ -180,134 +180,96 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
       )}
       <ToastContainer position="top-right" autoClose={5000} theme="dark" />
       {/* card 1 Starts */}
-      <div className="card bg_light_grey account_input-textbox-container">
+      <div className="card withdraw_card shadow-lg border-0">
         <div className="card-body">
-          <h5 className=" mb-0">Withdraw Amount</h5>
+          <h5 className="text-uppercase fw-semibold  mb-2">
+            Withdraw Amount
+          </h5>
+
           {amount && (
-            <h4>
+            <h3 className="fw-bold text-gradient mb-3">
               {CURRENCY_SYMBOL} {amount}
-            </h4>
-          )}
-          {bankDetails && (
-            <>
-              <div className="mt-3">
-                <h5 className="mb-1">Bank Info:</h5>
-                <p className="mb-0 text-grey">
-                  Bank Name: <strong>{bankDetails.bank_name}</strong>
-                </p>
-                <p className="mb-0 text-grey">
-                  Account Holder:{" "}
-                  <strong>{bankDetails.account_holder_name}</strong>
-                </p>
-                <p className="mb-0 text-grey">
-                  Account Number: <strong>{bankDetails.account_number}</strong>
-                </p>
-                <p className="mb-0 text-grey">
-                  IFSC Code: <strong>{bankDetails.ifsc_code}</strong>
-                </p>
-              </div>
-            </>
+            </h3>
           )}
 
-          {bank && (
-            <>
-              <div className="mt-3">
-                <h5 className="mb-1">Bank Info:</h5>
-                <p className="mb-0 text-grey">
-                  Bank Name: <strong>{bank.bank_name}</strong>
+          {(bankDetails || bank) && (
+            <div className="bank-info bg-glass p-3 rounded-4 mt-3">
+              <h5 className="fw-semibold text-success fw-bold mb-2">
+                Bank Information
+              </h5>
+              <div className="text-grey small">
+                <p className="mb-1">
+                  Bank Name:{" "}
+                  <strong>{bankDetails?.bank_name || bank?.bank_name}</strong>
                 </p>
-                <p className="mb-0 text-grey">
-                  Account Holder: <strong>{bank.account_name}</strong>
+                <p className="mb-1">
+                  Account Holder:{" "}
+                  <strong>
+                    {bankDetails?.account_holder_name || bank?.account_name}
+                  </strong>
                 </p>
-                <p className="mb-0 text-grey">
-                  Account Number: <strong>{bank.account_masked}</strong>
+                <p className="mb-1">
+                  Account Number:{" "}
+                  <strong>
+                    {bankDetails?.account_number || bank?.account_masked}
+                  </strong>
                 </p>
-                {/* <p className="mb-0 text-grey">
-                  Branch Code: <strong>{bank.account_masked}</strong>
-                </p> */}
+                {bankDetails?.ifsc_code && (
+                  <p className="mb-0">
+                    IFSC Code: <strong>{bankDetails.ifsc_code}</strong>
+                  </p>
+                )}
               </div>
-            </>
+            </div>
           )}
 
           {!bankId || !amount ? (
-            <div className="text-danger mt-3">
-              {/* {amount && <h4>{CURRENCY_SYMBOL}{amount}</h4>}
-              {bankId && <h5>{bankId}</h5>} */}
+            <div className="text-danger mt-3 alert alert-light border-start border-danger">
               {!amount && (
-                <>
-                  <p>
-                    {" "}
-                    <i class="fa-solid fa-hand-point-right"></i> Please select
-                    an amount in Step 1 before continuing.
-                  </p>
-                </>
+                <p className="mb-1">
+                  <i className="fa-solid fa-hand-point-right me-1"></i>
+                  Please select an amount in Step 1 before continuing.
+                </p>
               )}
               {!bankId && (
-                <>
-                  <p>
-                    {" "}
-                    <i class="fa-solid fa-hand-point-right"></i> Please select a
-                    bank account in Step 2 before continuing.
-                  </p>
-                </>
+                <p className="mb-0">
+                  <i className="fa-solid fa-hand-point-right me-1"></i>
+                  Please select a bank account in Step 2 before continuing.
+                </p>
               )}
             </div>
           ) : (
             <form
-              className="form-control_container"
+              className="form-control_container mt-4"
               onSubmit={formik.handleSubmit}
             >
-              {/* {formik.errors.api && (
-                <p className="text-danger mt-3">{formik.errors.api}</p>
-              )} */}
-
               {formik.errors.api &&
                 (Array.isArray(formik.errors.api) ? (
-                  <p className="text-danger ">
-                    {formik.errors.api.map((err, index) => (
-                      <li key={index}>{err}</li>
+                  <ul className="text-danger small mb-2">
+                    {formik.errors.api.map((err, i) => (
+                      <li key={i}>{err}</li>
                     ))}
-                  </p>
+                  </ul>
                 ) : (
-                  <p className="text-danger">{formik.errors.api}</p>
+                  <p className="text-danger small mb-2">{formik.errors.api}</p>
                 ))}
-              {/* {bankId && <h5>{bankId}</h5>} */}
-
-              <div
-                className="input-field mb-3 mt-3"
-                style={{ display: "none" }}
-              >
-                <p className="mb-0">
-                  You have selected {CURRENCY_SYMBOL}
-                  {amount} to deposit.
-                </p>
-                <input
-                  required
-                  className="input readonly-input mt-1"
-                  type="text"
-                  name="amount"
-                  value={formik.values.amount}
-                  readOnly // 🔐 This makes it non-editable
-                  disabled
-                />
-                {formik.touched.amount && formik.errors.amount && (
-                  <p className="text-danger">{formik.errors.amount}</p>
-                )}
-              </div>
 
               <div className="d-flex justify-content-center">
                 <button
                   type="submit"
-                  className="btn btn-login w-50 mt-4 mb-3 text-capitalize"
+                  className="btn btn-gradient w-25 mt-3 rounded-pill py-2 fw-semibold"
                   disabled={formik.isSubmitting}
                 >
-                  {formik.isSubmitting ? "Submitting ..." : "Submit"}
+                  {formik.isSubmitting
+                    ? "Submitting..."
+                    : "Submit "}
                 </button>
               </div>
             </form>
           )}
         </div>
       </div>
+
       {/* card 1 Starts */}
     </>
   );

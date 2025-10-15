@@ -202,12 +202,13 @@ const StickyHeader = ({ onToggleSidebar }) => {
                     {/* Coin Box */}
                     {profile ? (
                       <div className="coin-box d-flex align-items-center px-2 py-1 rounded-pill">
-                        <img
+                        {/* <img
                           src="/assets/img/rupee.png"
                           width="20"
                           alt="Coin"
                           className="mx-1"
-                        />
+                        /> */}
+                        <div className="text-white px-1">NAD$ :</div>
                         <span className="text-white">
                           {/* {CURRENCY_SYMBOL} */}
                           {Number(profile?.chips).toFixed(2)}
@@ -341,18 +342,20 @@ const StickyHeader = ({ onToggleSidebar }) => {
                     {profile ? (
                       <div className="d-flex align-items-center px-2 py-1 rounded-pill">
                         <li>
-                          <div className="deposit_btn_container">
-                            <img
+                          <div className="deposit_btn_container d-flex align-items-center">
+                            {/* <img
                               src="/assets/img/rupee.png"
                               width="20"
                               alt="Coin"
                               className="mx-1"
-                            />
-                            <p className="text-light mb-0 px-1">
+                            /> */}
+                            <div className="text-white fw-600 px-1">NAD$ :</div>
+                            <p className="text-light mb-0 px-1 d-flex">
                               {/* <i className="fi fi-rs-coins" /> */}
-                              {/* {CURRENCY_SYMBOL}{" "} */}
-
-                              {Number(profile?.chips).toFixed(2)}
+                              {/* {CURRENCY_SYMBOL}{" "} */}{" "}
+                              <h6 className="m-0">
+                                {Number(profile?.chips).toFixed(2)}
+                              </h6>
                             </p>
                             <button
                               className="btn  btn-index w-100 deposit-btn"

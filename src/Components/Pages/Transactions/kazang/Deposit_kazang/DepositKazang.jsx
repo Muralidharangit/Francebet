@@ -298,7 +298,7 @@ function Deposit() {
                                     {(details.face_value ?? 0).toFixed(2)}
                                   </div>
                                 </div>
-                                <div className="col-6">
+                                {/* <div className="col-6">
                                   <div className="text-grey small">
                                     Currency
                                   </div>
@@ -306,7 +306,7 @@ function Deposit() {
                                     {details.currency_code || "NAD"}{" "}
                                     {details.cost || "NAD"}
                                   </div>
-                                </div>
+                                </div> */}
                                 <div className="col-12">
                                   <div className="text-grey small">
                                     Description
