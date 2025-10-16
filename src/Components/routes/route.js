@@ -2,7 +2,7 @@ const routes = {
   home: "/",
   games: {
     all: "/all-games",
-  topGames: "/top-games",
+    topGames: "/top-games",
     turbo: "/turbo-games",
     spribe: "/spribe-games",
     providers: "/providers",
@@ -46,6 +46,8 @@ const routes = {
     // India
     manual_deposit_India: "/manual-deposit-india",
     manual_withdraw_India: "/manual-withdraw-india",
+    manual_withdraw_Namibia_history:
+      "/withdraw-namibia/manual-withdraw/history",
 
     // easy-wallet
     easy_wallet_deposit:

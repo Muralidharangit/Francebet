@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import AuthContext from "../../../../Auth/AuthContext";
 import routes from "../../../routes/route";
 import { EditBank, sendWithdrawRequest } from "../../../../API/withdrawAPI";
@@ -13,6 +13,10 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
   const [bankDetails, setBankDetails] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const { user } = useContext(AuthContext);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const token = user?.token;
   const formik = useFormik({
     enableReinitialize: true, // 🟣 IMPORTANT!
@@ -49,7 +53,15 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
           // toast.error(errorMessage);
           toast.error(`${errorMessage}. Please log in again to continue.`, {
             toastId: "unauthorized-toast", // prevents duplicate toasts
+            onClose: () => {
+              // runs if user clicks X OR after autoClose timeout
+              navigate(location.pathname, { replace: true, state: {} });
+            },
           });
+          // Redirect after a short delay (e.g., 2 seconds)
+          setTimeout(() => {
+            navigate("/login");
+          }, 5000);
           // setErrors({ api: errorMessage });
           setSubmitting(false);
           return;

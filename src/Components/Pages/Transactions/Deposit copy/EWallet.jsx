@@ -134,6 +134,10 @@ const EWallet = ({
             verifyError.response?.data?.message ||
             "Invalid or expired token. Please log in again.";
           setErrors({ api: errorMessage });
+          // Redirect after a short delay (e.g., 2 seconds)
+          setTimeout(() => {
+            navigate("/login");
+          }, 5000);
           setSubmitting(false);
           return;
         }

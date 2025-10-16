@@ -19,6 +19,7 @@ import {
 import { verifyToken } from "../../../../../API/authAPI";
 import { toast, ToastContainer } from "react-toastify";
 import { saveSelectedBank } from "../../../../../API/bankSelectionStorage";
+import { useLocation, useNavigate } from "react-router-dom";
 // import { Link } from "react-router-dom";
 const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
   const [bankDetails, setbankDetails] = useState([]);
@@ -33,6 +34,8 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
   const { user } = useContext(AuthContext);
   const token = user?.token;
   const userId = user?.id;
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSelectBank = (bank) => {
     saveSelectedBank(bank);
@@ -201,7 +204,16 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
           // toast.error(errorMessage);
           toast.error(`${errorMessage}. Please log in again to continue.`, {
             toastId: "unauthorized-toast", // prevents duplicate toasts
+            onClose: () => {
+              // runs if user clicks X OR after autoClose timeout
+              navigate(location.pathname, { replace: true, state: {} });
+            },
           });
+          // Redirect after a short delay (e.g., 2 seconds)
+          setTimeout(() => {
+            navigate("/login");
+          }, 5000);
+
           // setErrors({ api: errorMessage });
           setSubmitting(false);
           return;
@@ -312,7 +324,15 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
 
           toast.error(`${errorMessage}. Please log in again to continue.`, {
             toastId: "unauthorized-toast", // prevents duplicate toasts
+            onClose: () => {
+              // runs if user clicks X OR after autoClose timeout
+              navigate(location.pathname, { replace: true, state: {} });
+            },
           });
+          // Redirect after a short delay (e.g., 2 seconds)
+          setTimeout(() => {
+            navigate("/login");
+          }, 5000);
 
           setSubmitting(false);
           return;

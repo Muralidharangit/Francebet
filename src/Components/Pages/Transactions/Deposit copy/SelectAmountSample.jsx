@@ -9,6 +9,7 @@ import { useFormik } from "formik";
 import AuthContext from "../../../../Auth/AuthContext";
 import * as Yup from "yup";
 import { verifyToken } from "../../../../API/authAPI";
+import { CURRENCY_SYMBOL } from "../../../../constants";
 const SelectAmountSample = ({
   amount,
   setAmount,
@@ -178,6 +179,10 @@ const SelectAmountSample = ({
             verifyError.response?.data?.message ||
             "Invalid or expired token. Please log in again.";
           setErrors({ api: errorMessage });
+          // Redirect after a short delay (e.g., 2 seconds)
+          setTimeout(() => {
+            navigate("/login");
+          }, 5000);
           setSubmitting(false);
           return;
         }

@@ -194,7 +194,7 @@ const DepositAmountRequest = ({
               <form onSubmit={formik.handleSubmit} className="uxcard-form">
                 {/* API Error */}
                 {formik.errors.api && (
-                  <div className="uxcard-alert-error mb-3">
+                  <div className="uxcard-alert-error mb-3 text-danger">
                     {Array.isArray(formik.errors.api)
                       ? formik.errors.api.map((err, index) => (
                           <li key={index}>{err}</li>

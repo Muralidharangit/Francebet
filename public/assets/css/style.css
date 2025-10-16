@@ -832,7 +832,7 @@ swiper-slide img {
   align-items: center;
   justify-content: center;
   margin-right: 6px;
-  z-index: -1;
+  /* z-index: -1; */
 }
 
 .social-links a .fab {
@@ -4344,7 +4344,7 @@ li.nav-item button {
   animation: slideDown 0.7s ease-in-out;
   background: #323738 !important;
   width: 100%;
-  z-index: 3;
+  z-index: 12;
   top: 0;
   left: 50%;
   transform: translate(-50%, 0%);
@@ -6439,7 +6439,6 @@ iframe {
   color: #65d14b;
 }
 
-
 .withdraw_card {
   background: #343434 !important;
   border-radius: 4px;
@@ -6448,7 +6447,6 @@ iframe {
   backdrop-filter: blur(8px);
   transition: all 0.3s ease;
 }
-
 
 .text-gradient {
   /* background: linear-gradient(90deg, #00c6ff, #0072ff);
@@ -6469,8 +6467,6 @@ iframe {
   border: none;
   transition: all 0.3s ease;
 }
-
-
 
 .text-grey {
   color: #d0d0d0 !important;

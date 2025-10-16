@@ -3,8 +3,11 @@ import { useContext, useState } from "react";
 import AuthContext from "../../../../../Auth/AuthContext";
 import * as Yup from "yup";
 import routes from "../../../../routes/route";
-import { Link } from "react-router-dom";
-import { sendDepositRequestIndia, sendDepositRequestNamibia } from "../../../../../API/depositAPI";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  sendDepositRequestIndia,
+  sendDepositRequestNamibia,
+} from "../../../../../API/depositAPI";
 import { verifyToken } from "../../../../../API/authAPI";
 import { APP_NAME, CURRENCY_SYMBOL } from "../../../../../constants";
 const DepositAmountRequest = ({
@@ -19,7 +22,7 @@ const DepositAmountRequest = ({
   const token = user?.token;
   const User_id = user?.id;
   console.log("user================", User_id);
-
+  const navigate = useNavigate();
   const formik = useFormik({
     enableReinitialize: true, // 🟣 IMPORTANT!
     initialValues: {
@@ -52,6 +55,11 @@ const DepositAmountRequest = ({
             verifyError.response?.data?.message ||
             "Invalid or expired token. Please log in again.";
           setErrors({ api: errorMessage });
+          // Redirect after a short delay (e.g., 2 seconds)
+          setTimeout(() => {
+            navigate("/login");
+          }, 5000);
+
           setSubmitting(false);
           return;
         }

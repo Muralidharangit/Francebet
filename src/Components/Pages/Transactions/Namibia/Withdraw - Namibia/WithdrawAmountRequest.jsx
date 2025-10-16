@@ -6,6 +6,7 @@ import AuthContext from "../../../../../Auth/AuthContext";
 import routes from "../../../../routes/route";
 import {
   EditBank,
+  EditBankNamibia,
   sendWithdrawRequest,
   sendWithdrawRequestNamibia,
 } from "../../../../../API/withdrawAPI";
@@ -26,7 +27,7 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
   console.log(bankDetails);
   const [bank, setBank] = useState(null);
   const location = useLocation();
-
+  const navigate = useNavigate();
   useEffect(() => {
     const refresh = () => setBank(loadSelectedBank());
     refresh(); // initial
@@ -73,7 +74,15 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
           // toast.error(errorMessage);
           toast.error(`${errorMessage}. Please log in again to continue.`, {
             toastId: "unauthorized-toast", // prevents duplicate toasts
+            onClose: () => {
+              // runs if user clicks X OR after autoClose timeout
+              navigate(location.pathname, { replace: true, state: {} });
+            },
           });
+          // Redirect after a short delay (e.g., 2 seconds)
+          setTimeout(() => {
+            navigate("/login");
+          }, 5000);
           // setErrors({ api: errorMessage });
           setSubmitting(false);
           return;
@@ -115,35 +124,35 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
   });
 
   // ============================ *********** Dont Delete this to get the bank details  ***********************  =====================
-  // useEffect(() => {
-  //   if (!token || !bankId) return; // ✅ Prevents unnecessary API call
+  useEffect(() => {
+    if (!token || !bankId) return; // ✅ Prevents unnecessary API call
 
-  //   const fetchBankDetails = async () => {
-  //     try {
-  //       const response = await EditBank(bankId, token);
-  //       if (response.status === "success") {
-  //         setBankDetails(response.playerBank);
-  //       } else {
-  //         toast.error(
-  //           response.message ||
-  //             "Failed to fetch bank details. Please log in again.",
-  //           { toastId: "unauthorized-toast" }
-  //         );
-  //       }
-  //     } catch (error) {
-  //       const errorMessage =
-  //         error.response?.data?.message ||
-  //         error.message ||
-  //         "Something went wrong. Please log in again.";
+    const fetchBankDetails = async () => {
+      try {
+        const response = await EditBankNamibia(bankId, token);
+        if (response.status === "success") {
+          setBankDetails(response.playerBank);
+        } else {
+          toast.error(
+            response.message ||
+              "Failed to fetch bank details. Please log in again.",
+            { toastId: "unauthorized-toast" }
+          );
+        }
+      } catch (error) {
+        const errorMessage =
+          error.response?.data?.message ||
+          error.message ||
+          "Something went wrong. Please log in again.";
 
-  //       toast.error(`${errorMessage}`, {
-  //         toastId: "unauthorized-toast",
-  //       });
-  //     }
-  //   };
+        toast.error(`${errorMessage}`, {
+          toastId: "unauthorized-toast",
+        });
+      }
+    };
 
-  //   fetchBankDetails();
-  // }, [token, bankId]);
+    fetchBankDetails();
+  }, [token, bankId]);
 
   return (
     <>
@@ -162,7 +171,7 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
                   Your Request <br />
                   Is In Our Queue!
                 </div>
-                <Link to={routes.transactions.withdrawHistory}>
+                <Link to={routes.transactions.manual_withdraw_Namibia_history}>
                   <span
                     className="btn text-white green-bg"
                     onClick={() => setShowModal(false)} // ❌ Don't use data-bs-dismiss
@@ -181,8 +190,8 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
       <ToastContainer position="top-right" autoClose={5000} theme="dark" />
       {/* card 1 Starts */}
       <div className="card withdraw_card shadow-lg border-0">
-        <div className="card-body">
-          <h5 className="text-uppercase fw-semibold  mb-2">
+        <div className="card-body px-0">
+          <h5 className="text-uppercase fw-semibold  mb-2 px-0">
             Withdraw Amount
           </h5>
 
@@ -194,7 +203,7 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
 
           {(bankDetails || bank) && (
             <div className="bank-info bg-glass p-3 rounded-4 mt-3">
-              <h5 className="fw-semibold text-success fw-bold mb-2">
+              <h5 className="fw-semibold text-success fw-bold mb-2 px-0">
                 Bank Information
               </h5>
               <div className="text-grey small">
@@ -260,9 +269,7 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
                   className="btn btn-gradient w-25 mt-3 rounded-pill py-2 fw-semibold"
                   disabled={formik.isSubmitting}
                 >
-                  {formik.isSubmitting
-                    ? "Submitting..."
-                    : "Submit "}
+                  {formik.isSubmitting ? "Submitting..." : "Submit "}
                 </button>
               </div>
             </form>

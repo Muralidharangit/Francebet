@@ -27,7 +27,7 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
   // console.log(bankDetails);
   const [bank, setBank] = useState(null);
   const location = useLocation();
-
+  const navigate = useNavigate();
   useEffect(() => {
     const refresh = () => setBank(loadSelectedBank());
     refresh(); // initial
@@ -74,7 +74,16 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
           // toast.error(errorMessage);
           toast.error(`${errorMessage}. Please log in again to continue.`, {
             toastId: "unauthorized-toast", // prevents duplicate toasts
+            onClose: () => {
+              // runs if user clicks X OR after autoClose timeout
+              navigate(location.pathname, { replace: true, state: {} });
+            },
           });
+          // Redirect after a short delay (e.g., 2 seconds)
+          setTimeout(() => {
+            navigate("/login");
+          }, 5000);
+
           // setErrors({ api: errorMessage });
           setSubmitting(false);
           return;

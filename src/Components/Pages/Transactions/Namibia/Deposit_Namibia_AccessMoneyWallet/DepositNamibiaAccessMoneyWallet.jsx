@@ -102,8 +102,8 @@ function Deposit() {
                       </div>
 
                       {/* Centered Title */}
-                      <h5 className="position-absolute start-50 translate-middle-x m-0 text-white fs-16">
-                        Access Money Deposit
+                      <h5 className="position-absolute start-50 translate-middle-x m-0 text-white fs-16 text-center">
+                        Access Money Wallet
                       </h5>
                     </div>
                     {/* header Ends */}

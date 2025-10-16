@@ -96,7 +96,11 @@ const DepositManualNamibiaHistory = lazy(() =>
     "./Components/Pages/Transactions/Namibia/Deposit_Namibia_Manual/DepositHistory"
   )
 );
-
+const WithdrawHistoryNamibia = lazy(() =>
+  import(
+    "./Components/Pages/Transactions/Namibia/Withdraw - Namibia/WithdrawHistory"
+  )
+);
 const DepositEwalletNamibiaHistory = lazy(() =>
   import(
     "./Components/Pages/Transactions/Namibia/Deposit_Namibia_Ewallet/DepositHistory"
@@ -338,6 +342,11 @@ function App() {
             <Route
               path={routes.transactions.manual_deposit_India}
               element={<DepositIndexIndia />}
+            />
+            {/* WithdrawHistoryNamibia */}
+            <Route
+              path={routes.transactions.manual_withdraw_Namibia_history}
+              element={<WithdrawHistoryNamibia />}
             />
             <Route
               path={routes.transactions.manual_withdraw_india}

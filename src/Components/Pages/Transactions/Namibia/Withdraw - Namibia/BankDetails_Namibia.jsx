@@ -10,17 +10,26 @@ import {
   changeBankNamibiaStatus,
   changeBankStatus,
   deleteBankDetails,
+  deleteBankNamibiaDetails,
   EditBank,
+  EditBankNamibia,
   getBankDetailsNamibia,
   // storeBank,
   storeBankNamibia,
   updateBank,
+  updateBankNamibia,
 } from "../../../../../API/withdrawAPI";
 import { verifyToken } from "../../../../../API/authAPI";
 import { toast, ToastContainer } from "react-toastify";
 import { saveSelectedBank } from "../../../../../API/bankSelectionStorage";
+import { useLocation, useNavigate } from "react-router-dom";
 // import { Link } from "react-router-dom";
-const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
+const BankDetails = ({
+  selectedBankId,
+  setSelectedBankId,
+  paymentSelectedMethod,
+  setPaymentSelectedMethod,
+}) => {
   const [bankDetails, setbankDetails] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -29,13 +38,16 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
   const [editingBankId, setEditingBankId] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [deleteSelectedBankId, setDeleteSelectedBankId] = useState(null);
+  const [statusLoading, setStatusLoading] = useState({});
   // const [editingBankData, setEditingBankData] = useState(null);
   const { user } = useContext(AuthContext);
   const token = user?.token;
   const userId = user?.id;
-
+  const navigate = useNavigate();
+  const location = useLocation();
   const handleSelectBank = (bank) => {
     saveSelectedBank(bank);
+    setPaymentSelectedMethod("bank");
     window.dispatchEvent(new Event("nm-bank-selected")); // 🔔 tell listeners to refresh
     // navigate("/deposit-namibia/manual-deposit/get-payment-details");
   };
@@ -81,6 +93,76 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
   }, [user?.token]);
 
   // Toggle Bank Status
+  // const toggleBankStatus = async (bank_id, currentStatus) => {
+  //   if (!token) {
+  //     setError("Authentication error. Please log in again.");
+  //     return;
+  //   }
+
+  //   const newStatus = currentStatus === "1" ? "0" : "1";
+  //   try {
+  //     // ✅ Step 1: Verify token with its own error handler
+  //     try {
+  //       const tokenRes = await verifyToken(token);
+  //       if (tokenRes.status !== "success") {
+  //         setError(
+  //           tokenRes.message || "Invalid or expired token. Please log in again."
+  //         );
+  //         return;
+  //       }
+  //     } catch (verifyError) {
+  //       const errorMessage =
+  //         verifyError.response?.data?.message ||
+  //         verifyError.message ||
+  //         "Invalid or expired token. Please log in again.";
+  //       setError(errorMessage);
+  //       return;
+  //     }
+
+  //     // ✅ Step 2: Proceed with status change
+  //     const response = await changeBankNamibiaStatus(token, bank_id, newStatus);
+
+  //     // console.log("newStatus", newStatus);
+
+  //     if (response.status === "success") {
+  //       setbankDetails((prevDetails) =>
+  //         prevDetails.map((bank) =>
+  //           bank.id === bank_id ? { ...bank, status: newStatus } : bank
+  //         )
+  //       );
+
+  //       toast.success(
+  //         <span>
+  //           Bank{" "}
+  //           <span style={{ position: "relative", top: "-2px" }}>
+  //             {newStatus === "1" ? "🔓" : "🔒"}
+  //           </span>{" "}
+  //           {newStatus === "1" ? "Activated" : "Deactivated"} successfully!
+  //         </span>,
+  //         {
+  //           autoClose: 5000,
+  //           pauseOnHover: true,
+  //           closeOnClick: true,
+  //         }
+  //       );
+  //     } else {
+  //       alert(response.message || "Failed to update status.");
+  //     }
+  //   } catch (err) {
+  //     if (err.response?.data?.type === "invalid_token") {
+  //       setError("Invalid or expired token. Please log in again.");
+  //       return;
+  //     }
+
+  //     const errorMessage =
+  //       err.response?.data?.message ||
+  //       err.message ||
+  //       "Failed to update status.";
+  //     console.error("API Error:", err.response?.data || err.message);
+  //     alert(`Error: ${errorMessage}`);
+  //   }
+  // };
+
   const toggleBankStatus = async (bank_id, currentStatus) => {
     if (!token) {
       setError("Authentication error. Please log in again.");
@@ -88,8 +170,11 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
     }
 
     const newStatus = currentStatus === "1" ? "0" : "1";
+
     try {
-      // ✅ Step 1: Verify token with its own error handler
+      setStatusLoading((prev) => ({ ...prev, [bank_id]: true })); // start loading
+
+      // Verify token (unchanged)
       try {
         const tokenRes = await verifyToken(token);
         if (tokenRes.status !== "success") {
@@ -102,52 +187,46 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
         const errorMessage =
           verifyError.response?.data?.message ||
           verifyError.message ||
-          "Invalid or expired token. Please log in again.";
+          "Invalid or expired token.";
         setError(errorMessage);
         return;
       }
 
-      // ✅ Step 2: Proceed with status change
+      // Call API (unchanged)
       const response = await changeBankNamibiaStatus(token, bank_id, newStatus);
 
-      // console.log("newStatus", newStatus);
-
       if (response.status === "success") {
-        setbankDetails((prevDetails) =>
-          prevDetails.map((bank) =>
-            bank.id === bank_id ? { ...bank, status: newStatus } : bank
-          )
+        // update UI
+        setbankDetails((prev) =>
+          prev.map((b) => (b.id === bank_id ? { ...b, status: newStatus } : b))
         );
 
         toast.success(
           <span>
-            Bank{" "}
-            <span style={{ position: "relative", top: "-2px" }}>
-              {newStatus === "1" ? "🔓" : "🔒"}
-            </span>{" "}
+            <span aria-hidden="true">{newStatus === "1" ? "🔓" : "🔒"} </span>
+            <span className="visually-hidden">
+              {newStatus === "1" ? "Activated" : "Deactivated"}
+            </span>
             {newStatus === "1" ? "Activated" : "Deactivated"} successfully!
           </span>,
           {
-            autoClose: 5000,
-            pauseOnHover: true,
-            closeOnClick: true,
+            onClose: () => {
+              // runs after it closes (timeout or X click)
+              navigate(location.pathname, { replace: true, state: {} });
+            },
           }
         );
       } else {
-        alert(response.message || "Failed to update status.");
+        toast.error(response.message || "Failed to update status.");
       }
     } catch (err) {
-      if (err.response?.data?.type === "invalid_token") {
-        setError("Invalid or expired token. Please log in again.");
-        return;
-      }
-
       const errorMessage =
-        err.response?.data?.message ||
-        err.message ||
+        err?.response?.data?.message ||
+        err?.message ||
         "Failed to update status.";
-      console.error("API Error:", err.response?.data || err.message);
-      alert(`Error: ${errorMessage}`);
+      toast.error(`Error: ${errorMessage}`);
+    } finally {
+      setStatusLoading((prev) => ({ ...prev, [bank_id]: false })); // end loading
     }
   };
 
@@ -201,7 +280,16 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
           // toast.error(errorMessage);
           toast.error(`${errorMessage}. Please log in again to continue.`, {
             toastId: "unauthorized-toast", // prevents duplicate toasts
+            onClose: () => {
+              // runs if user clicks X OR after autoClose timeout
+              navigate(location.pathname, { replace: true, state: {} });
+            },
           });
+          // Redirect after a short delay (e.g., 2 seconds)
+          setTimeout(() => {
+            navigate("/login");
+          }, 5000);
+
           // setErrors({ api: errorMessage });
           setSubmitting(false);
           return;
@@ -275,7 +363,13 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
       setSubmitting(false);
     },
   });
-
+  // for the EDIT form (matches your edit fields)
+  const editValidationSchema = Yup.object({
+    bank_name: "",
+    account_holder_name: "",
+    account_number: "",
+    ifsc_code: "",
+  });
   // Formik Update the form
   const updateFormik = useFormik({
     initialValues: {
@@ -285,102 +379,82 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
       ifsc_code: "",
     },
     enableReinitialize: true,
-    validationSchema,
-    onSubmit: async (values, { setSubmitting, setErrors }) => {
+    validateOnBlur: true,
+    validateOnChange: true,
+    validationSchema: editValidationSchema, // 👈 use the edit schema here
+    onSubmit: async (values, { setSubmitting, setErrors, resetForm }) => {
+      console.log("[EDIT BANK] submit fired ✅ with values:", values);
+
       try {
-        // ✅ Step 1: Verify the token
+        // 1) Verify token
         try {
           const tokenRes = await verifyToken(token);
+          console.log("[VERIFY] tokenRes:", tokenRes);
           if (tokenRes.status !== "success") {
-            toast.error(
-              tokenRes.message ||
-                "Invalid or expired token. Please log in again."
-            );
-            setErrors({
-              api:
-                tokenRes.message ||
-                "Invalid or expired token. Please log in again.",
-            });
-            setSubmitting(false);
+            const msg = tokenRes.message || "Invalid/expired token";
+            toast.error(msg);
+            setErrors({ api: msg });
             return;
           }
         } catch (verifyError) {
           const errorMessage =
-            verifyError.response?.data?.message ||
-            verifyError.message ||
-            "Invalid or expired token. Please log in again.";
-
-          toast.error(`${errorMessage}. Please log in again to continue.`, {
-            toastId: "unauthorized-toast", // prevents duplicate toasts
+            verifyError?.response?.data?.message ||
+            verifyError?.message ||
+            "Invalid or expired token.";
+          toast.error(`${errorMessage}. Please log in again.`, {
+            toastId: "unauthorized-toast",
           });
-
-          setSubmitting(false);
+          setErrors({ api: errorMessage });
           return;
         }
 
-        const response = await updateBank(token, values, editingBankId);
-        if (response.status === "success") {
-          // alert("Bank updated successfully! ✅");
-          toast.success(`Bank updated successfully! 🎉`);
+        // 2) Hit the update API
+        console.log("[API] calling updateBankNamibia...");
+        const response = await updateBankNamibia(token, values, editingBankId);
+        console.log("[API] response:", response);
 
-          updateFormik.resetForm(); // ✅ Reset the modal form
+        if (response?.status === "success") {
+          toast.success("Bank updated successfully! 🎉");
+          resetForm(); // reset Formik
           setEditingBankId(null);
           setActiveTab("bank");
 
-          // ✅ Refresh the list
+          // 3) Refresh list
           setLoading(true);
-          // const refreshedBanks = await axios.get(
-          //   `${BASE_URL}/player/get-bank`,
-          //   {
-          //     headers: { Authorization: `Bearer ${token}` },
-          //   }
-          // );
-
-          const refreshedBanks = await getBankDetailsNamibia(token, userId);
-
+          const refreshed = await getBankDetailsNamibia(token, userId);
           if (
-            refreshedBanks.status === "success" &&
-            Array.isArray(refreshedBanks.playerBank)
+            refreshed?.status === "success" &&
+            Array.isArray(refreshed.playerBank)
           ) {
-            setbankDetails(refreshedBanks.playerBank);
+            setbankDetails(refreshed.playerBank);
           }
-
           setLoading(false);
-          const modalEl = document.getElementById("edit_bank_details");
-          const bootstrap = window.bootstrap; // ✅ add this line for CDN
 
-          if (modalEl) {
-            const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
-            modalInstance.hide(); // ✅ closes the modal
+          // 4) Close modal
+          const modalEl = document.getElementById("edit_bank_details");
+          const bs = window.bootstrap;
+          if (modalEl && bs?.Modal) {
+            bs.Modal.getOrCreateInstance(modalEl).hide();
           }
         } else {
-          setErrors({ api: response.data.message || "Something went wrong." });
+          const msg = response?.data?.message || "Something went wrong.";
+          setErrors({ api: msg });
         }
       } catch (error) {
+        console.error("[API ERROR]", error);
         if (error.response) {
           const data = error.response.data;
           const apiErrors = new Set();
 
-          // ✅ Collect Laravel-style validation errors
           if (data.errors) {
-            Object.values(data.errors).forEach((fieldErrors) => {
-              fieldErrors.forEach((msg) => apiErrors.add(msg));
-            });
+            Object.values(data.errors).forEach((arr) =>
+              arr.forEach((m) => apiErrors.add(m))
+            );
           }
+          if (data.msg) apiErrors.add(data.msg);
+          if (data.message) apiErrors.add(data.message);
+          if (apiErrors.size === 0) apiErrors.add("Something went wrong.");
 
-          // ✅ Add message only if not already included
-          if (data.msg && !apiErrors.has(data.msg)) {
-            apiErrors.add(data.msg);
-          }
-          // if (data.message && !apiErrors.has(data.message)) {
-          //   apiErrors.add(data.message);
-          // }
-
-          if (apiErrors.size === 0) {
-            apiErrors.add("Something went wrong.");
-          }
-
-          // ✅ Set final cleaned list to formik
           setErrors({ api: Array.from(apiErrors) });
         } else if (error.request) {
           setErrors({
@@ -389,8 +463,10 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
         } else {
           setErrors({ api: ["Something went wrong. Try again."] });
         }
+      } finally {
+        setSubmitting(false); // always re-enable the button
+        console.log("[EDIT BANK] setSubmitting(false)");
       }
-      setSubmitting(false);
     },
   });
 
@@ -420,7 +496,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
     // ✅ Step 3: Proceed with fetch
     try {
       // console.log(bankId, "--------------------------");
-      const response = await EditBank(bankId); // token handled by axiosInstance
+      const response = await EditBankNamibia(bankId); // token handled by axiosInstance
       // console.log(bankId, "--------------------------");
       if (response.status === "success") {
         const bank = response.playerBank;
@@ -444,9 +520,13 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
     setDeleteSelectedBankId(bankId); // save this to use later
     setShowModal(true); // open confirmation modal
   };
+
   const confirmDeleteBank = async () => {
     try {
-      const response = await deleteBankDetails(token, deleteSelectedBankId);
+      const response = await deleteBankNamibiaDetails(
+        token,
+        deleteSelectedBankId
+      );
 
       if (response.status === "success") {
         toast.success(`Bank deleted successfully! 🎉`);
@@ -467,9 +547,9 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
   };
 
   // handlePopUP
-  const handlePopUP = () => {
-    alert("Api is disabled ");
-  };
+  // const handlePopUP = () => {
+  //   alert("Api is disabled ");
+  // };
   return (
     <>
       <ToastContainer
@@ -540,6 +620,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
           >
             Bank Details
           </button>
+
           <button
             className={`nav-link btn-color text-white w-150 ${
               activeTab === "add" ? "active" : ""
@@ -889,7 +970,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
                       </div>
                       <div className="d-flex flex-column">
                         {/* Status Button */}
-                        <button
+                        {/* <button
                           className={`btn ${
                             bank.status === "1" ? "btn-success" : "btn-danger"
                           }`}
@@ -897,28 +978,74 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
                           // onClick={handlePopUP}
                         >
                           {bank.status === "1" ? "Active" : "Inactive"}
-                        </button>
+                        </button> */}
+
+                        {/* <div className="form-check form-switch">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            role="switch"
+                            id="switchCheckChecked"
+                          />
+                        </div> */}
+                        {/* Status Toggle */}
+                        <div className="d-flex align-items-center gap-2">
+                          <div className="form-check form-switch m-0">
+                            <input
+                              className="form-check-input"
+                              type="checkbox"
+                              role="switch"
+                              id={`statusSwitch-${bank.id}`}
+                              checked={bank.status === "1"}
+                              onChange={() =>
+                                toggleBankStatus(bank.id, bank.status)
+                              }
+                              disabled={!!statusLoading[bank.id]}
+                              aria-checked={bank.status === "1"}
+                              aria-label="Toggle bank active status"
+                              style={{
+                                backgroundColor:
+                                  bank.status === "1" ? "#198754" : "#dc3545", // green / red
+                                borderColor:
+                                  bank.status === "1" ? "#198754" : "#dc3545",
+                                boxShadow:
+                                  bank.status === "1"
+                                    ? "0 0 0 .25rem rgba(25,135,84,.25)"
+                                    : "0 0 0 .25rem rgba(220,53,69,.25)",
+                              }}
+                            />
+                          </div>
+                          <span
+                            className={`fw-600 ${
+                              bank.status === "1"
+                                ? "text-success"
+                                : "text-danger"
+                            }`}
+                          >
+                            {/* {bank.status === "1" ? "Active" : "Inactive"} */}
+                          </span>
+                        </div>
 
                         {/* Edit Button */}
-                        {/* <button
+                        <button
                           className="btn mt-2"
-                          onClick={handlePopUP}
-                          // onClick={() => handleEditBankClick(bank.id)}
-                          // data-bs-toggle="modal"
-                          // data-bs-target="#edit_bank_details"
+                          // onClick={handlePopUP}
+                          onClick={() => handleEditBankClick(bank.id)}
+                          data-bs-toggle="modal"
+                          data-bs-target="#edit_bank_details"
                         >
                           <i class="fa-solid fa-pen-to-square fs-4 text-white"></i>
-                        </button> */}
+                        </button>
                         {/* Edit Button */}
-                        {/* <button
+                        <button
                           className="btn mt-2"
-                          // onClick={() => handleDeleteBankClick(bank.id)}
-                          onClick={handlePopUP}
+                          onClick={() => handleDeleteBankClick(bank.id)}
+                          // onClick={handlePopUP}
                         >
                           <i class="fa-regular fa-trash-can fs-4 text-danger">
-                            {bank.id}
+                            {/* {bank.id} */}
                           </i>
-                        </button> */}
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -936,7 +1063,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
         id="edit_bank_details"
         aria-hidden="true"
         aria-labelledby="edit_bank_details_modal"
-        tabindex="-1"
+        tabIndex={-1} // 👈 React camelCase
       >
         <div className="modal-dialog modal-dialog-centered ">
           <div className="modal-content bg_light_grey rounded-2 py-3">
@@ -955,21 +1082,25 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
               {" "}
               <form
                 className="form-control_container"
+                noValidate // 👈 let Yup handle it
                 onSubmit={updateFormik.handleSubmit}
               >
                 {/* {updateFormik.errors.api && (
                   <p className="text-danger">{updateFormik.errors.api}</p>
                 )} */}
 
+                {/* API error block */}
                 {updateFormik.errors.api &&
                   (Array.isArray(updateFormik.errors.api) ? (
-                    <p className="text-danger ">
-                      {updateFormik.errors.api.map((err, index) => (
-                        <li key={index}>{err}</li>
+                    <ul className="text-danger mb-3">
+                      {updateFormik.errors.api.map((err, i) => (
+                        <li key={i}>{err}</li>
                       ))}
-                    </p>
+                    </ul>
                   ) : (
-                    <p className="text-danger">{updateFormik.errors.api}</p>
+                    <p className="text-danger mb-3">
+                      {updateFormik.errors.api}
+                    </p>
                   ))}
 
                 <div className="input-field mb-3">
@@ -1050,7 +1181,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
 
                 <div className="d-flex justify-content-center">
                   <button
-                    type="submit"
+                    type="submit" // 👈 add this
                     className="btn btn-login w-50 mt-4 mb-3 text-capitalize"
                     disabled={updateFormik.isSubmitting}
                   >

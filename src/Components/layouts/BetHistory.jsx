@@ -162,19 +162,19 @@ const BetHistory = () => {
                         </p>
                       ) : error ? (
                         <>
-                          <p className="text-danger">{error}</p>
+                          <p className="text-danger text-center">{error}</p>
                           <div className="d-flex flex-column align-items-center">
-                            <button
-                              className="btn btn-warning mt-2"
+                            {/* <button
+                              className="btn btn-warning mt-2 w-50"
                               onClick={fetchPlayerData}
                             >
                               Retry
-                            </button>
-                            <img
+                            </button> */}
+                            {/* <img
                               src="assets/img/notification/img_2.png"
                               alt="unauth"
                               className="w-75"
-                            />
+                            /> */}
                           </div>
                         </>
                       ) : filteredHistory.length > 0 ? (
