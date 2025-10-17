@@ -6,7 +6,7 @@ import BASE_URL from "../../API/api";
 import StickyHeader from "./Header/Header";
 import Footer from "./footer/Footer";
 import { toast, ToastContainer } from "react-toastify";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useNavigate, useLocation, Route } from "react-router-dom";
 import { motion } from "framer-motion";
 // import PaginatedData from "../Pages/Pagination/PaginatedData";
 // import {
@@ -27,6 +27,7 @@ import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import useAllGames from "../../hooks/useAllGames";
 import useFilteredGames from "../../hooks/useFilteredGames";
 import { getIsMobileParam } from "../../hooks/homePageApi";
+import routes from "../routes/route";
 
 const SearchTopGames = () => {
   const [types, setTypes] = useState([]);
@@ -653,6 +654,7 @@ const SearchTopGames = () => {
     setShowModal(false);
     // Programmatically trigger the back action to close the game
     window.history.back();
+    navigate("/all-games");
     // This will trigger your existing useEffect handlePopState logic
     // ✅ refresh profile so Header updates chips
     await fetchUser(currentToken);
@@ -678,11 +680,9 @@ const SearchTopGames = () => {
     // ... (rest of handleIframeLoad logic, including cross-origin error handling) ...
   };
 
-
-
-   const handleCancel = () => {
-     setShowModal(false);
-   };
+  const handleCancel = () => {
+    setShowModal(false);
+  };
 
   return (
     <>

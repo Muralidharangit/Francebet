@@ -642,6 +642,7 @@ const SearchTopGames = () => {
     setShowModal(false);
     // Programmatically trigger the back action to close the game
     window.history.back();
+    navigate("/top-games");
     // This will trigger your existing useEffect handlePopState logic
     // ✅ refresh profile so Header updates chips
     await fetchUser(currentToken);
