@@ -198,7 +198,7 @@ const Providers = () => {
       {/* header */}
       <StickyHeader onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
 
-      <div className="container-fluid  ">
+      <div className="container-fluid  page-body-wrapper">
         {/* Sidebar */}
         <Sidebar />
 
