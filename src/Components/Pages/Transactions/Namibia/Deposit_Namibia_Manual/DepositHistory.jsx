@@ -1,8 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
-import BASE_URL from "../../../../../API/api";
-import axios from "axios";
-import { depositHistory } from "../../../../../API/depositAPI";
-import { verifyToken } from "../../../../../API/authAPI";
+import { useContext, useEffect, useState } from "react";
 import AuthContext from "../../../../../Auth/AuthContext";
 
 import { toast, ToastContainer } from "react-toastify";
@@ -19,8 +15,8 @@ const DepositHistory = () => {
   const [loading, setLoading] = useState(true);
   const [selectedTab, setSelectedTab] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const { user, profile } = useContext(AuthContext);
-  console.log("user", user);
+  const { user } = useContext(AuthContext);
+  // console.log("user", user);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -61,7 +57,7 @@ const DepositHistory = () => {
 
       const response = await depositHistoryNamibia(token);
       if (response.status === "success") {
-        console.log(response, "test response");
+        // console.log(response, "test response");
 
         setHistory(response.depositHistory);
         setError(null); // 🟢 clear old errors

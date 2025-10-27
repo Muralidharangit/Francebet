@@ -37,6 +37,7 @@ const routes = {
     ewallet_deposit_history: "/deposit-namibia-ewallet-history",
 
     all_deposit_history: "/deposit_history",
+    all_depositHistory: "/all_deposit_history",
 
     // Kazang
     kazang_deposit_voucher: "/deposit-namibia-kazang",

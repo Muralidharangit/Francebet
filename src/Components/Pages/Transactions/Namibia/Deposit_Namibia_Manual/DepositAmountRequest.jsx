@@ -298,7 +298,7 @@ const DepositAmountRequest = ({
                   Your Request <br />
                   Is In Our Queue!
                 </div>
-                <Link to={routes.transactions.manual_deposit_history}>
+                <Link to={routes.transactions.all_depositHistory}>
                   <span
                     className="btn text-white green-bg"
                     onClick={() => setShowModal(false)} // ❌ Don't use data-bs-dismiss

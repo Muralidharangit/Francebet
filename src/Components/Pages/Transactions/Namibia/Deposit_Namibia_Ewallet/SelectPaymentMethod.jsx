@@ -1,13 +1,11 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import  { useContext, useEffect, useRef, useState } from "react";
 import AuthContext from "../../../../../Auth/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
 import {
-  getDepositMethodsNamibia,
   getDepositMethodsNamibiaEwallet,
 } from "../../../../../API/depositAPI";
 
 const SelectPaymentMethod = ({
-  paymentSelectedMethod,
   setPaymentSelectedMethod,
 }) => {
   const { user } = useContext(AuthContext);
@@ -20,12 +18,12 @@ const SelectPaymentMethod = ({
   // copy refs + flags
   const inputRef1 = useRef(null); // holder
   const inputRef2 = useRef(null); // bank name
-  const inputRef3 = useRef(null); // account number
-  const inputRef4 = useRef(null); // branch code
+  // const inputRef3 = useRef(null); // account number
+  // const inputRef4 = useRef(null); // branch code
   const [copied1, setCopied1] = useState(false);
   const [copied2, setCopied2] = useState(false);
-  const [copied3, setCopied3] = useState(false);
-  const [copied4, setCopied4] = useState(false);
+  // const [copied3, setCopied3] = useState(false);
+  // const [copied4, setCopied4] = useState(false);
 
   const handleCopy = async (ref, setCopied) => {
     if (!ref?.current) return;
@@ -44,7 +42,7 @@ const SelectPaymentMethod = ({
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (e) {
-      console.error("Clipboard failed", e);
+      // console.error("Clipboard failed", e);
       toast.error("Copy failed. Try manually.");
     }
   };
@@ -70,7 +68,7 @@ const SelectPaymentMethod = ({
           setPaymentSelectedMethod?.(data.id);
         }
       } catch (err) {
-        console.error(err);
+        // console.error(err);
         if (alive) {
           const msg = err?.message || "Failed to load payment methods";
           setError(msg);

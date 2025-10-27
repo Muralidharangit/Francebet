@@ -1,19 +1,15 @@
-import React, { useContext, useEffect, useState } from "react";
+import{ useContext, useEffect, useState } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import AuthContext from "../../../../../Auth/AuthContext";
 import routes from "../../../../routes/route";
 import {
-  EditBank,
-  sendWithdrawRequest,
   sendWithdrawRequestIndia,
-  sendWithdrawRequestNamibia,
 } from "../../../../../API/withdrawAPI";
 import { verifyToken } from "../../../../../API/authAPI";
 import { toast, ToastContainer } from "react-toastify";
 import {
-  clearSelectedBank,
   loadSelectedBank,
 } from "../../../../../API/bankSelectionStorage";
 import { APP_NAME, CURRENCY_SYMBOL } from "../../../../../constants";

@@ -1,5 +1,5 @@
 // src/Components/Pages/Transactions/Deposit/DepositMethod.jsx
-import React, { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 
 // Adjust these paths if your structure differs:
@@ -159,7 +159,7 @@ const DepositMethod = () => {
     }
 
     // Fallback
-    console.log("Unhandled method:", method);
+    // console.log("Unhandled method:", method);
   }
 
   /* ---------------- UI ---------------- */

@@ -21,7 +21,7 @@ const DepositAmountRequest = ({
   const { user } = useContext(AuthContext);
   const token = user?.token;
   const User_id = user?.id;
-  console.log("user================", User_id);
+  // console.log("user================", User_id);
   const navigate = useNavigate();
   const formik = useFormik({
     enableReinitialize: true, // 🟣 IMPORTANT!

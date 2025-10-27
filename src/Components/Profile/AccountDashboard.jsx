@@ -225,7 +225,7 @@ const AccountDashboard = () => {
                     //   handleSecureRoute(routes.transactions.depositHistory)
                     // }
                     onClick={() =>
-                      navigate(routes.transactions.all_deposit_history)
+                      navigate(routes.transactions.all_depositHistory)
                     }
                   >
                     <img

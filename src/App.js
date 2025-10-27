@@ -162,6 +162,9 @@ const AllMethodDepositHistory = lazy(() =>
   )
 );
 
+const AllDepositHistory = lazy(() =>
+  import("./Components/Pages/Transactions/Deposit/AllHistory")
+);
 const DepositIndexIndia = lazy(() =>
   import(
     "./Components/Pages/Transactions/India/Deposit_India_Manual/DepositIndia"
@@ -299,6 +302,11 @@ function App() {
             <Route
               path={routes.transactions.all_deposit_history}
               element={<AllMethodDepositHistory />}
+            />
+
+            <Route
+              path={routes.transactions.all_depositHistory}
+              element={<AllDepositHistory />}
             />
             {/* easy_wallet */}
             <Route

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 // import BASE_URL from "../../../../API/api";
 // import axios from "axios";
 import * as Yup from "yup";
@@ -8,15 +8,10 @@ import { useFormik } from "formik";
 import AuthContext from "../../../../../Auth/AuthContext";
 import {
   changeBankNamibiaStatus,
-  changeBankStatus,
-  deleteBankDetails,
   deleteBankNamibiaDetails,
-  EditBank,
   EditBankNamibia,
   getBankDetailsNamibia,
-  // storeBank,
   storeBankNamibia,
-  updateBank,
   updateBankNamibia,
 } from "../../../../../API/withdrawAPI";
 import { verifyToken } from "../../../../../API/authAPI";
@@ -383,13 +378,13 @@ const BankDetails = ({
     validateOnChange: true,
     validationSchema: editValidationSchema, // 👈 use the edit schema here
     onSubmit: async (values, { setSubmitting, setErrors, resetForm }) => {
-      console.log("[EDIT BANK] submit fired ✅ with values:", values);
+      // console.log("[EDIT BANK] submit fired ✅ with values:", values);
 
       try {
         // 1) Verify token
         try {
           const tokenRes = await verifyToken(token);
-          console.log("[VERIFY] tokenRes:", tokenRes);
+          // console.log("[VERIFY] tokenRes:", tokenRes);
           if (tokenRes.status !== "success") {
             const msg = tokenRes.message || "Invalid/expired token";
             toast.error(msg);
@@ -409,9 +404,9 @@ const BankDetails = ({
         }
 
         // 2) Hit the update API
-        console.log("[API] calling updateBankNamibia...");
+        // console.log("[API] calling updateBankNamibia...");
         const response = await updateBankNamibia(token, values, editingBankId);
-        console.log("[API] response:", response);
+        // console.log("[API] response:", response);
 
         if (response?.status === "success") {
           toast.success("Bank updated successfully! 🎉");

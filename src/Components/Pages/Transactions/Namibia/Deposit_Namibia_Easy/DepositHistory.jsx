@@ -1,18 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
-import BASE_URL from "../../../../../API/api";
-import axios from "axios";
+import  { useContext, useEffect, useState } from "react";
+
 import {
-  depositHistory,
   depositHistoryEasyNamibia,
 } from "../../../../../API/depositAPI";
-import { verifyToken } from "../../../../../API/authAPI";
 import AuthContext from "../../../../../Auth/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
 import StickyHeader from "../../../../layouts/Header/Header";
 import Sidebar from "../../../../layouts/Header/Sidebar";
 import axiosInstance from "../../../../../API/axiosConfig";
 import { CURRENCY_SYMBOL } from "../../../../../constants";
-import { depositHistoryEwalletNamibia } from "../../../../../API/depositAPI";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const DepositHistory = () => {
@@ -21,8 +17,8 @@ const DepositHistory = () => {
   const [loading, setLoading] = useState(true);
   const [selectedTab, setSelectedTab] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const { user, profile } = useContext(AuthContext);
-  console.log("user", user);
+  const { user } = useContext(AuthContext);
+  // console.log("user", user);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const itemsPerPage = 10;

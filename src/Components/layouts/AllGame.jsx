@@ -6,7 +6,7 @@ import BASE_URL from "../../API/api";
 import StickyHeader from "./Header/Header";
 import Footer from "./footer/Footer";
 import { toast, ToastContainer } from "react-toastify";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import {useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 // import PaginatedData from "../Pages/Pagination/PaginatedData";
 // import {
@@ -29,7 +29,7 @@ import useFilteredGames from "../../hooks/useFilteredGames";
 import { getIsMobileParam } from "../../hooks/homePageApi";
 
 const SearchTopGames = () => {
-  const [types, setTypes] = useState([]);
+  // const [types, setTypes] = useState([]);
   const [games, setGames] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedType, setSelectedType] = useState("all");

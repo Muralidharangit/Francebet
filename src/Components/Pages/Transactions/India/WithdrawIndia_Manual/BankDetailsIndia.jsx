@@ -154,7 +154,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
         err.response?.data?.message ||
         err.message ||
         "Failed to update status.";
-      console.error("API Error:", err.response?.data || err.message);
+      // console.error("API Error:", err.response?.data || err.message);
       alert(`Error: ${errorMessage}`);
     }
   };

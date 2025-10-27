@@ -1,19 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
-import BASE_URL from "../../../../../API/api";
-import axios from "axios";
+import { useContext, useEffect, useState } from "react";
+
 import {
-  depositHistory,
   depositHistoryBlueNamibia,
-  depositHistoryEasyNamibia,
 } from "../../../../../API/depositAPI";
-import { verifyToken } from "../../../../../API/authAPI";
 import AuthContext from "../../../../../Auth/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
 import StickyHeader from "../../../../layouts/Header/Header";
 import Sidebar from "../../../../layouts/Header/Sidebar";
 import axiosInstance from "../../../../../API/axiosConfig";
 import { CURRENCY_SYMBOL } from "../../../../../constants";
-import { depositHistoryEwalletNamibia } from "../../../../../API/depositAPI";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const DepositHistory = () => {
@@ -23,7 +18,7 @@ const DepositHistory = () => {
   const [selectedTab, setSelectedTab] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const { user, profile } = useContext(AuthContext);
-  console.log("user", user);
+  // console.log("user", user);
   const navigate = useNavigate();
   const location = useLocation();
 

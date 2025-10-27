@@ -3,9 +3,7 @@ import BASE_URL from "../../../../../API/api";
 import axios from "axios";
 import {
   depositHistoryAccessMoneyNamibia,
-  depositHistoryNedBankNamibia,
 } from "../../../../../API/depositAPI";
-import { verifyToken } from "../../../../../API/authAPI";
 import AuthContext from "../../../../../Auth/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
 import StickyHeader from "../../../../layouts/Header/Header";

@@ -21,11 +21,11 @@ const Provider = () => {
         if (Array.isArray(data.providers)) {
           setProviders(data.providers);
         } else {
-          console.error("API response does not contain 'allGames' array", data);
+          // console.error("API response does not contain 'allGames' array", data);
           setProviders([]); // Fallback to an empty array
         }
       } catch (error) {
-        console.error("Error fetching games:", error);
+        // console.error("Error fetching games:", error);
         setProviders([]); // Handle errors by setting an empty array
       }
     };

@@ -1,10 +1,9 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import  { useContext, useEffect, useRef, useState } from "react";
 import AuthContext from "../../../../../Auth/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
-import { getDepositMethodsIndia, getDepositMethodsNamibia } from "../../../../../API/depositAPI";
+import { getDepositMethodsIndia } from "../../../../../API/depositAPI";
 
 const SelectPaymentMethod = ({
-  paymentSelectedMethod,
   setPaymentSelectedMethod,
 }) => {
   const { user } = useContext(AuthContext);
@@ -40,7 +39,7 @@ const SelectPaymentMethod = ({
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (e) {
-      console.error("Clipboard failed", e);
+      // console.error("Clipboard failed", e);
       toast.error("Copy failed. Try manually.");
     }
   };
@@ -53,9 +52,9 @@ const SelectPaymentMethod = ({
       setError(null);
       try {
        const res = await getDepositMethodsIndia(token);
-       console.log("====================================");
-       console.log(res.paymentDetail);
-       console.log("====================================");
+      //  console.log("====================================");
+      //  console.log(res.paymentDetail);
+      //  console.log("====================================");
 
        // Accept either an object or an array
        const data = Array.isArray(res.paymentDetail)
@@ -72,7 +71,7 @@ const SelectPaymentMethod = ({
        }
 
       } catch (err) {
-        console.error(err);
+        // console.error(err);
         if (alive) {
           const msg = err?.message || "Failed to load payment methods";
           setError(msg);

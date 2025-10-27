@@ -17,8 +17,8 @@ const DepositHistory = () => {
   const [loading, setLoading] = useState(true);
   const [selectedTab, setSelectedTab] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const { user, profile } = useContext(AuthContext);
-  console.log("user", user);
+  const { user } = useContext(AuthContext);
+  // console.log("user", user);
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const itemsPerPage = 10;

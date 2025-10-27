@@ -118,7 +118,7 @@ const DepositMethod = () => {
   function handleChoose(method) {
     const name_method = (method?.name || "").toLowerCase().trim();
     setNameMethod(name_method);
-    console.log(name_method, "hhhhhhhhhhhh");
+    // console.log(name_method, "hhhhhhhhhhhh");
 
     // name -> something like "Manual Deposit - Namibia"
     const key = (name_method || "").toLowerCase().trim();
@@ -218,7 +218,7 @@ const DepositMethod = () => {
       return;
     }
     // Fallback
-    console.log("Unhandled method:", method);
+    // console.log("Unhandled method:", method);
   }
 
   // Put this helper above your component (or in a utils file)
@@ -359,7 +359,7 @@ const DepositMethod = () => {
                                 } else {
                                   perCardHistoryRoute = tx.depositHistory;
                                 }
-                                console.log(perCardHistoryRoute);
+                                // console.log(perCardHistoryRoute);
                                 return (
                                   <div
                                     className="col-12 col-lg-6 col-xl-4"
@@ -403,7 +403,13 @@ const DepositMethod = () => {
                                           }}
                                         />
 
-                                        <Link to={perCardHistoryRoute}>
+                                        <Link
+                                          to={
+                                            routes.transactions
+                                              .all_depositHistory
+                                          }
+                                        >
+                                          {/* <Link to={perCardHistoryRoute}></Link> */}
                                           <img
                                             alt="bet_history"
                                             style={{

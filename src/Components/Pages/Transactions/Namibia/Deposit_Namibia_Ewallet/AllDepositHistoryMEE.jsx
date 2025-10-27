@@ -1,5 +1,5 @@
 // src/Components/Pages/Transactions/Deposit/DepositMethod.jsx
-import React, { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 // Adjust these paths if your structure differs:

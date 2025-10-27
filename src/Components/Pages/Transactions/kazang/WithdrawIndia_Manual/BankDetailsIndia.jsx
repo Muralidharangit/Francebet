@@ -1,8 +1,5 @@
-import React, { useEffect, useState } from "react";
-// import BASE_URL from "../../../../API/api";
-// import axios from "axios";
+import { useEffect, useState } from "react";
 import * as Yup from "yup";
-// import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { useFormik } from "formik";
 import AuthContext from "../../../../../Auth/AuthContext";
@@ -12,8 +9,6 @@ import {
   EditBank,
   getBankDetailsIndia,
   storeBankIndia,
-  // storeBank,
-  storeBankNamibia,
   updateBank,
 } from "../../../../../API/withdrawAPI";
 import { verifyToken } from "../../../../../API/authAPI";
@@ -149,7 +144,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
         err.response?.data?.message ||
         err.message ||
         "Failed to update status.";
-      console.error("API Error:", err.response?.data || err.message);
+      // console.error("API Error:", err.response?.data || err.message);
       alert(`Error: ${errorMessage}`);
     }
   };

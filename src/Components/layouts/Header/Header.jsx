@@ -6,14 +6,12 @@ import { verifyToken } from "../../../API/authAPI";
 import { toast, ToastContainer } from "react-toastify";
 import { Images } from "./constants/images";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
-import { CURRENCY_SYMBOL } from "../../../constants";
+
 const StickyHeader = ({ onToggleSidebar }) => {
   const [loading, setLoading] = useState(false);
-  // console.log("onToggleSidebar", onToggleSidebar);
 
   // const { user, profile, avatar, portalSettings, isLoading, logout, authType } =
-  const { user, profile, avatar, portalSettings, isLoading, logout, authType } =
-    useContext(AuthContext); // ✅ Get user authentication state
+  const { user, profile, portalSettings, logout } = useContext(AuthContext); // ✅ Get user authentication state
   const [isSticky, setIsSticky] = useState(false);
   const navigate = useNavigate();
 
@@ -30,8 +28,6 @@ const StickyHeader = ({ onToggleSidebar }) => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-  // console.log(profile, "user in header");
-  // console.log(profile, "user in header");
 
   const handleDepositClick = async () => {
     try {
@@ -63,8 +59,6 @@ const StickyHeader = ({ onToggleSidebar }) => {
         }, 3000);
       }
     } catch (err) {
-      console.error("Token validation failed:", err);
-
       toast.error("Please login again.", {
         position: "top-right",
         autoClose: 3000,
@@ -97,7 +91,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
         }, 3000);
       }
     } catch (err) {
-      console.error("Token validation failed:", err);
+      // console.error("Token validation failed:", err);
 
       toast.error("Please login again.", {
         position: "top-right",
@@ -115,7 +109,6 @@ const StickyHeader = ({ onToggleSidebar }) => {
 
   const handleToggle = () => {
     setIsOpen((prev) => !prev);
-    console.log("testing testing");
   };
 
   const handleToggleSidebar = () => {
@@ -618,7 +611,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                             className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
                             onClick={() =>
                               handleSecureRoute(
-                                routes.transactions.all_deposit_history
+                                routes.transactions.all_depositHistory
                               )
                             }
                           >

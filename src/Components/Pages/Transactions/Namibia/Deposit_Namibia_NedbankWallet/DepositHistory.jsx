@@ -1,8 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
-import BASE_URL from "../../../../../API/api";
-import axios from "axios";
+import { useContext, useEffect, useState } from "react";
+
 import { depositHistoryNedBankNamibia } from "../../../../../API/depositAPI";
-import { verifyToken } from "../../../../../API/authAPI";
 import AuthContext from "../../../../../Auth/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
 import StickyHeader from "../../../../layouts/Header/Header";
@@ -18,8 +16,8 @@ const DepositHistory = () => {
   const [loading, setLoading] = useState(true);
   const [selectedTab, setSelectedTab] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const { user, profile } = useContext(AuthContext);
-  console.log("user", user);
+  const { user } = useContext(AuthContext);
+  // console.log("user", user);
   const navigate = useNavigate();
   const location = useLocation();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

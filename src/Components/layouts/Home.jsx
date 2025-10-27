@@ -483,7 +483,7 @@ function Home() {
         return;
       }
 
-      console.error("Error launching game:", error);
+      // console.error("Error launching game:", error);
       toast.error("Game launch failed. Try again later.");
     }
   };
@@ -637,7 +637,7 @@ function Home() {
         state: { results },
       });
     } catch (e) {
-      console.error("Search failed:", e);
+      // console.error("Search failed:", e);
     } finally {
       setIsSearching(false);
     }
@@ -792,7 +792,7 @@ function Home() {
         setTimeout(() => navigate("/login"), 3000);
         return;
       }
-      console.error("Error launching game:", error);
+      // console.error("Error launching game:", error);
       toast.error("Game launch failed. Try again later.");
     }
   };

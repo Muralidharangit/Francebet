@@ -6476,3 +6476,103 @@ iframe {
   background: rgba(255, 255, 255, 0.05);
   border-radius: 10px;
 }
+/* Card shell */
+.dh-card {
+  background: transparent;
+  border-radius: 12px;
+  margin: 10px 0 14px;
+}
+
+/* Header row */
+.dh-row {
+  width: 100%;
+  background: #333a3d;            /* dark slate */
+  border: 1px solid #454c4f;
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  transition: background .15s ease, border-color .15s ease;
+}
+.dh-row:hover { background: #3b4246; border-color: #5a6468; }
+.dh-row.is-open { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+
+/* Left */
+.dh-row__left { display: flex; gap: 12px; align-items: center; text-align: justify; }
+.dh-icon {
+  background: #5a6468;
+  width: 38px; height: 38px;
+  display: grid; place-items: center;
+  color: #e9eef2;
+  border-radius: 10px;
+}
+.dh-eyebrow { font-size: 11px; color: #aab2b7; margin-bottom: 2px; }
+.dh-title { font-size: 14px; color: #fff; }
+.dh-subtle { font-size: 11px; color: #9aa3a8; margin-top: 6px; }
+
+/* Right */
+.dh-row__right { display: flex; align-items: center; }
+.dh-amount { font-weight: 700; color: #fff; letter-spacing: .2px; }
+.dh-chevron { transition: transform .2s ease; }
+.dh-row.is-open .dh-chevron { transform: rotate(180deg); }
+
+/* Status pill */
+.pill {
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 18px;
+  display: inline-block;
+}
+.pill--success { background: #12b886; color: #072; }
+.pill--warn    { background: #ffd166; color: #5c4200; }
+.pill--danger  { background: #ff6b6b; color: #4d0000; }
+
+/* Details container (animated collapse) */
+.dh-details {
+  overflow: hidden;
+  max-height: 0;
+  transition: max-height .28s ease;
+  /* border: 1px solid #454c4f; */
+  border-top: none;
+  border-bottom-left-radius: 12px;
+  border-bottom-right-radius: 12px;
+  background: #2f3538;
+}
+.dh-details.open {
+  max-height: 420px; /* should be bigger than content; tweak if needed */
+}
+.dh-details__inner {
+  padding: 14px 16px;
+}
+
+/* Grid */
+.dh-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px 18px;
+}
+@media (max-width: 640px) {
+  .dh-grid { grid-template-columns: 1fr; }
+}
+
+.dh-field { border-bottom: 1px dashed rgba(255,255,255,.08); padding-bottom: 10px; }
+.dh-field:last-child { border-bottom: none; }
+.dh-label { font-size: 12px; color: #aab2b7; margin-bottom: 4px; }
+.dh-value { color: #e8eef1; font-weight: 600; }
+
+/* Skeleton */
+.skeleton-line {
+  height: 10px;
+  background: linear-gradient(90deg, #3a4145 0%, #434a4e 50%, #3a4145 100%);
+  background-size: 200% 100%;
+  border-radius: 6px;
+  margin: 8px 0;
+  animation: dh-shimmer 1.2s infinite;
+}
+.skeleton-line.w-75 { width: 75%; }
+.skeleton-line.w-50 { width: 50%; }
+@keyframes dh-shimmer { 0% {background-position: 200% 0} 100% {background-position: -200% 0} }

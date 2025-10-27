@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getPortalSettings } from "../../../../../API/depositAPI";
 import { CURRENCY_SYMBOL } from "../../../../../constants";
 

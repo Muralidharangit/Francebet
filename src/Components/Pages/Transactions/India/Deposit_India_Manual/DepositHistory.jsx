@@ -18,7 +18,7 @@ const DepositHistory = () => {
   const [selectedTab, setSelectedTab] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
   const { user, profile } = useContext(AuthContext);
-  console.log("user", user);
+  // console.log("user", user);
   const location = useLocation();
   const navigate = useNavigate();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);

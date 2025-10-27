@@ -44,7 +44,7 @@ const BetHistory = () => {
         throw new Error(response.msg || "Failed to load data.");
       }
     } catch (err) {
-      console.error("Error fetching data:", err);
+      // console.error("Error fetching data:", err);
       setError(err.message);
       setHistory([]);
     } finally {

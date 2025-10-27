@@ -1,9 +1,8 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import BASE_URL from "../../../../API/api";
 import AuthContext from "../../../../Auth/AuthContext";
 import { withdrawHistoryPage } from "../../../../API/withdrawAPI";
-import { verifyToken } from "../../../../API/authAPI";
 import { toast, ToastContainer } from "react-toastify";
 import PaginatedData from "../../Pagination/PaginatedData";
 import StickyHeader from "../../../layouts/Header/Header";
