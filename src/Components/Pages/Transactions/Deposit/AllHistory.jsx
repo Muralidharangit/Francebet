@@ -5,6 +5,7 @@ import StickyHeader from "../../../layouts/Header/Header";
 import Sidebar from "../../../layouts/Header/Sidebar";
 import { CURRENCY_SYMBOL } from "../../../../constants";
 import { useLocation, useNavigate } from "react-router-dom";
+// import { IoClose } from "react-icons/io5";
 import {
   useQuery,
   useQueryClient,
@@ -24,10 +25,9 @@ const DepositHistory = () => {
   const [selectedTab, setSelectedTab] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
 
-  const [openId, setOpenId] = useState(null);
-  // const toggleOpen = (id) => setOpenId((v) => (v === id ? null : id));
-  const toggleOpen = (key) => setOpenKey((v) => (v === key ? null : key));
+  // use composite open key: `${id}:${type}`
   const [openKey, setOpenKey] = useState(null);
+  const toggleOpen = (key) => setOpenKey((v) => (v === key ? null : key));
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -46,15 +46,13 @@ const DepositHistory = () => {
         perPage: ITEMS_PER_PAGE,
         token,
       }),
-
     placeholderData: keepPreviousData,
     retry: 1,
-
-    // 👇 ensure it fetches latest when you enter this page
-    staleTime: 0, // treat cached data as stale immediately (per this query)
-    refetchOnMount: "always", // always refetch on mount
-    refetchOnWindowFocus: true, // optional: update when user returns to tab
-    refetchOnReconnect: true, // optional: update after network reconnect
+    staleTime: 0,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
+    refetchOnReconnect: true,
+    enabled: !!token, // 👈 add this
 
     onError: (e) => {
       toast.error(
@@ -69,11 +67,11 @@ const DepositHistory = () => {
       );
     },
   });
-  // toggle
+
   const PREFETCH = false;
-  // Prefetch next/prev pages
+
   useEffect(() => {
-    if (!PREFETCH || !data) return; // <— guard prefetch
+    if (!PREFETCH || !data) return;
     const next = (data.current_page || 1) + 1;
     const prev = (data.current_page || 1) - 1;
 
@@ -101,7 +99,6 @@ const DepositHistory = () => {
     }
   }, [data, qc, selectedTab, token]);
 
-  // Reset to page 1 when changing tab (if you later filter on server)
   useEffect(() => {
     setCurrentPage(1);
   }, [selectedTab]);
@@ -135,7 +132,6 @@ const DepositHistory = () => {
     const items = [];
     const curr = meta.current_page || 1;
     const last = meta.last_page || 1;
-
     const addPage = (p) => items.push({ type: "page", value: p });
     const addDots = () => items.push({ type: "dots" });
 
@@ -173,6 +169,7 @@ const DepositHistory = () => {
       )
     );
   };
+
   const prefetchPage = (p) => {
     if (!p) return;
     qc.prefetchQuery({
@@ -194,6 +191,7 @@ const DepositHistory = () => {
       staleTime: 5 * 60 * 1000,
     });
   };
+
   return (
     <div>
       <ToastContainer position="top-right" autoClose={5000} theme="dark" />
@@ -225,7 +223,7 @@ const DepositHistory = () => {
                       </h5>
 
                       <div className="d-flex justify-content-between align-items-center px-1">
-                        {/* Invalidate cache manually (optional) */}
+                        {/* Manual refresh: invalidates cache & refetches */}
                         <button
                           className="go_back_btn bg-grey"
                           onClick={() =>
@@ -233,13 +231,14 @@ const DepositHistory = () => {
                               queryKey: ["depositHistory"],
                             })
                           }
+                          title="Refresh"
                         >
                           <i className="fa-solid fa-arrows-rotate text-white fs-16"></i>
                         </button>
                       </div>
                     </div>
 
-                    {/* Tabs */}
+                    {/* Tabs (only 'all' now) */}
                     <div className="overflow-auto px-3 mt-4">
                       <div
                         className="nav nav-pills flex-nowrap gap-2 scroll-hidden rounded-2"
@@ -273,11 +272,12 @@ const DepositHistory = () => {
                           const rowKey = `${bet.id}:${bet.type}`; // composite key
                           return (
                             <DepositRow
-                              key={rowKey} // unique React key
+                              key={rowKey}
+                              rowKey={rowKey}
                               bet={bet}
                               token={token}
-                              isOpen={openKey === rowKey} // open state per (id,type)
-                              onToggle={() => toggleOpen(rowKey)}
+                              isOpen={openKey === rowKey}
+                              onToggle={toggleOpen} // pass handler (expects composite key)
                               prefetchDetails={prefetchDetails}
                               statusBadge={statusBadge}
                             />
@@ -306,7 +306,6 @@ const DepositHistory = () => {
                           <ul className="pagination mb-0">
                             {renderPagination()}
                           </ul>
-                          {/* // In your Next button: */}
                           <button
                             className="btn btn-outline-secondary"
                             onMouseEnter={() =>
@@ -349,7 +348,31 @@ const DepositHistory = () => {
 
 export default DepositHistory;
 
-function DepositRow({ bet, token, isOpen, onToggle, prefetchDetails }) {
+function DepositRow({
+  rowKey,
+  bet,
+  token,
+  isOpen,
+  onToggle,
+  prefetchDetails,
+  statusBadge,
+}) {
+  const [viewerOpen, setViewerOpen] = useState(false);
+
+  // Close on ESC + lock scroll when modal open
+  useEffect(() => {
+    if (!viewerOpen) return;
+    const onKey = (e) => e.key === "Escape" && setViewerOpen(false);
+    document.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [viewerOpen]);
+
+  // details query is keyed by id+type+token and only enabled when open
   const {
     data: details,
     isLoading,
@@ -358,22 +381,25 @@ function DepositRow({ bet, token, isOpen, onToggle, prefetchDetails }) {
   } = useQuery({
     queryKey: ["depositDetails", { id: bet.id, type: bet.type, token }],
     queryFn: () => fetchDepositDetails({ id: bet.id, type: bet.type, token }),
-    enabled: isOpen,
+    enabled: isOpen && !!token, // 👈
     staleTime: 0,
     refetchOnMount: "always",
     retry: 1,
   });
 
+  const onHeaderClick = () => onToggle(rowKey); // <- use composite key
+  const onPrefetch = () => prefetchDetails(bet.id, bet.type);
+
   return (
     <div className="dh-card">
-      {/* Header */}
+      {/* Row header */}
       <button
         className={`dh-row ${isOpen ? "is-open" : ""}`}
-        onClick={() => onToggle(bet.id)}
-        onMouseEnter={() => prefetchDetails(bet.id, bet.type)}
-        onFocus={() => prefetchDetails(bet.id, bet.type)}
+        onClick={onHeaderClick}
+        onMouseEnter={onPrefetch}
+        onFocus={onPrefetch}
         aria-expanded={isOpen}
-        aria-controls={`row-${bet.id}-details`}
+        aria-controls={`row-${rowKey}-details`}
       >
         <div className="dh-row__left ">
           <div className="dh-icon">
@@ -402,36 +428,20 @@ function DepositRow({ bet, token, isOpen, onToggle, prefetchDetails }) {
           </div>
         </div>
 
-        <div className="dh-row__right d-flex  align-items-end flex-column">
+        <div className="dh-row__right d-flex align-items-end flex-column">
           <div className="dh-amount">
-            NAD$ {Number(bet?.deposit_amount || 0).toFixed(2)}
+            {CURRENCY_SYMBOL} {Number(bet?.deposit_amount || 0).toFixed(2)}
           </div>
-          <span
-            className={`fw-bold ${
-              bet.status === "pending"
-                ? "history_badge pending_badge"
-                : bet.status === "verified"
-                ? "history_badge success_badge"
-                : bet.status === "processing"
-                ? "history_badge processing_badge"
-                : "text-danger"
-            }`}
-          >
-            {bet.status}
-          </span>
-          {/* <div className={statusClass}>{details?.status || bet.status}</div> */}
+          <span className={statusBadge(bet.status)}>{bet.status}</span>
           <div className="dh-chevron" aria-hidden>
             <i className="fa-solid fa-chevron-down text-white" />
-            {/* <p className="mb-0 mt-1 text-danger">
-              see more <i className="fa-solid fa-chevron-down text-white" />
-            </p> */}
           </div>
         </div>
       </button>
 
       {/* Details */}
       <div
-        id={`row-${bet.id}-details`}
+        id={`row-${rowKey}-details`}
         className={`dh-details ${isOpen ? "open" : ""}`}
       >
         <div className="dh-details__inner">
@@ -453,7 +463,7 @@ function DepositRow({ bet, token, isOpen, onToggle, prefetchDetails }) {
             !isError &&
             details &&
             (() => {
-              const d = details?.depositDetail ?? details; // normalize just in case
+              const d = details?.depositDetail ?? details; // normalize
               if (!d) return null;
 
               return (
@@ -480,7 +490,7 @@ function DepositRow({ bet, token, isOpen, onToggle, prefetchDetails }) {
                     </div>
                   ) : null}
 
-                  {/* Image only if present */}
+                  {/* Proof image → click to open viewer */}
                   {d.image_url ? (
                     <div className="dh-field" style={{ gridColumn: "1 / -1" }}>
                       <img
@@ -488,18 +498,84 @@ function DepositRow({ bet, token, isOpen, onToggle, prefetchDetails }) {
                         alt="Payment proof"
                         loading="lazy"
                         referrerPolicy="no-referrer"
+                        title="Click to view"
                         style={{
                           maxWidth: "35%",
                           height: "auto",
                           borderRadius: 8,
                           display: "block",
+                          cursor: "zoom-in",
                         }}
+                        onClick={() => setViewerOpen(true)}
                         onError={(e) =>
                           (e.currentTarget.style.display = "none")
                         }
                       />
                     </div>
                   ) : null}
+
+                  {/* Lightbox */}
+                  {viewerOpen && d.image_url && (
+                    <div
+                      className="img-modal"
+                      role="dialog"
+                      aria-modal="true"
+                      aria-label="Image viewer"
+                      onClick={() => setViewerOpen(false)}
+                    >
+                      <div
+                        className="img-modal__inner"
+                        onClick={(e) => e.stopPropagation()}
+                      >
+                        <button
+                          className="img-modal__close"
+                          onClick={() => setViewerOpen(false)}
+                          aria-label="Close"
+                        >
+                          ×
+                        </button>
+
+                        <button
+                          className="img-modal__close"
+                          aria-label="Close"
+                          onClick={() => setViewerOpen(false)}
+                        >
+                          <i className="fa-solid fa-xmark" />
+                        </button>
+
+                        <a
+                          href={d.image_url}
+                          target="_blank"
+                          rel="noreferrer"
+                          title="Open in new tab"
+                        >
+                          <img
+                            src={d.image_url}
+                            alt="Payment proof full size"
+                            referrerPolicy="no-referrer"
+                          />
+                        </a>
+                        {/* 
+                        <div className="img-modal__actions">
+                          <a
+                            className="btn btn-sm btn-light"
+                            href={d.image_url}
+                            download
+                          >
+                            Download
+                          </a>
+                          <a
+                            className="btn btn-sm btn-outline-light"
+                            href={d.image_url}
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            Open in new tab
+                          </a>
+                        </div> */}
+                      </div>
+                    </div>
+                  )}
                 </div>
               );
             })()}
@@ -508,5 +584,3 @@ function DepositRow({ bet, token, isOpen, onToggle, prefetchDetails }) {
     </div>
   );
 }
-
-// export default DepositRow;

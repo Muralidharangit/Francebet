@@ -6486,7 +6486,7 @@ iframe {
 /* Header row */
 .dh-row {
   width: 100%;
-  background: #333a3d;            /* dark slate */
+  background: #333a3d; /* dark slate */
   border: 1px solid #454c4f;
   border-radius: 12px;
   padding: 14px 16px;
@@ -6494,29 +6494,64 @@ iframe {
   justify-content: space-between;
   gap: 12px;
   align-items: center;
-  transition: background .15s ease, border-color .15s ease;
+  transition: background 0.15s ease, border-color 0.15s ease;
 }
-.dh-row:hover { background: #3b4246; border-color: #5a6468; }
-.dh-row.is-open { border-bottom-left-radius: 0; border-bottom-right-radius: 0; }
+.dh-row:hover {
+  background: #3b4246;
+  border-color: #5a6468;
+}
+.dh-row.is-open {
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+}
 
 /* Left */
-.dh-row__left { display: flex; gap: 12px; align-items: center; text-align: justify; }
+.dh-row__left {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  text-align: justify;
+}
 .dh-icon {
   background: #5a6468;
-  width: 38px; height: 38px;
-  display: grid; place-items: center;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
   color: #e9eef2;
   border-radius: 10px;
 }
-.dh-eyebrow { font-size: 11px; color: #aab2b7; margin-bottom: 2px; }
-.dh-title { font-size: 14px; color: #fff; }
-.dh-subtle { font-size: 11px; color: #9aa3a8; margin-top: 6px; }
+.dh-eyebrow {
+  font-size: 11px;
+  color: #aab2b7;
+  margin-bottom: 2px;
+}
+.dh-title {
+  font-size: 14px;
+  color: #fff;
+}
+.dh-subtle {
+  font-size: 11px;
+  color: #9aa3a8;
+  margin-top: 6px;
+}
 
 /* Right */
-.dh-row__right { display: flex; align-items: center; }
-.dh-amount { font-weight: 700; color: #fff; letter-spacing: .2px; }
-.dh-chevron { transition: transform .2s ease; }
-.dh-row.is-open .dh-chevron { transform: rotate(180deg); }
+.dh-row__right {
+  display: flex;
+  align-items: center;
+}
+.dh-amount {
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.2px;
+}
+.dh-chevron {
+  transition: transform 0.2s ease;
+}
+.dh-row.is-open .dh-chevron {
+  transform: rotate(180deg);
+}
 
 /* Status pill */
 .pill {
@@ -6527,15 +6562,24 @@ iframe {
   line-height: 18px;
   display: inline-block;
 }
-.pill--success { background: #12b886; color: #072; }
-.pill--warn    { background: #ffd166; color: #5c4200; }
-.pill--danger  { background: #ff6b6b; color: #4d0000; }
+.pill--success {
+  background: #12b886;
+  color: #072;
+}
+.pill--warn {
+  background: #ffd166;
+  color: #5c4200;
+}
+.pill--danger {
+  background: #ff6b6b;
+  color: #4d0000;
+}
 
 /* Details container (animated collapse) */
 .dh-details {
   overflow: hidden;
   max-height: 0;
-  transition: max-height .28s ease;
+  transition: max-height 0.28s ease;
   /* border: 1px solid #454c4f; */
   border-top: none;
   border-bottom-left-radius: 12px;
@@ -6556,13 +6600,27 @@ iframe {
   gap: 14px 18px;
 }
 @media (max-width: 640px) {
-  .dh-grid { grid-template-columns: 1fr; }
+  .dh-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
-.dh-field { border-bottom: 1px dashed rgba(255,255,255,.08); padding-bottom: 10px; }
-.dh-field:last-child { border-bottom: none; }
-.dh-label { font-size: 12px; color: #aab2b7; margin-bottom: 4px; }
-.dh-value { color: #e8eef1; font-weight: 600; }
+.dh-field {
+  border-bottom: 1px dashed rgba(255, 255, 255, 0.08);
+  padding-bottom: 10px;
+}
+.dh-field:last-child {
+  border-bottom: none;
+}
+.dh-label {
+  font-size: 12px;
+  color: #aab2b7;
+  margin-bottom: 4px;
+}
+.dh-value {
+  color: #e8eef1;
+  font-weight: 600;
+}
 
 /* Skeleton */
 .skeleton-line {
@@ -6573,6 +6631,160 @@ iframe {
   margin: 8px 0;
   animation: dh-shimmer 1.2s infinite;
 }
-.skeleton-line.w-75 { width: 75%; }
-.skeleton-line.w-50 { width: 50%; }
-@keyframes dh-shimmer { 0% {background-position: 200% 0} 100% {background-position: -200% 0} }
+.skeleton-line.w-75 {
+  width: 75%;
+}
+.skeleton-line.w-50 {
+  width: 50%;
+}
+@keyframes dh-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.img-modal__actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 10px;
+}
+
+.img-modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 9999;
+}
+.img-modal__inner {
+  position: relative;
+  max-width: 92vw;
+  max-height: 92vh;
+}
+.img-modal__inner img {
+  max-width: 92vw;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 8px;
+  display: block;
+}
+.img-modal__close {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 9999px;
+  background: #fff;
+  color: #111;
+  padding: 0;
+  line-height: 1;
+  font-size: 20px;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+}
+.img-modal__close:focus-visible {
+  outline: 2px solid #6cf;
+  outline-offset: 2px;
+}
+/* Animation combo: pop-in → gentle bob → soft glow */
+.coin-animate {
+  width: 140px; /* adjust size */
+  height: auto;
+  display: inline-block;
+  filter: drop-shadow(0 8px 18px rgba(255, 188, 55, 0.25));
+  animation: coin-pop 260ms cubic-bezier(0.16, 0.84, 0.44, 1) both,
+    coin-bob 2.6s ease-in-out 260ms infinite,
+    coin-glow 2.2s ease-in-out 260ms infinite;
+}
+
+/* Enter pop */
+@keyframes coin-pop {
+  0% {
+    transform: scale(0.8) rotate(-6deg);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.08) rotate(2deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+/* Gentle floating bob + micro-tilt */
+@keyframes coin-bob {
+  0% {
+    transform: translateY(0) rotate(0deg);
+  }
+  50% {
+    transform: translateY(-6px) rotate(1.2deg);
+  }
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+}
+
+/* Subtle glow pulsing */
+@keyframes coin-glow {
+  0%,
+  100% {
+    filter: drop-shadow(0 8px 18px rgba(255, 188, 55, 0.25));
+  }
+  50% {
+    filter: drop-shadow(0 10px 26px rgba(255, 188, 55, 0.45));
+  }
+}
+
+/* Optional: sparkles around the coin (tiny gold dots) */
+.coin-animate::before,
+.coin-animate::after {
+  content: "";
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle at 30% 30%,
+    #ffd36a,
+    #f8a900 60%,
+    transparent 61%
+  );
+  animation: sparkle 1.8s ease-in-out infinite;
+  pointer-events: none;
+}
+.coin-animate::before {
+  transform: translate(-36px, -10px);
+  animation-delay: 0.2s;
+}
+.coin-animate::after {
+  transform: translate(42px, -6px);
+  animation-delay: 0.6s;
+}
+
+@keyframes sparkle {
+  0% {
+    opacity: 0;
+    transform: translateY(4px) scale(0.6);
+  }
+  40% {
+    opacity: 1;
+    transform: translateY(-4px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.7);
+  }
+}

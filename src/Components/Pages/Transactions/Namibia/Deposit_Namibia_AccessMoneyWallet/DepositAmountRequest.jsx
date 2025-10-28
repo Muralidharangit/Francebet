@@ -280,8 +280,8 @@ const DepositAmountRequest = ({
             <div className="modal-content" style={{ width: "220px" }}>
               <div className="modal-body d-flex flex-column align-items-center">
                 <img
-                  src="/assets/img/icons/rupee.gif"
-                  className="mb-2 w-75"
+                  src="/assets/img/icons/coin.png"
+                  className="mb-2 w-75 coin-animate"
                   alt="rupee"
                 />
                 <div className="fw-700 fs-13 text-center text-black mb-3">
