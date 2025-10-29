@@ -6678,7 +6678,7 @@ iframe {
 .img-modal__close {
   position: absolute;
   top: -12px;
-  right: -12px;
+  right: -5px;
   width: 36px;
   height: 36px;
   display: flex;

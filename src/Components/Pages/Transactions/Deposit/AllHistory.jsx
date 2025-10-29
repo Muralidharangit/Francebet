@@ -500,11 +500,12 @@ function DepositRow({
                         referrerPolicy="no-referrer"
                         title="Click to view"
                         style={{
-                          maxWidth: "35%",
-                          height: "auto",
+                          maxWidth: "100%",
+                          height: "300px",
                           borderRadius: 8,
                           display: "block",
                           cursor: "zoom-in",
+                          objectFit:"cover"
                         }}
                         onClick={() => setViewerOpen(true)}
                         onError={(e) =>
@@ -543,18 +544,18 @@ function DepositRow({
                           <i className="fa-solid fa-xmark" />
                         </button>
 
-                        <a
+                        {/* <a
                           href={d.image_url}
                           target="_blank"
                           rel="noreferrer"
                           title="Open in new tab"
-                        >
-                          <img
-                            src={d.image_url}
-                            alt="Payment proof full size"
-                            referrerPolicy="no-referrer"
-                          />
-                        </a>
+                        > */}
+                        <img
+                          src={d.image_url}
+                          alt="Payment proof full size"
+                          referrerPolicy="no-referrer"
+                        />
+                        {/* </a> */}
                         {/* 
                         <div className="img-modal__actions">
                           <a
