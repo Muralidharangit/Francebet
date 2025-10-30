@@ -110,6 +110,7 @@ export const getBankDetailsNamibia = async (token, userId) => {
   );
   return response.data;
 };
+// ====================================================================
 
 // store Bank Data Namibia
 export const storeBankNamibia = async (token, values, userId) => {
@@ -132,8 +133,54 @@ export const changeBankNamibiaStatus = async (token, bank_id, newStatus) => {
   const formData = new FormData();
   formData.append("bank_id", bank_id);
   formData.append("status", newStatus);
+  console.log(formData);
+
   const response = await axiosInstance.post(
     "/player/withdraw-namibia/manual-withdraw/change-player-bank-status",
+    formData,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+  return response.data;
+};
+// Edit Bank Details
+export const EditBankNamibia = async (bankId, token) => {
+  // console.log("bankId:", bankId);
+
+  const url = `player/withdraw-namibia/manual-withdraw/edit-player-bank/${bankId}`;
+
+  const response = await axiosInstance.get(url, {
+    headers: { Authorization: `Bearer ${token}` },
+    params: { bank_id: bankId }, // 👈 query string ?bank_id=123
+  });
+
+  return response.data;
+};
+// update-bank
+export const updateBankNamibia = async (token, values, editingBankId) => {
+  console.log(values);
+
+  const response = await axios.post(
+    `${BASE_URL}/player/withdraw-namibia/manual-withdraw/update-player-bank/${editingBankId}`,
+    values,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      params: { bank_id: editingBankId },
+    }
+  );
+  return response.data;
+};
+// delete Bank Details
+export const deleteBankNamibiaDetails = async (token, bankId) => {
+  const formData = new FormData();
+  formData.append("bank_id", bankId);
+  formData.append("is_deleted", "0");
+  const response = await axiosInstance.post(
+    "/player/withdraw-namibia/manual-withdraw/delete-player-bank",
     formData,
     {
       headers: { Authorization: `Bearer ${token}` },
@@ -167,7 +214,17 @@ export const sendWithdrawRequestNamibia = async ({
   return response.data;
 };
 
-//
+// withdraw History Namibia
+export const withdrawHistoryPageNamibia = async (token) => {
+  const response = await axiosInstance.get(
+    "/player/withdraw-namibia/manual-withdraw/history",
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+  return response.data;
+};
+//=========================================
 // Get Bank Data India Manual
 export const getBankDetailsIndia = async (token, userId) => {
   console.log(userId);

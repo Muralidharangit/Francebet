@@ -9,6 +9,7 @@ import PaginatedData from "../../Pagination/PaginatedData";
 import StickyHeader from "../../../layouts/Header/Header";
 import Sidebar from "../../../layouts/Header/Sidebar";
 import { CURRENCY_SYMBOL } from "../../../../constants";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const WithdrawHistory = () => {
   const [withdrawHistory, setWithdrawHistory] = useState([]);
@@ -18,7 +19,8 @@ const WithdrawHistory = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const itemsPerPage = 10;
-
+  const navigate = useNavigate();
+  const location = useLocation();
   const totalPages = Math.ceil(
     withdrawHistory.filter((entry) =>
       selectedTab === "all" ? true : entry.status === selectedTab
@@ -53,7 +55,16 @@ const WithdrawHistory = () => {
       // console.error("Error fetching withdrawal history:", err);
       toast.error(`${err.message}. Please log in again to continue.`, {
         toastId: "unauthorized-toast",
+        onClose: () => {
+          // runs if user clicks X OR after autoClose timeout
+          navigate(location.pathname, { replace: true, state: {} });
+        },
       });
+      // Redirect after a short delay (e.g., 2 seconds)
+      setTimeout(() => {
+        navigate("/login");
+      }, 5000);
+
       setError(err.message || "Something went wrong. Please try again.");
       setWithdrawHistory([]);
     } finally {
@@ -239,22 +250,24 @@ const WithdrawHistory = () => {
                           Loading...
                         </p>
                       ) : error ? (
-                        <>
-                          <p className="text-danger">{error}</p>
-                          <div className="d-flex flex-column align-content-center">
-                            <button
-                              className="btn btn-warning mt-2"
+                        <div className="px-3">
+                          <p className="text-danger text-center mt-3">
+                            {error}
+                          </p>
+                          <div className="d-flex align-content-center justify-content-center">
+                            {/* <button
+                              className="btn btn-warning mt-2 w-75"
                               onClick={fetchWithdrawHistory}
                             >
                               Retry
-                            </button>
-                            <img
+                            </button> */}
+                            {/* <img
                               src="https://cdni.iconscout.com/illustration/premium/thumb/unauthorized-access-illustration-download-in-svg-png-gif-file-formats--hacker-attack-cyber-intrusion-security-breach-data-pack-crime-illustrations-7706304.png"
                               alt="unauth"
                               className="w-75"
-                            />
+                            /> */}
                           </div>
-                        </>
+                        </div>
                       ) : filteredHistory.length > 0 ? (
                         filteredHistory
                           .slice(

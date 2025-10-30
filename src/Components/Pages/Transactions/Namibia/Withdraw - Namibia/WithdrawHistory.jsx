@@ -1,14 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
 import axios from "axios";
-import BASE_URL from "../../../../API/api";
-import AuthContext from "../../../../Auth/AuthContext";
-import { withdrawHistoryPage } from "../../../../API/withdrawAPI";
-import { verifyToken } from "../../../../API/authAPI";
+import BASE_URL from "../../../../../API/api";
+import AuthContext from "../../../../../Auth/AuthContext";
+import { withdrawHistoryPage } from "../../../../../API/withdrawAPI";
+import { verifyToken } from "../../../../../API/authAPI";
 import { toast, ToastContainer } from "react-toastify";
-import PaginatedData from "../../Pagination/PaginatedData";
-import StickyHeader from "../../../layouts/Header/Header";
-import Sidebar from "../../../layouts/Header/Sidebar";
+import PaginatedData from "../../../Pagination/PaginatedData";
+import StickyHeader from "../../../../layouts/Header/Header";
+import Sidebar from "../../../../layouts/Header/Sidebar";
 import { CURRENCY_SYMBOL } from "../../../../../constants";
+import { withdrawHistoryPageNamibia } from "../../../../../API/withdrawAPI";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const WithdrawHistory = () => {
   const [withdrawHistory, setWithdrawHistory] = useState([]);
@@ -18,7 +20,8 @@ const WithdrawHistory = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const itemsPerPage = 10;
-
+  const navigate = useNavigate();
+  const location = useLocation();
   const totalPages = Math.ceil(
     withdrawHistory.filter((entry) =>
       selectedTab === "all" ? true : entry.status === selectedTab
@@ -37,14 +40,14 @@ const WithdrawHistory = () => {
       //   return;
       // }
 
-      const response = await withdrawHistoryPage(token);
+      const response = await withdrawHistoryPageNamibia(token);
       // console.log(response);
 
       if (
         response.status === "success" &&
-        Array.isArray(response.withdrawHistory)
+        Array.isArray(response.depositHistory)
       ) {
-        setWithdrawHistory(response.withdrawHistory);
+        setWithdrawHistory(response.depositHistory);
         setError(null);
       } else {
         setError(response.msg || "Failed to load withdraw history.");
@@ -53,7 +56,15 @@ const WithdrawHistory = () => {
       // console.error("Error fetching withdrawal history:", err);
       toast.error(`${err.message}. Please log in again to continue.`, {
         toastId: "unauthorized-toast",
+        onClose: () => {
+          // runs if user clicks X OR after autoClose timeout
+          navigate(location.pathname, { replace: true, state: {} });
+        },
       });
+      // Redirect after a short delay (e.g., 2 seconds)
+      setTimeout(() => {
+        navigate("/login");
+      }, 5000);
       setError(err.message || "Something went wrong. Please try again.");
       setWithdrawHistory([]);
     } finally {
@@ -136,20 +147,22 @@ const WithdrawHistory = () => {
                 
               </div>*/}
                     {/* header Starts */}
-                    <div className="d-flex align-items-center justify-content-between position-relative  px-3">
+                    <div className="d-flex align-items-center justify-content-between position-relative  px-0">
                       {/* Back Button on Left */}
-                      <div className="d-flex justify-content-between align-items-center px-0">
-                        {/* <button
+                      <div className="d-flex justify-content-between align-items-center px-2">
+                        <button
                           className="go_back_btn bg-grey"
                           onClick={() => window.history.back()}
                         >
                           <i className="ri-arrow-left-s-line text-white fs-20" />
-                        </button> */}
+                        </button>
                       </div>
 
                       {/* Centered Title */}
-                      <h5 className="m-0 text-white fs-16">Withdraw History</h5>
-                      <div className="d-flex justify-content-between align-items-center px-3">
+                      <h5 className="m-0 text-white fs-16 text-center">
+                        Direct Withdraw / Instant EFT History
+                      </h5>
+                      <div className="d-flex justify-content-between align-items-center px-2">
                         <button
                           className="go_back_btn bg-grey"
                           onClick={fetchWithdrawHistory}
@@ -202,7 +215,7 @@ const WithdrawHistory = () => {
                 ))}
               </div> */}
 
-                    <div className="overflow-auto px-0 mt-4">
+                    <div className="overflow-auto px-2 mt-4">
                       <div
                         className="nav nav-pills flex-nowrap gap-2 scroll-hidden rounded-2"
                         id="latest-bet-tabs"
@@ -234,7 +247,7 @@ const WithdrawHistory = () => {
                       </div>
                     </div>
 
-                    <div className="tab-content p-0 mt-2 mb-3">
+                    <div className="tab-content px-2 mt-2 mb-3">
                       {loading ? (
                         <p className="text-white text-center mt-4">
                           Loading...
@@ -243,17 +256,17 @@ const WithdrawHistory = () => {
                         <>
                           <p className="text-danger">{error}</p>
                           <div className="d-flex flex-column align-content-center">
-                            <button
+                            {/* <button
                               className="btn btn-warning mt-2"
                               onClick={fetchWithdrawHistory}
                             >
                               Retry
-                            </button>
-                            <img
+                            </button> */}
+                            {/* <img
                               src="https://cdni.iconscout.com/illustration/premium/thumb/unauthorized-access-illustration-download-in-svg-png-gif-file-formats--hacker-attack-cyber-intrusion-security-breach-data-pack-crime-illustrations-7706304.png"
                               alt="unauth"
                               className="w-75"
-                            />
+                            /> */}
                           </div>
                         </>
                       ) : filteredHistory.length > 0 ? (
@@ -322,7 +335,8 @@ const WithdrawHistory = () => {
 
                                   <div className="d-flex align-items-end flex-column">
                                     <h4 className="mb-1 amount-fs-size">
-                                      {CURRENCY_SYMBOL} {withdraw.amount}
+                                      {CURRENCY_SYMBOL}{" "}
+                                      {Number(withdraw?.amount ?? 0).toFixed(2)}
                                     </h4>
 
                                     <span
@@ -353,7 +367,7 @@ const WithdrawHistory = () => {
                               </p> */}
                                     <p className="fs-11 mb-0 text-grey mt-1">
                                       {new Date(
-                                        withdraw.created_date
+                                        withdraw.created_at
                                       ).toLocaleString("en-GB", {
                                         day: "2-digit",
                                         month: "short",
@@ -365,7 +379,7 @@ const WithdrawHistory = () => {
                                     </p>
                                     {/* withdraw */}
 
-                                    {withdraw.status === "pending" && (
+                                    {/* {withdraw.status === "pending" && (
                                       <div className="d-flex justify-content-end">
                                         <button
                                           className="btn bg-grey text-white"
@@ -381,7 +395,7 @@ const WithdrawHistory = () => {
                                           Cancel Request
                                         </button>
                                       </div>
-                                    )}
+                                    )} */}
                                   </div>
                                 </div>
                               </div>

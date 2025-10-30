@@ -76,7 +76,7 @@ const BottomFooter = () => {
                   <div>
                     <div className="social-links text-center w-100 justify-content-center my-2">
                       <Link
-                        to={"https://www.facebook.com/betwinnamibia"}
+                        to="https://www.facebook.com/betwinnamibia"
                         target="new"
                       >
                         <i className="fab fa-facebook-f" />

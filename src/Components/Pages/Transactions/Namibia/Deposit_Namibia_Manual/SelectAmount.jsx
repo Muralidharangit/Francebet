@@ -1,5 +1,5 @@
 // SelectAmount.jsx
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { getPortalSettings } from "../../../../../API/depositAPI";
 import { CURRENCY_SYMBOL } from "../../../../../constants";
 

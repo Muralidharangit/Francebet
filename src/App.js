@@ -96,7 +96,11 @@ const DepositManualNamibiaHistory = lazy(() =>
     "./Components/Pages/Transactions/Namibia/Deposit_Namibia_Manual/DepositHistory"
   )
 );
-
+const WithdrawHistoryNamibia = lazy(() =>
+  import(
+    "./Components/Pages/Transactions/Namibia/Withdraw - Namibia/WithdrawHistory"
+  )
+);
 const DepositEwalletNamibiaHistory = lazy(() =>
   import(
     "./Components/Pages/Transactions/Namibia/Deposit_Namibia_Ewallet/DepositHistory"
@@ -158,6 +162,9 @@ const AllMethodDepositHistory = lazy(() =>
   )
 );
 
+const AllDepositHistory = lazy(() =>
+  import("./Components/Pages/Transactions/Deposit/AllHistory")
+);
 const DepositIndexIndia = lazy(() =>
   import(
     "./Components/Pages/Transactions/India/Deposit_India_Manual/DepositIndia"
@@ -296,6 +303,11 @@ function App() {
               path={routes.transactions.all_deposit_history}
               element={<AllMethodDepositHistory />}
             />
+
+            <Route
+              path={routes.transactions.all_depositHistory}
+              element={<AllDepositHistory />}
+            />
             {/* easy_wallet */}
             <Route
               path={routes.transactions.easy_wallet_deposit}
@@ -338,6 +350,11 @@ function App() {
             <Route
               path={routes.transactions.manual_deposit_India}
               element={<DepositIndexIndia />}
+            />
+            {/* WithdrawHistoryNamibia */}
+            <Route
+              path={routes.transactions.manual_withdraw_Namibia_history}
+              element={<WithdrawHistoryNamibia />}
             />
             <Route
               path={routes.transactions.manual_withdraw_india}

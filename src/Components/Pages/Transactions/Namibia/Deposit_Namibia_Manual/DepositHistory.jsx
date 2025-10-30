@@ -1,8 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
-import BASE_URL from "../../../../../API/api";
-import axios from "axios";
-import { depositHistory } from "../../../../../API/depositAPI";
-import { verifyToken } from "../../../../../API/authAPI";
+import { useContext, useEffect, useState } from "react";
 import AuthContext from "../../../../../Auth/AuthContext";
 
 import { toast, ToastContainer } from "react-toastify";
@@ -11,6 +7,7 @@ import Sidebar from "../../../../layouts/Header/Sidebar";
 import axiosInstance from "../../../../../API/axiosConfig";
 import { CURRENCY_SYMBOL } from "../../../../../constants";
 import { depositHistoryNamibia } from "../../../../../API/depositAPI";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const DepositHistory = () => {
   const [history, setHistory] = useState([]);
@@ -18,8 +15,10 @@ const DepositHistory = () => {
   const [loading, setLoading] = useState(true);
   const [selectedTab, setSelectedTab] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const { user, profile } = useContext(AuthContext);
-  console.log("user", user);
+  const { user } = useContext(AuthContext);
+  // console.log("user", user);
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const itemsPerPage = 10;
@@ -58,7 +57,7 @@ const DepositHistory = () => {
 
       const response = await depositHistoryNamibia(token);
       if (response.status === "success") {
-        console.log(response, "test response");
+        // console.log(response, "test response");
 
         setHistory(response.depositHistory);
         setError(null); // 🟢 clear old errors
@@ -71,7 +70,16 @@ const DepositHistory = () => {
       // toast.error(errorMessage);
       toast.error(`${err.message}. Please log in again to continue.`, {
         toastId: "unauthorized-toast", // prevents duplicate toasts
+        onClose: () => {
+          // runs if user clicks X OR after autoClose timeout
+          navigate(location.pathname, { replace: true, state: {} });
+        },
       });
+      // Redirect after a short delay (e.g., 2 seconds)
+      setTimeout(() => {
+        navigate("/login");
+      }, 5000);
+
       setError(err.message || "Something went wrong. Please try again.");
       setHistory([]); // 🟢 clear old data on error
     } finally {
@@ -277,8 +285,8 @@ const DepositHistory = () => {
                       </div>
 
                       {/* Centered Title */}
-                      <h5 className="m-0 text-white fs-16">
-                        Manual Deposit History
+                      <h5 className="m-0 text-white fs-16 text-center">
+                        Direct Deposit / Instant EFT History
                       </h5>
                       <div className="d-flex justify-content-between align-items-center px-1">
                         <button
@@ -438,17 +446,21 @@ const DepositHistory = () => {
                         </p>
                       ) : error ? (
                         <>
-                          <p className="text-danger">{error}</p>
-                          <button
-                            className="btn btn-warning mt-2"
-                            onClick={fetchPlayerData}
-                          >
-                            Retry
-                          </button>
-                          <img
+                          <p className="text-danger text-center mt-3">
+                            {error}
+                          </p>
+                          <div className="d-flex align-content-center justify-content-center">
+                            {/* <button
+                              className="btn btn-warning mt-2 w-50"
+                              onClick={fetchPlayerData}
+                            >
+                              Retry
+                            </button> */}
+                            {/* <img
                             src="https://cdni.iconscout.com/illustration/premium/thumb/unauthorized-access-illustration-download-in-svg-png-gif-file-formats--hacker-attack-cyber-intrusion-security-breach-data-pack-crime-illustrations-7706304.png"
                             alt="unauth"
-                          />
+                          /> */}
+                          </div>
                         </>
                       ) : paginatedData.length > 0 ? (
                         paginatedData.map((bet) => (

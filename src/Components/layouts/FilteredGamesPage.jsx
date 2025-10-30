@@ -342,7 +342,7 @@ const FilteredGamesPage = () => {
         setTimeout(() => navigate("/login"), 3000);
         return;
       }
-      console.error("Error launching game:", error);
+      // console.error("Error launching game:", error);
       toast.error("Game launch failed. Try again later.");
     }
   };

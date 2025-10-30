@@ -63,7 +63,7 @@ const AllGamesSearch = () => {
       const totalPages = response.data.pagination?.total_page || 1;
       setHasMore(pageNo < totalPages);
     } catch (error) {
-      console.error("Error fetching games:", error);
+      // console.error("Error fetching games:", error);
       toast.error("Failed to load games.");
     } finally {
       setIsFetching(false);
@@ -106,7 +106,7 @@ const AllGamesSearch = () => {
         localStorage.removeItem("token");
         setTimeout(() => navigate("/login"), 3000);
       } else {
-        console.error("Launch error:", error);
+        // console.error("Launch error:", error);
         toast.error("Failed to launch game.");
       }
     }

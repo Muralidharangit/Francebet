@@ -9,13 +9,27 @@ import RouteTracker from "./Auth/RouteTracker";
 import ForbiddenPage from "./Components/Pages/ErrorPages/ForbiddenPage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-const queryClient = new QueryClient(); // ✅ outside the component
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      // 👇 pages stay "fresh" for 5 minutes → no refetch when you come back
+      staleTime: 5 * 60 * 1000,
+      // keep cached pages around for 30 minutes even if unused
+      gcTime: 30 * 60 * 1000,
+      // don't auto-refetch on these lifecycle events
+      refetchOnMount: false,
+      refetchOnWindowFocus: false,
+      refetchOnReconnect: false,
+      retry: 1,
+    },
+  },
+});
 
 const RootApp = () => {
   const { portalStatus } = React.useContext(AuthContext);
 
   if (portalStatus === "loading") {
-    return;
+    return null; // render nothing (or a loader) while context initializes
   }
 
   if (portalStatus === "forbidden") {
@@ -27,7 +41,7 @@ const RootApp = () => {
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  // <React.StrictMode>
+  // <React.StrictMode>  // note: StrictMode can cause dev-only double effects
   <BrowserRouter>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
@@ -35,6 +49,8 @@ root.render(
           <RootApp />
         </RouteTracker>
       </AuthProvider>
+
+      {/* <ReactQueryDevtools initialIsOpen={false} /> */}
     </QueryClientProvider>
   </BrowserRouter>
   // </React.StrictMode>

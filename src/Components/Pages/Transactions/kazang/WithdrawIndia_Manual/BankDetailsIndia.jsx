@@ -1,8 +1,5 @@
-import React, { useEffect, useState } from "react";
-// import BASE_URL from "../../../../API/api";
-// import axios from "axios";
+import { useEffect, useState } from "react";
 import * as Yup from "yup";
-// import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { useFormik } from "formik";
 import AuthContext from "../../../../../Auth/AuthContext";
@@ -12,13 +9,12 @@ import {
   EditBank,
   getBankDetailsIndia,
   storeBankIndia,
-  // storeBank,
-  storeBankNamibia,
   updateBank,
 } from "../../../../../API/withdrawAPI";
 import { verifyToken } from "../../../../../API/authAPI";
 import { toast, ToastContainer } from "react-toastify";
 import { saveSelectedBank } from "../../../../../API/bankSelectionStorage";
+import { useLocation, useNavigate } from "react-router-dom";
 // import { Link } from "react-router-dom";
 const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
   const [bankDetails, setbankDetails] = useState([]);
@@ -33,6 +29,8 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
   const { user } = useContext(AuthContext);
   const token = user?.token;
   const userId = user?.id;
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSelectBank = (bank) => {
     saveSelectedBank(bank);
@@ -146,7 +144,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
         err.response?.data?.message ||
         err.message ||
         "Failed to update status.";
-      console.error("API Error:", err.response?.data || err.message);
+      // console.error("API Error:", err.response?.data || err.message);
       alert(`Error: ${errorMessage}`);
     }
   };
@@ -201,7 +199,16 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
           // toast.error(errorMessage);
           toast.error(`${errorMessage}. Please log in again to continue.`, {
             toastId: "unauthorized-toast", // prevents duplicate toasts
+            onClose: () => {
+              // runs if user clicks X OR after autoClose timeout
+              navigate(location.pathname, { replace: true, state: {} });
+            },
           });
+          // Redirect after a short delay (e.g., 2 seconds)
+          setTimeout(() => {
+            navigate("/login");
+          }, 5000);
+
           // setErrors({ api: errorMessage });
           setSubmitting(false);
           return;
@@ -312,7 +319,15 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
 
           toast.error(`${errorMessage}. Please log in again to continue.`, {
             toastId: "unauthorized-toast", // prevents duplicate toasts
+            onClose: () => {
+              // runs if user clicks X OR after autoClose timeout
+              navigate(location.pathname, { replace: true, state: {} });
+            },
           });
+          // Redirect after a short delay (e.g., 2 seconds)
+          setTimeout(() => {
+            navigate("/login");
+          }, 5000);
 
           setSubmitting(false);
           return;

@@ -97,7 +97,7 @@ const Providers = () => {
       const list = parseProviders(res.data);
       setSearchedGames(list);
     } catch (error) {
-      console.error("Auto search failed:", error);
+      // console.error("Auto search failed:", error);
     } finally {
       setIsSearchingGames(false);
     }
@@ -136,7 +136,7 @@ const Providers = () => {
       setCurrentPage(page);
       setHasMore(getHasMore(data));
     } catch (error) {
-      console.error("Error fetching provider list:", error);
+      // console.error("Error fetching provider list:", error);
       setHasMore(false);
     } finally {
       setIsInitialLoading(false);
@@ -198,7 +198,7 @@ const Providers = () => {
       {/* header */}
       <StickyHeader onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
 
-      <div className="container-fluid  ">
+      <div className="container-fluid  page-body-wrapper">
         {/* Sidebar */}
         <Sidebar />
 

@@ -4,10 +4,7 @@ import AuthContext from "../../../../../Auth/AuthContext";
 import * as Yup from "yup";
 import routes from "../../../../routes/route";
 import { Link } from "react-router-dom";
-import {
-  sendDepositRequestNamibiaAccessMoneyWallet,
-  sendDepositRequestNamibiaNedBankWallet,
-} from "../../../../../API/depositAPI";
+import { sendDepositRequestNamibiaAccessMoneyWallet } from "../../../../../API/depositAPI";
 import { verifyToken } from "../../../../../API/authAPI";
 import { APP_NAME, CURRENCY_SYMBOL } from "../../../../../constants";
 const DepositAmountRequest = ({
@@ -21,7 +18,7 @@ const DepositAmountRequest = ({
   const { user } = useContext(AuthContext);
   const token = user?.token;
   const User_id = user?.id;
-  console.log("user================", User_id);
+  // console.log("user================", User_id);
 
   const formik = useFormik({
     enableReinitialize: true, // 🟣 IMPORTANT!
@@ -189,7 +186,7 @@ const DepositAmountRequest = ({
               <form onSubmit={formik.handleSubmit} className="uxcard-form">
                 {/* API Error */}
                 {formik.errors.api && (
-                  <div className="uxcard-alert-error mb-3">
+                  <div className="uxcard-alert-error mb-3 text-danger">
                     {Array.isArray(formik.errors.api)
                       ? formik.errors.api.map((err, index) => (
                           <li key={index}>{err}</li>
@@ -283,15 +280,15 @@ const DepositAmountRequest = ({
             <div className="modal-content" style={{ width: "220px" }}>
               <div className="modal-body d-flex flex-column align-items-center">
                 <img
-                  src="/assets/img/icons/rupee.gif"
-                  className="mb-2 w-75"
+                  src="/assets/img/icons/coin.png"
+                  className="mb-2 w-75 coin-animate"
                   alt="rupee"
                 />
                 <div className="fw-700 fs-13 text-center text-black mb-3">
                   Your Request <br />
                   Is In Our Queue!
                 </div>
-                <Link to={routes.transactions.access_money_wallet_history}>
+                <Link to={routes.transactions.all_depositHistory}>
                   <span
                     className="btn text-white green-bg"
                     onClick={() => setShowModal(false)} // ❌ Don't use data-bs-dismiss

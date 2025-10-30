@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { getPortalSettings } from "../../../../../API/depositAPI";
 import { CURRENCY_SYMBOL } from "../../../../../constants";
 
@@ -35,7 +35,7 @@ const WithdrawSelectAmount = ({ amount, setAmount, token }) => {
           setAmounts(generateFourButtons(min, max));
         }
       } catch (err) {
-        console.error("Failed to fetch portal settings:", err);
+        // console.error("Failed to fetch portal settings:", err);
         setAmounts([]);
         setBounds({ min: null, max: null });
       } finally {

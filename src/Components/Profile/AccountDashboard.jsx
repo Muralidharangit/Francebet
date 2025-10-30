@@ -225,7 +225,7 @@ const AccountDashboard = () => {
                     //   handleSecureRoute(routes.transactions.depositHistory)
                     // }
                     onClick={() =>
-                      navigate(routes.transactions.all_deposit_history)
+                      navigate(routes.transactions.all_depositHistory)
                     }
                   >
                     <img
@@ -239,7 +239,9 @@ const AccountDashboard = () => {
                   <div
                     className="text-center"
                     onClick={() =>
-                      navigate(routes.transactions.withdrawHistory)
+                      navigate(
+                        routes.transactions.manual_withdraw_Namibia_history
+                      )
                     }
                     // onClick={() =>
                     //   handleSecureRoute(routes.transactions.withdrawHistory)

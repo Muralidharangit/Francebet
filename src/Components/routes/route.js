@@ -2,7 +2,7 @@ const routes = {
   home: "/",
   games: {
     all: "/all-games",
-  topGames: "/top-games",
+    topGames: "/top-games",
     turbo: "/turbo-games",
     spribe: "/spribe-games",
     providers: "/providers",
@@ -37,6 +37,7 @@ const routes = {
     ewallet_deposit_history: "/deposit-namibia-ewallet-history",
 
     all_deposit_history: "/deposit_history",
+    all_depositHistory: "/all_deposit_history",
 
     // Kazang
     kazang_deposit_voucher: "/deposit-namibia-kazang",
@@ -46,6 +47,8 @@ const routes = {
     // India
     manual_deposit_India: "/manual-deposit-india",
     manual_withdraw_India: "/manual-withdraw-india",
+    manual_withdraw_Namibia_history:
+      "/withdraw-namibia/manual-withdraw/history",
 
     // easy-wallet
     easy_wallet_deposit:

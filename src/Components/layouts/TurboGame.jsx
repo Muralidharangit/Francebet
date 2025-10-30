@@ -48,7 +48,7 @@ const TurboGame = () => {
 
       setGames(data.turboGames || []);
     } catch (error) {
-      console.error("Error fetching all games:", error);
+      // console.error("Error fetching all games:", error);
     } finally {
       setLoading(false);
     }
@@ -96,7 +96,7 @@ const TurboGame = () => {
         return;
       }
 
-      console.error("Error launching game:", error);
+      // console.error("Error launching game:", error);
       toast.error("Game launch failed. Try again later.");
     }
   };

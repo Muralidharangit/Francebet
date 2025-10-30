@@ -3,8 +3,11 @@ import { useContext, useState } from "react";
 import AuthContext from "../../../../../Auth/AuthContext";
 import * as Yup from "yup";
 import routes from "../../../../routes/route";
-import { Link } from "react-router-dom";
-import { sendDepositRequestIndia, sendDepositRequestNamibia } from "../../../../../API/depositAPI";
+import { Link, useNavigate } from "react-router-dom";
+import {
+  sendDepositRequestIndia,
+  sendDepositRequestNamibia,
+} from "../../../../../API/depositAPI";
 import { verifyToken } from "../../../../../API/authAPI";
 import { APP_NAME, CURRENCY_SYMBOL } from "../../../../../constants";
 const DepositAmountRequest = ({
@@ -18,8 +21,8 @@ const DepositAmountRequest = ({
   const { user } = useContext(AuthContext);
   const token = user?.token;
   const User_id = user?.id;
-  console.log("user================", User_id);
-
+  // console.log("user================", User_id);
+  const navigate = useNavigate();
   const formik = useFormik({
     enableReinitialize: true, // 🟣 IMPORTANT!
     initialValues: {
@@ -52,6 +55,11 @@ const DepositAmountRequest = ({
             verifyError.response?.data?.message ||
             "Invalid or expired token. Please log in again.";
           setErrors({ api: errorMessage });
+          // Redirect after a short delay (e.g., 2 seconds)
+          setTimeout(() => {
+            navigate("/login");
+          }, 5000);
+
           setSubmitting(false);
           return;
         }
@@ -287,9 +295,9 @@ const DepositAmountRequest = ({
             <div className="modal-content" style={{ width: "220px" }}>
               <div className="modal-body d-flex flex-column align-items-center">
                 <img
-                  src="/assets/img/icons/rupee.gif"
-                  className="mb-2 w-75"
-                  alt="rupee"
+                  src="/assets/img/icons/coin.png"
+                  className="mb-2 w-75 coin-animate"
+                  alt="coin"
                 />
                 <div className="fw-700 fs-13 text-center text-black mb-3">
                   Your Request <br />

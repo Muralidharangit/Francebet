@@ -4,18 +4,10 @@ import { useFormik } from "formik";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import AuthContext from "../../../../../Auth/AuthContext";
 import routes from "../../../../routes/route";
-import {
-  EditBank,
-  sendWithdrawRequest,
-  sendWithdrawRequestIndia,
-  sendWithdrawRequestNamibia,
-} from "../../../../../API/withdrawAPI";
+import { sendWithdrawRequestIndia } from "../../../../../API/withdrawAPI";
 import { verifyToken } from "../../../../../API/authAPI";
 import { toast, ToastContainer } from "react-toastify";
-import {
-  clearSelectedBank,
-  loadSelectedBank,
-} from "../../../../../API/bankSelectionStorage";
+import { loadSelectedBank } from "../../../../../API/bankSelectionStorage";
 import { APP_NAME, CURRENCY_SYMBOL } from "../../../../../constants";
 
 const WithdrawAmountRequest = ({ amount, bankId }) => {
@@ -27,7 +19,7 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
   // console.log(bankDetails);
   const [bank, setBank] = useState(null);
   const location = useLocation();
-
+  const navigate = useNavigate();
   useEffect(() => {
     const refresh = () => setBank(loadSelectedBank());
     refresh(); // initial
@@ -74,7 +66,16 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
           // toast.error(errorMessage);
           toast.error(`${errorMessage}. Please log in again to continue.`, {
             toastId: "unauthorized-toast", // prevents duplicate toasts
+            onClose: () => {
+              // runs if user clicks X OR after autoClose timeout
+              navigate(location.pathname, { replace: true, state: {} });
+            },
           });
+          // Redirect after a short delay (e.g., 2 seconds)
+          setTimeout(() => {
+            navigate("/login");
+          }, 5000);
+
           // setErrors({ api: errorMessage });
           setSubmitting(false);
           return;
@@ -158,7 +159,12 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
           <div className="modal-dialog modal-dialog-centered modal-sm justify-content-center">
             <div className="modal-content" style={{ width: "220px" }}>
               <div className="modal-body d-flex flex-column align-items-center">
-                <img src="assets/img/icons/rupee.gif" className="mb-2 w-75" />
+                {/* <img src="assets/img/icons/rupee.gif" className="mb-2 w-75" /> */}
+                <img
+                  src="/assets/img/icons/coin.png"
+                  className="mb-2 w-75 coin-animate"
+                  alt="coin"
+                />
                 <div className="fw-700 fs-13 text-center text-black mb-3">
                   Your Request <br />
                   Is In Our Queue!

@@ -1,5 +1,5 @@
 // src/Components/Pages/Transactions/Deposit/DepositMethod.jsx
-import React, { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 // Adjust these paths if your structure differs:
@@ -118,7 +118,7 @@ const DepositMethod = () => {
   function handleChoose(method) {
     const name_method = (method?.name || "").toLowerCase().trim();
     setNameMethod(name_method);
-    console.log(name_method, "hhhhhhhhhhhh");
+    // console.log(name_method, "hhhhhhhhhhhh");
 
     // name -> something like "Manual Deposit - Namibia"
     const key = (name_method || "").toLowerCase().trim();
@@ -186,7 +186,7 @@ const DepositMethod = () => {
     }
 
     // Fallback
-    console.log("Unhandled method:", method);
+    // console.log("Unhandled method:", method);
   }
 
   /* ---------------- UI ---------------- */

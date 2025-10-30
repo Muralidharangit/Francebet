@@ -530,3 +530,42 @@ export const depositHistoryAccessMoneyNamibia = async (token) => {
 
   return response.data;
 };
+
+// =============================================================
+// All deposit History starts
+// export const AlldepositHistory = async (token) => {
+//   const response = await axiosInstance.get("/player/deposit-namibia/history", {
+//     headers: { Authorization: `Bearer ${token}` },
+//   });
+
+//   return response.data;
+// };
+export const AlldepositHistory = async (token, page = 1, per_page = 10) => {
+  const response = await axiosInstance.get("/player/deposit-namibia/history", {
+    params: { page, per_page },
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data; // { status, msg, depositHistory: {...} }
+};
+
+// api.ts
+
+export const fetchDepositHistory = async ({ page, perPage, token }) => {
+  const res = await axiosInstance.get("/player/deposit-namibia/history", {
+    params: { page, per_page: perPage },
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+  });
+  return res && res.data ? res.data.depositHistory : undefined;
+};
+
+export const fetchDepositDetails = async ({ id, type, token }) => {
+  const res = await axiosInstance.get(
+    "/player/deposit-namibia/history/details",
+    {
+      params: { id, type },
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    }
+  );
+  // API shape: { status, msg, depositDetail: {...} }
+  return res?.data?.depositDetail ?? res?.data; // ← normalize
+};

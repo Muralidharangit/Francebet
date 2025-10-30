@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 // import SelectAmount from "./SelectAmount";
 import SelectPaymentMethod from "./SelectPaymentMethod";
 import DepositAmountRequest from "./DepositAmountRequest";

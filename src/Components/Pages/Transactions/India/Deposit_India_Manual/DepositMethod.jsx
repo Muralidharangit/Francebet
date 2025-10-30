@@ -159,7 +159,7 @@ const DepositMethod = () => {
     }
 
     // Fallback
-    console.log("Unhandled method:", method);
+    // console.log("Unhandled method:", method);
   }
 
   /* ---------------- UI ---------------- */

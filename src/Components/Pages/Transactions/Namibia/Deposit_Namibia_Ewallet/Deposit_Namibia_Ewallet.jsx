@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import  { useState } from "react";
 import SelectPaymentMethod from "./SelectPaymentMethod";
 import DepositAmountRequest from "./DepositAmountRequest";
 import StickyHeader from "../../../../layouts/Header/Header";

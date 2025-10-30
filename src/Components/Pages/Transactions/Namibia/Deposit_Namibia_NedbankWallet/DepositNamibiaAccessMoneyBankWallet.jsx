@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import{ useState } from "react";
 // import SelectAmount from "./SelectAmount";
 import SelectPaymentMethod from "./SelectPaymentMethod";
 import DepositAmountRequest from "./DepositAmountRequest";
@@ -102,8 +102,8 @@ function Deposit() {
                       </div>
 
                       {/* Centered Title */}
-                      <h5 className="position-absolute start-50 translate-middle-x m-0 text-white fs-16">
-                        NedBank Deposit
+                      <h5 className="position-absolute start-50 translate-middle-x m-0 text-white fs-16 text-center">
+                        NedBank Wallet Deposit
                       </h5>
                     </div>
                     {/* header Ends */}

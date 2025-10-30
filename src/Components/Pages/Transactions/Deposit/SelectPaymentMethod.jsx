@@ -45,7 +45,7 @@ const SelectPaymentMethod = ({
             setTimeout(() => setCopied(false), 2000);
           })
           .catch((err) => {
-            console.error("Clipboard API failed", err);
+            // console.error("Clipboard API failed", err);
             toast.error("Copy failed. Try manually.");
           });
       } else {

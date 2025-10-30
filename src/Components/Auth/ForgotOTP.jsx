@@ -143,7 +143,7 @@ const ForgotOTP = () => {
                   key={index}
                   type="text"
                   inputMode="numeric"
-                  className="form-control text-center otp-box"
+                  className="form-control text-center otp-box text-dark"
                   maxLength={1}
                   value={digit}
                   ref={otpRefs[index]}
