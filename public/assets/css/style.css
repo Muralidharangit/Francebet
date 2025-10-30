@@ -4056,6 +4056,9 @@ li.nav-item button {
     margin: auto;
     max-width: 1200px;
   }
+  .unique-footer{
+    display:none;
+  }
 }
 
 .page-body-wrapper {

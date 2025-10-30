@@ -72,7 +72,7 @@ const Footer = () => {
 
   return (
     <SkeletonTheme baseColor="#313131" highlightColor="#525252">
-      <div className="unique-footer container tabd-none tab_menu_show" style={{ bottom: 0 }}>
+      <div className="unique-footer container  tab_menu_show" style={{ bottom: 0 }}>
         <ul>
           {footerItems.map((item) => (
             <li

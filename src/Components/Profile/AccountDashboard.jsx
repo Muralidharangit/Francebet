@@ -8,6 +8,7 @@ import BASE_URL from "../../API/api";
 import axios from "axios";
 const AccountDashboard = () => {
   const [loading, setLoading] = useState(false);
+  
   const {
     profile,
     isLoading,
@@ -129,13 +130,25 @@ const AccountDashboard = () => {
               <Link to={routes.profile.avatar}>
                 <div className="pe-2">
                   <img
-                    src={avatar?.avatar?.image || "assets/img/icons/man.png"}
-                    alt={avatar?.avatar?.name || "Profile"}
-                    className="img-fluid avatar-circle"
+                    src={
+                      // string URL on user.avatar
+                      (typeof user?.avatar === "string" && user.avatar) ||
+                      // object form: { image: "..." }
+                      user?.avatar?.image ||
+                      // fallback in /public
+                      "/assets/img/icons/man.png"
+                    }
+                    alt={user?.avatar?.name || "Profile"}
+                    className="w-100"
                     style={{
-                      width: "60px",
-                      height: "60px",
-                      borderRadius: "50%",
+                      borderRadius: "10%",
+                      width: 36,
+                      height: 36,
+                      objectFit: "cover",
+                    }}
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = "/assets/img/icons/man.png";
                     }}
                   />
                 </div>
