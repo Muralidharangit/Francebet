@@ -1,5 +1,5 @@
 import Sidebar from "./Header/Sidebar";
-import { useState, useEffect, useRef, useContext } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 // import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../../API/api";
@@ -27,6 +27,7 @@ import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import useAllGames from "../../hooks/useAllGames";
 import useFilteredGames from "../../hooks/useFilteredGames";
 import { getIsMobileParam } from "../../hooks/homePageApi";
+// import routes from "../routes/route";
 
 const SearchTopGames = () => {
   // const [types, setTypes] = useState([]);
@@ -129,14 +130,14 @@ const SearchTopGames = () => {
     const totalPages = allGamesData.pagination?.total_page || 1;
     setTotalPages(totalPages);
   }, [allGamesData, selectedType, isSearchMode, page]);
-  console.log({
-    selectedType,
-    isSearchMode,
-    isAllGamesLoading,
-    isAllGamesFetching,
-    allGamesFromAPI: allGamesData?.allGames?.length,
-    gamesLength: games.length,
-  });
+  // console.log({
+  //   selectedType,
+  //   isSearchMode,
+  //   isAllGamesLoading,
+  //   isAllGamesFetching,
+  //   allGamesFromAPI: allGamesData?.allGames?.length,
+  //   gamesLength: games.length,
+  // });
   // console.log("✅ Setting games from allGamesData", {
   //   allGames: allGamesData.allGames,
   //   selectedType,
@@ -364,62 +365,73 @@ const SearchTopGames = () => {
   //   }
   // };
 
-  const handleGameClick = async (game) => {
-    if (!game.provider || !game.name || !game.uuid) {
-      toast.error("Missing game info.");
-      return;
-    }
+  // const handleGameClick = async (game) => {
+  //   if (!game.provider || !game.name || !game.uuid) {
+  //     toast.error("Missing game info.");
+  //     return;
+  //   }
 
-    const token = localStorage.getItem("token");
+  //   const token = localStorage.getItem("token");
 
-    try {
-      setIsLaunchingGame(true);
-      const isMobileParam = getIsMobileParam();
+  //   try {
+  //     setIsLaunchingGame(true);
+  //     const isMobileParam = getIsMobileParam();
 
-      const response = await axios.get(
-        `${BASE_URL}/player/${game.provider}/launch/${encodeURIComponent(
-          game.name
-        )}/${game.uuid}`,
+  //     const response = await axios.get(
+  //       `${BASE_URL}/player/${game.provider}/launch/${encodeURIComponent(
+  //         game.name
+  //       )}/${game.uuid}`,
 
-        {
-          params: {
-            // return_url: `${window.location.origin}/all-games?is_mobile=${isMobileParam}`,
-            return_url: `${window.location.origin}/top-games`,
-          },
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+  //       {
+  //         params: {
+  //           // return_url: `${window.location.origin}/all-games?is_mobile=${isMobileParam}`,
+  //           return_url: `${window.location.origin}/top-games`,
+  //         },
+  //         headers: { Authorization: `Bearer ${token}` },
+  //       }
+  //     );
 
-      const gameUrl = response.data?.game?.gameUrl || response.data?.game_url;
-      if (gameUrl) {
-        // Store current location so user can return later
-        sessionStorage.setItem("prevPage", location.pathname + location.search);
+  //     const gameUrl = response.data?.game?.gameUrl || response.data?.game_url;
+  //     if (gameUrl) {
+  //       // Store current location so user can return later
+  //       sessionStorage.setItem("prevPage", location.pathname + location.search);
 
-        // Push a new state so back button will return here
-        window.history.pushState(
-          { isGameOpen: true },
-          "",
-          window.location.href
-        );
+  //       // Push a new state so back button will return here
+  //       window.history.pushState(
+  //         { isGameOpen: true },
+  //         "",
+  //         window.location.href
+  //       );
 
-        setSelectedGameUrl(gameUrl);
-        setShowFullScreenGame(true);
-      } else {
-        toast.error("Failed to get game URL.");
-      }
-    } catch (error) {
-      setIsLaunchingGame(false);
-      const errMsg = error.response?.data?.message;
-      if (errMsg === "Unauthenticated." || error.response?.status === 401) {
-        toast.error("Please login to jump into the Game World! 🎮🚀");
-        localStorage.removeItem("token");
-        setTimeout(() => navigate("/login"), 3000);
-        return;
-      }
-      console.error("Error launching game:", error);
-      toast.error("Game launch failed. Try again later.");
-    }
-  };
+  //       setSelectedGameUrl(gameUrl);
+  //       setShowFullScreenGame(true);
+  //     } else {
+  //       toast.error("Failed to get game URL.");
+  //     }
+  //   } catch (error) {
+  //     setIsLaunchingGame(false);
+  //     const errMsg = error.response?.data?.message;
+  //     if (errMsg === "Unauthenticated." || error.response?.status === 401) {
+  //       toast.error("Please login to jump into the Game World! 🎮🚀");
+  //       localStorage.removeItem("token");
+  //       setTimeout(() => navigate("/login"), 3000);
+  //       return;
+  //     }
+  //     console.error("Error launching game:", error);
+  //     // toast.error("Game launch failed. Try again later.");
+  //     // 👇 Add onClose here:
+  //     toast.error("Game launch failed. Try again later.", {
+  //       toastId: "game-launch-failed",
+  //       autoClose: 3000, // optional
+  //       closeOnClick: true, // optional
+  //       pauseOnHover: true, // optional
+  //       onClose: () => {
+  //         // runs if user clicks X OR after autoClose timeout
+  //         navigate(location.pathname, { replace: true, state: {} });
+  //       },
+  //     });
+  //   }
+  // };
   useEffect(() => {
     const handlePopState = () => {
       if (showFullScreenGame) {
@@ -632,55 +644,176 @@ const SearchTopGames = () => {
   }, []);
 
   // Add this state with your other state variables
-  const [showModal, setShowModal] = useState(false);
+  // const [showModal, setShowModal] = useState(false);
 
   // ... other code ...
   // 1) Verify token
   const currentToken = user?.token;
   // Define the handler functions
-  const handleConfirm = async () => {
-    setShowModal(false);
-    // Programmatically trigger the back action to close the game
-    window.history.back();
-    navigate("/top-games");
-    // This will trigger your existing useEffect handlePopState logic
-    // ✅ refresh profile so Header updates chips
-    await fetchUser(currentToken);
+  // const handleConfirm = async () => {
+  //   setShowModal(false);
+  //   // Programmatically trigger the back action to close the game
+  //   window.history.back();
+  //   navigate("/all-games");
+  //   // This will trigger your existing useEffect handlePopState logic
+  //   // ✅ refresh profile so Header updates chips
+  //   await fetchUser(currentToken);
+  // };
+
+  // const iframeRef = useRef(null);
+  // const [iframeLoaded, setIframeLoaded] = useState(false);
+  // const [iframeError, setIframeError] = useState(false);
+  // const [isLaunchingGame, setIsLaunchingGame] = useState(true); // optional overlay
+
+  // ... other state variables and handleCancel, handleConfirm ...
+
+  // // Handle iframe load
+  // const handleIframeLoad = () => {
+  //   // Only set loaded state if the iframe is actually the game we want
+  //   // You might want to check for the selectedGameUrl here too for robust logic.
+  //   setIframeLoaded(true);
+  //   // setIsLaunchingGame(false); // hide "Launching game..." overlay
+
+  //   const el = iframeRef.current;
+  //   if (!el) return;
+
+  //   // ... (rest of handleIframeLoad logic, including cross-origin error handling) ...
+  // };
+
+  // const handleCancel = () => {
+  //   setShowModal(false);
+  // };
+
+  /** ---------- Game launch + return flow ---------- */
+  const RETURN_URL_KEY = "returnUrl";
+
+  const navigateToSavedReturnUrl = React.useCallback(() => {
+    const target = sessionStorage.getItem(RETURN_URL_KEY) || "/";
+    const origin = window.location.origin;
+    const toPath = target.startsWith(origin)
+      ? target.slice(origin.length)
+      : target;
+
+    const here = window.location.pathname + window.location.search;
+    const url = new URL(target, origin);
+    const there = url.pathname + url.search;
+    if (here === there) return;
+
+    navigate(toPath, { replace: true });
+  }, [navigate]);
+
+  const buildReturnUrl = (location) => {
+    const base = import.meta?.env?.BASE_URL || process.env.PUBLIC_URL || "";
+    const baseTrim = base.replace(/\/$/, "");
+    const path = `${baseTrim}${location.pathname}${location.search || ""}`;
+    return new URL(path, window.location.origin).toString();
   };
 
-  const handleCancel = () => {
-    setShowModal(false);
-  };
+  const [showModal, setShowModal] = useState(false);
   const [iframeLoaded, setIframeLoaded] = useState(false);
   const [iframeError, setIframeError] = useState(false);
-  // put this near your component state
+
+  const handleConfirm = async () => {
+    setShowModal(false);
+    setIsLaunchingGame(false);
+    setShowFullScreenGame(false);
+    setSelectedGameUrl("");
+    await fetchUser(user?.token);
+    navigateToSavedReturnUrl();
+  };
+
+  const handleCancel = () => setShowModal(false);
+
   const handleIframeLoad = () => {
     setIframeLoaded(true);
-    setIsLaunchingGame(false); // hide "Launching game..." overlay
+    setIsLaunchingGame(false);
 
     const el = iframeRef.current;
     if (!el) return;
 
     try {
-      // If the iframe is same-origin now, we can read its URL
       const href = el.contentWindow.location.href;
-      const u = new URL(href);
-
-      // If provider redirected iframe back to your app route
-      if (
-        u.origin === window.location.origin &&
-        u.pathname.startsWith("/top-games")
-      ) {
-        // close overlay + hard refresh parent page
+      if (href.startsWith(window.location.origin)) {
         setShowFullScreenGame(false);
         setSelectedGameUrl("");
         setIframeError(false);
         setIframeLoaded(false);
-
-        window.location.replace("/top-games");
+        navigateToSavedReturnUrl();
       }
     } catch {
-      // Still cross-origin (normal gameplay) — ignore
+      // cross-origin; ignore
+    }
+  };
+
+  useEffect(() => {
+    const onPop = () => {
+      setShowFullScreenGame(false);
+      setSelectedGameUrl("");
+      setIsLaunchingGame(false);
+      navigateToSavedReturnUrl();
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, [navigateToSavedReturnUrl]);
+
+  const handleGameClick = async (game) => {
+    if (!game?.provider || !game?.name || !game?.uuid) {
+      toast.error("Missing game info.");
+      return;
+    }
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Please login to jump into the Game World! 🎮🚀");
+      navigate("/login");
+      return;
+    }
+
+    try {
+      setIsLaunchingGame(true);
+      const returnUrl = buildReturnUrl(location);
+      sessionStorage.setItem(RETURN_URL_KEY, returnUrl);
+
+      const response = await axios.get(
+        `${BASE_URL}/player/${game.provider}/launch/${encodeURIComponent(
+          game.name
+        )}/${game.uuid}`,
+        {
+          params: {
+            return_url: returnUrl,
+            ...(game.has_lobby !== undefined && { has_lobby: game.has_lobby }),
+            ...(game.has_tables !== undefined && {
+              has_tables: game.has_tables,
+            }),
+          },
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const gameUrl = response?.data?.game?.gameUrl || response?.data?.game_url;
+      if (gameUrl) {
+        window.history.pushState(
+          { isGameOpen: true },
+          "",
+          window.location.href
+        );
+        setSelectedGameUrl(gameUrl);
+        setShowFullScreenGame(true);
+      } else {
+        setIsLaunchingGame(false);
+        toast.error("Failed to get game URL.");
+      }
+    } catch (error) {
+      setIsLaunchingGame(false);
+      const errMsg = error.response?.data?.message;
+      if (errMsg === "Unauthenticated." || error.response?.status === 401) {
+        toast.error("Please login to jump into the Game World! 🎮🚀");
+        localStorage.removeItem("token");
+        setTimeout(() => navigate("/login"), 3000);
+        return;
+      }
+      // console.error("Error launching game:", error);
+      toast.error("Game launch failed. Try again later.");
     }
   };
 
@@ -727,7 +860,7 @@ const SearchTopGames = () => {
         {/* Sidebar Nav Ends */}
         <div className="main-panel overflow-hidden">
           <div className="content-wrapper new">
-            <div className="max-1250 mx-auto">
+            <div className="max-1250 mx-auto ">
               <div>
                 {showFullScreenGame && selectedGameUrl && (
                   <div
@@ -740,17 +873,18 @@ const SearchTopGames = () => {
                       height: "100vh",
                       backgroundColor: "#000",
                       zIndex: 9999,
+                      height: "100dvh",
                     }}
                   >
                     {/* Navbar only appears if iframe loaded successfully */}
                     {iframeLoaded && !iframeError && (
                       <nav
-                        className="navbar py-1 navbar-dark bg-black sticky-top shadow-sm d-flex align-items-center position-relative top-0"
+                        className="navbar  py-1 navbar-dark bg-black sticky-top shadow-sm d-flex align-items-center position-relative top-0 w-100"
                         style={{ height: "5%" }}
                       >
                         <div className="container-fluid d-flex align-items-center">
                           <button
-                            className="btn btn-index w-100 deposit-btn text-white py-2"
+                            className="btn  btn-index w-100 deposit-btn text-white py-2"
                             style={{ background: "#292524" }}
                             onClick={() => setShowModal(true)}
                           >
@@ -762,7 +896,7 @@ const SearchTopGames = () => {
 
                     {/* Iframe or Error Message */}
                     <div
-                      className="flex-grow-1 d-flex justify-content-center align-items-center"
+                      className="flex d-flex justify-content-center align-items-center "
                       style={{ height: "95%" }}
                     >
                       {!iframeError ? (
