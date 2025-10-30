@@ -139,6 +139,11 @@ const StickyHeader = ({ onToggleSidebar }) => {
       setLoading(false);
     }
   };
+
+  // const pop_up = ()=>
+  // {
+  //     toast.
+  // }
   return (
     <SkeletonTheme baseColor="#313131" highlightColor="#525252">
       <>
@@ -350,7 +355,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                                 {Number(profile?.chips).toFixed(2)}
                               </h6>
                             </p>
-                            <button
+                            {/* <button
                               className="btn  btn-index w-100 deposit-btn"
                               onClick={() =>
                                 handleSecureRoute(
@@ -359,7 +364,22 @@ const StickyHeader = ({ onToggleSidebar }) => {
                               }
                             >
                               Deposit
-                            </button>
+                            </button> */}
+
+                            {portalSettings?.auto_deposit === 1 ? (
+                              <button
+                                className="btn  btn-index w-100 deposit-btn"
+                                onClick={() =>
+                                  handleSecureRoute(
+                                    routes.transactions.paymentMethod
+                                  )
+                                }
+                              >
+                                Deposit
+                              </button>
+                            ) : (
+                              ""
+                            )}
                           </div>
                         </li>
                       </div>
@@ -548,15 +568,11 @@ const StickyHeader = ({ onToggleSidebar }) => {
                       >
                         {/* deposit starts */}
                         <div className="dropdown-divider" />
-                        <a className="dropdown-item preview-item">
+                        {/* <a className="dropdown-item preview-item">
                           <div className="preview-thumbnail">
-                            {/* <img
-                          src="/assets/images/faces/face2.jpg"
-                          alt="image"
-                          className="profile-pic"
-                        /> */}
-                          </div>
-                          <div
+                           
+                          </div> */}
+                        {/* <div
                             className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
                             onClick={() =>
                               handleSecureRoute(
@@ -567,21 +583,33 @@ const StickyHeader = ({ onToggleSidebar }) => {
                             <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
                               Deposit
                             </h6>
-                            {/* <p className="text-gray mb-0"> 15 Minutes ago </p> */}
-                          </div>
-                        </a>
+                           
+                          </div> */}
+
+                        {portalSettings?.auto_deposit === 1 ? (
+                          <a className="dropdown-item preview-item">
+                            <div
+                              className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
+                              onClick={() =>
+                                handleSecureRoute(
+                                  routes.transactions.paymentMethod
+                                )
+                              }
+                            >
+                              <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
+                                Deposit
+                              </h6>
+                            </div>
+                          </a>
+                        ) : (
+                          ""
+                        )}
+
                         {/* deposit ends */}
                         {/* Withdraw starts */}
                         <div className="dropdown-divider" />
-                        <a className="dropdown-item preview-item">
-                          <div className="preview-thumbnail">
-                            {/* <img
-                          src="/assets/images/faces/face2.jpg"
-                          alt="image"
-                          className="profile-pic"
-                        /> */}
-                          </div>
-                          <div
+
+                        {/* <div
                             className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
                             onClick={() =>
                               handleSecureRoute(
@@ -592,22 +620,34 @@ const StickyHeader = ({ onToggleSidebar }) => {
                             <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
                               Withdraw
                             </h6>
-                            {/* <p className="text-gray mb-0"> 15 Minutes ago </p> */}
-                          </div>
-                        </a>
+                          
+                          </div> */}
+
+                        {portalSettings?.auto_withdraw === 1 ? (
+                          <a className="dropdown-item preview-item">
+                            <div
+                              className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
+                              onClick={() =>
+                                handleSecureRoute(
+                                  routes.transactions.manual_withdraw_namibia
+                                )
+                              }
+                            >
+                              <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
+                                Withdraw
+                              </h6>
+                            </div>
+                          </a>
+                        ) : (
+                          ""
+                        )}
+
                         {/* Withdraw ends */}
 
                         <div className="dropdown-divider" />
-                        <a className="dropdown-item preview-item">
-                          <div className="preview-thumbnail">
-                            {/* <img
-                          src="assets/img/icons/rupee_2.png"
-                          alt="deposit"
-                          // // width={"12px"}
-                          // style={{width:}}
-                        /> */}
-                          </div>
-                          <div
+                        {/* <a className="dropdown-item preview-item"> */}
+
+                        {/* <div
                             className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
                             onClick={() =>
                               handleSecureRoute(
@@ -618,19 +658,31 @@ const StickyHeader = ({ onToggleSidebar }) => {
                             <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
                               Deposit History
                             </h6>
-                            {/* <p className="text-gray mb-0"> 18 Minutes ago </p> */}
-                          </div>
-                        </a>
+                           
+                          </div> */}
+
+                        {portalSettings?.auto_deposit === 1 ? (
+                          <a className="dropdown-item preview-item">
+                            <div
+                              className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
+                              onClick={() =>
+                                handleSecureRoute(
+                                  routes.transactions.all_depositHistory
+                                )
+                              }
+                            >
+                              <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
+                                Deposit History
+                              </h6>
+                            </div>
+                          </a>
+                        ) : (
+                          ""
+                        )}
+
                         <div className="dropdown-divider" />
-                        <a className="dropdown-item preview-item">
-                          <div className="preview-thumbnail">
-                            {/* <img
-                          src="/assets/images/faces/face2.jpg"
-                          alt="image"
-                          className="profile-pic"
-                        /> */}
-                          </div>
-                          <div
+                       
+                        {/* <div
                             className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
                             onClick={() =>
                               handleSecureRoute(
@@ -642,20 +694,34 @@ const StickyHeader = ({ onToggleSidebar }) => {
                             <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
                               Withdraw History
                             </h6>
-                            {/* <p className="text-gray mb-0"> 15 Minutes ago </p> */}
-                          </div>
-                        </a>
+                          </div> */}
+
+                        {portalSettings?.auto_withdraw === 1 ? (
+                          <a className="dropdown-item preview-item">
+                            <div  
+                              className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
+                              onClick={() =>
+                                handleSecureRoute(
+                                  routes.transactions
+                                    .manual_withdraw_Namibia_history
+                                )
+                              }
+                            >
+                              <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
+                                Withdraw History
+                              </h6>
+                            </div>
+                          </a>
+                        ) : (
+                          ""
+                        )}
 
                         {/* <h6 className="p-3 mb-0">Messages</h6> */}
                         <div className="dropdown-divider" />
                         <a className="dropdown-item preview-item">
-                          <div className="preview-thumbnail">
-                            {/* <img
-                          src="../assets/images/faces/face4.jpg"
-                          alt="image"
-                          className="profile-pic"
-                        /> */}
-                          </div>
+                          {/* <div className="preview-thumbnail">
+                           
+                          </div> */}
                           <div
                             className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
                             onClick={() =>
@@ -670,13 +736,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                         </a>
 
                         <a className="dropdown-item preview-item">
-                          <div className="preview-thumbnail">
-                            {/* <img
-                          src="/assets/images/faces/face2.jpg"
-                          alt="image"
-                          className="profile-pic"
-                        /> */}
-                          </div>
+                        
                           <div
                             className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
                             onClick={handleProfileClick}
@@ -689,7 +749,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                         </a>
 
                         <div className="dropdown-item preview-item">
-                          <div className="preview-thumbnail"></div>
+                          {/* <div className="preview-thumbnail"></div> */}
                           <div className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible">
                             <h6
                               className="preview-subject ellipsis mb-1 font-weight-normal w-100"
