@@ -400,7 +400,7 @@ const FilteredGamesPage = () => {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     onInput={(e) => setSearchTerm(e.target.value)}
-                    className="my-3 input"
+                    className="my-3 input text-white"
                   />
 
                   {isSearchMode && (
