@@ -169,7 +169,7 @@ const SpribeGame = () => {
                   placeholder="Search games..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="my-3 input"
+                  className="my-3 input text-white"
                 />
                 <button className="reset" type="reset"></button>
               </form>

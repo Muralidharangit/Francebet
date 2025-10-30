@@ -6,7 +6,7 @@ import BASE_URL from "../../API/api";
 import StickyHeader from "./Header/Header";
 import Footer from "./footer/Footer";
 import { toast, ToastContainer } from "react-toastify";
-import {useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 // import PaginatedData from "../Pages/Pagination/PaginatedData";
 // import {
@@ -874,7 +874,7 @@ const SearchTopGames = () => {
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         onInput={(e) => setSearchTerm(e.target.value)} // ✅ extra support for mobile
-                        className="my-3 input"
+                        className="my-3 input text-white"
                       />
                       {isSearchMode && (
                         <button
