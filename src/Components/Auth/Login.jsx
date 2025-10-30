@@ -210,13 +210,36 @@ const LoginPage = () => {
                   <label htmlFor="user_mobile" className="form-label text-gray">
                     Mobile
                   </label>
-                  <input
+                  {/* <input
                     type="tel"
                     className="form-control login-card__form-control"
                     id="user_mobile"
                     name="user_mobile"
                     value={formik.values.user_mobile}
                     onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  /> */}
+                  <input
+                    type="tel"
+                    id="user_mobile"
+                    name="user_mobile"
+                    className="form-control login-card__form-control"
+                    value={formik.values.user_mobile}
+                    inputMode="numeric" // mobile shows number keypad
+                    pattern="[0-9]*" // soft hint for numeric
+                    autoComplete="tel"
+                    onChange={(e) => {
+                      const digits = e.target.value.replace(/\D/g, ""); // keep only 0-9
+                      formik.setFieldValue("user_mobile", digits);
+                    }}
+                    onPaste={(e) => {
+                      e.preventDefault();
+                      const pasted = (
+                        e.clipboardData || window.clipboardData
+                      ).getData("text");
+                      const digits = pasted.replace(/\D/g, "");
+                      formik.setFieldValue("user_mobile", digits.slice(0, 10));
+                    }}
                     onBlur={formik.handleBlur}
                   />
                   {formik.touched.user_mobile && formik.errors.user_mobile && (
