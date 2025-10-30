@@ -767,10 +767,10 @@ function Home() {
 
       const gameUrl = response.data?.game?.gameUrl || response.data?.game_url;
       if (gameUrl) {
-        // (optional)
+
         sessionStorage.setItem("prevPage", location.pathname + location.search);
 
-        // push state so Back triggers our popstate handler
+      
         window.history.pushState(
           { isGameOpen: true },
           "",
@@ -792,7 +792,6 @@ function Home() {
         setTimeout(() => navigate("/login"), 3000);
         return;
       }
-      // console.error("Error launching game:", error);
       toast.error("Game launch failed. Try again later.");
     }
   };
@@ -1069,7 +1068,7 @@ function Home() {
                             freeMode={true}
                             breakpoints={{
                               768: {
-                                slidesPerView: 7, // Tablet view
+                                slidesPerView: 5, // Tablet view
                               },
                               1024: {
                                 slidesPerView: 6, // Laptop/Desktop view
@@ -1127,139 +1126,141 @@ function Home() {
 
                           {/* Fullscreen Game Iframe */}
                           {showFullScreenGame && selectedGameUrl && (
-                            <div
-                              className="iframe-container"
-                              style={{
-                                position: "fixed",
-                                top: 0,
-                                left: 0,
-                                width: "100vw",
-                                height: "100vh",
-                                backgroundColor: "#000",
-                                zIndex: 9999,
-                                height: "100dvh",
-                              }}
-                            >
-                              {/* Navbar only appears if iframe loaded successfully */}
-                              {iframeLoaded && !iframeError && (
-                                <nav
-                                  className="navbar py-1 navbar-dark bg-black sticky-top shadow-sm d-flex align-items-center"
-                                  style={{ height: "5%" }}
-                                >
-                                  <div className="container-fluid d-flex align-items-center">
-                                    <button
-                                      className="btn btn-index w-100 deposit-btn text-white py-2"
-                                      style={{ background: "#292524" }}
-                                      onClick={() => setShowModal(true)}
-                                    >
-                                      Back
-                                    </button>
-                                  </div>
-                                </nav>
-                              )}
-
-                              {/* Iframe or Error Message */}
+                            <div className="bg-danger h-100">
                               <div
-                                className="flex-grow-1 d-flex justify-content-center align-items-center"
-                                style={{ height: "95%" }}
+                                className="iframe-container"
+                                style={{
+                                  position: "fixed",
+                                  top: 0,
+                                  left: 0,
+                                  width: "100vw",
+                                  height: "100vh",
+                                  backgroundColor: "#000",
+                                  zIndex: 9999,
+                                  height: "100dvh",
+                                }}
                               >
-                                {!iframeError ? (
-                                  <iframe
-                                    ref={iframeRef}
-                                    src={selectedGameUrl}
-                                    title="Game"
-                                    allowFullScreen
-                                    // onLoad={() => setIframeLoaded(true)}
-                                    onError={() => setIframeError(true)}
-                                    onLoad={handleIframeLoad}
+                                {/* Navbar only appears if iframe loaded successfully */}
+                                {iframeLoaded && !iframeError && (
+                                  <nav
+                                    className="navbar py-1 navbar-dark bg-black sticky-top shadow-sm d-flex align-items-center"
+                                    style={{ height: "5%" }}
+                                  >
+                                    <div className="container-fluid d-flex align-items-center">
+                                      <button
+                                        className="btn btn-index w-100 deposit-btn text-white py-2"
+                                        style={{ background: "#292524" }}
+                                        onClick={() => setShowModal(true)}
+                                      >
+                                        Back
+                                      </button>
+                                    </div>
+                                  </nav>
+                                )}
+
+                                {/* Iframe or Error Message */}
+                                <div
+                                  className="flex-grow-1 d-flex justify-content-center align-items-center"
+                                  style={{ height: "95%" }}
+                                >
+                                  {!iframeError ? (
+                                    <iframe
+                                      ref={iframeRef}
+                                      src={selectedGameUrl}
+                                      title="Game"
+                                      allowFullScreen
+                                      // onLoad={() => setIframeLoaded(true)}
+                                      onError={() => setIframeError(true)}
+                                      onLoad={handleIframeLoad}
+                                      style={{
+                                        width: "100%",
+                                        height: "100%",
+                                        border: "none",
+                                      }}
+                                    />
+                                  ) : (
+                                    <div
+                                      style={{
+                                        color: "red",
+                                        fontSize: "1.5rem",
+                                        textAlign: "center",
+                                      }}
+                                    >
+                                      Game not visible
+                                    </div>
+                                  )}
+                                </div>
+
+                                {/* Modal */}
+                                {showModal && (
+                                  <div
+                                    className="modal-backdrop d-flex justify-content-center align-items-center"
                                     style={{
+                                      backgroundColor: "rgba(0,0,0,0.8)",
+                                      position: "fixed",
+                                      top: 0,
+                                      left: 0,
                                       width: "100%",
                                       height: "100%",
-                                      border: "none",
-                                    }}
-                                  />
-                                ) : (
-                                  <div
-                                    style={{
-                                      color: "red",
-                                      fontSize: "1.5rem",
-                                      textAlign: "center",
-                                    }}
-                                  >
-                                    Game not visible
-                                  </div>
-                                )}
-                              </div>
-
-                              {/* Modal */}
-                              {showModal && (
-                                <div
-                                  className="modal-backdrop d-flex justify-content-center align-items-center"
-                                  style={{
-                                    backgroundColor: "rgba(0,0,0,0.8)",
-                                    position: "fixed",
-                                    top: 0,
-                                    left: 0,
-                                    width: "100%",
-                                    height: "100%",
-                                    zIndex: 99999,
-                                  }}
-                                >
-                                  <div
-                                    className="modal-dialog modal-dialog-centered m-2"
-                                    style={{
-                                      maxWidth: "400px",
-                                      color: "white",
+                                      zIndex: 99999,
                                     }}
                                   >
                                     <div
-                                      className="modal-content text-center p-4"
+                                      className="modal-dialog modal-dialog-centered m-2"
                                       style={{
-                                        borderRadius: "1rem",
-                                        background:
-                                          "linear-gradient(145deg, #0f0f0f, #1a1a1a)",
-                                        border: "1px solid #ff0055",
-                                        boxShadow: "0 0 20px #ff0055ae",
+                                        maxWidth: "400px",
+                                        color: "white",
                                       }}
                                     >
-                                      <div className="modal-header border-0 justify-content-end">
-                                        <button
-                                          type="button"
-                                          className="btn-close btn-close-white"
-                                          onClick={handleCancel}
-                                        />
-                                      </div>
+                                      <div
+                                        className="modal-content text-center p-4"
+                                        style={{
+                                          borderRadius: "1rem",
+                                          background:
+                                            "linear-gradient(145deg, #0f0f0f, #1a1a1a)",
+                                          border: "1px solid #ff0055",
+                                          boxShadow: "0 0 20px #ff0055ae",
+                                        }}
+                                      >
+                                        <div className="modal-header border-0 justify-content-end">
+                                          <button
+                                            type="button"
+                                            className="btn-close btn-close-white"
+                                            onClick={handleCancel}
+                                          />
+                                        </div>
 
-                                      <div className="modal-body">
-                                        <h5 className="modal-title fs-2 text-warning mb-3">
-                                          Go Back?
-                                        </h5>
-                                        <p className="fs-5 text-light">
-                                          Are you sure you want to leave this
-                                          game?
-                                        </p>
-                                      </div>
+                                        <div className="modal-body">
+                                          <h5 className="modal-title fs-2 text-warning mb-3">
+                                            Go Back?
+                                          </h5>
+                                          <p className="fs-5 text-light">
+                                            Are you sure you want to leave this
+                                            game?
+                                          </p>
+                                        </div>
 
-                                      <div className="modal-footer border-0 justify-content-center gap-2">
-                                        <button
-                                          type="button"
-                                          className="btn btn-index w-100 deposit-btn text-white py-2"
-                                          onClick={handleConfirm}
-                                        >
-                                          OK
-                                        </button>
-                                        <button
-                                          type="button"
-                                          className="btn btn-index w-100 deposit-btn text-white py-2"
-                                          onClick={handleCancel}
-                                        >
-                                          Cancel
-                                        </button>
+                                        <div className="modal-footer border-0 justify-content-center gap-2">
+                                          <button
+                                            type="button"
+                                            className="btn btn-index w-100 deposit-btn text-white py-2"
+                                            onClick={handleConfirm}
+                                          >
+                                            OK
+                                          </button>
+                                          <button
+                                            type="button"
+                                            className="btn btn-index w-100 deposit-btn text-white py-2"
+                                            onClick={handleCancel}
+                                          >
+                                            Cancel
+                                          </button>
+                                        </div>
                                       </div>
                                     </div>
                                   </div>
-                                </div>
-                              )}
+                                )}
+                              </div>
                             </div>
                           )}
                         </div>
@@ -1938,7 +1939,7 @@ function Home() {
                             freeMode={true}
                             breakpoints={{
                               768: {
-                                slidesPerView: 6, // Tablet view
+                                slidesPerView: 5, // Tablet view
                               },
                               1024: {
                                 slidesPerView: 7, // Laptop/Desktop view
@@ -1980,6 +1981,9 @@ function Home() {
                                         className="game-card-img"
                                         alt={game.name}
                                       />
+                                      <div className="btn-play position-absolute top-50 start-50 translate-middle">
+                                        <i className="fa-solid fa-play"></i>
+                                      </div>
                                       {/* <div className="d-flex flex-column text-white text-center py-2 px-1">
                               <span className="fs-12 fw-bold text-truncate">
                                 {game.name}
@@ -2442,9 +2446,7 @@ function Home() {
                                       </>
                                     )}
 
-                                    <div className="text-center">
-
-                                      </div>
+                                    <div className="text-center"></div>
 
                                     {typeof result?.amount !== "undefined" && (
                                       <div
