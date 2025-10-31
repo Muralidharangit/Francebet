@@ -661,27 +661,23 @@ const StickyHeader = ({ onToggleSidebar }) => {
                            
                           </div> */}
 
-                        {portalSettings?.auto_deposit === 1 ? (
-                          <a className="dropdown-item preview-item">
-                            <div
-                              className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
-                              onClick={() =>
-                                handleSecureRoute(
-                                  routes.transactions.all_depositHistory
-                                )
-                              }
-                            >
-                              <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
-                                Deposit History
-                              </h6>
-                            </div>
-                          </a>
-                        ) : (
-                          ""
-                        )}
+                        <a className="dropdown-item preview-item">
+                          <div
+                            className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
+                            onClick={() =>
+                              handleSecureRoute(
+                                routes.transactions.all_depositHistory
+                              )
+                            }
+                          >
+                            <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
+                              Deposit History
+                            </h6>
+                          </div>
+                        </a>
 
                         <div className="dropdown-divider" />
-                       
+
                         {/* <div
                             className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
                             onClick={() =>
@@ -696,25 +692,21 @@ const StickyHeader = ({ onToggleSidebar }) => {
                             </h6>
                           </div> */}
 
-                        {portalSettings?.auto_withdraw === 1 ? (
-                          <a className="dropdown-item preview-item">
-                            <div  
-                              className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
-                              onClick={() =>
-                                handleSecureRoute(
-                                  routes.transactions
-                                    .manual_withdraw_Namibia_history
-                                )
-                              }
-                            >
-                              <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
-                                Withdraw History
-                              </h6>
-                            </div>
-                          </a>
-                        ) : (
-                          ""
-                        )}
+                        <a className="dropdown-item preview-item">
+                          <div
+                            className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
+                            onClick={() =>
+                              handleSecureRoute(
+                                routes.transactions
+                                  .manual_withdraw_Namibia_history
+                              )
+                            }
+                          >
+                            <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
+                              Withdraw History
+                            </h6>
+                          </div>
+                        </a>
 
                         {/* <h6 className="p-3 mb-0">Messages</h6> */}
                         <div className="dropdown-divider" />
@@ -736,7 +728,6 @@ const StickyHeader = ({ onToggleSidebar }) => {
                         </a>
 
                         <a className="dropdown-item preview-item">
-                        
                           <div
                             className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
                             onClick={handleProfileClick}

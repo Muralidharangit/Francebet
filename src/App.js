@@ -14,6 +14,9 @@ const ProfileEdit = lazy(() => import("./Components/Profile/ProfileEdit"));
 const AccountDashboard = lazy(() =>
   import("./Components/Profile/AccountDashboard")
 );
+const AccountDashboardDesktop = lazy(() =>
+  import("./Components/Profile/AccountDasboardDestop")
+);
 const ChangePassword = lazy(() =>
   import("./Components/Profile/ChangePassword")
 );
@@ -380,6 +383,10 @@ function App() {
             <Route
               path={routes.account.dashboard}
               element={<AccountDashboard />}
+            />
+            <Route
+              path={routes.account.dashboard_desktop}
+              element={<AccountDashboardDesktop />}
             />
           </Route>
         </Routes>

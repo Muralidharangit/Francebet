@@ -102,8 +102,9 @@ function PrivacyPolicy() {
                       <strong>Service:</strong> the Website.
                     </li>
                     <li>
-                      <strong>Website:</strong> {APP_NAME}, accessible from{" "}
-                      <a href="#">https://{APP_NAME}.in/</a>.
+                      <strong>Website:</strong> {APP_NAME}, accessible from
+                      anywhere.
+                      {/* <a href="#">https://{APP_NAME}.in/</a>. */}
                     </li>
                     <li>
                       <strong>You:</strong> the individual using the Service, or
