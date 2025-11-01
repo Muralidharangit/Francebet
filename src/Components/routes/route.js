@@ -72,6 +72,7 @@ const routes = {
   },
   account: {
     dashboard: "/account-dashboard",
+    dashboard_desktop: "/account/manager",
   },
   profile: {
     main: "/profile",
