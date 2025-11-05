@@ -5,6 +5,7 @@ import ProtectedRoute from "./Auth/ProtectedRoute";
 import ScrollToTop from "./ScrollToTop";
 import DepositStatic from "./Components/Pages/Transactions/Deposit copy/Deposit_static";
 import DepositMethod from "./Components/Pages/Transactions/Deposit/DepositMethod";
+import WhatsAppButton from "./Components/WhatsAppButton";
 
 const Home = lazy(() => import("./Components/layouts/Home"));
 const Bonus = lazy(() => import("./Components/layouts/Bonus"));
@@ -195,6 +196,7 @@ function App() {
       {/* <Suspense fallback={<div>Loading...</div>}> */}
       <Suspense>
         <ScrollToTop />
+        <WhatsAppButton />
         <Routes>
           {/* Add the new Testing Info Page Route */}
           <Route

@@ -34,6 +34,7 @@ const BankDetails = ({
   const [showModal, setShowModal] = useState(false);
   const [deleteSelectedBankId, setDeleteSelectedBankId] = useState(null);
   const [statusLoading, setStatusLoading] = useState({});
+  const [selectedBankIdNo, setSelectedBankIdNo] = useState(null);
   // const [editingBankData, setEditingBankData] = useState(null);
   const { user } = useContext(AuthContext);
   const token = user?.token;
@@ -46,6 +47,18 @@ const BankDetails = ({
     window.dispatchEvent(new Event("nm-bank-selected")); // 🔔 tell listeners to refresh
     // navigate("/deposit-namibia/manual-deposit/get-payment-details");
   };
+
+  // pick first active bank when data arrives
+  useEffect(() => {
+    if (!bankDetails?.length) return;
+    if (selectedBankIdNo != null) return;
+
+    const firstActive = bankDetails.find((b) => b.status === "1");
+    if (firstActive) {
+      setSelectedBankIdNo(String(firstActive.id)); // store as string to be safe
+      handleSelectBank?.(firstActive);
+    }
+  }, [bankDetails, selectedBankIdNo, handleSelectBank]);
 
   useEffect(() => {
     const currentToken = user?.token;
@@ -700,7 +713,7 @@ const BankDetails = ({
                             {/* input icon starts */}
                             <div className="px-2 py-1">
                               <div className="form-check px-3">
-                                <input
+                                {/* <input
                                   className="form-check-input"
                                   type="radio"
                                   name="flexRadioDefault"
@@ -708,6 +721,20 @@ const BankDetails = ({
                                   checked={selectedBankId === bank.id}
                                   onChange={() => setSelectedBankId(bank.id)}
                                   onClick={() => handleSelectBank(bank)}
+                                  defaultChecked
+                                /> */}
+                                <input
+                                  className="form-check-input"
+                                  type="radio"
+                                  name="flexRadioDefault"
+                                  value={bank.id}
+                                  checked={
+                                    String(selectedBankIdNo) === String(bank.id)
+                                  }
+                                  onChange={() => {
+                                    setSelectedBankIdNo(String(bank.id));
+                                    handleSelectBank?.(bank);
+                                  }}
                                 />
                               </div>
                             </div>
