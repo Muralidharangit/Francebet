@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from "react";
+import React, { lazy, Suspense, useEffect, useState, useContext } from "react";
 import routes from "./Components/routes/route";
 import { Routes, Route } from "react-router-dom";
 import ProtectedRoute from "./Auth/ProtectedRoute";
@@ -6,6 +6,10 @@ import ScrollToTop from "./ScrollToTop";
 import DepositStatic from "./Components/Pages/Transactions/Deposit copy/Deposit_static";
 import DepositMethod from "./Components/Pages/Transactions/Deposit/DepositMethod";
 import WhatsAppButton from "./Components/WhatsAppButton";
+import Tawk from "./Components/Tawk";
+import AuthContext from "./Auth/AuthContext";
+import ForbiddenPage from "./Components/Pages/ErrorPages/ForbiddenPage";
+import TelegramButton from "./Components/TelegramButton";
 
 const Home = lazy(() => import("./Components/layouts/Home"));
 const Bonus = lazy(() => import("./Components/layouts/Bonus"));
@@ -190,13 +194,127 @@ const DepositKazangNamibiaHistory = lazy(() =>
 const KazangHowtodeposit = lazy(() =>
   import("./Components/Pages/Transactions/kazang/Deposit_kazang/Howtodeposit")
 );
+
+function useIsMobile(n = 670) {
+  const [isMobile, setIsMobile] = React.useState(() =>
+    typeof window !== "undefined"
+      ? window.matchMedia(`(max-width: ${n}px)`).matches
+      : false
+  );
+  React.useEffect(() => {
+    if (typeof window === "undefined") return;
+    const mql = window.matchMedia(`(max-width: ${n}px)`);
+    const onChange = (e) => setIsMobile(e.matches);
+    mql.addEventListener?.("change", onChange);
+    mql.addListener?.(onChange); // Safari
+    return () => {
+      mql.removeEventListener?.("change", onChange);
+      mql.removeListener?.(onChange);
+    };
+  }, [n]);
+  return isMobile;
+}
+
+function useFooterHeight() {
+  const [h, setH] = React.useState(0);
+  React.useEffect(() => {
+    const el = document.querySelector("#bottomTab, .bottom-nav");
+    if (!el) {
+      setH(0);
+      return;
+    }
+    const ro = new ResizeObserver(() => setH(el.offsetHeight || 0));
+    ro.observe(el);
+    setH(el.offsetHeight || 0);
+    return () => ro.disconnect();
+  }, []);
+  return h;
+}
+
 function App() {
+  // const { portalStatus, portalChannels } = useContext(AuthContext);
+  const {
+    portalStatus,
+    portalChannels,
+    waConfig,
+    tawkConfig,
+    channelConfig,
+    telegramConfig,
+  } = useContext(AuthContext);
+
+  // ✅ hooks must always run
+  const isMobile = useIsMobile(899);
+  const footerH = useFooterHeight();
+
+  // ---- floating buttons math (unchanged) ----
+  const BTN_SIZE = 56,
+    GAP = 33;
+  const RIGHT = isMobile ? 12 : 10;
+  const ORDER = isMobile ? ["tawk", "whatsapp"] : ["whatsapp", "tawk"];
+  const BASE = isMobile ? Math.max(75, 12 + footerH) : 24;
+
+  const visible = {
+    tawk: portalChannels?.tawk === 1,
+    whatsapp: portalChannels?.whatsapp === 1,
+    telegram: portalChannels?.telegram === 0,
+  };
+
+  const visibleKeys = ORDER.filter((k) => visible[k]);
+  const bottomFor = (key) => {
+    const idx = visibleKeys.indexOf(key);
+    const itemsBelow = visibleKeys.length - 1 - idx;
+    return BASE + itemsBelow * (BTN_SIZE + GAP);
+  };
+
+  const waStyle = {
+    position: "fixed",
+    right: RIGHT,
+    bottom: bottomFor("whatsapp"),
+    zIndex: 1000005,
+  };
+
+  const tawkOffsets = {
+    desktop: { bottom: bottomFor("tawk"), right: RIGHT },
+    mobile: { bottom: bottomFor("tawk"), right: 12 },
+  };
+
   return (
     <>
-      {/* <Suspense fallback={<div>Loading...</div>}> */}
-      <Suspense>
+      <Suspense fallback={null}>
         <ScrollToTop />
-        <WhatsAppButton />
+
+        {/* {portalChannels?.whatsapp === 1 && <WhatsAppButton />}
+        {portalChannels?.tawk === 1 && <Tawk />} */}
+        {visible.whatsapp && (
+          <WhatsAppButton
+            phone={waConfig.phone ?? "264813278786"}
+            text={waConfig.text ?? "Hi!"}
+            style={waStyle}
+          />
+        )}
+
+        {visible.tawk && (
+          <Tawk
+            offsets={tawkOffsets}
+            embedUrl={tawkConfig.url || undefined} // ← comes from API
+            propertyId={tawkConfig.propertyId || undefined}
+            widgetId={tawkConfig.widgetId || undefined}
+          />
+        )}
+
+        {/* Telegram */}
+        {visible.telegram && (
+          <TelegramButton
+            href={telegramConfig?.link || "https://t.me/"}
+            style={{
+              position: "fixed",
+              right: RIGHT,
+              bottom: bottomFor("telegram"),
+              zIndex: 1000005,
+            }}
+            hideOn={["/login", "/admin"]}
+          />
+        )}
         <Routes>
           {/* Add the new Testing Info Page Route */}
           <Route
