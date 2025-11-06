@@ -6829,6 +6829,14 @@ iframe {
   .wa-btn {
     bottom: 150px; /* lifted higher */
   }
+  .wa-btn {
+    position: fixed;
+    width: 47px;
+    height: 47px;
+  }
+  .tawk-min-container {
+    left: 7px !important;
+  }
 }
 /* Icon */
 .wa-icon {
@@ -6920,6 +6928,23 @@ iframe {
   }
 }
 
+@keyframes tel-blink {
+  0% {
+    transform: scale(1);
+    border-color: rgba(37, 211, 102, 0);
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+  }
+  40% {
+    border-color: #0088cc;
+    box-shadow: 0 0 18px 6px rgba(37, 162, 211, 0.15);
+    transform: scale(1.03);
+  }
+  100% {
+    border-color: rgba(37, 211, 102, 0);
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+    transform: scale(1);
+  }
+}
 /* Hover lift */
 .wa-btn:hover {
   transform: translateY(-3px);
@@ -6953,6 +6978,12 @@ iframe {
   z-index: 1000005; /* above Tawk’s ~1000003 */
 }
 
+.telegram {
+  background-color: #0088cc;
+}
+.telegram::after {
+  animation: tel-blink 1.2s infinite;
+}
 .wa-icon {
   width: 28px;
   height: 28px;

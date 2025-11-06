@@ -256,7 +256,7 @@ function App() {
   const visible = {
     tawk: portalChannels?.tawk === 1,
     whatsapp: portalChannels?.whatsapp === 1,
-    telegram: portalChannels?.telegram === 0,
+    telegram: portalChannels?.telegram === 1,
   };
 
   const visibleKeys = ORDER.filter((k) => visible[k]);
