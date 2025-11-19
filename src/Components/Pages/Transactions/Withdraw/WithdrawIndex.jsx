@@ -19,6 +19,7 @@ const WithdrawIndex = () => {
         <WithdrawSelectAmount
           amount={selectedAmount}
           setAmount={setSelectedAmount}
+           count={4}
         />
       ),
     },

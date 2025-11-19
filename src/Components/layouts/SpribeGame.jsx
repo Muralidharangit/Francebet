@@ -49,7 +49,7 @@ const SpribeGame = () => {
 
       setGames(data.spribeGames || []);
     } catch (error) {
-      console.error("Error fetching all games:", error);
+      // console.error("Error fetching all games:", error);
     } finally {
       setLoading(false);
     }
@@ -100,7 +100,7 @@ const SpribeGame = () => {
         return;
       }
 
-      console.error("Error launching game:", error);
+      // console.error("Error launching game:", error);
       toast.error("Game launch failed. Try again later.");
     }
   };
@@ -169,7 +169,7 @@ const SpribeGame = () => {
                   placeholder="Search games..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="my-3 input"
+                  className="my-3 input text-white"
                 />
                 <button className="reset" type="reset"></button>
               </form>

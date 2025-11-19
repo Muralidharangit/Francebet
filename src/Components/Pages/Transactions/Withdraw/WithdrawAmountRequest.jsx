@@ -1,17 +1,22 @@
 import React, { useContext, useEffect, useState } from "react";
 import * as Yup from "yup";
 import { useFormik } from "formik";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import AuthContext from "../../../../Auth/AuthContext";
 import routes from "../../../routes/route";
 import { EditBank, sendWithdrawRequest } from "../../../../API/withdrawAPI";
 import { verifyToken } from "../../../../API/authAPI";
 import { toast, ToastContainer } from "react-toastify";
+import { APP_NAME, CURRENCY_SYMBOL } from "../../../../constants";
 
 const WithdrawAmountRequest = ({ amount, bankId }) => {
   const [bankDetails, setBankDetails] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const { user } = useContext(AuthContext);
+
+  const navigate = useNavigate();
+  const location = useLocation();
+
   const token = user?.token;
   const formik = useFormik({
     enableReinitialize: true, // 🟣 IMPORTANT!
@@ -48,7 +53,15 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
           // toast.error(errorMessage);
           toast.error(`${errorMessage}. Please log in again to continue.`, {
             toastId: "unauthorized-toast", // prevents duplicate toasts
+            onClose: () => {
+              // runs if user clicks X OR after autoClose timeout
+              navigate(location.pathname, { replace: true, state: {} });
+            },
           });
+          // Redirect after a short delay (e.g., 2 seconds)
+          setTimeout(() => {
+            navigate("/login");
+          }, 5000);
           // setErrors({ api: errorMessage });
           setSubmitting(false);
           return;
@@ -129,7 +142,12 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
           <div className="modal-dialog modal-dialog-centered modal-sm justify-content-center">
             <div className="modal-content" style={{ width: "220px" }}>
               <div className="modal-body d-flex flex-column align-items-center">
-                <img src="assets/img/icons/rupee.gif" className="mb-2 w-75" />
+                {/* <img src="assets/img/icons/rupee.gif" className="mb-2 w-75" /> */}
+                <img
+                  src="/assets/img/icons/coin.png"
+                  className="mb-2 w-75 coin-animate"
+                  alt="coin"
+                />
                 <div className="fw-700 fs-13 text-center text-black mb-3">
                   Your Request <br />
                   Is In Our Queue!
@@ -143,7 +161,7 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
                   </span>
                 </Link>
                 <span className="text-dark-grey fs-10 fw-700 mt-3">
-                  For Choosing jiboomba
+                  For Choosing {APP_NAME}
                 </span>
               </div>
             </div>
@@ -155,7 +173,11 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
       <div className="card bg_light_grey account_input-textbox-container">
         <div className="card-body">
           <h5 className=" mb-0">Withdraw Amount</h5>
-          {amount && <h4>₹ {amount}</h4>}
+          {amount && (
+            <h4>
+              {CURRENCY_SYMBOL} {amount}
+            </h4>
+          )}
           {bankDetails && (
             <div className="mt-3">
               <h5 className="mb-1">Bank Info:</h5>
@@ -177,7 +199,7 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
 
           {!bankId || !amount ? (
             <div className="text-danger mt-3">
-              {/* {amount && <h4>₹{amount}</h4>}
+              {/* {amount && <h4>{CURRENCY_SYMBOL}{amount}</h4>}
               {bankId && <h5>{bankId}</h5>} */}
               {!amount && (
                 <>
@@ -223,7 +245,10 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
                 className="input-field mb-3 mt-3"
                 style={{ display: "none" }}
               >
-                <p className="mb-0">You have selected ₹{amount} to deposit.</p>
+                <p className="mb-0">
+                  You have selected {CURRENCY_SYMBOL}
+                  {amount} to deposit.
+                </p>
                 <input
                   required
                   className="input readonly-input mt-1"

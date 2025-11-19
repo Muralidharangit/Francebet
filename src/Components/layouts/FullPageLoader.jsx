@@ -16,7 +16,6 @@ const FullPageLoader = ({ message = "Loading, please wait..." }) => {
         color: "#fff",
         fontSize: "18px",
         fontWeight: "bold",
-      
       }}
     >
       <img src="assets/img/fav.png" alt="loader" srcSet="" width="50%" />
