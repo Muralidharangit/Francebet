@@ -4056,8 +4056,8 @@ li.nav-item button {
     margin: auto;
     max-width: 1200px;
   }
-  .unique-footer{
-    display:none;
+  .unique-footer {
+    display: none;
   }
 }
 
@@ -6790,4 +6790,224 @@ iframe {
     opacity: 0;
     transform: translateY(-10px) scale(0.7);
   }
+}
+.wa-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 50px;
+  height: 50px;
+  border-radius: 999px;
+  position: fixed;
+  /* bottom: 40px; */
+  bottom: 108px;
+  right: 15px;
+  z-index: 99;
+  text-decoration: none;
+  background: #25d366;
+  box-shadow: 0 3px 12px rgba(0, 0, 0, 0.15);
+  transition: transform 0.12s ease;
+}
+
+/* ✅ Responsive adjustments for mobile */
+@media (max-width: 660px) {
+  .wa-btn {
+    width: 40px;
+    height: 40px;
+    /* bottom: 150px; */
+    /* bottom: 109px; */
+    bottom: 158px;
+    /* right: 10px; */
+  }
+
+  .wa-icon {
+    width: 26px !important; /* smaller WhatsApp icon */
+    height: 26px !important;
+  }
+}
+
+@media (max-width: 456px) {
+  .wa-btn {
+    bottom: 150px; /* lifted higher */
+  }
+  .wa-btn {
+    position: fixed;
+    width: 47px;
+    height: 47px;
+  }
+  .tawk-min-container {
+    left: 7px !important;
+  }
+}
+/* Icon */
+.wa-icon {
+  width: 30px;
+  height: 30px;
+  fill: #fff;
+}
+
+/* Blinking border */
+.wa-btn::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 999px;
+  border: 2px solid rgba(37, 211, 102, 0);
+  pointer-events: none;
+  box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+  animation: wa-blink 1.2s infinite;
+}
+
+@keyframes wa-blink {
+  0% {
+    transform: scale(1);
+    border-color: rgba(37, 211, 102, 0);
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+  }
+  40% {
+    border-color: rgba(37, 211, 102, 0.9);
+    box-shadow: 0 0 18px 6px rgba(37, 211, 102, 0.15);
+    transform: scale(1.03);
+  }
+  100% {
+    border-color: rgba(37, 211, 102, 0);
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+    transform: scale(1);
+  }
+}
+
+/* Hover lift */
+.wa-btn:hover {
+  transform: translateY(-3px);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .wa-btn::after,
+  .wa-btn {
+    animation: none;
+    transition: none;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+/* Icon */
+.wa-icon {
+  width: 30px;
+  height: 30px;
+  fill: #fff;
+}
+
+/* Blinking border */
+.wa-btn::after {
+  content: "";
+  position: absolute;
+  inset: -6px;
+  border-radius: 999px;
+  border: 2px solid rgba(37, 211, 102, 0);
+  pointer-events: none;
+  box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+  animation: wa-blink 1.2s infinite;
+}
+
+@keyframes wa-blink {
+  0% {
+    transform: scale(1);
+    border-color: rgba(37, 211, 102, 0);
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+  }
+  40% {
+    border-color: rgba(37, 211, 102, 0.9);
+    box-shadow: 0 0 18px 6px rgba(37, 211, 102, 0.15);
+    transform: scale(1.03);
+  }
+  100% {
+    border-color: rgba(37, 211, 102, 0);
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+    transform: scale(1);
+  }
+}
+
+@keyframes tel-blink {
+  0% {
+    transform: scale(1);
+    border-color: rgba(37, 211, 102, 0);
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+  }
+  40% {
+    border-color: #0088cc;
+    box-shadow: 0 0 18px 6px rgba(37, 162, 211, 0.15);
+    transform: scale(1.03);
+  }
+  100% {
+    border-color: rgba(37, 211, 102, 0);
+    box-shadow: 0 0 0 0 rgba(37, 211, 102, 0);
+    transform: scale(1);
+  }
+}
+/* Hover lift */
+.wa-btn:hover {
+  transform: translateY(-3px);
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .wa-btn::after,
+  .wa-btn {
+    animation: none;
+    transition: none;
+    transform: none;
+    box-shadow: none;
+  }
+}
+.tawk-bubble-container .tawk-icon-right {
+  display: none !important;
+}
+
+.wa-btn {
+  position: fixed; /* we’ll pass bottom/right via style */
+  width: 56px;
+  height: 56px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #25d366;
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  z-index: 1000005; /* above Tawk’s ~1000003 */
+}
+
+.telegram {
+  background-color: #0088cc;
+}
+.telegram::after {
+  animation: tel-blink 1.2s infinite;
+}
+.wa-icon {
+  width: 28px;
+  height: 28px;
+}
+.tawk-icon-right {
+  display: none !important;
+}
+/* tweak sizes to match your WA button */
+.tg-btn {
+  width: 56px;
+  height: 56px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  background: #229ed9; /* Telegram brand */
+  color: #fff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+.tg-btn:hover {
+  filter: brightness(1.05);
+  transform: translateY(-1px);
+}
+.tg-icon {
+  width: 28px;
+  height: 28px;
 }

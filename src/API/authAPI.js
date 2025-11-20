@@ -17,6 +17,7 @@ export const loginUser = async (mobile, password) => {
   });
   return response.data;
 };
+
 // check the player name should be unique when register
 export const checkPlayerName = async (player_name) => {
   const response = await axiosInstance.get(`/check-player-name`, {

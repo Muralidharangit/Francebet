@@ -25,20 +25,58 @@ const queryClient = new QueryClient({
   },
 });
 
+// const RootApp = () => {
+//   const { portalStatus } = React.useContext(AuthContext);
+
+//   if (portalStatus === "loading") {
+//     return null; // render nothing (or a loader) while context initializes
+//   }
+
+//   if (portalStatus === "forbidden") {
+//     return <ForbiddenPage />;
+//   }
+
+//   return <App />;
+// };
+
 const RootApp = () => {
-  const { portalStatus } = React.useContext(AuthContext);
+  const { portalStatus, portalChannels } = React.useContext(AuthContext);
 
-  if (portalStatus === "loading") {
-    return null; // render nothing (or a loader) while context initializes
-  }
+  // TEMP: see what the API gave you
+  console.log("portalStatus:", portalStatus);
+  console.log("portalChannels:", portalChannels); // { whatsapp:1, tawk:1, telegram:0 }
 
-  if (portalStatus === "forbidden") {
-    return <ForbiddenPage />;
-  }
+  if (portalStatus === "loading") return null; // or a loader
+  if (portalStatus === "forbidden") return <ForbiddenPage />;
 
-  return <App />;
+  // Optional: tiny dev banner to confirm toggles on-screen
+  // Remove in production.
+  const DevBanner = () => (
+    <div
+      style={{
+        position: "fixed",
+        bottom: 8,
+        left: 8,
+        padding: "6px 10px",
+        fontSize: 12,
+        background: "#111",
+        color: "#0f0",
+        borderRadius: 6,
+        zIndex: 999999,
+      }}
+    >
+      WA:{portalChannels?.whatsapp} Tawk:{portalChannels?.tawk} TG:
+      {portalChannels?.telegram}
+    </div>
+  );
+
+  return (
+    <>
+      {/* <DevBanner /> */}
+      <App />
+    </>
+  );
 };
-
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   // <React.StrictMode>  // note: StrictMode can cause dev-only double effects
