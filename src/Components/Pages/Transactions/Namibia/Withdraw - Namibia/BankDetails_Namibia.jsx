@@ -41,11 +41,25 @@ const BankDetails = ({
   const userId = user?.id;
   const navigate = useNavigate();
   const location = useLocation();
+  // const handleSelectBank = (bank) => {
+  //   saveSelectedBank(bank);
+  //   setPaymentSelectedMethod("bank");
+  //   window.dispatchEvent(new Event("nm-bank-selected")); // 🔔 tell listeners to refresh
+  //   // navigate("/deposit-namibia/manual-deposit/get-payment-details");
+  // };
+
   const handleSelectBank = (bank) => {
+    // Save full bank object for other components
     saveSelectedBank(bank);
+
+    // ✅ Update parent so Step 3 gets correct bankId
+    setSelectedBankId(bank.id);
+
+    // Mark payment method type
     setPaymentSelectedMethod("bank");
-    window.dispatchEvent(new Event("nm-bank-selected")); // 🔔 tell listeners to refresh
-    // navigate("/deposit-namibia/manual-deposit/get-payment-details");
+
+    // Tell WithdrawAmountRequest to refresh its local bank info
+    window.dispatchEvent(new Event("nm-bank-selected"));
   };
 
   // pick first active bank when data arrives
@@ -57,6 +71,8 @@ const BankDetails = ({
     if (firstActive) {
       setSelectedBankIdNo(String(firstActive.id)); // store as string to be safe
       handleSelectBank?.(firstActive);
+      // ✅ Update parent & storage through common handler
+      //  handleSelectBank?.(firstActive);
     }
   }, [bankDetails, selectedBankIdNo, handleSelectBank]);
 
@@ -723,6 +739,20 @@ const BankDetails = ({
                                   onClick={() => handleSelectBank(bank)}
                                   defaultChecked
                                 /> */}
+                                {/* <input
+                                  className="form-check-input"
+                                  type="radio"
+                                  name="flexRadioDefault"
+                                  value={bank.id}
+                                  checked={
+                                    String(selectedBankIdNo) === String(bank.id)
+                                  }
+                                  onChange={() => {
+                                    setSelectedBankIdNo(String(bank.id));
+                                    handleSelectBank?.(bank);
+                                  }}
+                                /> */}
+
                                 <input
                                   className="form-check-input"
                                   type="radio"
