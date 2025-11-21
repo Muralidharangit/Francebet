@@ -31,23 +31,19 @@ const WithdrawMethod = () => {
       try {
         setLoading(true);
         setErr("");
-const api_token="efqtTvRqnGa8OeVb5Xugw13uo8BAfAEwvWpH8";
-        
-const res = await axios.get(
-  "https://staging.payservice.iccpanel.com/api/wallet-type/list",
- 
+        const api_token = "efqtTvRqnGa8OeVb5Xugw13uo8BAfAEwvWpH8";
 
-  {
-    params :{
-    portal_id: 2,   // BODY DATA
-  },
-    headers: {
-      Authorization: `Bearer ${api_token}`,
-    
-    }
-  }
-);
-
+        const res = await axios.get(
+          "https://staging.payservice.iccpanel.com/api/wallet-type/list",
+          {
+            params: {
+              portal_id: 2, // BODY DATA
+            },
+            headers: {
+              Authorization: `Bearer ${api_token}`,
+            },
+          }
+        );
 
         console.log(res);
 
@@ -127,7 +123,6 @@ const res = await axios.get(
   function handleChoose(method) {
     const name_method = (method?.name || "").toLowerCase().trim();
     setNameMethod(name_method);
-    // console.log(name_method, "hhhhhhhhhhhh");
 
     // name -> something like "Manual Deposit - Namibia"
     const key = (name_method || "").toLowerCase().trim();
@@ -138,96 +133,6 @@ const res = await axios.get(
       setHistoryRoute(routes.transactions.manual_deposit_history);
       return;
     }
-
-    // deposit
-    if (key.includes("manual") && key.includes("india")) {
-      navigate("/manual-deposit-india");
-      setHistoryRoute(routes.transactions.manual_deposit_history);
-      return;
-    }
-
-    if (key.includes("namibia") && key.includes("easypay")) {
-      navigate("/deposit-namibia-kazang");
-      setHistoryRoute(routes.transactions.kazang_deposit_voucher);
-      return;
-    }
-
-    if (key.includes("namibia") && key.includes("easy wallet")) {
-      navigate("/deposit-namibia/easy-wallet-deposit/get-payment-details");
-      setHistoryRoute(routes.transactions.easy_wallet_history);
-      return;
-    }
-
-    if (key.includes("namibia") && key.includes("blue wallet")) {
-      navigate("/deposit-namibia/blue-wallet-deposit/get-payment-details");
-      setHistoryRoute(routes.transactions.blue_wallet_history);
-      return;
-    }
-
-    if (key.includes("namibia") && key.includes("nedbank wallet")) {
-      navigate("/deposit-namibia/nedbank-wallet-deposit/get-payment-details");
-      setHistoryRoute(routes.transactions.nedbank_wallet_history);
-      return;
-    }
-
-    if (key.includes("namibia") && key.includes("access money")) {
-      navigate(
-        "/deposit-namibia/access-money-wallet-deposit/get-payment-details"
-      );
-      setHistoryRoute(routes.transactions.access_money_wallet_history);
-      return;
-    }
-    // Generic manual
-    if (key.includes("manual")) {
-      navigate("/deposit");
-      return;
-    }
-
-    // Generic manual
-    if (key.includes("e-wallet")) {
-      navigate("/deposit-namibia/ewallet-deposit/get-payment-details");
-      setHistoryRoute(routes.transactions.ewallet_deposit_history);
-      return;
-    }
-    // A-Pay -> kickoff via axios (so token + JSON headers go along)
-    // if (name.includes("apay")) {
-    //   if (!user?.token) {
-    //     setErr("Please login again to start the payment.");
-    //     return;
-    //   }
-    //   const playerId = resolvePlayerId(user);
-    //   const customTxId = `TXN${Date.now()}`;
-    //   setClickingId(method.id || method.code || method.name || "apay");
-    //   startApayFlow({
-    //     returnUrl: "https://jiboomba.in",
-    //     customTxId,
-    //     playerId,
-    //   });
-    //   return;
-    // }
-
-    if (name_method.includes("apay")) {
-      if (!user?.token) {
-        setErr("Please login again to start the payment.");
-        return;
-      }
-      const playerId = resolvePlayerId(user);
-      const customTxId = `TXN${Date.now()}`;
-
-      const returnUrl = new URL(
-        "/deposit-history",
-        window.location.origin
-      ).toString();
-      setClickingId(method.id || method.code || method.name || "apay");
-      startApayFlow({
-        returnUrl,
-        customTxId,
-        playerId,
-      });
-      return;
-    }
-    // Fallback
-    // console.log("Unhandled method:", method);
   }
 
   // Put this helper above your component (or in a utils file)
@@ -279,7 +184,7 @@ const res = await axios.get(
                       </div>
 
                       <h5 className="position-absolute start-50 translate-middle-x m-0 text-white fs-16 text-center">
-                        Deposit Payment Method
+                        Withdraw Payment Method
                       </h5>
                     </div>
 
@@ -299,76 +204,70 @@ const res = await axios.get(
                           {/* LEFT: Methods */}
                           <div className="col-12 col-lg-12">
                             <div className="row g-3 justify-content-left">
+                              {/* 🔹 Extra box before all methods */}
+                              <div className="col-12 col-lg-6 col-xl-4">
+                                <div className="p-3 rounded border h-100 d-flex flex-column">
+                                  <div className="d-flex justify-content-between">
+                                    <img
+                                      src="/assets/img/cash-payment_img.png"
+                                      alt="Wallet"
+                                      style={{
+                                        width: 50,
+                                        height: 50,
+                                        objectFit: "contain",
+                                      }}
+                                    />
+                                    <Link
+                                      to={
+                                        routes.transactions.all_depositHistory
+                                      }
+                                    >
+                                      <img
+                                        alt="bet_history"
+                                        style={{
+                                          width: 40,
+                                          height: 30,
+                                          objectFit: "contain",
+                                        }}
+                                        src="assets/img/icons/history.png"
+                                      />
+                                    </Link>
+                                  </div>
+
+                                  <div className="d-flex align-items-center gap-2 mb-2">
+                                    <strong className="fs-4 text-white">
+                                      Direct Withdraw
+                                    </strong>
+                                  </div>
+
+                                  <p style={{ color: "#b1abab" }}>
+                                    Use your wallet balance to deposit.
+                                  </p>
+
+                                  <Link
+                                    to={
+                                      routes.transactions
+                                        .manual_withdraw_namibia
+                                    }
+                                  >
+                                    <button
+                                      type="button"
+                                      className="btn btn-red mt-auto w-50"
+                                    >
+                                      Proceed
+                                    </button>
+                                  </Link>
+                                </div>
+                              </div>
+
+                              {/* 🔹 Existing list from API */}
                               {methods.map((m, idx) => {
                                 const key = String(
                                   m.id ?? m.code ?? m.name ?? idx
                                 );
                                 const isBusy = clickingId === key;
+                                const title = m?.name || m?.code || "";
 
-                                const title =
-                                  m?.name || m?.display_name || m?.code || "";
-                                const norm = (s) =>
-                                  (s || "")
-                                    .toLowerCase()
-                                    .replace(/[^a-z0-9]+/g, " ")
-                                    .trim();
-                                const nk = norm(title); // lowercases + trims
-
-                                const tx = routes?.transactions ?? {};
-
-                                // 🔎 robust matchers to avoid substring collisions
-                                const isManual = nk.includes("manual");
-                                const isNamibia = nk.includes("namibia");
-                                const isEasyWallet =
-                                  /(?:^|\b)easy[-\s]?wallet\b/.test(nk);
-                                const isBlueWallet =
-                                  /(?:^|\b)blue[-\s]?wallet\b/.test(nk);
-                                const isEwallet =
-                                  /\bewallet\b|(?:^|\b)e[-\s]?wallet\b/.test(
-                                    nk
-                                  );
-                                const isNedBank =
-                                  /\bnedbank \b|(?:^|\b)e[-\s]?wallet\b/.test(
-                                    nk
-                                  );
-                                const isAccessMoney =
-                                  /\baccess \b|(?:^|\b)e[-\s]?money\b/.test(nk);
-                                const isApay = /\b(easypay)\b/.test(nk);
-
-                                let perCardHistoryRoute;
-
-                                if (isManual) {
-                                  perCardHistoryRoute =
-                                    tx.manual_deposit_history ??
-                                    tx.depositHistory;
-                                } else if (isEasyWallet) {
-                                  // ✅ specific before generic
-                                  perCardHistoryRoute =
-                                    tx.easy_wallet_history ?? tx.depositHistory;
-                                } else if (isBlueWallet) {
-                                  // ✅ specific before generic
-                                  perCardHistoryRoute =
-                                    tx.blue_wallet_history ?? tx.depositHistory;
-                                } else if (isEwallet) {
-                                  perCardHistoryRoute =
-                                    tx.ewallet_deposit_history ??
-                                    tx.depositHistory;
-                                } else if (isNedBank) {
-                                  perCardHistoryRoute =
-                                    tx.nedbank_wallet_history ??
-                                    tx.depositHistory;
-                                } else if (isAccessMoney) {
-                                  perCardHistoryRoute =
-                                    tx.access_money_wallet_history ??
-                                    tx.depositHistory;
-                                } else if (isApay || isNamibia) {
-                                  perCardHistoryRoute =
-                                    tx.kazang_deposit_history ??
-                                    tx.depositHistory;
-                                } else {
-                                  perCardHistoryRoute = tx.depositHistory;
-                                }
-                                // console.log(perCardHistoryRoute);
                                 return (
                                   <div
                                     className="col-12 col-lg-6 col-xl-4"
@@ -376,32 +275,6 @@ const res = await axios.get(
                                   >
                                     <div className="p-3 rounded border h-100 d-flex flex-column">
                                       <div className="d-flex justify-content-between">
-                                        {/* {isManual ? (
-                                          <div className="card_bx">
-                                            <img
-                                              src="assets/img/cash-payment_img.png"
-                                              alt={title || "Method"}
-                                              style={{
-                                                width: 50,
-                                                height: 50,
-                                                objectFit: "contain",
-                                              }}
-                                            />
-                                          </div>
-                                        ) : (
-                                          <img
-                                            src="assets/img/wallet_img.png"
-                                            alt={title || "Method"}
-                                            style={{
-                                              width: 60,
-                                              height: 50,
-                                              objectFit: "contain",
-                                            }}
-                                          />
-
-                                          
-                                        )} */}
-
                                         <img
                                           src={getMethodIcon(m.name)}
                                           alt={m.name || "Method"}
@@ -418,7 +291,6 @@ const res = await axios.get(
                                               .all_depositHistory
                                           }
                                         >
-                                          {/* <Link to={perCardHistoryRoute}></Link> */}
                                           <img
                                             alt="bet_history"
                                             style={{
@@ -444,34 +316,9 @@ const res = await axios.get(
                                           />
                                         )}
                                         <strong className="fs-4 text-white">
-                                          {/* {title} */}
-                                          {m.display_name}
+                                          {m.name} {m.portal_id}
                                         </strong>
                                       </div>
-
-                                      {/* Descriptions */}
-                                      {/* {isManual ? (
-                                        <p style={{ color: "#b1abab" }}>
-                                          Manual Payment — transfer via
-                                          bank/UPI/cash and upload receipt.
-                                        </p>
-                                      ) : isEwallet ? (
-                                        <p style={{ color: "#b1abab" }}>
-                                          E-Wallet — fast and secure wallet
-                                          payments.
-                                        </p>
-                                      ) : isApay ? (
-                                        <>
-                                          <p style={{ color: "#b1abab" }}>
-                                            EasyPay — instant one-tap checkout.
-                                          </p>
-                                          
-                                        </>
-                                      ) : (
-                                        <p style={{ color: "#b1abab" }}>
-                                          Select to continue.
-                                        </p>
-                                      )} */}
 
                                       {m.description ? (
                                         <p
@@ -509,16 +356,6 @@ const res = await axios.get(
                               })}
                             </div>
                           </div>
-
-                          {/* RIGHT: Image (optional) */}
-                          {/* <div className="col-12 col-lg-4 d-flex justify-content-center">
-        <img
-          src="https://cdni.iconscout.com/illustration/premium/thumb/credit-card-bill-payment-app-illustration-svg-png-download-4525614.png"
-          alt="Payment methods"
-          className="img-fluid"
-          style={{ maxHeight: 620, objectFit: "contain" }}
-        />
-      </div> */}
                         </div>
                         {/* /Row */}
                       </div>
