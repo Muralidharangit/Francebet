@@ -279,3 +279,96 @@ export const sendWithdrawRequestIndia = async ({
 
   return response.data;
 };
+
+
+// WITHDRAW WALLET
+
+// WITHDRAW WALLET
+
+export const storeWallet = async (token, values) => {
+  const response = await axios.post(
+    `${BASE_URL}/player/withdraw/wallet/player-wallet/store`,
+    {
+      ...values,         // Spread the existing form data (name, phone_number)
+      wallet_type_id: 1  // Add the hardcoded ID here
+    }, 
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};
+
+
+// Get Bank Data
+export const getWalletDetails = async (token) => {
+  //   console.log("checking the with Bank Details", token);
+  const response = await axiosInstance.get("/player/withdraw/wallet/player-wallet/list", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return response.data;
+};
+
+
+// active in-active status changing
+export const changeWalletStatus = async (token, wallet_id, newStatus) => {
+  const response = await axiosInstance.post(
+    "/player/withdraw/wallet/player-wallet/status",
+    {
+      // Data goes here directly as the second argument
+      player_wallet_id: wallet_id,
+      status: 1,
+    },
+    {
+      // Headers go here as the third argument
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+  return response.data;
+};
+
+
+// Edit Wallet Details
+export const EditwalletBank = async (walletId, token) => { 
+  // Ensure the walletId is not undefined or null before proceeding
+  if (!walletId) {
+    throw new Error("Wallet ID is required for editing.");
+  }
+  
+  // Use template literals to dynamically inject the walletId into the URL
+  const response = await axiosInstance.get(`/player/withdraw/wallet/player-wallet/edit/${walletId}`, {
+    
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  
+  return response.data;
+};
+
+// update-bank
+export const updateWallet = async (token, values, editingBankId) => {
+  console.log(token);
+  
+  const response = await axios.post(
+    `${BASE_URL}/player/withdraw/wallet/player-wallet/update`,
+    values,
+    
+    {
+      // Data goes here directly as the second argument
+      player_wallet_id: editingBankId,
+    },
+    {
+      headers: {
+        Authorization: `Bearer ${token}`, "Content-Type": "application/json",
+      },
+    }
+  );
+  return response.data;
+};
