@@ -7,12 +7,15 @@ import { useContext } from "react";
 import { useFormik } from "formik";
 import AuthContext from "../../../../Auth/AuthContext";
 import {
-  changeBankStatus,
+  changeWalletStatus,
   deleteBankDetails,
-  EditBank,
+  EditwalletBank,
   getBankDetails,
+  getWalletDetails,
   storeBank,
+  storeWallet,
   updateBank,
+  updateWallet,
 } from "../../../../API/withdrawAPI";
 import { verifyToken } from "../../../../API/authAPI";
 import { toast, ToastContainer } from "react-toastify";
@@ -27,6 +30,8 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
   const [editingBankId, setEditingBankId] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [deleteSelectedBankId, setDeleteSelectedBankId] = useState(null);
+
+  const [loadingId, setLoadingId] = useState(null); // Track which specific button is loading
   // const [editingBankData, setEditingBankData] = useState(null);
   const { user } = useContext(AuthContext);
   const token = user?.token;
@@ -93,12 +98,13 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
           return;
         }
 
-        const response = await getBankDetails(); // ✅ No need to pass token if axiosInstance handles it
+        const response = await getWalletDetails(); // ✅ No need to pass token if axiosInstance handles it
+      
         if (
           response.status === "success" &&
-          Array.isArray(response.playerBank)
+          Array.isArray(response.playerWallet)
         ) {
-          setbankDetails(response.playerBank);
+          setbankDetails(response.playerWallet);
         } else {
           setError(response.msg || "Failed to load withdraw history.");
         }
@@ -113,111 +119,94 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
   }, [user?.token]);
 
   // Toggle Bank Status
-  const toggleBankStatus = async (bank_id, currentStatus) => {
+ // Toggle Wallet Status
+  const toggleWalletStatus = async (wallet_id, currentStatus) => {
     if (!token) {
       setError("Authentication error. Please log in again.");
       return;
     }
 
+    // Prevent double-clicking
+    if (loadingId) return;
+    setLoadingId(wallet_id);
+
     const newStatus = currentStatus === "1" ? "0" : "1";
+
     try {
-      // ✅ Step 1: Verify token with its own error handler
+      // ✅ Step 1: Verify token (Keep your existing logic)
       try {
         const tokenRes = await verifyToken(token);
         if (tokenRes.status !== "success") {
-          setError(
-            tokenRes.message || "Invalid or expired token. Please log in again."
-          );
+          setError(tokenRes.message || "Invalid token.");
+          setLoadingId(null);
           return;
         }
       } catch (verifyError) {
-        const errorMessage =
-          verifyError.response?.data?.message ||
-          verifyError.message ||
-          "Invalid or expired token. Please log in again.";
-        setError(errorMessage);
+        setError("Token verification failed.");
+        setLoadingId(null);
         return;
       }
 
       // ✅ Step 2: Proceed with status change
-      const response = await changeBankStatus(token, bank_id, newStatus);
+      // This calls the API function we fixed in the previous step
+      const response = await changeWalletStatus(token, wallet_id, newStatus);
 
-      // console.log("newStatus", newStatus);
+      console.log("newStatus:", newStatus, "ID:", wallet_id);
 
       if (response.status === "success") {
+        // Update Local State
         setbankDetails((prevDetails) =>
-          prevDetails.map((bank) =>
-            bank.id === bank_id ? { ...bank, status: newStatus } : bank
+          prevDetails.map((wallet) =>
+            wallet.id === wallet_id ? { ...wallet, status: newStatus } : wallet
           )
         );
-        // toast.success(
-        //   `Bank ${
-        //     newStatus === "1" ? "🔓 Activated " : "🔒 Deactivated "
-        //   } successfully!`
-        // );
-        // toast.success(
-        //   <span>
-        //     Bank{" "}
-        //     <span style={{ position: "relative", top: "-2px" }}>
-        //       {newStatus === "1" ? "🔓" : "🔒"}
-        //     </span>{" "}
-        //     {newStatus === "1" ? "Activated" : "Deactivated"} successfully!
-        //   </span>
-        // );
-        // toast.success(`heoolo`);
+
+        // Updated Toast Text for Wallet Context
         toast.success(
           <span>
-            Bank{" "}
+            Wallet{" "}
             <span style={{ position: "relative", top: "-2px" }}>
               {newStatus === "1" ? "🔓" : "🔒"}
             </span>{" "}
             {newStatus === "1" ? "Activated" : "Deactivated"} successfully!
           </span>,
-          {
-            autoClose: 5000,
-            pauseOnHover: true,
-            closeOnClick: true,
-          }
+          { autoClose: 3000 }
         );
       } else {
         alert(response.message || "Failed to update status.");
       }
     } catch (err) {
-      if (err.response?.data?.type === "invalid_token") {
-        setError("Invalid or expired token. Please log in again.");
-        return;
-      }
-
-      const errorMessage =
-        err.response?.data?.message ||
-        err.message ||
-        "Failed to update status.";
-      console.error("API Error:", err.response?.data || err.message);
-      alert(`Error: ${errorMessage}`);
+      console.error("API Error:", err);
+      alert("An error occurred while updating status.");
+    } finally {
+      // Always stop loading, success or fail
+      setLoadingId(null);
     }
   };
 
   //   validation
-  const validationSchema = Yup.object({
-    bank_name: Yup.string().required("Bank Name is required"),
-    account_holder_name: Yup.string().required(
-      "Account Holder Name is required"
-    ),
-    account_number: Yup.string()
-      .matches(/^\d+$/, "Only numbers allowed")
-      .required("Account Number is required"),
-    ifsc_code: Yup.string()
-      .matches(/^[A-Z0-9]/, "Enter a valid IFSC code")
-      .required("IFSC Code is required"),
+ const validationSchema = Yup.object({
+    // Updated: Bank Name -> Name
+    name: Yup.string()
+      .min(3, "Name must be at least 3 characters")
+      .required("Name is required"),
+
+    // Updated: A/C Holder Name -> Phone Number
+   phone_number: Yup.string()
+  .matches(/^[0-9]+$/, "Phone number must be digits only")
+  .min(10, "Phone number must be at least 10 digits")
+  .max(15, "Phone number cannot exceed 15 digits") // Updated to 15
+  .required("Phone Number is required"),
+
+    
   });
 
   //   const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
-      bank_name: "",
-      account_holder_name: "",
-      account_number: "",
-      ifsc_code: "",
+      name: "",
+      phone_number: "",
+      
     },
     validationSchema,
     onSubmit: async (values, { setSubmitting, setErrors, resetForm }) => {
@@ -262,7 +251,9 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
         }
 
         // ✅ Step 2: Submit bank form
-        const response = await storeBank(token, values);
+        const response = await storeWallet(token, values);
+
+          console.log(response);
 
         if (response.status === "success") {
           toast.dismiss("bank-added"); // optional: clean before show
@@ -277,12 +268,12 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
           setActiveTab("bank");
           setLoading(true);
 
-          const refreshedBanks = await getBankDetails(token);
+          const refreshedBanks = await getWalletDetails(token);
           if (
             refreshedBanks.status === "success" &&
-            Array.isArray(refreshedBanks.playerBank)
+            Array.isArray(refreshedBanks.playerWallet)
           ) {
-            setbankDetails(refreshedBanks.playerBank);
+            setbankDetails(refreshedBanks.playerWallet);
           }
           setLoading(false);
         } else {
@@ -333,10 +324,9 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
   // Formik Update the form
   const updateFormik = useFormik({
     initialValues: {
-      bank_name: "",
-      account_holder_name: "",
-      account_number: "",
-      ifsc_code: "",
+      name: "",
+      phone_number: "",
+      
     },
     enableReinitialize: true,
     validationSchema,
@@ -392,7 +382,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
         //   }
         // );
 
-        const response = await updateBank(token, values, editingBankId);
+        const response = await updateWallet(token, values, editingBankId);
         if (response.status === "success") {
           // alert("Bank updated successfully! ✅");
           toast.success(`Bank updated successfully! 🎉`);
@@ -410,13 +400,13 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
           //   }
           // );
 
-          const refreshedBanks = await getBankDetails(token);
+          const refreshedBanks = await getWalletDetails(token);
 
           if (
             refreshedBanks.status === "success" &&
-            Array.isArray(refreshedBanks.playerBank)
+            Array.isArray(refreshedBanks.playerWallet)
           ) {
-            setbankDetails(refreshedBanks.playerBank);
+            setbankDetails(refreshedBanks.playerWallet);
           }
 
           setLoading(false);
@@ -468,7 +458,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
     },
   });
 
-  const handleEditBankClick = async (bankId) => {
+  const handleEditwalletBankClick = async (bankId) => {
     const token = localStorage.getItem("token"); // or from context/user if available
 
     // ✅ Step 1: Check token existence
@@ -493,24 +483,30 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
 
     // ✅ Step 3: Proceed with fetch
     try {
-      // console.log(bankId, "--------------------------");
-      const response = await EditBank(bankId); // token handled by axiosInstance
-      // console.log(bankId, "--------------------------");
-      if (response.status === "success") {
-        const bank = response.playerBank;
+      // console.log(walletId, "--------------------------"); // Changed bankId to walletId for clarity
+      const response = await EditwalletBank(bankId); // Pass walletId
+      // console.log(walletId, "--------------------------");
 
-        setEditingBankId(bankId);
+      console.log(response);
+      
+      if (response.status === "success") {
+        // Renamed 'bank' to 'wallet' for better context
+        const wallet = response.data; // You might need to change 'response.playerBank' to 'response.playerWallet'
+
+        setEditingBankId(bankId); // Use walletId in the setter
+        
+        // --- KEY CHANGES HERE: Updating Formik values ---
         updateFormik.setValues({
-          bank_name: bank.bank_name || "",
-          account_holder_name: bank.account_holder_name || "",
-          account_number: bank.account_number || "",
-          ifsc_code: bank.ifsc_code || "",
+          name: wallet.name || "", // Fetches 'name' and replaces 'bank_name'
+          phone_number: wallet.phone_number || "", // Fetches 'phone_number' and replaces 'account_holder_name'
         });
       } else {
-        toast.error(response.message || "Failed to fetch bank details.");
+        // Updated toast message for wallet context
+        toast.error(response.message || "Failed to fetch wallet details.");
       }
     } catch (error) {
-      toast.error("Something went wrong while fetching bank data.");
+      // Updated toast message for wallet context
+      toast.error("Something went wrong while fetching wallet data.");
     }
   };
 
@@ -755,7 +751,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
               {/* <div className="card bg_light_grey account_input-textbox-container"> */}
               <div className="card bg_light_grey br-grey account_input-textbox-container my-2 mx-2">
                 <div className="card-body p-2">
-                  <h5 className="mb-1">Add Bank Details</h5>
+                  <h5 className="mb-1">Add wallet Details</h5>
                   <form
                     className="form-control_container"
                     onSubmit={formik.handleSubmit}
@@ -775,75 +771,43 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
                         <p className="text-danger">{formik.errors.api}</p>
                       ))}
 
+                 {/* Field 1: Name */}
                     <div className="input-field">
                       <input
                         required
                         className="input"
                         type="text"
-                        name="bank_name"
-                        value={formik.values.bank_name}
+                        name="name"
+                        value={formik.values.name}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                       />
-                      <label className="label">Bank Name</label>
-                      {formik.touched.bank_name && formik.errors.bank_name && (
-                        <p className="text-danger">{formik.errors.bank_name}</p>
+                      <label className="label">Name</label>
+                      {formik.touched.name && formik.errors.name && (
+                        <p className="text-danger">{formik.errors.name}</p>
                       )}
                     </div>
 
+                    {/* Field 2: Phone Number */}
                     <div className="input-field">
                       <input
                         required
                         className="input"
-                        type="text"
-                        name="account_holder_name"
-                        value={formik.values.account_holder_name}
+                        type="number" 
+                        name="phone_number"
+                        value={formik.values.phone_number}
                         onChange={formik.handleChange}
                         onBlur={formik.handleBlur}
                       />
-                      <label className="label">A/C Holder Name</label>
-                      {formik.touched.account_holder_name &&
-                        formik.errors.account_holder_name && (
+                      <label className="label">Phone Number</label>
+                      {formik.touched.phone_number &&
+                        formik.errors.phone_number && (
                           <p className="text-danger">
-                            {formik.errors.account_holder_name}
+                            {formik.errors.phone_number}
                           </p>
                         )}
                     </div>
-
-                    <div className="input-field">
-                      <input
-                        required
-                        className="input"
-                        type="number"
-                        name="account_number"
-                        value={formik.values.account_number}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                      />
-                      <label className="label">A/C Number</label>
-                      {formik.touched.account_number &&
-                        formik.errors.account_number && (
-                          <p className="text-danger">
-                            {formik.errors.account_number}
-                          </p>
-                        )}
-                    </div>
-
-                    <div className="input-field">
-                      <input
-                        required
-                        className="input"
-                        type="text"
-                        name="ifsc_code"
-                        value={formik.values.ifsc_code}
-                        onChange={formik.handleChange}
-                        onBlur={formik.handleBlur}
-                      />
-                      <label className="label">IFSC</label>
-                      {formik.touched.ifsc_code && formik.errors.ifsc_code && (
-                        <p className="text-danger">{formik.errors.ifsc_code}</p>
-                      )}
-                    </div>
+                  
 
                     <div className="d-flex justify-content-center">
                       <button
@@ -900,7 +864,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
                       <div>
                         {/* bank Details Starts */}
                         <div>
-                          {/* <h3>{bank.id}</h3> */}
+                          {/* <h3>{bank.name}</h3> */}
                           {/* <h6>
                             Payment Method: {bank.payment_method?.name || "N/A"}
                           </h6> */}
@@ -911,25 +875,16 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
                           ) : (
                             <>
                               <div>
-                                <p className="mb-0 text-grey">Bank Name</p>
-                                <h6>{bank.bank_name || "N/A"}</h6>
+                                <p className="mb-0 text-grey">Name</p>
+                                <h6>{bank.name || "N/A"}</h6>
                               </div>
                               <div>
                                 <p className="mb-0 text-grey">
-                                  Account Holder:
+                                  Phone Number:
                                 </p>
-                                <h6>{bank.account_holder_name || "N/A"}</h6>
+                                <h6>{bank.phone_number || "N/A"}</h6>
                               </div>
-                              <div>
-                                <p className="mb-0 text-grey">
-                                  Account Number:
-                                </p>
-                                <h6>{bank.account_number || "N/A"}</h6>
-                              </div>
-                              <div>
-                                <p className="mb-0 text-grey">IFSC Code</p>
-                                <h6>{bank.ifsc_code || "N/A"}</h6>
-                              </div>
+                             
                             </>
                           )}
                         </div>
@@ -937,18 +892,25 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
                       <div className="d-flex flex-column">
                         {/* Status Button */}
                         <button
-                          className={`btn ${
-                            bank.status === "1" ? "btn-success" : "btn-danger"
-                          }`}
-                          onClick={() => toggleBankStatus(bank.id, bank.status)}
-                        >
-                          {bank.status === "1" ? "Active" : "Inactive"}
-                        </button>
+        disabled={loadingId === bank.id} // Disable if this specific button is loading
+        className={`btn ${
+          bank.status === "1" ? "btn-success" : "btn-danger"
+        }`}
+        onClick={() => toggleWalletStatus(bank.id, bank.status)}
+        style={{ minWidth: "80px", opacity: loadingId === bank.id ? 0.6 : 1 }}
+      >
+        {loadingId === bank.id ? (
+          // Optional: Simple loading text or spinner
+          <span>...</span> 
+        ) : (
+          bank.status === "1" ? "Active" : "Inactive"
+        )}
+      </button>
 
                         {/* Edit Button */}
                         <button
                           className="btn mt-2"
-                          onClick={() => handleEditBankClick(bank.id)}
+                          onClick={() => handleEditwalletBankClick(bank.id)}
                           data-bs-toggle="modal"
                           data-bs-target="#edit_bank_details"
                         >
@@ -1016,21 +978,21 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
                     <p className="text-danger">{updateFormik.errors.api}</p>
                   ))}
 
-                <div className="input-field mb-3">
+             <div className="input-field mb-3">
                   <input
                     required
                     className="input"
                     type="text"
-                    name="bank_name"
-                    value={updateFormik.values.bank_name}
+                    name="name" // Changed from bank_name
+                    value={updateFormik.values.name} // Changed
                     onChange={updateFormik.handleChange}
                     onBlur={updateFormik.handleBlur}
                   />
-                  <label className="label">Bank Name</label>
-                  {updateFormik.touched.bank_name &&
-                    updateFormik.errors.bank_name && (
+                  <label className="label">Name</label> {/* Changed */}
+                  {updateFormik.touched.name &&
+                    updateFormik.errors.name && ( // Changed
                       <p className="text-danger">
-                        {updateFormik.errors.bank_name}
+                        {updateFormik.errors.name}
                       </p>
                     )}
                 </div>
@@ -1039,59 +1001,22 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
                   <input
                     required
                     className="input"
-                    type="text"
-                    name="account_holder_name"
-                    value={updateFormik.values.account_holder_name}
+                    type="number" // Changed type to number/tel is often better for phones
+                    name="phone_number" // Changed from account_holder_name
+                    value={updateFormik.values.phone_number} // Changed
                     onChange={updateFormik.handleChange}
                     onBlur={updateFormik.handleBlur}
                   />
-                  <label className="label">A/C Holder Name</label>
-                  {updateFormik.touched.account_holder_name &&
-                    updateFormik.errors.account_holder_name && (
+                  <label className="label">Phone Number</label> {/* Changed */}
+                  {updateFormik.touched.phone_number &&
+                    updateFormik.errors.phone_number && ( // Changed
                       <p className="text-danger">
-                        {updateFormik.errors.account_holder_name}
+                        {updateFormik.errors.phone_number}
                       </p>
                     )}
                 </div>
 
-                <div className="input-field mb-3">
-                  <input
-                    required
-                    className="input"
-                    type="text"
-                    name="account_number"
-                    value={updateFormik.values.account_number}
-                    onChange={updateFormik.handleChange}
-                    onBlur={updateFormik.handleBlur}
-                  />
-                  <label className="label">A/C Number</label>
-                  {updateFormik.touched.account_number &&
-                    updateFormik.errors.account_number && (
-                      <p className="text-danger">
-                        {updateFormik.errors.account_number}
-                      </p>
-                    )}
-                </div>
-
-                <div className="input-field mb-3">
-                  <input
-                    required
-                    className="input"
-                    type="text"
-                    name="ifsc_code"
-                    value={updateFormik.values.ifsc_code}
-                    onChange={updateFormik.handleChange}
-                    onBlur={updateFormik.handleBlur}
-                  />
-                  <label className="label">IFSC</label>
-                  {updateFormik.touched.ifsc_code &&
-                    updateFormik.errors.ifsc_code && (
-                      <p className="text-danger">
-                        {updateFormik.errors.ifsc_code}
-                      </p>
-                    )}
-                </div>
-
+               
                 <div className="d-flex justify-content-center">
                   <button
                     type="submit"
