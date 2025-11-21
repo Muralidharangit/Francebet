@@ -18,6 +18,10 @@ const routes = {
     withdraw: "/withdraw",
     deposit: "/deposit",
     paymentMethod: "/payment-method",
+
+    withdrawWallet: "/withdraw-wallet",
+    
+    withdrawMethod: "/withdraw-method",
     deposit_static: "/deposit_static",
     withdrawHistory: "/withdraw-history",
     depositHistory: "/deposit-history",
