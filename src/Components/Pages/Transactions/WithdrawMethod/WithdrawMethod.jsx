@@ -198,7 +198,7 @@ const WithdrawMethod = () => {
                         {!loading && !err && methods.length === 0 && (
                           <p className="text-muted">No methods available.</p>
                         )}
-
+{/* cvcv */}
                         {/* Left (methods) | Right (image) */}
                         <div className="row g-4 align-items-start">
                           {/* LEFT: Methods */}
