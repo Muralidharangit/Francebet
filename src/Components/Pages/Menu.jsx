@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import routes from "../routes/route";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import StickyHeader from "../layouts/Header/Header";
@@ -7,6 +7,7 @@ import AuthContext from "../../Auth/AuthContext";
 
 const Menu = () => {
   const { user, logout } = useContext(AuthContext);
+  const [show, setShow] = useState(false);
   const navigate = useNavigate(); // useNavigate hook for redirection
   const handleLogout = async () => {
     await logout(navigate);
@@ -28,6 +29,7 @@ const Menu = () => {
             <i className="ri-close-large-line text-white fs-17" />
           </button> */}
         </div>
+
         <div className="offcanvas-body">
           <NavLink
             to={routes.home}
@@ -53,17 +55,32 @@ const Menu = () => {
               </div>
             </div>
           </NavLink>
+
+          <NavLink to={routes.games.providers}>
+            <div className="d-flex align-items-center menu_list_item justify-content-between">
+              <div className="">
+                <img
+                  src="assets/img/SIDEMENU/club.png"
+                  alt="menu"
+                  srcSet=""
+                  width={24}
+                />
+                <span className="mx-3 text-white">Providers</span>
+              </div>
+            </div>
+          </NavLink>
           {/*--accordion--*/}
-          <div className="accordion accordion_sec" id="accordionExample">
-            <div className="accordion-item game_title_accordion_item">
-              <h2 className="accordion-header">
+
+          {/* <div className="accordion accordion_sec" id="accordionExample">
+            <div className="accordion-item game_title_accordion_item"> */}
+          {/* <h2 className="accordion-header">
                 <button
                   className="accordion-button collapsed game_title_btn"
                   type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#collapseOne"
-                  aria-expanded="true"
-                  aria-controls="collapseOne"
+                  // data-bs-toggle="collapse"
+                  // data-bs-target="#collapseOne"
+                  // aria-expanded="true"
+                  // aria-controls="collapseOne"
                 >
                   <img
                     src="assets/img/SIDEMENU/chart-mixed-up-circle-dollar.png"
@@ -73,13 +90,13 @@ const Menu = () => {
                   />
                   <span className="mx-3 text-white">Trending Game</span>
                 </button>
-              </h2>
-              <div
+              </h2> */}
+          {/* <div
                 id="collapseOne"
                 className="accordion-collapse collapse"
                 data-bs-parent="#accordionExample"
-              >
-                {/* <NavLink to={routes.games.spribe}>
+              > */}
+          {/* <NavLink to={routes.games.spribe}>
                   <div className="accordion-body game_items_accordion">
                     <div className="d-flex align-items-center game_items_accordion_list">
                       <div className="">
@@ -95,7 +112,7 @@ const Menu = () => {
                   </div>
                 </NavLink> */}
 
-                {/* <NavLink to={routes.games.turbo}>
+          {/* <NavLink to={routes.games.turbo}>
                   <div className="accordion-body game_items_accordion">
                     <div className="d-flex align-items-center game_items_accordion_list">
                       <div className="">
@@ -111,7 +128,7 @@ const Menu = () => {
                   </div>
                 </NavLink> */}
 
-                <NavLink to={routes.games.all}>
+          {/* <NavLink to={routes.games.all}>
                   <div className="accordion-body game_items_accordion">
                     <div className="d-flex align-items-center game_items_accordion_list">
                       <div className="">
@@ -125,10 +142,10 @@ const Menu = () => {
                       <span className="mx-3 text-white">Slotegrator</span>
                     </div>
                   </div>
-                </NavLink>
-              </div>
-            </div>
-          </div>
+                </NavLink> */}
+          {/* </div> */}
+          {/* </div>
+          </div> */}
           {/*--accordion end--*/}
           <div className="menu">
             {/* Main */}
@@ -151,6 +168,28 @@ const Menu = () => {
 */}
               </div>
             </Link>
+
+            {/* how to deposit */}
+            <Link to={routes.transactions.kazang_how_to_deposit}>
+              <div className="d-flex align-items-center menu_list_item justify-content-between">
+                <div>
+                  <img
+                    src="assets/img/SIDEMENU/deposit.png"
+                    alt="deposit"
+                    srcSet=""
+                    width={24}
+                  />
+                  {/* Icon for "Main" */}
+                  <span className="mx-3 text-white">How to Deposit</span>
+                </div>
+                {/* 
+<div class="icon-box">
+<i class="ri-arrow-right-s-line text-white"></i>
+</div>
+*/}
+              </div>
+            </Link>
+
             {/* LIVE */}
             <Link to={routes.pages.terms}>
               <div className="d-flex align-items-center menu_list_item justify-content-between">
@@ -162,7 +201,9 @@ const Menu = () => {
                     width={24}
                   />
                   {/* Icon for "LIVE" */}
-                  <span className="mx-3 text-white">Term &amp; Condition</span>
+                  <span className="mx-3 text-white">
+                    Terms &amp; Conditions
+                  </span>
                 </div>
                 {/* <div class="icon-box">
 <i class="ri-arrow-right-s-line text-white"></i>
@@ -170,7 +211,7 @@ const Menu = () => {
               </div>
             </Link>
             {/* LIVE */}
-            <Link to={routes.games.bonus}>
+            {/* <Link to={routes.games.bonus}>
               <div className="d-flex align-items-center menu_list_item justify-content-between">
                 <div>
                   <img
@@ -179,14 +220,10 @@ const Menu = () => {
                     srcSet=""
                     width={24}
                   />
-                  {/* Icon for "LIVE" */}
                   <span className="mx-3 text-white">Bonus</span>
                 </div>
-                {/* <div class="icon-box">
-<i class="ri-arrow-right-s-line text-white"></i>
-</div> */}
               </div>
-            </Link>
+            </Link> */}
             {/* Sports */}
             <Link to={routes.pages.privacyPolicy}>
               <div className="d-flex align-items-center menu_list_item justify-content-between">

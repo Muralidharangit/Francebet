@@ -8,6 +8,7 @@ import BASE_URL from "../../API/api";
 import axios from "axios";
 const AccountDashboard = () => {
   const [loading, setLoading] = useState(false);
+  
   const {
     profile,
     isLoading,
@@ -129,20 +130,32 @@ const AccountDashboard = () => {
               <Link to={routes.profile.avatar}>
                 <div className="pe-2">
                   <img
-                    src={avatar?.avatar?.image || "assets/img/icons/man.png"}
-                    alt={avatar?.avatar?.name || "Profile"}
-                    className="img-fluid avatar-circle"
+                    src={
+                      // string URL on user.avatar
+                      (typeof user?.avatar === "string" && user.avatar) ||
+                      // object form: { image: "..." }
+                      user?.avatar?.image ||
+                      // fallback in /public
+                      "/assets/img/icons/man.png"
+                    }
+                    alt={user?.avatar?.name || "Profile"}
+                    className="w-100"
                     style={{
-                      width: "60px",
-                      height: "60px",
-                      borderRadius: "50%",
+                      borderRadius: "10%",
+                      width: 36,
+                      height: 36,
+                      objectFit: "cover",
+                    }}
+                    onError={(e) => {
+                      e.currentTarget.onerror = null;
+                      e.currentTarget.src = "/assets/img/icons/man.png";
                     }}
                   />
                 </div>
               </Link>
               <div data-bs-toggle="modal" data-bs-target="#Edit_bank_pop_up">
                 <h4 className="mb-0">
-                  {avatar?.displayName || "Unknown User"}
+                  {avatar?.displayName || avatar?.playername}
                 </h4>
                 <h5>
                   {/* <span className="text-grey fs-14">
@@ -186,7 +199,9 @@ const AccountDashboard = () => {
                   {portalSettings?.auto_deposit === 1 ? (
                     <button
                       className="btn btn-outline-light w-100"
-                      onClick={() => navigate(routes.transactions.deposit)}
+                      onClick={() =>
+                        navigate(routes.transactions.paymentMethod)
+                      }
                       // onClick={() =>
                       //   handleSecureRoute(routes.transactions.deposit)
                       // }
@@ -203,7 +218,9 @@ const AccountDashboard = () => {
                       // onClick={() =>
                       //   handleSecureRoute(routes.transactions.withdraw)
                       // }
-                      onClick={() => navigate(routes.transactions.withdraw)}
+                      onClick={() =>
+                        navigate(routes.transactions.manual_withdraw_namibia)
+                      }
                     >
                       Withdraw
                     </button>
@@ -220,7 +237,9 @@ const AccountDashboard = () => {
                     // onClick={() =>
                     //   handleSecureRoute(routes.transactions.depositHistory)
                     // }
-                    onClick={() => navigate(routes.transactions.depositHistory)}
+                    onClick={() =>
+                      navigate(routes.transactions.all_depositHistory)
+                    }
                   >
                     <img
                       src="assets/img/icons/rupee_2.png"
@@ -233,7 +252,9 @@ const AccountDashboard = () => {
                   <div
                     className="text-center"
                     onClick={() =>
-                      navigate(routes.transactions.withdrawHistory)
+                      navigate(
+                        routes.transactions.manual_withdraw_Namibia_history
+                      )
                     }
                     // onClick={() =>
                     //   handleSecureRoute(routes.transactions.withdrawHistory)
@@ -256,7 +277,7 @@ const AccountDashboard = () => {
                       alt="bet_history"
                       width="27px"
                     />
-                    <p className="mb-0 small">Bet History</p>
+                    <p className="mb-0 small"> Transaction History</p>
                   </div>
                   {/* <div
                     className="text-center"
@@ -304,15 +325,15 @@ const AccountDashboard = () => {
 
             {/* Notification & Other Options */}
             <div className="card bg_light_grey account_input-textbox-container mt-3">
-              <div className="card-body px-3">
-                <Link to={routes.games.bonus}>
+              <div className="card-body px-3 pt-0">
+                {/* <Link to={routes.games.bonus}>
                   <div className="d-flex justify-content-between align-items-center">
                     <p className="mb-0 fs-16">
                       <i className="fa-solid fa-gift pe-2" /> Get Bonus
                     </p>
                     <i className="ri-arrow-right-s-line text-white" />
                   </div>
-                </Link>
+                </Link> */}
                 {/* <div className="d-flex justify-content-between align-items-center mt-3">
                   <p className="mb-0 fs-16">
                     <i className="ri-group-fill pe-2" /> Notification
@@ -481,6 +502,8 @@ const AccountDashboard = () => {
       </div>
     </>
   );
+  // AccountDasboardDestop
 };
 
 export default AccountDashboard;
+

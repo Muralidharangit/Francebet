@@ -53,6 +53,11 @@ const Avatar = () => {
       toast.error("Failed to load avatars.");
     },
   });
+  const isEmpty =
+    !avatarsLoading &&
+    !avatarsError &&
+    Array.isArray(avatarTree) &&
+    avatarTree.length === 0;
 
   // ✅ Optional: a quick, flat list of all avatars for a top “grid” preview
   const flatAvatars = useMemo(() => {
@@ -116,9 +121,12 @@ const Avatar = () => {
                   </button>
                 </Link>
               </div>
-              <h5 className="position-absolute start-50 translate-middle-x m-0 text-white fs-16">
-                Choose Your Avatar
-              </h5>
+
+              {!isEmpty && (
+                <h5 className="position-absolute start-50 translate-middle-x m-0 text-white fs-16">
+                  Choose Your Avatar
+                </h5>
+              )}
             </div>
 
             {/* test testing */}
@@ -255,8 +263,35 @@ const Avatar = () => {
               // </div>
             )}
 
+            {isEmpty && (
+              <div className="text-center text-muted py-5">
+                <p className="mb-2">No avatars found right now.</p>
+                {/* <button
+                  type="button"
+                  className="btn btn-outline-light btn-sm"
+                  onClick={() =>
+                    queryClient.invalidateQueries({ queryKey: ["avatarTree"] })
+                  }
+                >
+                  Reload
+                </button> */}
+              </div>
+            )}
+
+            {!isEmpty && (
+              <div className="d-flex justify-content-center mt-4 mb-3">
+                <button
+                  type="button"
+                  className="btn btn-login w-50 text-capitalize"
+                  onClick={handleAvatarSubmit}
+                  disabled={!selectedAvatarId}
+                >
+                  Submit
+                </button>
+              </div>
+            )}
             {/* Submit */}
-            <div className="d-flex justify-content-center mt-4 mb-3">
+            {/* <div className="d-flex justify-content-center mt-4 mb-3">
               <button
                 type="button"
                 className="btn btn-login w-50 text-capitalize"
@@ -265,7 +300,7 @@ const Avatar = () => {
               >
                 Submit
               </button>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

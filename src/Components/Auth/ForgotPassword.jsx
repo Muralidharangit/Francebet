@@ -50,9 +50,19 @@ const ForgotPassword = () => {
   return (
     // podi suthu
     <section className="container black-red">
-      <div className="logo d-flex justify-content-center mb-2">
-        <img src={Images.Favlogo} alt="Logo" width="50%" />
-      </div>
+      <Link to={routes.home}>
+        <div
+          className="logo d-flex justify-content-center mb-2"
+          style={{ "max-width": "400px" }}
+        >
+          <img
+            src={Images.Favlogo}
+            alt="Logo"
+            width="50%"
+            style={{ objectFit: "contain" }}
+          />
+        </div>
+      </Link>
       <div className="pt-3 pb-2 card-log">
         <div className="">
           <div className="py-2">

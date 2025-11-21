@@ -2,6 +2,7 @@ import React, { useContext } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
 import routes from "../routes/route";
 import AuthContext from "../../Auth/AuthContext";
+import { APP_NAME, CURRENCY_SYMBOL } from "../../constants";
 
 const OffCanvas = () => {
   // const [isOpen, setIsOpen] = useState(false);
@@ -58,7 +59,7 @@ const OffCanvas = () => {
               </h5>
             </div>
             <div>
-              <h4>₹10,000.00</h4>
+              <h4>{CURRENCY_SYMBOL}10,000.00</h4>
             </div>
           </div>
           {/* Total Balance ends */}
@@ -100,7 +101,7 @@ const OffCanvas = () => {
                       srcSet=""
                       width="27px"
                     />
-                    <p className="mb-0">Bet History</p>
+                    <p className="mb-0"> Transaction History</p>
                   </div>
                   <div
                     className="text-center mt-3 col"
@@ -283,7 +284,7 @@ const OffCanvas = () => {
               </div>
             </div>
             <div className="d-flex mx-2 justify-content-center align-items-center">
-              <h5 className="mb-0">Bet History</h5>
+              <h5 className="mb-0"> Transaction History</h5>
             </div>
           </div>
         </div>
@@ -1323,8 +1324,10 @@ const OffCanvas = () => {
                     <ul className="text-white mt-3">
                       <li>Share your refferal code</li>
                       <li>fadfvbdfdfd</li>
-                      <li>Friends get ₹10 on their first game</li>
-                      <li>you get ₹10 off coupon</li>
+                      <li>
+                        Friends get {CURRENCY_SYMBOL}10 on their first game
+                      </li>
+                      <li>you get {CURRENCY_SYMBOL}10 off coupon</li>
                     </ul>
                   </div>
                 </div>
@@ -3078,10 +3081,15 @@ const OffCanvas = () => {
         <div className="modal-dialog modal-dialog-centered modal-sm justify-content-center">
           <div className="modal-content" style={{ width: 220 }}>
             <div className="modal-body d-flex flex-column align-items-center">
-              <img
+              {/* <img
                 src="assets/img/icons/rupee.gif"
                 className="mb-2 w-75"
                 alt="rupee"
+              /> */}
+              <img
+                src="/assets/img/icons/coin.png"
+                className="mb-2 w-75 coin-animate"
+                alt="coin"
               />
               <div className="fw-700 fs-13 text-center text-black mb-3">
                 Your Request <br />
@@ -3089,7 +3097,7 @@ const OffCanvas = () => {
               </div>
               <span className="btn text-white green-bg">Thank You</span>
               <span className="text-dard-grey fs-10 fw-700 mt-3">
-                For Choosing jiboomba
+                For Choosing {APP_NAME}
               </span>
             </div>
           </div>
@@ -3121,7 +3129,7 @@ const OffCanvas = () => {
               </p>
               {/* <span class="btn text-white green-bg">Thank You</span>
 <span class="text-dard-grey fs-10 fw-700 mt-3"
- >For Choosing jiboomba</span
+ >For Choosing jiboomba </span
 > */}
               <div className="d-flex gap-2 mt-2">
                 <button
