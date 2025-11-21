@@ -26,6 +26,7 @@ const ChangePassword = lazy(() =>
   import("./Components/Profile/ChangePassword")
 );
 const Avatar = lazy(() => import("./Components/Profile/Avatar"));
+const WithdrawMethod = lazy(() => import("./Components/Pages/Transactions/WithdrawMethod/WithdrawMethod"));
 
 const LoginPage = lazy(() => import("./Components/Auth/Login"));
 const Register = lazy(() => import("./Components/Auth/Register"));
@@ -84,6 +85,12 @@ const WithdrawHistory = lazy(() =>
 const WithdrawIndex = lazy(() =>
   import("./Components/Pages/Transactions/Withdraw/WithdrawIndex")
 );
+
+const WithdrawMethodIndex = lazy(() =>
+  import("./Components/Pages/Transactions/WithdrawMethod/WithdrawIndex")
+);
+
+
 const WithdrawIndexNamibia = lazy(() =>
   import(
     "./Components/Pages/Transactions/Namibia/Withdraw - Namibia/WithdrawIndex"
@@ -128,7 +135,6 @@ const DepositEwalletEasyWalletHistory = lazy(() =>
 );
 
 // Blue wallet
-
 const DepositNamibiaBlueWallet = lazy(() =>
   import(
     "./Components/Pages/Transactions/Namibia/Deposit_Namibia_BlueWallet/DepositNamibiaBlueWallet"
@@ -391,6 +397,13 @@ function App() {
               path={routes.transactions.paymentMethod}
               element={<DepositMethod />}
             />
+
+              <Route
+              path={routes.transactions.withdrawMethod}
+              element={<WithdrawMethod />}
+            />
+
+            
             <Route path={routes.transactions.addBank} element={<AddBank />} />
             {/* ================================================================ */}
             {/* <Route path={routes.transactions.withdraw} element={<Withdraw />} /> */}
@@ -419,6 +432,11 @@ function App() {
               path={routes.transactions.withdraw}
               element={<WithdrawIndex />}
             />
+            <Route
+              path={routes.transactions.withdrawWallet}
+              element={< WithdrawMethodIndex />}
+            />
+           
             <Route
               path={routes.transactions.manual_withdraw_namibia}
               element={<WithdrawIndexNamibia />}
