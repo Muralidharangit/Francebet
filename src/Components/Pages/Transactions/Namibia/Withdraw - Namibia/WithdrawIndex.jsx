@@ -48,6 +48,19 @@ const WithdrawIndex = () => {
         />
       ),
     },
+    // {
+    //   id: "step3",
+    //   icon: "fas fa-star",
+    //   title: "Step 3",
+    //   content: () => (
+    //     <WithdrawAmountRequest
+    //       amount={selectedAmount}
+    //       bankId={selectedBankId}
+    //       paymentSelectedMethod={paymentSelectedMethod}
+    //     />
+    //   ), // 🟣 Pass amount here
+    // },
+
     {
       id: "step3",
       icon: "fas fa-star",
@@ -55,10 +68,10 @@ const WithdrawIndex = () => {
       content: () => (
         <WithdrawAmountRequest
           amount={selectedAmount}
-          bankId={selectedBankId}
+          bankId={selectedBankId} // ✅ this will no longer be null
           paymentSelectedMethod={paymentSelectedMethod}
         />
-      ), // 🟣 Pass amount here
+      ),
     },
   ];
 
@@ -91,14 +104,6 @@ const WithdrawIndex = () => {
               <div className="h-100">
                 <div className="pt-3 pb-2">
                   <div className="row px-2">
-                    {/* <div className="d-flex justify-content-between align-items-center px-0 ">
-                <button
-                  className="go_back_btn"
-                  onClick={() => window.history.back()}
-                >
-                  <i className="ri-arrow-left-s-line text-white fs-24" />
-                </button>
-              </div> */}
                     {/* header Starts */}
                     <div className="d-flex align-items-center justify-content-between position-relative  px-0">
                       {/* Back Button on Left */}
