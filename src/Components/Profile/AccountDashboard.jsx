@@ -252,9 +252,7 @@ const AccountDashboard = () => {
                   <div
                     className="text-center"
                     onClick={() =>
-                      navigate(
-                        routes.transactions.manual_withdraw_Namibia_history
-                      )
+                      navigate(routes.transactions.all_withdrawHistory)
                     }
                     // onClick={() =>
                     //   handleSecureRoute(routes.transactions.withdrawHistory)

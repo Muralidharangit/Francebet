@@ -206,7 +206,7 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
           {(bankDetails || bank) && (
             <div className="bank-info bg-glass p-3 rounded-4 mt-3">
               <h5 className="fw-semibold text-success fw-bold mb-2 px-0">
-                Bank Information
+                Wallet Information
               </h5>
               <div className="text-grey small">
                 <p className="mb-1">

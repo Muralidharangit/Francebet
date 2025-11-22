@@ -679,7 +679,7 @@ const BankDetails = ({
             onClick={() => setActiveTab("bank")}
             type="button"
           >
-            Bank Details
+            Wallet Details
           </button>
 
           <button
@@ -689,7 +689,7 @@ const BankDetails = ({
             onClick={() => setActiveTab("add")}
             type="button"
           >
-            Add Bank
+            Add Wallet
           </button>
         </nav>
         <div className="tab-content mt-3" id="myTabContent">
@@ -704,7 +704,7 @@ const BankDetails = ({
               {/* card 1 Starts */}
               <div className="card bg_light_grey br-grey account_input-textbox-container my-2 mx-2">
                 <div className="card-body p-2">
-                  <h5 className="mb-3">Select the Bank</h5>
+                  <h5 className="mb-3">Select the Wallet</h5>
                   {/*  Details Starts */}
                   {loading ? (
                     <p className="text-white">Loading...</p>
@@ -762,7 +762,9 @@ const BankDetails = ({
                       </div>
                     ))
                   ) : (
-                    <p className="text-white">No Active Bank Details Found.</p>
+                    <p className="text-white">
+                      No Active Wallet Details Found.
+                    </p>
                   )}
 
                   {/*  Details ends */}
@@ -776,7 +778,7 @@ const BankDetails = ({
                       href="#exampleModalToggle"
                       role="button"
                     >
-                      View More bank Details
+                      View More Wallet Details
                     </a>
                   </div>
                 </div>
@@ -888,7 +890,7 @@ const BankDetails = ({
                 className="modal-title text-white fs-5"
                 id="exampleModalToggleLabel"
               >
-                Active / Inactive bank List
+                Active / Inactive Wallet List
               </h1>
               <button
                 type="button"
@@ -1023,7 +1025,7 @@ const BankDetails = ({
                     </div>
                   ))
               ) : (
-                <p className="text-white">No Bank Details Found.</p>
+                <p className="text-white">No Wallet Details Found.</p>
               )}
               {/*  Details ends */}
             </div>
@@ -1041,7 +1043,7 @@ const BankDetails = ({
           <div className="modal-content bg_light_grey rounded-2 py-3">
             <div className="modal-header">
               <h1 className="modal-title fs-5" id="edit_bank_details_modal">
-                Edit the bank Details
+                Edit the Wallet Details
               </h1>
               <button
                 type="button"
