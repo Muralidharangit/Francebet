@@ -95,6 +95,8 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
           setShowModal(true);
           resetForm();
           localStorage.removeItem("nm_selected_bank");
+          localStorage.removeItem("withdrawMethodId");
+          localStorage.removeItem("withdrawMethodName");
           // navigate(routes.transactions.withdrawHistory);
         } else {
           setErrors({

@@ -281,12 +281,14 @@ export const sendWithdrawRequestIndia = async ({
 };
 
 // WITHDRAW WALLET
-export const storeWallet = async (token, values) => {
+export const storeWallet = async (token, values, methodId) => {
+  console.log(methodId);
+
   const response = await axios.post(
     `${BASE_URL}/player/withdraw/wallet/player-wallet/store`,
     {
       ...values, // Spread the existing form data (name, phone_number)
-      wallet_type_id: 2, // Add the hardcoded ID here
+      wallet_type_id: methodId, // Add the hardcoded ID here
     },
     {
       headers: {

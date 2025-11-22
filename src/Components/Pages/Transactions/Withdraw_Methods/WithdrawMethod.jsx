@@ -317,7 +317,6 @@ const WithdrawMethod = () => {
                                         )}
                                         <strong className="fs-4 text-white">
                                           {m.name}
-                                           {/* {m.id} */}
                                         </strong>
                                       </div>
 
@@ -360,7 +359,10 @@ const WithdrawMethod = () => {
 
                                       <Link
                                         to={routes.transactions.withdrawWallet}
-                                        state={{ methodId: m.id }} // 🔥 send m.id here
+                                        state={{
+                                          methodId: m.id,
+                                          methodName: m.name,
+                                        }} // 🔥 send m.id here
                                       >
                                         <button
                                           type="button"

@@ -48,6 +48,37 @@ const BankDetails = ({
   //   window.dispatchEvent(new Event("nm-bank-selected")); // 🔔 tell listeners to refresh
   //   // navigate("/deposit-namibia/manual-deposit/get-payment-details");
   // };
+  // const { state } = useLocation();
+  // const methodId = state?.methodId;
+  // console.log(methodId);
+  const { state } = useLocation();
+  const [methodId, setMethodId] = useState(null);
+  const methodIds = state?.methodId;
+  useEffect(() => {
+    if (state && state.methodId) {
+      // save to state
+      setMethodId(String(state.methodId));
+      // save to localStorage
+      localStorage.setItem("withdrawMethodId", String(state.methodId));
+      console.log("Saved methodId:", state.methodId);
+    } else {
+      // if page refreshed and no state, try from localStorage
+      const storedId = localStorage.getItem("withdrawMethodId");
+      if (storedId) {
+        setMethodId(storedId);
+        console.log("Loaded methodId from localStorage:", storedId);
+      }
+    }
+  }, [state]);
+
+  const filteredBanks = bankDetails.filter(
+    (bank) =>
+      bank.isDeleted == "1" &&
+      bank.wallet_type_id &&
+      bank.status == "1" &&
+      methodId && // make sure methodId is available
+      String(bank.wallet_type_id) === String(methodId)
+  );
 
   const handleSelectBank = (bank) => {
     // Save full bank object for other components
@@ -318,14 +349,7 @@ const BankDetails = ({
 
           toast.error(`${errorMessage}. Please log in again to continue.`, {
             toastId: "unauthorized-toast",
-            // onClose: () => {
-            //   navigate(location.pathname, { replace: true, state: {} });
-            // },
           });
-
-          // setTimeout(() => {
-          //   navigate("/login");
-          // }, 5000);
 
           setErrors({ api: [errorMessage] });
           setSubmitting(false);
@@ -333,7 +357,7 @@ const BankDetails = ({
         }
 
         // ✅ Step 2: Submit wallet form
-        const response = await storeWallet(token, values, userId);
+        const response = await storeWallet(token, values, methodId);
 
         if (response.status === "success") {
           toast.dismiss("bank-added");
@@ -686,102 +710,57 @@ const BankDetails = ({
                     <p className="text-white">Loading...</p>
                   ) : error ? (
                     <p className="text-danger">{error}</p>
-                  ) : bankDetails.filter((bank) => bank.status == "1").length >
-                    0 ? (
-                    bankDetails
-                      .filter(
-                        (bank) => bank.isDeleted == "1" && bank.status == "1" && bank.wallet_type
-                      )
-                      .map((bank) => (
-                        <div className="bet-card" key={bank.id}>
-                          {/* card 1 Starts */}
-                          <div className="d-flex justify-content-between border rounded mt-2 py-2 px-2">
-                            <div className="d-flex justify-content-between">
-                              {/* bank Details Starts */}
-                              <div>
-                                {/* <h3>{bank.id}</h3> */}
-                                {/* <h6>
-                                  Payment Method:{" "}
-                                  {bank.payment_method?.name || "N/A"}
-                                </h6> */}
-                                {bank.payment_method?.name === "UPI" ? (
-                                  <p>
-                                    <strong>UPI ID:</strong>{" "}
-                                    {bank.upi_id || "N/A"}
-                                  </p>
-                                ) : (
-                                  <>
-                                    <div>
-                                      <p className="mb-0 text-grey">Name</p>
-                                      <h6>{bank.name || "N/A"}</h6>
-                                    </div>
-                                    <div>
-                                      <p className="mb-0 text-grey">
-                                        Phone Number:
-                                      </p>
-                                      <h6>{bank.phone_number || "N/A"}</h6>
-                                    </div>
-                                  </>
-                                )}
-                              </div>
+                  ) : filteredBanks.length > 0 ? (
+                    filteredBanks.map((bank) => (
+                      <div className="bet-card" key={bank.id}>
+                        {/* card 1 Starts */}
+                        <div className="d-flex justify-content-between border rounded mt-2 py-2 px-2">
+                          <div className="d-flex justify-content-between">
+                            {/* bank Details Starts */}
+                            <div>
+                              {/* {methodId} methodId */}
+                              {bank.payment_method?.name === "UPI" ? (
+                                <p>
+                                  <strong>UPI ID:</strong>{" "}
+                                  {bank.upi_id || "N/A"}
+                                </p>
+                              ) : (
+                                <>
+                                  <div>
+                                    <p className="mb-0 text-grey">Name</p>
+                                    <h6>{bank.name || "N/A"}</h6>
+                                  </div>
+                                  <div>
+                                    <p className="mb-0 text-grey">
+                                      Phone Number:
+                                    </p>
+                                    <h6>{bank.phone_number || "N/A"}</h6>
+                                  </div>
+                                </>
+                              )}
                             </div>
-                            {/* input icon starts */}
-                            <div className="px-2 py-1">
-                              <div className="form-check px-3">
-                                {/* <input
-                                  className="form-check-input"
-                                  type="radio"
-                                  name="flexRadioDefault"
-                                  value={bank.id}
-                                  checked={selectedBankId === bank.id}
-                                  onChange={() => setSelectedBankId(bank.id)}
-                                  onClick={() => handleSelectBank(bank)}
-                                  defaultChecked
-                                /> */}
-                                {/* <input
-                                  className="form-check-input"
-                                  type="radio"
-                                  name="flexRadioDefault"
-                                  value={bank.id}
-                                  checked={
-                                    String(selectedBankIdNo) === String(bank.id)
-                                  }
-                                  onChange={() => {
-                                    setSelectedBankIdNo(String(bank.id));
-                                    handleSelectBank?.(bank);
-                                  }}
-                                /> */}
-
-                                <input
-                                  className="form-check-input"
-                                  type="radio"
-                                  name="flexRadioDefault"
-                                  value={bank.id}
-                                  checked={
-                                    String(selectedBankIdNo) === String(bank.id)
-                                  }
-                                  onChange={() => {
-                                    setSelectedBankIdNo(String(bank.id));
-                                    handleSelectBank?.(bank);
-                                  }}
-                                />
-                              </div>
-                            </div>
-                            {/* Status Button */}
-                            {/* <div>
-                             
-                              <button
-                                className="btn btn-success"
-                                onClick={() =>
-                                  toggleBankStatus(bank.id, bank.status)
+                          </div>
+                          {/* input icon starts */}
+                          <div className="px-2 py-1">
+                            <div className="form-check px-3">
+                              <input
+                                className="form-check-input"
+                                type="radio"
+                                name="flexRadioDefault"
+                                value={bank.id}
+                                checked={
+                                  String(selectedBankIdNo) === String(bank.id)
                                 }
-                              >
-                                Active
-                              </button>
-                            </div> */}
+                                onChange={() => {
+                                  setSelectedBankIdNo(String(bank.id));
+                                  handleSelectBank?.(bank);
+                                }}
+                              />
+                            </div>
                           </div>
                         </div>
-                      ))
+                      </div>
+                    ))
                   ) : (
                     <p className="text-white">No Active Bank Details Found.</p>
                   )}
@@ -926,7 +905,12 @@ const BankDetails = ({
                 <p className="text-danger">{error}</p>
               ) : bankDetails.length > 0 ? (
                 bankDetails
-                  .filter((bank) => bank.isDeleted == "1")
+                  .filter(
+                    (bank) =>
+                      bank.isDeleted == "1" &&
+                      bank.wallet_type_id &&
+                      String(bank.wallet_type_id) === String(methodId)
+                  )
                   .map((bank) => (
                     <div className="bet-card" key={bank.id}>
                       {/* card 1 Starts */}

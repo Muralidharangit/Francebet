@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import WithdrawSelectAmount from "./WithdrawSelectAmount";
 import BankDetails from "./BankDetails";
 import WithdrawAmountRequest from "./WithdrawAmountRequest";
 import StickyHeader from "../../../layouts/Header/Header";
 import Sidebar from "../../../layouts/Header/Sidebar";
+import { useLocation } from "react-router-dom";
 
 const WithdrawIndex = () => {
   const [activeStep, setActiveStep] = useState("step1");
@@ -12,6 +13,19 @@ const WithdrawIndex = () => {
   const [selectedBankId, setSelectedBankId] = useState(null);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isAmountValid, setIsAmountValid] = useState(false);
+
+  const { state } = useLocation();
+  const methodName = state?.methodName;
+
+  useEffect(() => {
+    if (state?.methodName) {
+      localStorage.setItem("withdrawMethodName", state.methodName);
+    }
+  }, [state]);
+
+  // and to read later:
+  const savedName = localStorage.getItem("withdrawMethodName");
+
   const [depositFormData, setDepositFormData] = useState({
     amount: "", // selected in Step 1
     paymentSelectedMethod: "", // selected in Step 2
@@ -118,7 +132,8 @@ const WithdrawIndex = () => {
 
                       {/* Centered Title */}
                       <h5 className="position-absolute start-50 translate-middle-x m-0 text-white fs-16 text-center">
-                        Withdraw Wallet
+                        {/* {methodName} */}
+                        {savedName}
                       </h5>
                     </div>
                     {/* header Ends */}
