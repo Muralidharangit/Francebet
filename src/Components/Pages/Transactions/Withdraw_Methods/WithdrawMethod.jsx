@@ -198,7 +198,7 @@ const WithdrawMethod = () => {
                         {!loading && !err && methods.length === 0 && (
                           <p className="text-muted">No methods available.</p>
                         )}
-{/* cvcv */}
+                        {/* cvcv */}
                         {/* Left (methods) | Right (image) */}
                         <div className="row g-4 align-items-start">
                           {/* LEFT: Methods */}
@@ -219,7 +219,7 @@ const WithdrawMethod = () => {
                                     />
                                     <Link
                                       to={
-                                        routes.transactions.all_depositHistory
+                                        routes.transactions.all_withdrawHistory
                                       }
                                     >
                                       <img
@@ -288,7 +288,7 @@ const WithdrawMethod = () => {
                                         <Link
                                           to={
                                             routes.transactions
-                                              .all_depositHistory
+                                              .all_withdrawHistory
                                           }
                                         >
                                           <img
@@ -316,7 +316,7 @@ const WithdrawMethod = () => {
                                           />
                                         )}
                                         <strong className="fs-4 text-white">
-                                          {m.name} {m.portal_id}
+                                          {m.name}
                                         </strong>
                                       </div>
 
@@ -340,16 +340,43 @@ const WithdrawMethod = () => {
                                         </small>
                                       )}
 
-                                      <button
-                                        type="button"
-                                        className="btn btn-red mt-auto w-50"
-                                        onClick={() => {
-                                          setClickingId(key);
-                                          handleChoose(m, key);
-                                        }}
+                                      {/* <Link
+                                        to={routes.transactions.withdrawWallet}
                                       >
-                                        {isBusy ? "Redirecting..." : "Proceed"}
-                                      </button>
+                                        <button
+                                          type="button"
+                                          className="btn btn-red mt-auto w-50"
+                                          onClick={() => {
+                                            setClickingId(key);
+                                            handleChoose(m, key);
+                                          }}
+                                        >
+                                          {isBusy
+                                            ? "Redirecting..."
+                                            : "Proceed"}
+                                        </button>
+                                      </Link> */}
+
+                                      <Link
+                                        to={routes.transactions.withdrawWallet}
+                                        state={{
+                                          methodId: m.id,
+                                          methodName: m.name,
+                                        }} // 🔥 send m.id here
+                                      >
+                                        <button
+                                          type="button"
+                                          className="btn btn-red mt-auto w-50"
+                                          onClick={() => {
+                                            setClickingId(key);
+                                            handleChoose(m, key);
+                                          }}
+                                        >
+                                          {isBusy
+                                            ? "Redirecting..."
+                                            : "Proceed"}
+                                        </button>
+                                      </Link>
                                     </div>
                                   </div>
                                 );

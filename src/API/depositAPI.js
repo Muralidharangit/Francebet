@@ -569,3 +569,23 @@ export const fetchDepositDetails = async ({ id, type, token }) => {
   // API shape: { status, msg, depositDetail: {...} }
   return res?.data?.depositDetail ?? res?.data; // ← normalize
 };
+
+export const fetchWithdrawHistory = async ({ page, perPage, token }) => {
+  const res = await axiosInstance.get("/player/withdraw/wallet/history", {
+    params: { page, per_page: perPage },
+    headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+  });
+  return res && res.data ? res.data.withdrawHistory : undefined;
+};
+
+export const fetchWithdrawDetails = async ({ id, type, token }) => {
+  const res = await axiosInstance.get(
+    "/player/withdraw/wallet/history/details",
+    {
+      params: { id, type },
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    }
+  );
+  // API shape: { status, msg, depositDetail: {...} }
+  return res?.data?.depositDetail ?? res?.data; // ← normalize
+};

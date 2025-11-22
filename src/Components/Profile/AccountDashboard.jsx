@@ -8,7 +8,7 @@ import BASE_URL from "../../API/api";
 import axios from "axios";
 const AccountDashboard = () => {
   const [loading, setLoading] = useState(false);
-  
+
   const {
     profile,
     isLoading,
@@ -219,7 +219,7 @@ const AccountDashboard = () => {
                       //   handleSecureRoute(routes.transactions.withdraw)
                       // }
                       onClick={() =>
-                        navigate(routes.transactions.manual_withdraw_namibia)
+                        navigate(routes.transactions.withdrawMethod)
                       }
                     >
                       Withdraw
@@ -506,4 +506,3 @@ const AccountDashboard = () => {
 };
 
 export default AccountDashboard;
-

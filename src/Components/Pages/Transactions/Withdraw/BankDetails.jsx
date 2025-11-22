@@ -900,10 +900,6 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
                       <div>
                         {/* bank Details Starts */}
                         <div>
-                          {/* <h3>{bank.id}</h3> */}
-                          {/* <h6>
-                            Payment Method: {bank.payment_method?.name || "N/A"}
-                          </h6> */}
                           {bank.payment_method?.name === "UPI" ? (
                             <p>
                               <strong>UPI ID:</strong> {bank.upi_id || "N/A"}

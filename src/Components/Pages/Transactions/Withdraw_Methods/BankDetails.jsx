@@ -1,81 +1,128 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 // import BASE_URL from "../../../../API/api";
 // import axios from "axios";
 import * as Yup from "yup";
 // import { useNavigate } from "react-router-dom";
 import { useContext } from "react";
 import { useFormik } from "formik";
-import AuthContext from "../../../../Auth/AuthContext";
 import {
   changeWalletStatus,
-  deleteBankDetails,
+  deleteWalletDetails,
   EditwalletBank,
-  getBankDetails,
   getWalletDetails,
-  storeBank,
   storeWallet,
-  updateBank,
   updateWallet,
 } from "../../../../API/withdrawAPI";
 import { verifyToken } from "../../../../API/authAPI";
 import { toast, ToastContainer } from "react-toastify";
+import { saveSelectedBank } from "../../../../API/bankSelectionStorage";
 import { useLocation, useNavigate } from "react-router-dom";
+import AuthContext from "../../../../Auth/AuthContext";
 // import { Link } from "react-router-dom";
-const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
+const BankDetails = ({
+  selectedBankId,
+  setSelectedBankId,
+  paymentSelectedMethod,
+  setPaymentSelectedMethod,
+}) => {
   const [bankDetails, setbankDetails] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true);
   //   const [selectedTab, setSelectedTab] = useState("all");
   const [activeTab, setActiveTab] = useState("bank"); // 'bank' or 'add'
   const [editingBankId, setEditingBankId] = useState(null);
+  const [walletTypeId, setWalletTypeID] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [deleteSelectedBankId, setDeleteSelectedBankId] = useState(null);
-
-  const [loadingId, setLoadingId] = useState(null); // Track which specific button is loading
+  const [statusLoading, setStatusLoading] = useState({});
+  const [selectedBankIdNo, setSelectedBankIdNo] = useState(null);
   // const [editingBankData, setEditingBankData] = useState(null);
   const { user } = useContext(AuthContext);
   const token = user?.token;
-
+  const userId = user?.id;
   const navigate = useNavigate();
   const location = useLocation();
-  // useEffect(() => {
-  //   toast.success("Testing toast closing...", { autoClose: 3000 });
-  // }, []);
-  // useEffect(() => {
-  //   const currentToken = user?.token;
+  // const handleSelectBank = (bank) => {
+  //   saveSelectedBank(bank);
+  //   setPaymentSelectedMethod("bank");
+  //   window.dispatchEvent(new Event("nm-bank-selected")); // 🔔 tell listeners to refresh
+  //   // navigate("/deposit-namibia/manual-deposit/get-payment-details");
+  // };
+  // const { state } = useLocation();
+  // const methodId = state?.methodId;
+  // console.log(methodId);
+  const { state } = useLocation();
+  const [methodId, setMethodId] = useState(null);
+  const methodIds = state?.methodId;
+  useEffect(() => {
+    if (state && state.methodId) {
+      // save to state
+      setMethodId(String(state.methodId));
+      // save to localStorage
+      localStorage.setItem("withdrawMethodId", String(state.methodId));
+      console.log("Saved methodId:", state.methodId);
+    } else {
+      // if page refreshed and no state, try from localStorage
+      const storedId = localStorage.getItem("withdrawMethodId");
+      if (storedId) {
+        setMethodId(storedId);
+        console.log("Loaded methodId from localStorage:", storedId);
+      }
+    }
+  }, [state]);
 
-  //   if (!currentToken) {
-  //     setError("Authentication error. Please log in again.");
-  //     setLoading(false);
-  //     return;
+  const filteredBanks = bankDetails.filter(
+    (bank) =>
+      bank.isDeleted == "1" &&
+      bank.wallet_type_id &&
+      bank.status == "1" &&
+      methodId && // make sure methodId is available
+      String(bank.wallet_type_id) === String(methodId)
+  );
+
+  const handleSelectBank = (bank) => {
+    // Save full bank object for other components
+    saveSelectedBank(bank);
+
+    // ✅ Update parent so Step 3 gets correct bankId
+    setSelectedBankId(bank.id);
+
+    // Mark payment method type
+    setPaymentSelectedMethod("bank");
+
+    // Tell WithdrawAmountRequest to refresh its local bank info
+    window.dispatchEvent(new Event("nm-bank-selected"));
+  };
+
+  // pick first active bank when data arrives
+  // useEffect(() => {
+  //   if (!bankDetails?.length) return;
+  //   if (selectedBankIdNo != null) return;
+
+  //   const firstActive = bankDetails.find((b) => b.status === 1);
+  //   if (firstActive) {
+  //     setSelectedBankIdNo(String(firstActive.id)); // store as string to be safe
+  //     handleSelectBank?.(firstActive);
+  //     // ✅ Update parent & storage through common handler
+  //     //  handleSelectBank?.(firstActive);
   //   }
+  // }, [bankDetails, selectedBankIdNo, handleSelectBank]);
 
-  //   const fetchWithdrawHistory = async () => {
-  //     try {
-  //       const verifyRes = await verifyToken(currentToken);
-  //       if (verifyRes.status !== "success") {
-  //         setError("Invalid or expired token. Please log in again.");
-  //         return;
-  //       }
+  useEffect(() => {
+    if (!loading && bankDetails && bankDetails.length > 0) {
+      // filter only active + not deleted
+      const activeBanks = bankDetails.filter(
+        (bank) => bank.isDeleted == "1" && bank.status == "1"
+      );
 
-  //       const response = await getBankDetails(currentToken);
-  //       if (
-  //         response.status === "success" &&
-  //         Array.isArray(response.playerBank)
-  //       ) {
-  //         setbankDetails(response.playerBank);
-  //       } else {
-  //         setError(response.msg || "Failed to load withdraw history.");
-  //       }
-  //     } catch (err) {
-  //       setError("Something went wrong. Please try again.");
-  //     } finally {
-  //       setLoading(false);
-  //     }
-  //   };
-
-  //   fetchWithdrawHistory();
-  // }, [user?.token]); // ✅ token change will re-run
+      // if nothing selected yet & at least one active bank, select first
+      if (!selectedBankIdNo && activeBanks.length > 0) {
+        const firstBank = activeBanks[0];
+        setSelectedBankIdNo(String(firstBank.id));
+        handleSelectBank?.(firstBank); // ✅ also set it in parent if needed
+      }
+    }
+  }, [loading, bankDetails, selectedBankIdNo, handleSelectBank]);
 
   useEffect(() => {
     const currentToken = user?.token;
@@ -98,8 +145,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
           return;
         }
 
-        const response = await getWalletDetails(); // ✅ No need to pass token if axiosInstance handles it
-
+        const response = await getWalletDetails(token, userId); // ✅ No need to pass token if axiosInstance handles it
         if (
           response.status === "success" &&
           Array.isArray(response.playerWallet)
@@ -119,68 +165,140 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
   }, [user?.token]);
 
   // Toggle Bank Status
-  // Toggle Wallet Status
-  const toggleWalletStatus = async (wallet_id, currentStatus) => {
+  // const toggleBankStatus = async (bank_id, currentStatus) => {
+  //   if (!token) {
+  //     setError("Authentication error. Please log in again.");
+  //     return;
+  //   }
+
+  //   const newStatus = currentStatus === "1" ? "0" : "1";
+  //   try {
+  //     // ✅ Step 1: Verify token with its own error handler
+  //     try {
+  //       const tokenRes = await verifyToken(token);
+  //       if (tokenRes.status !== "success") {
+  //         setError(
+  //           tokenRes.message || "Invalid or expired token. Please log in again."
+  //         );
+  //         return;
+  //       }
+  //     } catch (verifyError) {
+  //       const errorMessage =
+  //         verifyError.response?.data?.message ||
+  //         verifyError.message ||
+  //         "Invalid or expired token. Please log in again.";
+  //       setError(errorMessage);
+  //       return;
+  //     }
+
+  //     // ✅ Step 2: Proceed with status change
+  //     const response = await changeBankNamibiaStatus(token, bank_id, newStatus);
+
+  //     // console.log("newStatus", newStatus);
+
+  //     if (response.status === "success") {
+  //       setbankDetails((prevDetails) =>
+  //         prevDetails.map((bank) =>
+  //           bank.id === bank_id ? { ...bank, status: newStatus } : bank
+  //         )
+  //       );
+
+  //       toast.success(
+  //         <span>
+  //           Bank{" "}
+  //           <span style={{ position: "relative", top: "-2px" }}>
+  //             {newStatus === "1" ? "🔓" : "🔒"}
+  //           </span>{" "}
+  //           {newStatus === "1" ? "Activated" : "Deactivated"} successfully!
+  //         </span>,
+  //         {
+  //           autoClose: 5000,
+  //           pauseOnHover: true,
+  //           closeOnClick: true,
+  //         }
+  //       );
+  //     } else {
+  //       alert(response.message || "Failed to update status.");
+  //     }
+  //   } catch (err) {
+  //     if (err.response?.data?.type === "invalid_token") {
+  //       setError("Invalid or expired token. Please log in again.");
+  //       return;
+  //     }
+
+  //     const errorMessage =
+  //       err.response?.data?.message ||
+  //       err.message ||
+  //       "Failed to update status.";
+  //     console.error("API Error:", err.response?.data || err.message);
+  //     alert(`Error: ${errorMessage}`);
+  //   }
+  // };
+
+  const toggleBankStatus = async (bank_id, currentStatus) => {
     if (!token) {
       setError("Authentication error. Please log in again.");
       return;
     }
 
-    // Prevent double-clicking
-    if (loadingId) return;
-    setLoadingId(wallet_id);
-
-    const newStatus = currentStatus === "1" ? "0" : "1";
+    const newStatus = currentStatus === 1 ? 0 : 1;
 
     try {
-      // ✅ Step 1: Verify token (Keep your existing logic)
+      setStatusLoading((prev) => ({ ...prev, [bank_id]: true })); // start loading
+
+      // Verify token (unchanged)
       try {
         const tokenRes = await verifyToken(token);
         if (tokenRes.status !== "success") {
-          setError(tokenRes.message || "Invalid token.");
-          setLoadingId(null);
+          setError(
+            tokenRes.message || "Invalid or expired token. Please log in again."
+          );
           return;
         }
       } catch (verifyError) {
-        setError("Token verification failed.");
-        setLoadingId(null);
+        const errorMessage =
+          verifyError.response?.data?.message ||
+          verifyError.message ||
+          "Invalid or expired token.";
+        setError(errorMessage);
         return;
       }
 
-      // ✅ Step 2: Proceed with status change
-      // This calls the API function we fixed in the previous step
-      const response = await changeWalletStatus(token, wallet_id, newStatus);
-
-      console.log("newStatus:", newStatus, "ID:", wallet_id);
+      // Call API (unchanged)
+      const response = await changeWalletStatus(token, bank_id, newStatus);
 
       if (response.status === "success") {
-        // Update Local State
-        setbankDetails((prevDetails) =>
-          prevDetails.map((wallet) =>
-            wallet.id === wallet_id ? { ...wallet, status: newStatus } : wallet
-          )
+        // update UI
+        setbankDetails((prev) =>
+          prev.map((b) => (b.id === bank_id ? { ...b, status: newStatus } : b))
         );
 
-        // Updated Toast Text for Wallet Context
         toast.success(
           <span>
-            Wallet{" "}
-            <span style={{ position: "relative", top: "-2px" }}>
-              {newStatus === "1" ? "🔓" : "🔒"}
-            </span>{" "}
-            {newStatus === "1" ? "Activated" : "Deactivated"} successfully!
+            <span aria-hidden="true">{newStatus === 1 ? "🔓" : "🔒"} </span>
+            <span className="visually-hidden">
+              {newStatus === 1 ? "Activated" : "Deactivated"}
+            </span>
+            {newStatus === 1 ? "Activated" : "Deactivated"} successfully!
           </span>,
-          { autoClose: 3000 }
+          {
+            onClose: () => {
+              // runs after it closes (timeout or X click)
+              navigate(location.pathname, { replace: true, state: {} });
+            },
+          }
         );
       } else {
-        alert(response.message || "Failed to update status.");
+        toast.error(response.message || "Failed to update status.");
       }
     } catch (err) {
-      console.error("API Error:", err);
-      alert("An error occurred while updating status.");
+      const errorMessage =
+        err?.response?.data?.message ||
+        err?.message ||
+        "Failed to update status.";
+      toast.error(`Error: ${errorMessage}`);
     } finally {
-      // Always stop loading, success or fail
-      setLoadingId(null);
+      setStatusLoading((prev) => ({ ...prev, [bank_id]: false })); // end loading
     }
   };
 
@@ -194,8 +312,6 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
     // Updated: A/C Holder Name -> Phone Number
     phone_number: Yup.string()
       .matches(/^[0-9]+$/, "Phone number must be digits only")
-      .min(10, "Phone number must be at least 10 digits")
-      .max(15, "Phone number cannot exceed 15 digits") // Updated to 15
       .required("Phone Number is required"),
   });
 
@@ -207,20 +323,21 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
     },
     validationSchema,
     onSubmit: async (values, { setSubmitting, setErrors, resetForm }) => {
+      // Clear previous API error
+      setErrors({ api: undefined });
+
       try {
         // ✅ Step 1: Verify the token
         try {
           const tokenRes = await verifyToken(token);
+
           if (tokenRes.status !== "success") {
-            toast.error(
+            const msg =
               tokenRes.message ||
-                "Invalid or expired token. Please log in again."
-            );
-            setErrors({
-              api:
-                tokenRes.message ||
-                "Invalid or expired token. Please log in again.",
-            });
+              "Invalid or expired token. Please log in again.";
+
+            toast.error(msg);
+            setErrors({ api: [msg] }); // 👈 make it an array
             setSubmitting(false);
             return;
           }
@@ -230,30 +347,20 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
             verifyError.message ||
             "Invalid or expired token. Please log in again.";
 
-          // toast.error(errorMessage);
           toast.error(`${errorMessage}. Please log in again to continue.`, {
-            toastId: "unauthorized-toast", // prevents duplicate toasts
-            onClose: () => {
-              // runs if user clicks X OR after autoClose timeout
-              navigate(location.pathname, { replace: true, state: {} });
-            },
+            toastId: "unauthorized-toast",
           });
-          // Redirect after a short delay (e.g., 2 seconds)
-          setTimeout(() => {
-            navigate("/login");
-          }, 5000);
-          // setErrors({ api: errorMessage });
+
+          setErrors({ api: [errorMessage] });
           setSubmitting(false);
           return;
         }
 
-        // ✅ Step 2: Submit bank form
-        const response = await storeWallet(token, values);
-
-        console.log(response);
+        // ✅ Step 2: Submit wallet form
+        const response = await storeWallet(token, values, methodId);
 
         if (response.status === "success") {
-          toast.dismiss("bank-added"); // optional: clean before show
+          toast.dismiss("bank-added");
           toast.success("Bank added successfully! 🎉", {
             toastId: "bank-added",
             autoClose: 3000,
@@ -265,7 +372,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
           setActiveTab("bank");
           setLoading(true);
 
-          const refreshedBanks = await getWalletDetails(token);
+          const refreshedBanks = await getWalletDetails(token, userId);
           if (
             refreshedBanks.status === "success" &&
             Array.isArray(refreshedBanks.playerWallet)
@@ -274,11 +381,13 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
           }
           setLoading(false);
         } else {
-          setErrors({
-            api:
-              response.data.message ||
-              "Something went wrong while saving bank details.",
-          });
+          // ⛔ here we show API error like: "Player Wallet already exist with same number"
+          const msg =
+            response.message ||
+            response.data?.message || // in case you returned full axios response
+            "Something went wrong while saving bank details.";
+
+          setErrors({ api: [msg] });
         }
       } catch (error) {
         if (error.response) {
@@ -293,15 +402,12 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
           }
 
           // ✅ Add message only if not already included
-          if (data.msg && !apiErrors.has(data.msg)) {
-            apiErrors.add(data.msg);
+          if (data.message && !apiErrors.has(data.message)) {
+            apiErrors.add(data.message);
           }
-          // if (data.message && !apiErrors.has(data.message)) {
-          //   apiErrors.add(data.message);
-          // }
 
           if (apiErrors.size === 0) {
-            apiErrors.add("Something went wrong.");
+            apiErrors.add("Something went wrong. Please try again.");
           }
 
           // ✅ Set final cleaned list to formik
@@ -311,13 +417,21 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
             api: ["Server not responding. Please try again later."],
           });
         } else {
-          setErrors({ api: ["Something went wrong. Try again."] });
+          // 🔥 your old "asfadfda sdgsdg sdf" line – cleaned
+          const fallback =
+            error.message || "Something went wrong. Please try again.";
+          setErrors({ api: [fallback] });
         }
       }
+
       setSubmitting(false);
     },
   });
-
+  // for the EDIT form (matches your edit fields)
+  const editValidationSchema = Yup.object({
+    name: "",
+    phone_number: "",
+  });
   // Formik Update the form
   const updateFormik = useFormik({
     initialValues: {
@@ -325,122 +439,87 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
       phone_number: "",
     },
     enableReinitialize: true,
-    validationSchema,
-    onSubmit: async (values, { setSubmitting, setErrors }) => {
+    validateOnBlur: true,
+    validateOnChange: true,
+    validationSchema: editValidationSchema, // 👈 use the edit schema here
+    onSubmit: async (values, { setSubmitting, setErrors, resetForm }) => {
+      // console.log("[EDIT BANK] submit fired ✅ with values:", values);
+
       try {
-        // ✅ Step 1: Verify the token
+        // 1) Verify token
         try {
           const tokenRes = await verifyToken(token);
+          // console.log("[VERIFY] tokenRes:", tokenRes);
           if (tokenRes.status !== "success") {
-            toast.error(
-              tokenRes.message ||
-                "Invalid or expired token. Please log in again."
-            );
-            setErrors({
-              api:
-                tokenRes.message ||
-                "Invalid or expired token. Please log in again.",
-            });
-            setSubmitting(false);
+            const msg = tokenRes.message || "Invalid/expired token";
+            toast.error(msg);
+            setErrors({ api: msg });
             return;
           }
         } catch (verifyError) {
           const errorMessage =
-            verifyError.response?.data?.message ||
-            verifyError.message ||
-            "Invalid or expired token. Please log in again.";
-
-          // toast.error(errorMessage);
-          toast.error(`${errorMessage}. Please log in again to continue.`, {
-            toastId: "unauthorized-toast", // prevents duplicate toasts
-            onClose: () => {
-              // runs if user clicks X OR after autoClose timeout
-              navigate(location.pathname, { replace: true, state: {} });
-            },
+            verifyError?.response?.data?.message ||
+            verifyError?.message ||
+            "Invalid or expired token.";
+          toast.error(`${errorMessage}. Please log in again.`, {
+            toastId: "unauthorized-toast",
           });
-          // Redirect after a short delay (e.g., 2 seconds)
-          setTimeout(() => {
-            navigate("/login");
-          }, 5000);
-          // setErrors({ api: errorMessage });
-          setSubmitting(false);
+          setErrors({ api: errorMessage });
           return;
         }
 
-        // const response = await axios.post(
-        //   `${BASE_URL}/player/update-bank/${editingBankId}`,
-        //   values,
-        //   {
-        //     headers: {
-        //       Authorization: `Bearer ${token}`,
-        //       "Content-Type": "application/json",
-        //     },
-        //   }
-        // );
+        // 2) Hit the update API
+        // console.log("[API] calling updateBankNamibia...");
+        const response = await updateWallet(
+          token,
+          values,
+          editingBankId,
+          walletTypeId
+        );
+        // console.log("[API] response:", response);
 
-        const response = await updateWallet(token, values, editingBankId);
-        if (response.status === "success") {
-          // alert("Bank updated successfully! ✅");
-          toast.success(`Bank updated successfully! 🎉`);
-
-          updateFormik.resetForm(); // ✅ Reset the modal form
+        if (response?.status === "success") {
+          toast.success("Bank updated successfully! 🎉");
+          resetForm(); // reset Formik
           setEditingBankId(null);
           setActiveTab("bank");
 
-          // ✅ Refresh the list
+          // 3) Refresh list
           setLoading(true);
-          // const refreshedBanks = await axios.get(
-          //   `${BASE_URL}/player/get-bank`,
-          //   {
-          //     headers: { Authorization: `Bearer ${token}` },
-          //   }
-          // );
-
-          const refreshedBanks = await getWalletDetails(token);
-
+          const refreshed = await getWalletDetails(token, userId);
           if (
-            refreshedBanks.status === "success" &&
-            Array.isArray(refreshedBanks.playerWallet)
+            refreshed?.status === "success" &&
+            Array.isArray(refreshed.playerWallet)
           ) {
-            setbankDetails(refreshedBanks.playerWallet);
+            setbankDetails(refreshed.playerWallet);
           }
-
           setLoading(false);
-          const modalEl = document.getElementById("edit_bank_details");
-          const bootstrap = window.bootstrap; // ✅ add this line for CDN
 
-          if (modalEl) {
-            const modalInstance = bootstrap.Modal.getOrCreateInstance(modalEl);
-            modalInstance.hide(); // ✅ closes the modal
+          // 4) Close modal
+          const modalEl = document.getElementById("edit_bank_details");
+          const bs = window.bootstrap;
+          if (modalEl && bs?.Modal) {
+            bs.Modal.getOrCreateInstance(modalEl).hide();
           }
         } else {
-          setErrors({ api: response.data.message || "Something went wrong." });
+          const msg = response?.data?.message || "Something went wrong.";
+          setErrors({ api: msg });
         }
       } catch (error) {
+        console.error("[API ERROR]", error);
         if (error.response) {
           const data = error.response.data;
           const apiErrors = new Set();
 
-          // ✅ Collect Laravel-style validation errors
           if (data.errors) {
-            Object.values(data.errors).forEach((fieldErrors) => {
-              fieldErrors.forEach((msg) => apiErrors.add(msg));
-            });
+            Object.values(data.errors).forEach((arr) =>
+              arr.forEach((m) => apiErrors.add(m))
+            );
           }
+          if (data.msg) apiErrors.add(data.msg);
+          if (data.message) apiErrors.add(data.message);
+          if (apiErrors.size === 0) apiErrors.add("Something went wrong.");
 
-          // ✅ Add message only if not already included
-          if (data.msg && !apiErrors.has(data.msg)) {
-            apiErrors.add(data.msg);
-          }
-          // if (data.message && !apiErrors.has(data.message)) {
-          //   apiErrors.add(data.message);
-          // }
-
-          if (apiErrors.size === 0) {
-            apiErrors.add("Something went wrong.");
-          }
-
-          // ✅ Set final cleaned list to formik
           setErrors({ api: Array.from(apiErrors) });
         } else if (error.request) {
           setErrors({
@@ -449,12 +528,14 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
         } else {
           setErrors({ api: ["Something went wrong. Try again."] });
         }
+      } finally {
+        setSubmitting(false); // always re-enable the button
+        console.log("[EDIT BANK] setSubmitting(false)");
       }
-      setSubmitting(false);
     },
   });
 
-  const handleEditwalletBankClick = async (bankId) => {
+  const handleEditBankClick = async (bankId, wallet_type_id) => {
     const token = localStorage.getItem("token"); // or from context/user if available
 
     // ✅ Step 1: Check token existence
@@ -479,30 +560,23 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
 
     // ✅ Step 3: Proceed with fetch
     try {
-      // console.log(walletId, "--------------------------"); // Changed bankId to walletId for clarity
-      const response = await EditwalletBank(bankId); // Pass walletId
-      // console.log(walletId, "--------------------------");
-
-      console.log(response);
-
+      // console.log(bankId, "--------------------------");
+      const response = await EditwalletBank(bankId, wallet_type_id); // token handled by axiosInstance
+      console.log(bankId, "--------------------------", wallet_type_id);
       if (response.status === "success") {
-        // Renamed 'bank' to 'wallet' for better context
-        const wallet = response.data; // You might need to change 'response.playerBank' to 'response.playerWallet'
+        const wallet = response.data;
 
-        setEditingBankId(bankId); // Use walletId in the setter
-
-        // --- KEY CHANGES HERE: Updating Formik values ---
+        setEditingBankId(bankId);
+        setWalletTypeID(wallet_type_id);
         updateFormik.setValues({
           name: wallet.name || "", // Fetches 'name' and replaces 'bank_name'
           phone_number: wallet.phone_number || "", // Fetches 'phone_number' and replaces 'account_holder_name'
         });
       } else {
-        // Updated toast message for wallet context
-        toast.error(response.message || "Failed to fetch wallet details.");
+        toast.error(response.message || "Failed to fetch bank details.");
       }
     } catch (error) {
-      // Updated toast message for wallet context
-      toast.error("Something went wrong while fetching wallet data.");
+      toast.error("Something went wrong while fetching bank data.");
     }
   };
 
@@ -510,9 +584,10 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
     setDeleteSelectedBankId(bankId); // save this to use later
     setShowModal(true); // open confirmation modal
   };
+
   const confirmDeleteBank = async () => {
     try {
-      const response = await deleteBankDetails(token, deleteSelectedBankId);
+      const response = await deleteWalletDetails(token, deleteSelectedBankId);
 
       if (response.status === "success") {
         toast.success(`Bank deleted successfully! 🎉`);
@@ -532,6 +607,10 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
     }
   };
 
+  // handlePopUP
+  // const handlePopUP = () => {
+  //   alert("Api is disabled ");
+  // };
   return (
     <>
       <ToastContainer
@@ -602,6 +681,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
           >
             Bank Details
           </button>
+
           <button
             className={`nav-link btn-color text-white w-150 ${
               activeTab === "add" ? "active" : ""
@@ -630,87 +710,57 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
                     <p className="text-white">Loading...</p>
                   ) : error ? (
                     <p className="text-danger">{error}</p>
-                  ) : bankDetails.filter((bank) => bank.status === "1").length >
-                    0 ? (
-                    bankDetails
-                      .filter((bank) => bank.status === "1")
-                      .map((bank) => (
-                        <div className="bet-card" key={bank.id}>
-                          {/* card 1 Starts */}
-                          <div className="d-flex justify-content-between border rounded mt-2 py-2 px-2">
-                            <div className="d-flex justify-content-between">
-                              {/* bank Details Starts */}
-                              <div>
-                                {/* <h3>{bank.id}</h3> */}
-                                {/* <h6>
-                                  Payment Method:{" "}
-                                  {bank.payment_method?.name || "N/A"}
-                                </h6> */}
-                                {bank.payment_method?.name === "UPI" ? (
-                                  <p>
-                                    <strong>UPI ID:</strong>{" "}
-                                    {bank.upi_id || "N/A"}
-                                  </p>
-                                ) : (
-                                  <>
-                                    <div>
-                                      <p className="mb-0 text-grey">
-                                        Bank Name
-                                      </p>
-                                      <h6>{bank.bank_name || "N/A"}</h6>
-                                    </div>
-                                    <div>
-                                      <p className="mb-0 text-grey">
-                                        Account Holder:
-                                      </p>
-                                      <h6>
-                                        {bank.account_holder_name || "N/A"}
-                                      </h6>
-                                    </div>
-                                    <div>
-                                      <p className="mb-0 text-grey">
-                                        Account Number:
-                                      </p>
-                                      <h6>{bank.account_number || "N/A"}</h6>
-                                    </div>
-                                    <div>
-                                      <p className="mb-0 text-grey">
-                                        IFSC Code
-                                      </p>
-                                      <h6>{bank.ifsc_code || "N/A"}</h6>
-                                    </div>
-                                  </>
-                                )}
-                              </div>
+                  ) : filteredBanks.length > 0 ? (
+                    filteredBanks.map((bank) => (
+                      <div className="bet-card" key={bank.id}>
+                        {/* card 1 Starts */}
+                        <div className="d-flex justify-content-between border rounded mt-2 py-2 px-2">
+                          <div className="d-flex justify-content-between">
+                            {/* bank Details Starts */}
+                            <div>
+                              {/* {methodId} methodId */}
+                              {bank.payment_method?.name === "UPI" ? (
+                                <p>
+                                  <strong>UPI ID:</strong>{" "}
+                                  {bank.upi_id || "N/A"}
+                                </p>
+                              ) : (
+                                <>
+                                  <div>
+                                    <p className="mb-0 text-grey">Name</p>
+                                    <h6>{bank.name || "N/A"}</h6>
+                                  </div>
+                                  <div>
+                                    <p className="mb-0 text-grey">
+                                      Phone Number:
+                                    </p>
+                                    <h6>{bank.phone_number || "N/A"}</h6>
+                                  </div>
+                                </>
+                              )}
                             </div>
-                            {/* input icon starts */}
-                            <div className="px-2 py-1">
-                              <div className="form-check px-3">
-                                <input
-                                  className="form-check-input"
-                                  type="radio"
-                                  name="flexRadioDefault"
-                                  value={bank.id}
-                                  checked={selectedBankId === bank.id}
-                                  onChange={() => setSelectedBankId(bank.id)}
-                                />
-                              </div>
-                            </div>
-                            {/* Status Button */}
-                            {/* <div>
-                             
-                              <button
-                                className="btn btn-success"
-                                onClick={() =>
-                                  toggleBankStatus(bank.id, bank.status)
+                          </div>
+                          {/* input icon starts */}
+                          <div className="px-2 py-1">
+                            <div className="form-check px-3">
+                              <input
+                                className="form-check-input"
+                                type="radio"
+                                name="flexRadioDefault"
+                                value={bank.id}
+                                checked={
+                                  String(selectedBankIdNo) === String(bank.id)
                                 }
-                              >
-                                Active
-                              </button>
-                            </div> */}
+                                onChange={() => {
+                                  setSelectedBankIdNo(String(bank.id));
+                                  handleSelectBank?.(bank);
+                                }}
+                              />
+                            </div>
                           </div>
                         </div>
-                      ))
+                      </div>
+                    ))
                   ) : (
                     <p className="text-white">No Active Bank Details Found.</p>
                   )}
@@ -758,9 +808,11 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
 
                     {formik.errors.api &&
                       (Array.isArray(formik.errors.api) ? (
-                        <p className="text-danger ">
+                        <p className="text-danger px-3 ">
                           {formik.errors.api.map((err, index) => (
-                            <li key={index}>{err}</li>
+                            <li key={index} className="">
+                              {err}
+                            </li>
                           ))}
                         </p>
                       ) : (
@@ -852,80 +904,124 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
               ) : error ? (
                 <p className="text-danger">{error}</p>
               ) : bankDetails.length > 0 ? (
-                bankDetails.map((bank) => (
-                  <div className="bet-card" key={bank.id}>
-                    {/* card 1 Starts */}
-                    <div className="d-flex justify-content-between border rounded mt-2 py-2 px-2">
-                      <div>
-                        {/* bank Details Starts */}
+                bankDetails
+                  .filter(
+                    (bank) =>
+                      bank.isDeleted == "1" &&
+                      bank.wallet_type_id &&
+                      String(bank.wallet_type_id) === String(methodId)
+                  )
+                  .map((bank) => (
+                    <div className="bet-card" key={bank.id}>
+                      {/* card 1 Starts */}
+                      <div className="d-flex justify-content-between border rounded mt-2 py-2 px-2">
                         <div>
-                          {bank.payment_method?.name === "UPI" ? (
-                            <p>
-                              <strong>UPI ID:</strong> {bank.upi_id || "N/A"}
-                            </p>
-                          ) : (
+                          {/* bank Details Starts */}
+                          <div>
+                            {/* <h3>{bank.id}</h3> */}
+                            {/* <h6>
+                            Payment Method: {bank.payment_method?.name || "N/A"}
+                          </h6> */}
                             <>
                               <div>
                                 <p className="mb-0 text-grey">Name</p>
                                 <h6>{bank.name || "N/A"}</h6>
                               </div>
+
                               <div>
                                 <p className="mb-0 text-grey">Phone Number:</p>
                                 <h6>{bank.phone_number || "N/A"}</h6>
                               </div>
                             </>
-                          )}
+                          </div>
                         </div>
-                      </div>
-                      <div className="d-flex flex-column">
-                        {/* Status Button */}
-
-                        {bank.status}
-                        <button
-                          disabled={loadingId === bank.id} // Disable if this specific button is loading
+                        <div className="d-flex flex-column">
+                          {/* Status Button */}
+                          {/* <button
                           className={`btn ${
                             bank.status === "1" ? "btn-success" : "btn-danger"
                           }`}
-                          onClick={() =>
-                            toggleWalletStatus(bank.id, bank.status)
-                          }
-                          style={{
-                            minWidth: "80px",
-                            opacity: loadingId === bank.id ? 0.6 : 1,
-                          }}
+                          onClick={() => toggleBankStatus(bank.id, bank.status)}
+                          // onClick={handlePopUP}
                         >
-                          {loadingId === bank.id ? (
-                            // Optional: Simple loading text or spinner
-                            <span>...</span>
-                          ) : bank.status === "1" ? (
-                            "Active"
-                          ) : (
-                            "Inactive"
-                          )}
-                        </button>
-
-                        {/* Edit Button */}
-                        <button
-                          className="btn mt-2"
-                          onClick={() => handleEditwalletBankClick(bank.id)}
-                          data-bs-toggle="modal"
-                          data-bs-target="#edit_bank_details"
-                        >
-                          <i class="fa-solid fa-pen-to-square fs-4 text-white"></i>
-                        </button>
-                        {/* Edit Button */}
-                        <button
-                          className="btn mt-2"
-                          onClick={() => handleDeleteBankClick(bank.id)}
-                        >
-                          <i class="fa-regular fa-trash-can fs-4 text-danger">
-                            {/* {bank.id} */}
-                          </i>
-                        </button>
+                          {bank.status === "1" ? "Active" : "Inactive"}
+                        </button> */}
+                          {/* <div className="form-check form-switch">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            role="switch"
+                            id="switchCheckChecked"
+                          />
+                        </div> */}
+                          {/* Status Toggle */}
+                          <div className="d-flex align-items-center gap-2">
+                            <div className="form-check form-switch m-0">
+                              <input
+                                className="form-check-input"
+                                type="checkbox"
+                                role="switch"
+                                id={`statusSwitch-${bank.id}`}
+                                checked={bank.status === 1}
+                                onChange={() =>
+                                  toggleBankStatus(bank.id, bank.status)
+                                }
+                                disabled={!!statusLoading[bank.id]}
+                                aria-checked={bank.status === 1}
+                                aria-label="Toggle bank active status"
+                                style={{
+                                  backgroundColor:
+                                    bank.status === 1 ? "#198754" : "#dc3545", // green / red
+                                  borderColor:
+                                    bank.status === 1 ? "#198754" : "#dc3545",
+                                  boxShadow:
+                                    bank.status === 1
+                                      ? "0 0 0 .25rem rgba(25,135,84,.25)"
+                                      : "0 0 0 .25rem rgba(220,53,69,.25)",
+                                }}
+                              />
+                            </div>
+                            <span
+                              className={`fw-600 ${
+                                bank.status === 1
+                                  ? "text-success"
+                                  : "text-danger"
+                              }`}
+                            >
+                              {/* {bank.status === "1" ? "Active" : "Inactive"} */}
+                            </span>
+                          </div>
+                          {/* {bank?.wallet_type?.id} ID
+                          {bank?.id} */}
+                          {/* Edit Button */}
+                          <button
+                            className="btn mt-2"
+                            // onClick={handlePopUP}
+                            onClick={() =>
+                              handleEditBankClick(
+                                bank.id,
+                                bank?.wallet_type?.id
+                              )
+                            }
+                            data-bs-toggle="modal"
+                            data-bs-target="#edit_bank_details"
+                          >
+                            <i class="fa-solid fa-pen-to-square fs-4 text-white"></i>
+                          </button>
+                          {/* Edit Button */}
+                          <button
+                            className="btn mt-2"
+                            onClick={() => handleDeleteBankClick(bank.id)}
+                            // onClick={handlePopUP}
+                          >
+                            <i class="fa-regular fa-trash-can fs-4 text-danger">
+                              {/* {bank.id} */}
+                            </i>
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))
+                  ))
               ) : (
                 <p className="text-white">No Bank Details Found.</p>
               )}
@@ -939,7 +1035,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
         id="edit_bank_details"
         aria-hidden="true"
         aria-labelledby="edit_bank_details_modal"
-        tabindex="-1"
+        tabIndex={-1} // 👈 React camelCase
       >
         <div className="modal-dialog modal-dialog-centered ">
           <div className="modal-content bg_light_grey rounded-2 py-3">
@@ -958,21 +1054,21 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
               {" "}
               <form
                 className="form-control_container"
+                noValidate // 👈 let Yup handle it
                 onSubmit={updateFormik.handleSubmit}
               >
-                {/* {updateFormik.errors.api && (
-                  <p className="text-danger">{updateFormik.errors.api}</p>
-                )} */}
-
+                {/* API error block */}
                 {updateFormik.errors.api &&
                   (Array.isArray(updateFormik.errors.api) ? (
-                    <p className="text-danger ">
-                      {updateFormik.errors.api.map((err, index) => (
-                        <li key={index}>{err}</li>
+                    <ul className="text-danger mb-3">
+                      {updateFormik.errors.api.map((err, i) => (
+                        <li key={i}>{err}</li>
                       ))}
-                    </p>
+                    </ul>
                   ) : (
-                    <p className="text-danger">{updateFormik.errors.api}</p>
+                    <p className="text-danger mb-3">
+                      {updateFormik.errors.api}
+                    </p>
                   ))}
 
                 <div className="input-field mb-3">
@@ -1013,7 +1109,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
 
                 <div className="d-flex justify-content-center">
                   <button
-                    type="submit"
+                    type="submit" // 👈 add this
                     className="btn btn-login w-50 mt-4 mb-3 text-capitalize"
                     disabled={updateFormik.isSubmitting}
                   >
