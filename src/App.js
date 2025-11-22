@@ -26,7 +26,9 @@ const ChangePassword = lazy(() =>
   import("./Components/Profile/ChangePassword")
 );
 const Avatar = lazy(() => import("./Components/Profile/Avatar"));
-const WithdrawMethod = lazy(() => import("./Components/Pages/Transactions/WithdrawMethod/WithdrawMethod"));
+const WithdrawMethod = lazy(() =>
+  import("./Components/Pages/Transactions/Withdraw_Methods/WithdrawMethod")
+);
 
 const LoginPage = lazy(() => import("./Components/Auth/Login"));
 const Register = lazy(() => import("./Components/Auth/Register"));
@@ -87,9 +89,8 @@ const WithdrawIndex = lazy(() =>
 );
 
 const WithdrawMethodIndex = lazy(() =>
-  import("./Components/Pages/Transactions/WithdrawMethod/WithdrawIndex")
+  import("./Components/Pages/Transactions/Withdraw_Methods/WithdrawIndex")
 );
-
 
 const WithdrawIndexNamibia = lazy(() =>
   import(
@@ -179,6 +180,10 @@ const AllMethodDepositHistory = lazy(() =>
 const AllDepositHistory = lazy(() =>
   import("./Components/Pages/Transactions/Deposit/AllHistory")
 );
+const AllWithdrawHistory = lazy(() =>
+  import("./Components/Pages/Transactions/Withdraw_Methods/AllHistory")
+);
+// all_withdrawHistory
 const DepositIndexIndia = lazy(() =>
   import(
     "./Components/Pages/Transactions/India/Deposit_India_Manual/DepositIndia"
@@ -298,7 +303,6 @@ function App() {
             style={waStyle}
           />
         )}
-        
 
         {visible.tawk && (
           <Tawk
@@ -398,12 +402,11 @@ function App() {
               element={<DepositMethod />}
             />
 
-              <Route
+            <Route
               path={routes.transactions.withdrawMethod}
               element={<WithdrawMethod />}
             />
 
-            
             <Route path={routes.transactions.addBank} element={<AddBank />} />
             {/* ================================================================ */}
             {/* <Route path={routes.transactions.withdraw} element={<Withdraw />} /> */}
@@ -434,9 +437,9 @@ function App() {
             />
             <Route
               path={routes.transactions.withdrawWallet}
-              element={< WithdrawMethodIndex />}
+              element={<WithdrawMethodIndex />}
             />
-           
+
             <Route
               path={routes.transactions.manual_withdraw_namibia}
               element={<WithdrawIndexNamibia />}
@@ -449,6 +452,10 @@ function App() {
             <Route
               path={routes.transactions.all_depositHistory}
               element={<AllDepositHistory />}
+            />
+            <Route
+              path={routes.transactions.all_withdrawHistory}
+              element={<AllWithdrawHistory />}
             />
             {/* easy_wallet */}
             <Route

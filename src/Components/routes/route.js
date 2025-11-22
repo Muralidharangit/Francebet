@@ -20,13 +20,13 @@ const routes = {
     paymentMethod: "/payment-method",
 
     withdrawWallet: "/withdraw-wallet",
-    
+
     withdrawMethod: "/withdraw-method",
     deposit_static: "/deposit_static",
     withdrawHistory: "/withdraw-history",
     depositHistory: "/deposit-history",
     addBank: "/add-bank",
-
+// AllWithdrawHistory
     // namibia
     deposit_namibia: "/deposit-namibia/manual-deposit/get-payment-details",
 
@@ -42,6 +42,8 @@ const routes = {
 
     all_deposit_history: "/deposit_history",
     all_depositHistory: "/all_deposit_history",
+
+    all_withdrawHistory: "/all_withdraw_history",
 
     // Kazang
     kazang_deposit_voucher: "/deposit-namibia-kazang",

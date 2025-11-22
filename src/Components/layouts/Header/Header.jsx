@@ -629,7 +629,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                               className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
                               onClick={() =>
                                 handleSecureRoute(
-                                  routes.transactions.manual_withdraw_namibia
+                                  routes.transactions.withdrawMethod
                                 )
                               }
                             >
