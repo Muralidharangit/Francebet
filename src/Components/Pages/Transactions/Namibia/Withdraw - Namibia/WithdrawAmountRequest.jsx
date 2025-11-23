@@ -176,7 +176,7 @@ const WithdrawAmountRequest = ({ amount, bankId }) => {
                   Your Request <br />
                   Is In Our Queue!
                 </div>
-                <Link to={routes.transactions.manual_withdraw_Namibia_history}>
+                <Link to={routes.transactions.all_withdrawHistory}>
                   <span
                     className="btn text-white green-bg"
                     onClick={() => setShowModal(false)} // ❌ Don't use data-bs-dismiss
