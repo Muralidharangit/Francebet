@@ -280,18 +280,16 @@ export const sendWithdrawRequestIndia = async ({
   return response.data;
 };
 
-
 // WITHDRAW WALLET
+export const storeWallet = async (token, values, methodId) => {
+  console.log(methodId);
 
-// WITHDRAW WALLET
-
-export const storeWallet = async (token, values) => {
   const response = await axios.post(
     `${BASE_URL}/player/withdraw/wallet/player-wallet/store`,
     {
-      ...values,         // Spread the existing form data (name, phone_number)
-      wallet_type_id: 1  // Add the hardcoded ID here
-    }, 
+      ...values, // Spread the existing form data (name, phone_number)
+      wallet_type_id: methodId, // Add the hardcoded ID here
+    },
     {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -300,31 +298,13 @@ export const storeWallet = async (token, values) => {
   );
   return response.data;
 };
-
 
 // Get Bank Data
 export const getWalletDetails = async (token) => {
   //   console.log("checking the with Bank Details", token);
-  const response = await axiosInstance.get("/player/withdraw/wallet/player-wallet/list", {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  return response.data;
-};
-
-
-// active in-active status changing
-export const changeWalletStatus = async (token, wallet_id, newStatus) => {
-  const response = await axiosInstance.post(
-    "/player/withdraw/wallet/player-wallet/status",
+  const response = await axiosInstance.get(
+    "/player/withdraw/wallet/player-wallet/list",
     {
-      // Data goes here directly as the second argument
-      player_wallet_id: wallet_id,
-      status: 1,
-    },
-    {
-      // Headers go here as the third argument
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -333,42 +313,142 @@ export const changeWalletStatus = async (token, wallet_id, newStatus) => {
   return response.data;
 };
 
+// active in-active status changing
+// export const changeWalletStatus = async (token, wallet_id, newStatus) => {
+//   const response = await axiosInstance.post(
+//     "/player/withdraw/wallet/player-wallet/status",
+//     {
+//       // Data goes here directly as the second argument
+//       player_wallet_id: wallet_id,
+//       status: 1,
+//     },
+//     {
+//       // Headers go here as the third argument
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//       },
+//     }
+//   );
+//   return response.data;
+// };
+
+// active in-active status changing
+export const changeWalletStatus = async (token, bank_id, newStatus) => {
+  const formData = new FormData();
+  formData.append("player_wallet_id", bank_id);
+  formData.append("status", newStatus);
+  console.log(formData);
+
+  const response = await axiosInstance.post(
+    "/player/withdraw/wallet/player-wallet/status",
+    formData,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+  return response.data;
+};
 
 // Edit Wallet Details
-export const EditwalletBank = async (walletId, token) => { 
+export const EditwalletBank = async (walletId, token) => {
   // Ensure the walletId is not undefined or null before proceeding
   if (!walletId) {
     throw new Error("Wallet ID is required for editing.");
   }
-  
+
   // Use template literals to dynamically inject the walletId into the URL
-  const response = await axiosInstance.get(`/player/withdraw/wallet/player-wallet/edit/${walletId}`, {
-    
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
-  
+  const response = await axiosInstance.get(
+    `/player/withdraw/wallet/player-wallet/edit/${walletId}`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
   return response.data;
 };
 
 // update-bank
-export const updateWallet = async (token, values, editingBankId) => {
-  console.log(token);
-  
+// export const updateWallet = async (token, values, editingBankId) => {
+//   console.log(token);
+
+//   const response = await axios.post(
+//     `${BASE_URL}/player/withdraw/wallet/player-wallet/update`,
+//     values,
+
+//     {
+//       // Data goes here directly as the second argument
+//       player_wallet_id: editingBankId,
+//     },
+//     {
+//       headers: {
+//         Authorization: `Bearer ${token}`,
+//         "Content-Type": "application/json",
+//       },
+//     }
+//   );
+//   return response.data;
+// };
+
+// update-bank
+export const updateWallet = async (
+  token,
+  values,
+  editingBankId,
+  walletTypeId
+) => {
+  console.log(values);
+
   const response = await axios.post(
     `${BASE_URL}/player/withdraw/wallet/player-wallet/update`,
     values,
-    
-    {
-      // Data goes here directly as the second argument
-      player_wallet_id: editingBankId,
-    },
     {
       headers: {
-        Authorization: `Bearer ${token}`, "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      params: { player_wallet_id: editingBankId, wallet_type_id: walletTypeId },
+    }
+  );
+  return response.data;
+};
+
+// delete Bank Details
+export const deleteWalletDetails = async (token, bankId) => {
+  const formData = new FormData();
+  formData.append("player_wallet_id", bankId);
+  formData.append("is_deleted", "0");
+  const response = await axiosInstance.post(
+    "/player/withdraw/wallet/player-wallet/delete",
+    formData,
+    {
+      headers: { Authorization: `Bearer ${token}` },
+    }
+  );
+  return response.data;
+};
+
+export const sendWithdrawRequestWallet = async ({
+  token,
+  bankId,
+  amount,
+  userid,
+}) => {
+  const formData = new FormData();
+  formData.append("player_wallet_id", bankId);
+  formData.append("amount", amount);
+  formData.append("player_id", userid);
+
+  const response = await axios.post(
+    `${BASE_URL}/player/withdraw/wallet/send-withdraw-request`,
+    formData,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
       },
     }
   );
+
   return response.data;
 };

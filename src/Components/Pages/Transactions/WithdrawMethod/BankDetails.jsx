@@ -99,7 +99,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
         }
 
         const response = await getWalletDetails(); // ✅ No need to pass token if axiosInstance handles it
-      
+
         if (
           response.status === "success" &&
           Array.isArray(response.playerWallet)
@@ -119,7 +119,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
   }, [user?.token]);
 
   // Toggle Bank Status
- // Toggle Wallet Status
+  // Toggle Wallet Status
   const toggleWalletStatus = async (wallet_id, currentStatus) => {
     if (!token) {
       setError("Authentication error. Please log in again.");
@@ -185,20 +185,18 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
   };
 
   //   validation
- const validationSchema = Yup.object({
+  const validationSchema = Yup.object({
     // Updated: Bank Name -> Name
     name: Yup.string()
       .min(3, "Name must be at least 3 characters")
       .required("Name is required"),
 
     // Updated: A/C Holder Name -> Phone Number
-   phone_number: Yup.string()
-  .matches(/^[0-9]+$/, "Phone number must be digits only")
-  .min(10, "Phone number must be at least 10 digits")
-  .max(15, "Phone number cannot exceed 15 digits") // Updated to 15
-  .required("Phone Number is required"),
-
-    
+    phone_number: Yup.string()
+      .matches(/^[0-9]+$/, "Phone number must be digits only")
+      .min(10, "Phone number must be at least 10 digits")
+      .max(15, "Phone number cannot exceed 15 digits") // Updated to 15
+      .required("Phone Number is required"),
   });
 
   //   const navigate = useNavigate();
@@ -206,7 +204,6 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
     initialValues: {
       name: "",
       phone_number: "",
-      
     },
     validationSchema,
     onSubmit: async (values, { setSubmitting, setErrors, resetForm }) => {
@@ -253,7 +250,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
         // ✅ Step 2: Submit bank form
         const response = await storeWallet(token, values);
 
-          console.log(response);
+        console.log(response);
 
         if (response.status === "success") {
           toast.dismiss("bank-added"); // optional: clean before show
@@ -326,7 +323,6 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
     initialValues: {
       name: "",
       phone_number: "",
-      
     },
     enableReinitialize: true,
     validationSchema,
@@ -488,13 +484,13 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
       // console.log(walletId, "--------------------------");
 
       console.log(response);
-      
+
       if (response.status === "success") {
         // Renamed 'bank' to 'wallet' for better context
         const wallet = response.data; // You might need to change 'response.playerBank' to 'response.playerWallet'
 
         setEditingBankId(bankId); // Use walletId in the setter
-        
+
         // --- KEY CHANGES HERE: Updating Formik values ---
         updateFormik.setValues({
           name: wallet.name || "", // Fetches 'name' and replaces 'bank_name'
@@ -771,7 +767,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
                         <p className="text-danger">{formik.errors.api}</p>
                       ))}
 
-                 {/* Field 1: Name */}
+                    {/* Field 1: Name */}
                     <div className="input-field">
                       <input
                         required
@@ -793,7 +789,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
                       <input
                         required
                         className="input"
-                        type="number" 
+                        type="number"
                         name="phone_number"
                         value={formik.values.phone_number}
                         onChange={formik.handleChange}
@@ -807,7 +803,6 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
                           </p>
                         )}
                     </div>
-                  
 
                     <div className="d-flex justify-content-center">
                       <button
@@ -864,10 +859,6 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
                       <div>
                         {/* bank Details Starts */}
                         <div>
-                          {/* <h3>{bank.name}</h3> */}
-                          {/* <h6>
-                            Payment Method: {bank.payment_method?.name || "N/A"}
-                          </h6> */}
                           {bank.payment_method?.name === "UPI" ? (
                             <p>
                               <strong>UPI ID:</strong> {bank.upi_id || "N/A"}
@@ -879,33 +870,39 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
                                 <h6>{bank.name || "N/A"}</h6>
                               </div>
                               <div>
-                                <p className="mb-0 text-grey">
-                                  Phone Number:
-                                </p>
+                                <p className="mb-0 text-grey">Phone Number:</p>
                                 <h6>{bank.phone_number || "N/A"}</h6>
                               </div>
-                             
                             </>
                           )}
                         </div>
                       </div>
                       <div className="d-flex flex-column">
                         {/* Status Button */}
+
+                        {bank.status}
                         <button
-        disabled={loadingId === bank.id} // Disable if this specific button is loading
-        className={`btn ${
-          bank.status === "1" ? "btn-success" : "btn-danger"
-        }`}
-        onClick={() => toggleWalletStatus(bank.id, bank.status)}
-        style={{ minWidth: "80px", opacity: loadingId === bank.id ? 0.6 : 1 }}
-      >
-        {loadingId === bank.id ? (
-          // Optional: Simple loading text or spinner
-          <span>...</span> 
-        ) : (
-          bank.status === "1" ? "Active" : "Inactive"
-        )}
-      </button>
+                          disabled={loadingId === bank.id} // Disable if this specific button is loading
+                          className={`btn ${
+                            bank.status === "1" ? "btn-success" : "btn-danger"
+                          }`}
+                          onClick={() =>
+                            toggleWalletStatus(bank.id, bank.status)
+                          }
+                          style={{
+                            minWidth: "80px",
+                            opacity: loadingId === bank.id ? 0.6 : 1,
+                          }}
+                        >
+                          {loadingId === bank.id ? (
+                            // Optional: Simple loading text or spinner
+                            <span>...</span>
+                          ) : bank.status === "1" ? (
+                            "Active"
+                          ) : (
+                            "Inactive"
+                          )}
+                        </button>
 
                         {/* Edit Button */}
                         <button
@@ -978,7 +975,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
                     <p className="text-danger">{updateFormik.errors.api}</p>
                   ))}
 
-             <div className="input-field mb-3">
+                <div className="input-field mb-3">
                   <input
                     required
                     className="input"
@@ -991,9 +988,7 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
                   <label className="label">Name</label> {/* Changed */}
                   {updateFormik.touched.name &&
                     updateFormik.errors.name && ( // Changed
-                      <p className="text-danger">
-                        {updateFormik.errors.name}
-                      </p>
+                      <p className="text-danger">{updateFormik.errors.name}</p>
                     )}
                 </div>
 
@@ -1016,7 +1011,6 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
                     )}
                 </div>
 
-               
                 <div className="d-flex justify-content-center">
                   <button
                     type="submit"
