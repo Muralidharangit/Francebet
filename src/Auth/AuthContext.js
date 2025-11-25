@@ -441,50 +441,59 @@ export const AuthProvider = ({ children }) => {
   //   }
   // };
 
-  const fetchCommunication = async () => {
-    try {
-      const { data } = await axios.get(`${BASE_URL}/communication`);
+ const fetchCommunication = async () => {
+  try {
+    const { data } = await axios.get(`${BASE_URL}/communication`);
 
-      // 1) channel on/off map
-      const map = Object.fromEntries(
-        (data?.channels || []).map((c) => [c.channel, Number(!!c.status)])
-      );
-      setPortalChannels({ whatsapp: 0, tawk: 0, telegram: 0, ...map });
+    console.log(data);
 
-      // 2) per-channel configs
-      let w = { phone: null, text: null };
-      let t = { url: null, propertyId: null, widgetId: null };
-      let tg = { link: null };
+    // 1) on/off
+    const map = Object.fromEntries(
+      (data?.channels || []).map((c) => [c.channel, Number(!!c.status)])
+    );
+    setPortalChannels({ whatsapp: 0, tawk: 0, telegram: 0, ...map });
 
-      for (const c of data?.channels || []) {
-        if (c.channel === "whatsapp" && c.status) {
-          w = {
-            phone: toWaPhone(c?.config?.number),
-            text: c?.config?.welcomeMessage || "Hi! How can we help you?",
-          };
-        }
-        if (c.channel === "tawk" && c.status) {
-          const url = c?.config?.tawk_url || null;
-          const ids = url
-            ? parseTawk(url)
-            : { propertyId: null, widgetId: null };
-          t = { url, ...ids };
-        }
-        if (c.channel === "telegram" && c.status) {
-          tg = { link: c?.config?.link || null }; // <-- TELEGRAM URL from API
-        }
+    // 2) configs
+    let w = { phone: null, text: null };
+    let t = { url: null, propertyId: null, widgetId: null };
+    let tg = { link: null };
+
+    for (const c of data?.channels || []) {
+
+      // ---- WHATSAPP FIX ----
+      if (c.channel === "whatsapp" && c.status) {
+        w = {
+          phone: toWaPhone(c?.config?.phone),        // FIXED
+          text: c?.config?.text || "Hi! How can we help you?", // FIXED
+        };
       }
 
-      setWaConfig(w);
-      setTawkConfig(t);
-      setTelegramConfig(tg); // <-- save it
-    } catch (e) {
-      console.error("communication fetch failed", e);
-      setWaConfig({ phone: null, text: null });
-      setTawkConfig({ url: null, propertyId: null, widgetId: null });
-      setTelegramConfig({ link: null });
+      // ---- TAWK ----
+      if (c.channel === "tawk" && c.status) {
+        const url = c?.config?.tawk_url || null;
+        const ids = url ? parseTawk(url) : { propertyId: null, widgetId: null };
+        t = { url, ...ids };
+      }
+
+      // ---- TELEGRAM ----
+      if (c.channel === "telegram" && c.status) {
+        tg = { link: c?.config?.link || null };
+      }
     }
-  };
+
+    setWaConfig(w);
+    setTawkConfig(t);
+    setTelegramConfig(tg);
+
+  } catch (e) {
+    console.error("communication fetch failed", e);
+
+    setWaConfig({ phone: null, text: null });
+    setTawkConfig({ url: null, propertyId: null, widgetId: null });
+    setTelegramConfig({ link: null });
+  }
+};
+
   // --- Route change check ---
   // useEffect(() => {
   //   if (firstLoadRef.current || isLoading) return;
