@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { toast, ToastContainer } from "react-toastify";
 import { motion } from "framer-motion";
 import { manualAllGames } from "../../API/manualGames";
+import { getIsMobileParam } from "../../hooks/homePageApi";
 
 const AllGamesSearch = () => {
   const [games, setGames] = useState([]);
@@ -39,8 +40,10 @@ const AllGamesSearch = () => {
 
     try {
       setIsFetching(true);
+      const isMobileParam = getIsMobileParam();
+
       const response = await axiosInstance.get(
-        `/all-games?is_mobile=1&page=${pageNo}`
+        `/all-games?is_mobile=${isMobileParam}&page=${pageNo}`
       );
       let newGames = response.data.allGames || [];
 
@@ -60,7 +63,7 @@ const AllGamesSearch = () => {
       const totalPages = response.data.pagination?.total_page || 1;
       setHasMore(pageNo < totalPages);
     } catch (error) {
-      console.error("Error fetching games:", error);
+      // console.error("Error fetching games:", error);
       toast.error("Failed to load games.");
     } finally {
       setIsFetching(false);
@@ -77,6 +80,8 @@ const AllGamesSearch = () => {
     }
 
     try {
+      const isMobileParam = getIsMobileParam();
+
       const response = await axiosInstance.get(
         `/player/${game.provider}/launch/${encodeURIComponent(game.name)}/${
           game.uuid
@@ -84,7 +89,7 @@ const AllGamesSearch = () => {
         {
           headers: { Authorization: `Bearer ${token}` },
           params: {
-            return_url: `${window.location.origin}/all-games?is_mobile=1`,
+            return_url: `${window.location.origin}/all-games?is_mobile=${isMobileParam}`,
           },
         }
       );
@@ -101,7 +106,7 @@ const AllGamesSearch = () => {
         localStorage.removeItem("token");
         setTimeout(() => navigate("/login"), 3000);
       } else {
-        console.error("Launch error:", error);
+        // console.error("Launch error:", error);
         toast.error("Failed to launch game.");
       }
     }

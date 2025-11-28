@@ -1,38 +1,37 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import {
   useSearchParams,
   useNavigate,
-  Link,
   useLocation,
+  Link,
 } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../../API/api";
 import { toast, ToastContainer } from "react-toastify";
 import StickyHeader from "./Header/Header";
 import Footer from "./footer/Footer";
-import { Images } from "./Header/constants/images";
-import routes from "../routes/route";
-import { motion } from "framer-motion";
 import Sidebar from "./Header/Sidebar";
+import { motion } from "framer-motion";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
-// ✅ make sure this points to your real search hook file:
-// import useSearchGames from "../../hooks/useSearchGames";
-import useSearchGames from "../../hooks/filteredGames";
-// ✅ React Query (inline use)
+import useSearchGames, { fetchSearchGames } from "../../hooks/filteredGames";
 import {
   useQuery,
   keepPreviousData,
   useQueryClient,
 } from "@tanstack/react-query";
+import { getIsMobileParam } from "../../hooks/homePageApi";
+import AuthContext from "../../Auth/AuthContext";
 
 const FilteredGamesPage = () => {
   const [games, setGames] = useState([]);
   const [filterType, setFilterType] = useState(null);
+
   const [selectedGameUrl, setSelectedGameUrl] = useState(null);
   const [showFullScreenGame, setShowFullScreenGame] = useState(false);
   const [isLaunchingGame, setIsLaunchingGame] = useState(false);
   const iframeRef = useRef(null);
+
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const location = useLocation();
@@ -44,33 +43,20 @@ const FilteredGamesPage = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [isSearchMode, setIsSearchMode] = useState(false);
   const [searchPage, setSearchPage] = useState(1);
-  const [isFetching, setIsFetching] = useState(false);
 
   // ---- FILTERED (PAGINATION) STATE ----
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
   const [searchLoading, setSearchLoading] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  // ===== SEARCH via hook (unchanged) =====
-  const {
-    data: searchData,
-    isLoading: isSearchLoading,
-    isFetching: isSearchFetching,
-    isError: isSearchError,
-  } = useSearchGames(searchTerm, isSearchMode);
 
-  useEffect(() => {
-    if (searchData) {
-      setSearchByNameResults(searchData.searchByName);
-      setSearchByProviderResults(searchData.searchByProvider);
-    }
-  }, [searchData]);
+  const { fetchUser, user } = useContext(AuthContext);
 
-  // ===== FILTERED via React Query (inline) =====
-  const getFilteredGames = async (type, pageNum = 1, limit = 30) => {
+  /** ---------- FILTERED (non-search) ---------- */
+  const getFilteredGames = async (customType, pageNum = 1, limit = 30) => {
+    const isMobile = getIsMobileParam(); // 1 or 0
     const { data } = await axios.get(`${BASE_URL}/all-games`, {
-      params: { is_mobile: 1, type, page: pageNum, limit },
+      params: { is_mobile: String(isMobile), customType, page: pageNum, limit },
     });
     const items = Array.isArray(data?.allGames) ? data.allGames : [];
     const tp =
@@ -78,24 +64,81 @@ const FilteredGamesPage = () => {
     return { items, totalPages: tp };
   };
 
-  const {
-    data: filteredData,
-    isLoading: isRQLoading,
-    isFetching: isRQFetching,
-  } = useQuery({
-    queryKey: ["filteredGames", filterType, page, 30],
-    queryFn: () => getFilteredGames(filterType, page, 30),
-    enabled: !!filterType && !isSearchMode, // only when not in search mode
+  /** ---------- SEARCH (server pagination) ---------- */
+  const fixed = searchTerm.trim();
+  const { data: searchData, isFetching: isSearchFetching } = useQuery({
+    queryKey: ["searchGames", { term: fixed, page: searchPage, limit: 30 }],
+    queryFn: () =>
+      fetchSearchGames({ term: fixed, page: searchPage, limit: 30 }),
+    enabled: isSearchMode && fixed.length >= 3,
     placeholderData: keepPreviousData,
-    staleTime: 5 * 60 * 1000, // 5 mins cache
+    staleTime: 5 * 60 * 1000,
     gcTime: 30 * 60 * 1000,
     refetchOnWindowFocus: false,
     retry: 1,
   });
 
-  // accumulate pages into local `games`
+  // Merge paginated search results into local state (dedupe by uuid)
+  useEffect(() => {
+    if (!isSearchMode || !searchData) return;
+
+    const { items = [], byProvider = [], totalPages: tp = 1 } = searchData;
+
+    if (searchPage === 1) {
+      setSearchByNameResults(items);
+      setSearchByProviderResults(byProvider);
+    } else {
+      setSearchByNameResults((prev) => {
+        const combined = [...prev, ...items];
+        return Array.from(new Map(combined.map((g) => [g.uuid, g])).values());
+      });
+    }
+
+    setTotalPages(tp);
+    setHasMore(searchPage < tp);
+  }, [searchData, isSearchMode, searchPage]);
+
+  /** ---------- URL bootstrap ---------- */
+  useEffect(() => {
+    const urlSearch = searchParams.get("search") || searchParams.get("q") || "";
+    const urlProvider = searchParams.get("provider") || "";
+    const urlType = searchParams.get("type") || "";
+
+    if (urlType) {
+      setFilterType(urlType);
+      setIsSearchMode(false);
+      setPage(1);
+      setGames([]);
+    } else if (urlSearch || urlProvider) {
+      const term = urlSearch || urlProvider;
+      setSearchTerm(term);
+      setIsSearchMode(true);
+      setSearchPage(1);
+      setHasMore(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  /** ---------- Filtered list query (single instance) ---------- */
+  const {
+    data: filteredData,
+    isLoading: isRQLoading,
+    isFetching: isRQFetching,
+  } = useQuery({
+    queryKey: ["filteredGames", { type: filterType || "all", page, limit: 30 }],
+    queryFn: () => getFilteredGames(filterType, page, 30),
+    enabled: !isSearchMode,
+    placeholderData: keepPreviousData,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    retry: 1,
+  });
+
+  // Accumulate pages of filtered list
   useEffect(() => {
     if (!filteredData || isSearchMode) return;
+
     setTotalPages(filteredData.totalPages);
     setHasMore(page < filteredData.totalPages);
 
@@ -106,10 +149,9 @@ const FilteredGamesPage = () => {
     });
   }, [filteredData, page, isSearchMode]);
 
-  // derived loading for skeletons in filtered view
   const loading = isRQLoading && page === 1;
 
-  // ===== Search handlers (unchanged) =====
+  /** ---------- Search box handlers ---------- */
   const handleSubmit = (e) => {
     e.preventDefault();
     const fixedSearchTerm = searchTerm.trim();
@@ -118,111 +160,149 @@ const FilteredGamesPage = () => {
   };
 
   useEffect(() => {
-    const fixedSearchTerm = searchTerm.trim();
-
-    if (fixedSearchTerm.length < 3) {
+    const s = searchTerm.trim();
+    if (s.length < 3) {
       setIsSearchMode(false);
       setSearchByNameResults([]);
       setSearchByProviderResults([]);
       setSearchPage(1);
       return;
     }
-
     setIsSearchMode(true);
     setSearchPage(1);
     setHasMore(true);
-
-    const delay = setTimeout(() => {
-      handleAutoSearch(fixedSearchTerm, 1);
-    }, 500);
-
-    return () => clearTimeout(delay);
   }, [searchTerm]);
 
+  /** ---------- Infinite scroll (single guarded trigger) ---------- */
   useEffect(() => {
-    const fixedSearchTerm = searchTerm.trim();
-    if (isSearchMode && fixedSearchTerm.length >= 3 && searchPage > 1) {
-      handleAutoSearch(fixedSearchTerm, searchPage);
-    }
-  }, [searchPage]);
-
-  // ===== Infinite scroll trigger =====
-  useEffect(() => {
-    const handleScroll = () => {
+    const onScroll = () => {
       const bottomReached =
         window.innerHeight + document.documentElement.scrollTop + 300 >=
         document.documentElement.scrollHeight;
 
-      if (bottomReached && !isFetching) {
-        if (isSearchMode && searchPage < totalPages) {
-          setSearchPage((prev) => prev + 1);
-        } else if (!isSearchMode && page < totalPages) {
-          setPage((prev) => prev + 1);
-        }
+      if (!bottomReached) return;
+
+      const loadingNow = isSearchMode ? isSearchFetching : isRQFetching;
+      if (loadingNow) return;
+
+      if (isSearchMode) {
+        if (searchPage < totalPages) setSearchPage((p) => p + 1);
+      } else {
+        if (page < totalPages) setPage((p) => p + 1);
       }
     };
 
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [isFetching, isSearchMode, page, searchPage, totalPages]);
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [
+    isSearchMode,
+    searchPage,
+    page,
+    totalPages,
+    isSearchFetching,
+    isRQFetching,
+  ]);
 
-  // ===== When URL ?type= changes =====
+  /** ---------- React to ?type= change ---------- */
   useEffect(() => {
     const type = searchParams.get("type");
     if (type) {
       setFilterType(type);
       setPage(1);
       setHasMore(true);
-      setGames([]); // clear while new type loads via React Query
+      setGames([]);
     }
   }, [searchParams]);
 
-  // ===== Detect iframe close & refresh list (invalidate cache) =====
-  useEffect(() => {
-    let interval;
-    if (showFullScreenGame && selectedGameUrl) {
-      interval = setInterval(() => {
-        const frame = iframeRef.current;
-        if (!document.body.contains(frame)) {
-          setShowFullScreenGame(false);
-          setSelectedGameUrl(null);
-          if (filterType) {
-            queryClient.invalidateQueries({
-              queryKey: ["filteredGames", filterType],
-            });
-          }
-          clearInterval(interval);
-        }
-      }, 1000);
-    }
-    return () => clearInterval(interval);
-  }, [showFullScreenGame, selectedGameUrl, filterType, queryClient]);
+  /** ---------- Game launch + return flow ---------- */
+  const RETURN_URL_KEY = "returnUrl";
 
-  // ====== GAME LAUNCH (unchanged) ======
+  const navigateToSavedReturnUrl = React.useCallback(() => {
+    const target = sessionStorage.getItem(RETURN_URL_KEY) || "/";
+    const origin = window.location.origin;
+    const toPath = target.startsWith(origin)
+      ? target.slice(origin.length)
+      : target;
+
+    const here = window.location.pathname + window.location.search;
+    const url = new URL(target, origin);
+    const there = url.pathname + url.search;
+    if (here === there) return;
+
+    navigate(toPath, { replace: true });
+  }, [navigate]);
+
+  const buildReturnUrl = (location) => {
+    const base = import.meta?.env?.BASE_URL || process.env.PUBLIC_URL || "";
+    const baseTrim = base.replace(/\/$/, "");
+    const path = `${baseTrim}${location.pathname}${location.search || ""}`;
+    return new URL(path, window.location.origin).toString();
+  };
+
+  const [showModal, setShowModal] = useState(false);
+  const [iframeLoaded, setIframeLoaded] = useState(false);
+  const [iframeError, setIframeError] = useState(false);
+
+  const handleConfirm = async () => {
+    setShowModal(false);
+    setIsLaunchingGame(false);
+    setShowFullScreenGame(false);
+    setSelectedGameUrl("");
+    await fetchUser(user?.token);
+    navigateToSavedReturnUrl();
+  };
+
+  const handleCancel = () => setShowModal(false);
+
+  const handleIframeLoad = () => {
+    setIframeLoaded(true);
+    setIsLaunchingGame(false);
+
+    const el = iframeRef.current;
+    if (!el) return;
+
+    try {
+      const href = el.contentWindow.location.href;
+      if (href.startsWith(window.location.origin)) {
+        setShowFullScreenGame(false);
+        setSelectedGameUrl("");
+        setIframeError(false);
+        setIframeLoaded(false);
+        navigateToSavedReturnUrl();
+      }
+    } catch {
+      // cross-origin; ignore
+    }
+  };
+
+  useEffect(() => {
+    const onPop = () => {
+      setShowFullScreenGame(false);
+      setSelectedGameUrl("");
+      setIsLaunchingGame(false);
+      navigateToSavedReturnUrl();
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, [navigateToSavedReturnUrl]);
+
   const handleGameClick = async (game) => {
-    if (!game.provider || !game.name || !game.uuid) {
+    if (!game?.provider || !game?.name || !game?.uuid) {
       toast.error("Missing game info.");
       return;
     }
 
     const token = localStorage.getItem("token");
+    if (!token) {
+      toast.error("Please login to jump into the Game World! 🎮🚀");
+      navigate("/login");
+      return;
+    }
 
     try {
       setIsLaunchingGame(true);
-
-      // const response = await axios.get(
-      //   `${BASE_URL}/player/${game.provider}/launch/${encodeURIComponent(
-      //     game.name
-      //   )}/${game.uuid}`,
-      //   {
-      //     params: {
-      //       return_url: `${window.location.origin}/all-games?is_mobile=1`,
-      //       has_lobby: game.has_lobby,
-      //       has_tables: game.has_tables,
-      //     },
-      //     headers: { Authorization: `Bearer ${token}` },
-      //   }
-      // );
+      const returnUrl = buildReturnUrl(location);
+      sessionStorage.setItem(RETURN_URL_KEY, returnUrl);
 
       const response = await axios.get(
         `${BASE_URL}/player/${game.provider}/launch/${encodeURIComponent(
@@ -230,17 +310,18 @@ const FilteredGamesPage = () => {
         )}/${game.uuid}`,
         {
           params: {
-            return_url: `${window.location.origin}/all-games?is_mobile=1`,
-            has_lobby: game.has_lobby,
-            has_tables: game.has_tables,
+            return_url: returnUrl,
+            ...(game.has_lobby !== undefined && { has_lobby: game.has_lobby }),
+            ...(game.has_tables !== undefined && {
+              has_tables: game.has_tables,
+            }),
           },
           headers: { Authorization: `Bearer ${token}` },
         }
       );
 
-      const gameUrl = response.data?.game?.gameUrl || response.data?.game_url;
+      const gameUrl = response?.data?.game?.gameUrl || response?.data?.game_url;
       if (gameUrl) {
-        sessionStorage.setItem("prevPage", location.pathname + location.search);
         window.history.pushState(
           { isGameOpen: true },
           "",
@@ -249,6 +330,7 @@ const FilteredGamesPage = () => {
         setSelectedGameUrl(gameUrl);
         setShowFullScreenGame(true);
       } else {
+        setIsLaunchingGame(false);
         toast.error("Failed to get game URL.");
       }
     } catch (error) {
@@ -260,68 +342,14 @@ const FilteredGamesPage = () => {
         setTimeout(() => navigate("/login"), 3000);
         return;
       }
-      console.error("Error launching game:", error);
+      // console.error("Error launching game:", error);
       toast.error("Game launch failed. Try again later.");
     }
   };
 
-  // ====== Auto search (your existing code) ======
-  const handleAutoSearch = async (fixedSearchTerm, pageNo = 1) => {
-    if (isFetching || !hasMore) return;
+  /** ---------- Render ---------- */
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-    try {
-      setSearchLoading(true);
-      setIsFetching(true);
-
-      const [res1, res2, res3] = await Promise.all([
-        axios.get(
-          `${BASE_URL}/all-games?is_mobile=1&global=${fixedSearchTerm}&page=${pageNo}`
-        ),
-        axios.get(
-          `${BASE_URL}/all-games?is_mobile=1&provider=${fixedSearchTerm}&page=${pageNo}`
-        ),
-        axios.get(
-          `${BASE_URL}/all-games?is_mobile=1&type=${fixedSearchTerm}&page=${pageNo}`
-        ),
-      ]);
-
-      let mergedSearchResults = [
-        ...(res1.data.allGames || []),
-        ...(res3.data.allGames || []),
-      ];
-
-      const total = Math.max(
-        res1.data.pagination?.total_page || 1,
-        res2.data.pagination?.total_page || 1,
-        res3.data.pagination?.total_page || 1
-      );
-
-      const newSearchGames = Array.from(
-        new Map(mergedSearchResults.map((game) => [game.uuid, game])).values()
-      );
-
-      if (pageNo === 1) {
-        setSearchByNameResults(newSearchGames);
-      } else {
-        setSearchByNameResults((prev) => {
-          const combined = [...prev, ...newSearchGames];
-          return Array.from(new Map(combined.map((g) => [g.uuid, g])).values());
-        });
-      }
-
-      if (pageNo === 1) {
-        setSearchByProviderResults(res2.data.allGames || []);
-      }
-
-      setHasMore(pageNo < total);
-      setTotalPages(total);
-    } catch (error) {
-      console.error("Search error:", error);
-    } finally {
-      setSearchLoading(false);
-      setIsFetching(false);
-    }
-  };
   return (
     <>
       {isLaunchingGame && (
@@ -348,21 +376,19 @@ const FilteredGamesPage = () => {
           Launching game, please wait...
         </div>
       )}
+
       <ToastContainer position="top-right" autoClose={5000} theme="dark" />
-      {/* header  */}
+
       <StickyHeader onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
-      {/* header end */}
 
       <div className="container-fluid page-body-wrapper">
-        {/* Sidebar Nav Starts */}
         <Sidebar />
-        {/* Sidebar Nav Ends */}
-        {/* 🔍 Search Bar */}
 
         <div className="main-panel">
-          <div className="content-wrapper">
+          <div className="content-wrapper new">
             <div className="max-1250 mx-auto">
-              <div className="search_container_box">
+              {/* Search Bar */}
+              <div className="search_container_box mx-2">
                 <form className="form my-2" onSubmit={handleSubmit}>
                   <button type="submit">
                     <i className="ri-search-2-line fs-18" />
@@ -373,8 +399,8 @@ const FilteredGamesPage = () => {
                     placeholder="Search games..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
-                    onInput={(e) => setSearchTerm(e.target.value)} // ✅ extra support for mobile
-                    className="my-3 input"
+                    onInput={(e) => setSearchTerm(e.target.value)}
+                    className="my-3 input text-white"
                   />
 
                   {isSearchMode && (
@@ -383,11 +409,11 @@ const FilteredGamesPage = () => {
                       className="reset"
                       onClick={() => {
                         setSearchTerm("");
-                        setSearchByNameResults([]); // ✅ Clear actual search result state
-                        setSearchByProviderResults([]); // ✅ Clear provider results
-                        setSearchPage(1); // ✅ Reset pagination
+                        setSearchByNameResults([]);
+                        setSearchByProviderResults([]);
+                        setSearchPage(1);
                         setIsSearchMode(false);
-                        setHasMore(true); // ✅ Enable future searching
+                        setHasMore(true);
                       }}
                     >
                       ❌
@@ -396,253 +422,178 @@ const FilteredGamesPage = () => {
                 </form>
               </div>
 
-              {/* 🕹️ Game List */}
+              {/* Lists */}
               {isSearchMode ? (
-                <>
-                  {isSearchMode && (
+                <div className="px-2">
+                  {searchLoading && searchPage === 1 ? (
+                    <p className="text-white text-center mt-5">
+                      🎮 Loading games...
+                    </p>
+                  ) : searchByNameResults.length > 0 ||
+                    searchByProviderResults.length > 0 ? (
                     <>
-                      {searchLoading && searchPage === 1 ? (
-                        <p className="text-white text-center mt-5">
-                          🎮 Loading games...
-                        </p>
-                      ) : searchByNameResults.length > 0 ||
-                        searchByProviderResults.length > 0 ? (
+                      {searchByNameResults.length > 0 && (
                         <>
-                          {/* 🔍 Search by Game Name Section */}
-                          {searchByNameResults.length > 0 && (
-                            <>
-                              <h5 className="text-white mt-4">
-                                Search by Game Name
-                              </h5>
-                              <div className="row">
-                                {searchByNameResults.map((game, index) => (
-                                  <motion.div
-                                    className="col-md-4 col-sm-4 col-6 px-1 col-custom-3"
-                                    key={game.uuid}
-                                    initial={{ opacity: 0, scale: 0.8 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    transition={{
-                                      duration: 0.3,
-                                      delay: index * 0.002,
-                                    }}
-                                  >
-                                    <div
-                                      className="game-card-wrapper rounded-2 new-cardclr mt-2 hover-group"
-                                      onClick={() => handleGameClick(game)}
-                                    >
-                                      <div className="game-card p-0 m-0 overflow-hidden">
-                                        <img
-                                          src={
-                                            game.image ||
-                                            "/assets/img/placeholder.png"
-                                          }
-                                          className="game-card-img"
-                                          alt={game.name}
-                                        />
-                                      </div>
-                                      <div className="game-play-button d-flex flex-column">
-                                        <div className="btn-play">
-                                          <i className="fa-solid fa-play"></i>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </motion.div>
-                                ))}
-                              </div>
-                            </>
-                          )}
-
-                          {/* 🔍 Search by Provider */}
-                          {searchPage === 1 &&
-                            searchByProviderResults.length > 0 && (
-                              <>
-                                <h5 className="text-white mt-6">
-                                  Search by Provider
-                                </h5>
-                                <div className="row">
-                                  {searchByProviderResults.map(
-                                    (game, index) => (
-                                      <motion.div
-                                        className="col-md-4 col-sm-4 col-6 px-1"
-                                        key={game.uuid}
-                                        initial={{ opacity: 0, scale: 0.8 }}
-                                        animate={{ opacity: 1, scale: 1 }}
-                                        transition={{
-                                          duration: 0.3,
-                                          delay: index * 0.002,
-                                        }}
-                                      >
-                                        <div
-                                          className="game-card-wrapper rounded-2 new-cardclr mt-2"
-                                          onClick={() => handleGameClick(game)}
-                                        >
-                                          <div className="game-card p-0 m-0 p-1">
-                                            <img
-                                              src={
-                                                game.image ||
-                                                "/assets/img/placeholder.png"
-                                              }
-                                              className="game-card-img"
-                                              alt={game.name}
-                                            />
-                                            <div className="d-flex flex-column text-white text-center py-2 px-1">
-                                              <span className="fs-12 fw-bold text-truncate">
-                                                {game.name}
-                                              </span>
-                                            </div>
-                                          </div>
-                                          <div className="game-play-button d-flex flex-column">
-                                            <div className="btn-play">
-                                              <i className="fa-solid fa-play"></i>
-                                            </div>
-                                          </div>
-                                        </div>
-                                      </motion.div>
-                                    )
-                                  )}
-                                </div>
-                              </>
-                            )}
-                        </>
-                      ) : searchTerm.trim().length >= 3 && !searchLoading ? (
-                        <p className="text-center text-gray-400 mt-4">
-                          No results found.
-                        </p>
-                      ) : null}
-                    </>
-                  )}
-                </>
-              ) : (
-                <>
-                  {/* filter Game List Starts */}
-                  <SkeletonTheme baseColor="#313131" highlightColor="#525252">
-                    <div className="game-list px-1 container">
-                      <h5 className="text-white text-capitalize my-2">
-                        {filterType
-                          ? filterType === "card"
-                            ? "Live Casino"
-                            : `${filterType} Games`
-                          : "Games"}
-                      </h5>
-
-                      <div className="">
-                        <div className="row">
-                          {loading ? (
-                            // 🔄 Skeleton Cards While Loading
-                            Array.from({ length: 6 }).map((_, index) => (
-                              <div
+                          <h5 className="text-white mt-4">
+                            Search by Game Name
+                          </h5>
+                          <div className="row px-8leftright">
+                            {searchByNameResults.map((game, index) => (
+                              <motion.div
                                 className="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 px-1 col-custom-3"
-                                key={index}
+                                key={game.uuid}
+                                initial={{ opacity: 0, scale: 0.8 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{
+                                  duration: 0.3,
+                                  delay: index * 0.002,
+                                }}
+                                onClick={() => handleGameClick(game)}
                               >
-                                <div className="game-card-wrapper rounded-2 new-cardclr mt-2">
-                                  <Skeleton height={140} borderRadius={10} />
-                                  <div className="mt-2 px-1">
-                                    <Skeleton height={12} width="80%" />
+                                <div className="game-card-wrapper rounded-2 new-cardclr mt-2 hover-group">
+                                  <div className="game-card position-relative p-0 m-0 overflow-hidden">
+                                    <img
+                                      src={
+                                        game.image || "/assets/img/play_now.png"
+                                      }
+                                      className="game-card-img"
+                                      alt={game.name}
+                                    />
+                                  </div>
+                                  <div className="btn-play position-absolute top-50 start-50 translate-middle">
+                                    <i className="fa-solid fa-play" />
                                   </div>
                                 </div>
-                              </div>
-                            ))
-                          ) : games.length > 0 ? (
-                            games
-                              .filter((game) => game.image)
-                              .map((game) => (
-                                <div
-                                  className="col-xl-2 col-lg-3 col-md-4 col-sm-4 px-1 col-custom-3"
+                              </motion.div>
+                            ))}
+                          </div>
+                        </>
+                      )}
+
+                      {searchPage === 1 &&
+                        searchByProviderResults.length > 0 && (
+                          <>
+                            <h5 className="text-white mt-6">
+                              Search by Provider
+                            </h5>
+                            <div className="row">
+                              {searchByProviderResults.map((game, index) => (
+                                <motion.div
+                                  className="col-md-4 col-sm-4 col-6 px-1"
                                   key={game.uuid}
+                                  initial={{ opacity: 0, scale: 0.8 }}
+                                  animate={{ opacity: 1, scale: 1 }}
+                                  transition={{
+                                    duration: 0.3,
+                                    delay: index * 0.002,
+                                  }}
+                                  onClick={() => handleGameClick(game)}
                                 >
-                                  <div
-                                    className="game-card-wrapper rounded-2 new-cardclr mt-2 hover-group"
-                                    onClick={() => handleGameClick(game)}
-                                  >
-                                    <div className="game-card position-relative p-0 m-0 overflow-hidden">
+                                  <div className="game-card-wrapper rounded-2 new-cardclr mt-2">
+                                    <div className="game-card p-0 m-0 p-1">
                                       <img
-                                        src={game.image}
+                                        src={
+                                          game.image ||
+                                          "/assets/img/play_now.png"
+                                        }
                                         className="game-card-img"
                                         alt={game.name}
                                       />
+                                      <div className="d-flex flex-column text-white text-center py-2 px-1">
+                                        <span className="fs-12 fw-bold text-truncate">
+                                          {game.name}
+                                        </span>
+                                      </div>
                                     </div>
-                                    <div className="btn-play position-absolute top-50 start-50 translate-middle">
-                                      <i className="fa-solid fa-play"></i>
+                                    <div className="game-play-button d-flex flex-column">
+                                      <div className="btn-play">
+                                        <i className="fa-solid fa-play" />
+                                      </div>
                                     </div>
                                   </div>
-                                </div>
-                              ))
-                          ) : (
-                            // ❌ No Games
-                            <div className="d-flex flex-column align-items-center mt-5">
-                              <img
-                                src="assets/img/notification/img_2.png"
-                                alt="unauth"
-                                className="w-25"
-                              />
-                              <p className="text-white text-center">
-                                No games available.
-                              </p>
+                                </motion.div>
+                              ))}
                             </div>
-                          )}
+                          </>
+                        )}
+                    </>
+                  ) : fixed.length >= 3 && !searchLoading ? (
+                    <p className="text-center text-gray-400 mt-4">
+                      No results found.
+                    </p>
+                  ) : null}
+                </div>
+              ) : (
+                <SkeletonTheme baseColor="#313131" highlightColor="#525252">
+                  <div className="game-list px-2 container">
+                    <h5 className="text-white text-capitalize my-2">
+                      {filterType
+                        ? filterType === "card"
+                          ? "Live Casino"
+                          : `${filterType} Games`
+                        : "Games"}
+                    </h5>
+
+                    <div className="row px-8leftright">
+                      {loading ? (
+                        Array.from({ length: 6 }).map((_, index) => (
+                          <div
+                            className="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 px-1 col-custom-3"
+                            key={index}
+                          >
+                            <div className="game-card-wrapper rounded-2 new-cardclr mt-2">
+                              <Skeleton height={140} borderRadius={10} />
+                              <div className="mt-2 px-1">
+                                <Skeleton height={12} width="80%" />
+                              </div>
+                            </div>
+                          </div>
+                        ))
+                      ) : games.length > 0 ? (
+                        games
+                          .filter((g) => g.image)
+                          .map((game) => (
+                            <div
+                              className="col-xl-2 col-lg-3 col-md-4 col-sm-4 col-6 px-1 col-custom-3"
+                              key={game.uuid}
+                              onClick={() => handleGameClick(game)}
+                            >
+                              <div className="game-card-wrapper rounded-2 new-cardclr mt-2 hover-group">
+                                <div className="game-card position-relative p-0 m-0 overflow-hidden">
+                                  <img
+                                    src={game.image}
+                                    className="game-card-img"
+                                    alt={game.name}
+                                  />
+                                </div>
+                                <div className="btn-play position-absolute top-50 start-50 translate-middle">
+                                  <i className="fa-solid fa-play" />
+                                </div>
+                              </div>
+                            </div>
+                          ))
+                      ) : (
+                        <div className="d-flex flex-column align-items-center mt-5">
+                          <img
+                            src="assets/img/notification/img_2.png"
+                            alt="unauth"
+                            className="w-25"
+                          />
+                          <p className="text-white text-center">
+                            No games available.
+                          </p>
                         </div>
-                      </div>
-                    </div>
-                  </SkeletonTheme>
-
-                  {/* filter Games End here  */}
-                </>
-              )}
-
-              {/* filter Game List Starts */}
-              {/* <div className="game-list px-3 container">
-        <h5 className="text-white text-capitalize my-2">
-          {filterType ? `${filterType} Games` : "Games"}
-        </h5>
-
-        <div className="d-flex flex-wrap gap-3 justify-content-center">
-          <div className="row">
-            {loading ? (
-              <p className="text-white text-center">🎮 Loading games...</p>
-            ) : games.length > 0 ? (
-              games
-                .filter((game) => game.image)
-                .map((game) => (
-                  <div
-                    className="col-md-4 col-sm-4 col-6 px-1 col-custom-3"
-                    key={game.uuid}
-                  >
-                    <div className="game-card-wrapper rounded-2 new-cardclr mt-2 hover-group">
-                      <div className="game-card position-relative p-0 m-0 overflow-hidden">
-                        <img
-                          src={game.image}
-                          className="game-card-img"
-                          alt={game.name}
-                        />
-                      </div>
-                      <div
-                        className="btn-play position-absolute top-50 start-50 translate-middle"
-                        onClick={() => handleGameClick(game)}
-                      >
-                        <i className="fa-solid fa-play"></i>
-                      </div>
+                      )}
                     </div>
                   </div>
-                ))
-            ) : (
-              <>
-                <div className="d-flex flex-column align-items-center mt-5">
-                  <img
-                    src="assets/img/notification/img_2.png"
-                    alt="unauth"
-                    className="w-75"
-                  />
-                  <p className="text-white text-center">No games available.</p>
-                </div>
-              </>
-            )}
-          </div>
-        </div>
-      </div> */}
-              {/* filter Games End here  */}
+                </SkeletonTheme>
+              )}
             </div>
+
+            {/* Fullscreen iframe overlay */}
             {showFullScreenGame && selectedGameUrl && (
               <div
+                className="iframe-container"
                 style={{
                   position: "fixed",
                   top: 0,
@@ -651,56 +602,120 @@ const FilteredGamesPage = () => {
                   height: "100vh",
                   backgroundColor: "#000",
                   zIndex: 9999,
+                  height: "100dvh",
                 }}
               >
-                {/* <nav className="navbar px-2">
-            <div className="container-fluid p-0">
-              <div className="d-flex justify-content-between w-100 align-items-center">
+                {iframeLoaded && !iframeError && (
+                  <nav
+                    className="navbar py-1 navbar-dark bg-black sticky-top shadow-sm d-flex align-items-center position-relative top-0 justify-content-end"
+                    style={{ height: "5%" }}
+                  >
+                    <div className="container-fluid d-flex align-items-center">
+                      <button
+                        className="btn btn-index w-100 deposit-btn text-white py-2"
+                        style={{ background: "#292524" }}
+                        onClick={() => setShowModal(true)}
+                      >
+                        Back
+                      </button>
+                    </div>
+                  </nav>
+                )}
 
-                <div className="d-flex align-items-center">
-                  <button
-                    className="btn text-white p-0 me-2"
-                    onClick={() => {
-                      setShowFullScreenGame(false);
-                      setSelectedGameUrl(null);
-                      navigate("/all-games?is_mobile=1");
+                <div
+                  className="flex-grow-1 d-flex justify-content-center align-items-center"
+                  style={{ height: "95%" }}
+                >
+                  {!iframeError ? (
+                    <iframe
+                      ref={iframeRef}
+                      src={selectedGameUrl}
+                      title="Game"
+                      allowFullScreen
+                      onError={() => setIframeError(true)}
+                      onLoad={handleIframeLoad}
+                      style={{ width: "100%", height: "100%", border: "none" }}
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        color: "red",
+                        fontSize: "1.5rem",
+                        textAlign: "center",
+                      }}
+                    >
+                      Game not visible
+                    </div>
+                  )}
+                </div>
+
+                {showModal && (
+                  <div
+                    className="modal-backdrop d-flex justify-content-center align-items-center"
+                    style={{
+                      backgroundColor: "rgba(0,0,0,0.8)",
+                      position: "fixed",
+                      top: 0,
+                      left: 0,
+                      width: "100%",
+                      height: "100%",
+                      zIndex: 99999,
                     }}
                   >
-                    <i className="fa-solid fa-arrow-left fs-5"></i>
-                  </button>
-                </div>
-                <div
-                  className="text-center"
-                  style={{ position: "absolute", left: 0, right: 0 }}
-                >
-                  <div
-                    className="navbar-brand m-0 w-100"
-                    role="button"
-                    onClick={() => navigate(-1)}
-                    style={{ cursor: "pointer" }}
-                  >
-                    <img
-                      src={Images.Favlogo}
-                      alt="favicon"
-                      width="100"
-                      className="mx-auto "
-                    />
+                    <div
+                      className="modal-dialog modal-dialog-centered m-2"
+                      style={{ maxWidth: "400px", color: "white" }}
+                    >
+                      <div
+                        className="modal-content text-center p-4"
+                        style={{
+                          borderRadius: "1rem",
+                          background:
+                            "linear-gradient(145deg, #0f0f0f, #1a1a1a)",
+                          border: "1px solid #ff0055",
+                          boxShadow: "0 0 20px #ff0055ae",
+                        }}
+                      >
+                        <div className="modal-header border-0 justify-content-end">
+                          <button
+                            type="button"
+                            className="btn-close btn-close-white"
+                            onClick={() => setShowModal(false)}
+                          />
+                        </div>
+
+                        <div className="modal-body">
+                          <h5 className="modal-title fs-2 text-warning mb-3">
+                            Go Back?
+                          </h5>
+                          <p className="fs-5 text-light">
+                            Are you sure you want to leave this game?
+                          </p>
+                        </div>
+
+                        <div className="modal-footer border-0 justify-content-center gap-2">
+                          <button
+                            type="button"
+                            className="btn btn-index w-100 deposit-btn text-white py-2"
+                            onClick={handleConfirm}
+                          >
+                            OK
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-index w-100 deposit-btn text-white py-2"
+                            onClick={() => setShowModal(false)}
+                          >
+                            Cancel
+                          </button>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                </div>
-                <div style={{ width: "35px" }}></div>
-              </div>
-            </div>
-          </nav> */}
-                <iframe
-                  ref={iframeRef}
-                  src={selectedGameUrl}
-                  title="Game"
-                  style={{ width: "100%", height: "100%", border: "none" }}
-                  allowFullScreen
-                />
+                )}
               </div>
             )}
-            <div className="" style={{ marginTop: "100px" }}></div>
+            <div style={{ marginTop: "100px" }} />
             <Footer />
           </div>
         </div>

@@ -6,6 +6,7 @@ import AuthContext from "../../Auth/AuthContext";
 import { getAuthType, loginUser } from "../../API/authAPI"; // Renamed verifyOTP import
 import routes from "../routes/route";
 import { Images } from "../layouts/Header/constants/images";
+import { APP_NAME } from "../../constants";
 const PENDING_CODE_KEY = "pendingGiftCode";
 const LoginPage = () => {
   const { login } = useContext(AuthContext);
@@ -23,7 +24,7 @@ const LoginPage = () => {
       setGiftNotice("You got a gift! Please login to claim it 🎁");
     }
   }, []);
-  
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (token) {
@@ -50,9 +51,7 @@ const LoginPage = () => {
       static_otp: "",
     },
     validationSchema: Yup.object().shape({
-      user_mobile: Yup.string()
-        .matches(/^\d{10}$/, "Mobile number must be 10 digits")
-        .required("Mobile number is required"),
+      user_mobile: Yup.string().required("Mobile number is required"),
       user_password:
         authType === "default"
           ? Yup.string()
@@ -160,18 +159,23 @@ const LoginPage = () => {
 
   return (
     <section className="container vh-100 position-relative overflow-hidden black-red">
-      <div className="circle1 position-absolute top-0"></div>
-      <div className="circle2 position-absolute bottom-0"></div>
+      {/* <div className="circle1 position-absolute top-0"></div>
+      <div className="circle2 position-absolute bottom-0"></div> */}
 
-      <div className="pt-3 pb-2 h-100 d-flex align-items-center flex-column justify-content-center w-100 position-top-60">
-        <div className="logo d-flex justify-content-center mb-2">
-          <img
-            src={Images.Favlogo}
-            alt="Logo"
-            width="50%"
-            style={{ objectFit: "contain" }}
-          />
-        </div>
+      <div className="">
+        <Link to={routes.home}>
+          <div
+            className="logo d-flex justify-content-center mb-2"
+            style={{ "max-width": "400px" }}
+          >
+            <img
+              src={Images.Favlogo}
+              alt="Logo"
+              width="50%"
+              style={{ objectFit: "contain" }}
+            />
+          </div>
+        </Link>
 
         <div className="p-3 d-flex justify-content-start flex-column card-log">
           {giftNotice && (
@@ -206,13 +210,36 @@ const LoginPage = () => {
                   <label htmlFor="user_mobile" className="form-label text-gray">
                     Mobile
                   </label>
-                  <input
+                  {/* <input
                     type="tel"
                     className="form-control login-card__form-control"
                     id="user_mobile"
                     name="user_mobile"
                     value={formik.values.user_mobile}
                     onChange={formik.handleChange}
+                    onBlur={formik.handleBlur}
+                  /> */}
+                  <input
+                    type="tel"
+                    id="user_mobile"
+                    name="user_mobile"
+                    className="form-control login-card__form-control"
+                    value={formik.values.user_mobile}
+                    inputMode="numeric" // mobile shows number keypad
+                    pattern="[0-9]*" // soft hint for numeric
+                    autoComplete="tel"
+                    onChange={(e) => {
+                      const digits = e.target.value.replace(/\D/g, ""); // keep only 0-9
+                      formik.setFieldValue("user_mobile", digits);
+                    }}
+                    onPaste={(e) => {
+                      e.preventDefault();
+                      const pasted = (
+                        e.clipboardData || window.clipboardData
+                      ).getData("text");
+                      const digits = pasted.replace(/\D/g, "");
+                      formik.setFieldValue("user_mobile", digits.slice(0, 10));
+                    }}
                     onBlur={formik.handleBlur}
                   />
                   {formik.touched.user_mobile && formik.errors.user_mobile && (
@@ -282,7 +309,7 @@ const LoginPage = () => {
                 {/* Register Link */}
                 <div className="text-center mt-3">
                   <p className="text-gray ">
-                    <span className="text-gray "> New to Jiboomba? </span>
+                    <span className="text-gray "> New to {APP_NAME}? </span>
                     <Link
                       to={routes.auth.register}
                       className="link ms-2 fs-16 text-red z-2"

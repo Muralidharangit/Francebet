@@ -104,8 +104,7 @@ function AddBank() {
           },
         }
       );
-      // console.log("Bank added:", response.data); // ✅ now it's used
-
+    
       alert("Payment method added successfully!");
       setBankDetails({
         payment_method_id: paymentMethod,
@@ -122,7 +121,7 @@ function AddBank() {
         "Error adding payment method:",
         error.response?.data || error.message
       );
-      alert(`Failed to add: ${error.response?.data?.message || error.message}`);
+      // alert(`Failed to add: ${error.response?.data?.message || error.message}`);
     }
   };
 

@@ -16,6 +16,7 @@ import {
 } from "../../../../API/withdrawAPI";
 import { verifyToken } from "../../../../API/authAPI";
 import { toast, ToastContainer } from "react-toastify";
+import { useLocation, useNavigate } from "react-router-dom";
 // import { Link } from "react-router-dom";
 const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
   const [bankDetails, setbankDetails] = useState([]);
@@ -29,6 +30,9 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
   // const [editingBankData, setEditingBankData] = useState(null);
   const { user } = useContext(AuthContext);
   const token = user?.token;
+
+  const navigate = useNavigate();
+  const location = useLocation();
   // useEffect(() => {
   //   toast.success("Testing toast closing...", { autoClose: 3000 });
   // }, []);
@@ -243,7 +247,15 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
           // toast.error(errorMessage);
           toast.error(`${errorMessage}. Please log in again to continue.`, {
             toastId: "unauthorized-toast", // prevents duplicate toasts
+            onClose: () => {
+              // runs if user clicks X OR after autoClose timeout
+              navigate(location.pathname, { replace: true, state: {} });
+            },
           });
+          // Redirect after a short delay (e.g., 2 seconds)
+          setTimeout(() => {
+            navigate("/login");
+          }, 5000);
           // setErrors({ api: errorMessage });
           setSubmitting(false);
           return;
@@ -355,7 +367,15 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
           // toast.error(errorMessage);
           toast.error(`${errorMessage}. Please log in again to continue.`, {
             toastId: "unauthorized-toast", // prevents duplicate toasts
+            onClose: () => {
+              // runs if user clicks X OR after autoClose timeout
+              navigate(location.pathname, { replace: true, state: {} });
+            },
           });
+          // Redirect after a short delay (e.g., 2 seconds)
+          setTimeout(() => {
+            navigate("/login");
+          }, 5000);
           // setErrors({ api: errorMessage });
           setSubmitting(false);
           return;
@@ -880,10 +900,6 @@ const BankDetails = ({ selectedBankId, setSelectedBankId }) => {
                       <div>
                         {/* bank Details Starts */}
                         <div>
-                          {/* <h3>{bank.id}</h3> */}
-                          {/* <h6>
-                            Payment Method: {bank.payment_method?.name || "N/A"}
-                          </h6> */}
                           {bank.payment_method?.name === "UPI" ? (
                             <p>
                               <strong>UPI ID:</strong> {bank.upi_id || "N/A"}

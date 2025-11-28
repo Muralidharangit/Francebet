@@ -21,11 +21,11 @@ const Provider = () => {
         if (Array.isArray(data.providers)) {
           setProviders(data.providers);
         } else {
-          console.error("API response does not contain 'allGames' array", data);
+          // console.error("API response does not contain 'allGames' array", data);
           setProviders([]); // Fallback to an empty array
         }
       } catch (error) {
-        console.error("Error fetching games:", error);
+        // console.error("Error fetching games:", error);
         setProviders([]); // Handle errors by setting an empty array
       }
     };
@@ -42,8 +42,8 @@ const Provider = () => {
       {/*-- Provider Section --*/}
       <div className="container">
         <div className="p-1 pt-4">
-          <h3 className="text-center">Providers</h3>
-          <div className="row">
+          <h3 className="text-center ">Providers</h3>
+          <div className="row px-8leftright">
             {providers.length > 0 ? (
               providers.map((provider, index) => (
                 <div className="col-4 px-1" key={index}>
