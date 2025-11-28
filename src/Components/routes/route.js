@@ -97,7 +97,7 @@ const routes = {
   },
   pages: {
     privacyPolicy: "/privacy-policy",
-    terms: "/terms-condition",
+    terms: "/terms-conditions",
     howToPlay: "/how-to-play",
     referEarn: "/refer-earn",
     slider: "/starting-slider",
@@ -113,3 +113,5 @@ const routes = {
 };
 
 export default routes;
+
+
