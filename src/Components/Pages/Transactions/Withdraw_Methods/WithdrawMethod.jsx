@@ -32,6 +32,7 @@ const WithdrawMethod = () => {
         setLoading(true);
         setErr("");
         const api_token = "efqtTvRqnGa8OeVb5Xugw13uo8BAfAEwvWpH8";
+
         const res = await axiosInstance.get(
           "/player/payment-services/payment-methods",
           {
@@ -43,7 +44,7 @@ const WithdrawMethod = () => {
           }
         );
 
-        // console.log(res);
+
 
         const list =
           (Array.isArray(res?.data) && res.data) ||
@@ -56,8 +57,10 @@ const WithdrawMethod = () => {
         if (e?.code === "ERR_CANCELED" || e?.name === "CanceledError") return;
         setErr(
           e?.response?.data?.message ||
+
           e?.message ||
           "Failed to load payment methods"
+
         );
       } finally {
         setLoading(false);
@@ -105,18 +108,22 @@ const WithdrawMethod = () => {
         localStorage.setItem("apay_order_id", order_id || customTxId);
       } catch (_) { }
 
+
       // Redirect the user to A-Pay
       window.location.assign(url); // or window.location.href = url
     } catch (e) {
       setErr(
         e?.response?.data?.message ||
+
         e?.message ||
         "Failed to start A-Pay payment."
+
       );
     } finally {
       setClickingId(null);
     }
   }
+
 
 // function handleChoose(method) {
 //   const name_method = (method?.name || "").toLowerCase().trim();
@@ -178,6 +185,7 @@ function handleChoose(method) {
       return "assets/img/cash-payment_img.png";
 
     if (n.includes("manual withdraw - namibia")) return "assets/img/wallet.png"; // easy wallet deposit
+
     if (n.includes("blue wallet")) return "assets/img/blue_wallet.png"; // blue wallet deposit
     if (n.includes("nedbank") && n.includes("wallet"))
       return "assets/img/mobile-payment.png"; // nedbank wallet deposit
@@ -217,7 +225,9 @@ function handleChoose(method) {
 
                       <h5 className="position-absolute start-50 translate-middle-x m-0 text-white fs-16 text-center">
                         Withdraw Payment Method
+
                       </h5> 
+
                     </div>
 
                     {/* Card */}
@@ -237,7 +247,9 @@ function handleChoose(method) {
                           <div className="col-12 col-lg-12">
                             <div className="row g-3 justify-content-left">
                               {/* 🔹 Extra box before all methods */}
+
                               {/* <div className="col-12 col-lg-6 col-xl-4">
+
                                 <div className="p-3 rounded border h-100 d-flex flex-column">
                                   <div className="d-flex justify-content-between">
                                     <img
@@ -290,7 +302,9 @@ function handleChoose(method) {
                                     </button>
                                   </Link>
                                 </div>
+
                               </div> */}
+
 
                               {/* 🔹 Existing list from API */}
                               {methods.map((m, idx) => {
@@ -299,6 +313,7 @@ function handleChoose(method) {
                                 );
                                 const isBusy = clickingId === key;
                                 const title = m?.name || m?.code || "";
+
 
                                 const tx = routes?.transactions ?? {};
 
@@ -315,6 +330,7 @@ function handleChoose(method) {
                                 //   perCardHistoryRoute =
                                 //     tx.easy_wallet_history ?? tx.depositHistory;
                                 // }
+
                                 return (
                                   <div
                                     className="col-12 col-lg-6 col-xl-4"
@@ -404,13 +420,17 @@ function handleChoose(method) {
                                         </button>
                                       </Link> */}
 
+
                                       {/* <Link
+
                                         to={routes.transactions.withdrawWallet}
                                         state={{
                                           methodId: m.id,
                                           methodName: m.name,
                                         }} // 🔥 send m.id here
+
                                       > */}
+
                                         <button
                                           type="button"
                                           className="btn btn-red mt-auto w-50"
@@ -422,10 +442,12 @@ function handleChoose(method) {
                                           {isBusy
                                             ? "Redirecting..."
                                             : "Proceed"}
+
                                          
                                         </button>
 
                                       {/* </Link> */}
+
                                     </div>
                                   </div>
                                 );
@@ -449,3 +471,4 @@ function handleChoose(method) {
 };
 
 export default WithdrawMethod;
+
