@@ -71,13 +71,25 @@ const BankDetails = ({
     }
   }, [state]);
 
+
+  // const filteredBanks = bankDetails.filter(
+  //   (bank) =>
+  //     bank.isDeleted == "1" &&
+  //     bank.wallet_type_id &&
+  //     bank.status == "1" &&
+  //     methodId && // make sure methodId is available
+  //     String(bank.wallet_type_id) === String(methodId)
+  // );
+
+
   const filteredBanks = bankDetails.filter(
     (bank) =>
       bank.isDeleted == "1" &&
       bank.wallet_type_id &&
       bank.status == "1" &&
-      methodId && // make sure methodId is available
-      String(bank.wallet_type_id) === String(methodId)
+      methodId &&
+      String(bank.wallet_type.payment_method_id) === String(methodId)
+
   );
 
   const handleSelectBank = (bank) => {
@@ -673,9 +685,10 @@ const BankDetails = ({
       <div className="bg_light_grey rounded-2 py-3 pb-2">
         <nav className="nav nav-pills d-flex justify-content-between tab_red_active pt-2 px-2 pb-2 ">
           <button
-            className={`nav-link btn-color text-white w-150 ${
-              activeTab === "bank" ? "active" : ""
-            }`}
+
+            className={`nav-link btn-color text-white w-150 ${activeTab === "bank" ? "active" : ""
+              }`}
+
             onClick={() => setActiveTab("bank")}
             type="button"
           >
@@ -683,9 +696,10 @@ const BankDetails = ({
           </button>
 
           <button
-            className={`nav-link btn-color text-white w-150 ${
-              activeTab === "add" ? "active" : ""
-            }`}
+
+            className={`nav-link btn-color text-white w-150 ${activeTab === "add" ? "active" : ""
+              }`}
+
             onClick={() => setActiveTab("add")}
             type="button"
           >
@@ -984,11 +998,12 @@ const BankDetails = ({
                               />
                             </div>
                             <span
-                              className={`fw-600 ${
-                                bank.status === 1
+
+                              className={`fw-600 ${bank.status === 1
                                   ? "text-success"
                                   : "text-danger"
-                              }`}
+                                }`}
+
                             >
                               {/* {bank.status === "1" ? "Active" : "Inactive"} */}
                             </span>
@@ -1014,7 +1029,6 @@ const BankDetails = ({
                           <button
                             className="btn mt-2"
                             onClick={() => handleDeleteBankClick(bank.id)}
-                            // onClick={handlePopUP}
                           >
                             <i class="fa-regular fa-trash-can fs-4 text-danger">
                               {/* {bank.id} */}
@@ -1135,5 +1149,5 @@ const BankDetails = ({
     </>
   );
 };
-
 export default BankDetails;
+

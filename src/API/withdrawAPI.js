@@ -288,7 +288,7 @@ export const storeWallet = async (token, values, methodId) => {
     `${BASE_URL}/player/withdraw/wallet/player-wallet/store`,
     {
       ...values, // Spread the existing form data (name, phone_number)
-      wallet_type_id: methodId, // Add the hardcoded ID here
+      payment_method_id: methodId, // Add the hardcoded ID here
     },
     {
       headers: {

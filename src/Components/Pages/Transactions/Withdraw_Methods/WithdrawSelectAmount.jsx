@@ -10,7 +10,9 @@ const SelectAmount = ({ amount, setAmount, token, onValidityChange }) => {
   useEffect(() => {
     (async () => {
       try {
-        const settings = await getPortalSettings("deposit", token);
+
+        const settings = await getPortalSettings("withdraw", token);
+
         const min = Number(settings?.min_deposit);
         const maxRaw = Number(settings?.max_deposit);
 

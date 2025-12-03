@@ -33,19 +33,18 @@ const WithdrawMethod = () => {
         setErr("");
         const api_token = "efqtTvRqnGa8OeVb5Xugw13uo8BAfAEwvWpH8";
 
-        const res = await axios.get(
-          "https://staging.payservice.iccpanel.com/api/wallet-type/list",
+        const res = await axiosInstance.get(
+          "/player/payment-services/payment-methods",
           {
-            params: {
-              portal_id: 2, // BODY DATA
-            },
-            headers: {
-              Authorization: `Bearer ${api_token}`,
-            },
+            params: { type: "withdraw" },
+             headers: user?.token
+              ? { Authorization: `Bearer ${user.token}` }
+              : undefined,
+            signal: controller.signal,
           }
         );
 
-        console.log(res);
+
 
         const list =
           (Array.isArray(res?.data) && res.data) ||
@@ -58,8 +57,10 @@ const WithdrawMethod = () => {
         if (e?.code === "ERR_CANCELED" || e?.name === "CanceledError") return;
         setErr(
           e?.response?.data?.message ||
-            e?.message ||
-            "Failed to load payment methods"
+
+          e?.message ||
+          "Failed to load payment methods"
+
         );
       } finally {
         setLoading(false);
@@ -105,35 +106,73 @@ const WithdrawMethod = () => {
       // (Optional) keep the order id for later verification on return page
       try {
         localStorage.setItem("apay_order_id", order_id || customTxId);
-      } catch (_) {}
+      } catch (_) { }
+
 
       // Redirect the user to A-Pay
       window.location.assign(url); // or window.location.href = url
     } catch (e) {
       setErr(
         e?.response?.data?.message ||
-          e?.message ||
-          "Failed to start A-Pay payment."
+
+        e?.message ||
+        "Failed to start A-Pay payment."
+
       );
     } finally {
       setClickingId(null);
     }
   }
 
-  function handleChoose(method) {
-    const name_method = (method?.name || "").toLowerCase().trim();
-    setNameMethod(name_method);
 
-    // name -> something like "Manual Deposit - Namibia"
-    const key = (name_method || "").toLowerCase().trim();
+// function handleChoose(method) {
+//   const name_method = (method?.name || "").toLowerCase().trim();
+//   setNameMethod(name_method);
 
-    // Most specific FIRST
-    if (key.includes("manual") && key.includes("namibia")) {
-      navigate("/deposit-namibia/manual-deposit/get-payment-details");
-      setHistoryRoute(routes.transactions.manual_deposit_history);
-      return;
-    }
+//   console.log("name_method", name_method);
+
+//   const key = name_method;
+
+//   // If matches manual withdraw Namibia
+//   if (key.includes("manual") && key.includes("withdraw - namibia")) {
+//     navigate("/manual-withdraw-namibia");
+//     // setHistoryRoute(routes.transactions.manual_deposit_history);
+//     return;
+//   }
+
+//   // All other methods -> Default withdraw wallet route
+//   navigate(routes.transactions.withdrawWallet);
+//   // setHistoryRoute(routes.transactions.withdraw_history);
+// }
+
+function handleChoose(method) {
+  const name_method = (method?.name || "").toLowerCase().trim();
+  setNameMethod(name_method);
+
+  console.log("name_method", name_method);
+
+  const key = name_method;
+
+  // Specific case → Manual Withdraw Namibia
+  if (key.includes("manual") && key.includes("withdraw - namibia")) {
+    navigate("/manual-withdraw-namibia", {
+      state: {
+        methodId: method.id,
+        methodName: method.name,
+      },
+    });
+    return;
   }
+
+  // Default case → Withdraw Wallet route
+  navigate(routes.transactions.withdrawWallet, {
+    state: {
+      methodId: method.id,
+      methodName: method.name,
+    },
+  });
+}
+
 
   // Put this helper above your component (or in a utils file)
   const getMethodIcon = (name = "") => {
@@ -145,7 +184,8 @@ const WithdrawMethod = () => {
     if (/manual deposit .*namibia/i.test(name))
       return "assets/img/cash-payment_img.png";
 
-    if (n.includes("easy wallet")) return "assets/img/wallet.png"; // easy wallet deposit
+    if (n.includes("manual withdraw - namibia")) return "assets/img/wallet.png"; // easy wallet deposit
+
     if (n.includes("blue wallet")) return "assets/img/blue_wallet.png"; // blue wallet deposit
     if (n.includes("nedbank") && n.includes("wallet"))
       return "assets/img/mobile-payment.png"; // nedbank wallet deposit
@@ -185,7 +225,9 @@ const WithdrawMethod = () => {
 
                       <h5 className="position-absolute start-50 translate-middle-x m-0 text-white fs-16 text-center">
                         Withdraw Payment Method
-                      </h5>
+
+                      </h5> 
+
                     </div>
 
                     {/* Card */}
@@ -205,7 +247,9 @@ const WithdrawMethod = () => {
                           <div className="col-12 col-lg-12">
                             <div className="row g-3 justify-content-left">
                               {/* 🔹 Extra box before all methods */}
-                              <div className="col-12 col-lg-6 col-xl-4">
+
+                              {/* <div className="col-12 col-lg-6 col-xl-4">
+
                                 <div className="p-3 rounded border h-100 d-flex flex-column">
                                   <div className="d-flex justify-content-between">
                                     <img
@@ -258,7 +302,9 @@ const WithdrawMethod = () => {
                                     </button>
                                   </Link>
                                 </div>
-                              </div>
+
+                              </div> */}
+
 
                               {/* 🔹 Existing list from API */}
                               {methods.map((m, idx) => {
@@ -267,6 +313,23 @@ const WithdrawMethod = () => {
                                 );
                                 const isBusy = clickingId === key;
                                 const title = m?.name || m?.code || "";
+
+
+                                const tx = routes?.transactions ?? {};
+
+                                //  const isManual = nk.includes("manual");
+
+                                let perCardHistoryRoute;
+
+                                // if (isManual) {
+                                //   perCardHistoryRoute =
+                                //     tx.manual_deposit_history ??
+                                //     tx.depositHistory;
+                                // } else if (isEasyWallet) {
+                                //   // ✅ specific before generic
+                                //   perCardHistoryRoute =
+                                //     tx.easy_wallet_history ?? tx.depositHistory;
+                                // }
 
                                 return (
                                   <div
@@ -357,13 +420,17 @@ const WithdrawMethod = () => {
                                         </button>
                                       </Link> */}
 
-                                      <Link
+
+                                      {/* <Link
+
                                         to={routes.transactions.withdrawWallet}
                                         state={{
                                           methodId: m.id,
                                           methodName: m.name,
                                         }} // 🔥 send m.id here
-                                      >
+
+                                      > */}
+
                                         <button
                                           type="button"
                                           className="btn btn-red mt-auto w-50"
@@ -375,8 +442,12 @@ const WithdrawMethod = () => {
                                           {isBusy
                                             ? "Redirecting..."
                                             : "Proceed"}
+
+                                         
                                         </button>
-                                      </Link>
+
+                                      {/* </Link> */}
+
                                     </div>
                                   </div>
                                 );
@@ -400,3 +471,4 @@ const WithdrawMethod = () => {
 };
 
 export default WithdrawMethod;
+
