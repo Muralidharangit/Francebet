@@ -260,6 +260,9 @@ const StickyHeader = ({ onToggleSidebar }) => {
                         <Skeleton circle height={36} width={36} />
                       )} */}
                     </div>
+
+
+                 
                   </div>
                 ) : (
                   // If Not Logged In
@@ -277,10 +280,14 @@ const StickyHeader = ({ onToggleSidebar }) => {
                         Sign up
                       </button>
                     </Link>
+
+                     
                   </div>
                 )}
               </div>
             </div>
+
+          
           </nav>
         </header>
 
@@ -293,7 +300,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                   <img src="/assets/img/logo.png" alt="logo" />
                 </a>
                 <a className="navbar-brand brand-logo-mini p-0">
-                  <img src="/assets/img/fav.png" alt="logo" />
+                  <img src="/assets/img/favic.png" alt="logo" />
                 </a>
               </Link>
             </div>
@@ -367,20 +374,32 @@ const StickyHeader = ({ onToggleSidebar }) => {
                             </button> */}
 
                             {portalSettings?.auto_deposit === 1 ? (
-                              <button
-                                className="btn  btn-index w-100 deposit-btn"
-                                onClick={() =>
+                              // <button
+                              //   className="btn  btn-index w-100 deposit-btn"
+                              //   onClick={() =>
+                              //     handleSecureRoute(
+                              //       routes.transactions.paymentMethod
+                              //     )
+                              //   }
+                              // >
+                              //   Deposit
+                              // </button>
+
+                               <button role="button" className="golden-button btn-index"   onClick={() =>
                                   handleSecureRoute(
                                     routes.transactions.paymentMethod
                                   )
-                                }
-                              >
-                                Deposit
-                              </button>
+                                }>
+  <span className="golden-text"> Deposit</span>
+</button>
+
                             ) : (
                               ""
                             )}
                           </div>
+
+
+                             
                         </li>
                       </div>
                     ) : (

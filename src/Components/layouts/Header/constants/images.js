@@ -12,8 +12,8 @@
 
 // // red
 export const Images = {
-  Favlogo: "/assets/img/fav.png", // No import here
-  Favlogo2: "/assets/img/logo.png",
+  Favlogo: "/assets/img/fav.jpeg", // No import here
+  Favlogo2: "/assets/img/logo.jpeg",
 };
 
 // // blue

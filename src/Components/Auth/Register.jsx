@@ -198,8 +198,16 @@ const Register = () => {
       />
       <section className="container black-red">
         <Link to={routes.home}>
-          <div className="logo d-flex justify-content-center mb-2">
-            <img src={Images.Favlogo} alt="Logo" width="50%" />
+          <div
+            className="logo d-flex justify-content-center mb-2"
+            style={{ "max-width": "400px" }}
+          >
+            <img
+              src={Images.Favlogo}
+              alt="Logo"
+              width="50%"
+              style={{ objectFit: "contain" }}
+            />
           </div>
         </Link>
 

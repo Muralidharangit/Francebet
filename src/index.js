@@ -8,6 +8,8 @@ import { BrowserRouter } from "react-router-dom";
 import RouteTracker from "./Auth/RouteTracker";
 import ForbiddenPage from "./Components/Pages/ErrorPages/ForbiddenPage";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import './i18n'; // Import the configuration
+
 
 const queryClient = new QueryClient({
   defaultOptions: {

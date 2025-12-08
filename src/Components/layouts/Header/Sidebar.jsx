@@ -125,7 +125,7 @@ const Sidebar = () => {
             <Link to={routes.games.all}>
               <button
                 type="button"
-                className="btn swiper-scrollbar-drag w-100 bgbody-color text-white rounded-pill fs-15 fw-500"
+                className="btn swiper-scrollbar-drag w-100  text-white rounded-pill fs-15 fw-500 "
               >
                 All Games
               </button>

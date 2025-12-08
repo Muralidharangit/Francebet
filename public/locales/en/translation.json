@@ -1,0 +1,15 @@
+{
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Welcome to our website",
+    "subtitle": "i18next test in Create React App"
+  },
+  "cta": {
+    "getStarted": "Get Started"
+  },
+  "footer": "© 2025 My CRA I18N App"
+}
