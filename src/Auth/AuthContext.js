@@ -203,6 +203,7 @@ import React, {
   useCallback,
   useRef,
 } from "react";
+
 import axios from "axios";
 import BASE_URL from "../API/api";
 import routes from "../Components/routes/route";
@@ -223,10 +224,13 @@ export const AuthProvider = ({ children }) => {
   const [avatar, setAvatar] = useState(null);
   const [portalStatus, setPortalStatus] = useState("loading");
   const [portalErrorMsg, setPortalErrorMsg] = useState("");
-
+  const [telegramConfig, setTelegramConfig] = useState({ link: null });
   const location = useLocation();
   const firstLoadRef = useRef(true);
-
+  // inside AuthProvider or the component that calls fetchPortalStatus
+  const DEFAULT_CHANNELS = { whatsapp: 0, tawk: 0, telegram: 0 };
+  // const [portalStatus, setPortalStatus] = useState("loading");
+  const [portalChannels, setPortalChannels] = useState(DEFAULT_CHANNELS);
   // ✅ paste the effect here, inside AuthProvider
   useEffect(() => {
     const code = localStorage.getItem("pendingGiftCode");
@@ -235,6 +239,7 @@ export const AuthProvider = ({ children }) => {
     (async () => {
       try {
         const upper = code;
+
         await axiosInstance.get("/gift-envelope/validate", {
           params: { id: upper },
         });
@@ -253,9 +258,9 @@ export const AuthProvider = ({ children }) => {
             amount: claimRes?.data?.amount,
           })
         );
+        window.dispatchEvent(new Event("giftFlash")); // ✅ notify success
       } catch (err) {
         const msg =
-          err?.message ||
           err?.response?.data?.error ||
           err?.message ||
           "Gift link invalid, used, or claim failed.";
@@ -263,6 +268,7 @@ export const AuthProvider = ({ children }) => {
           "giftFlash",
           JSON.stringify({ type: "error", message: msg })
         );
+        window.dispatchEvent(new Event("giftFlash")); // ✅ notify error
       } finally {
         localStorage.removeItem("pendingGiftCode");
       }
@@ -283,7 +289,7 @@ export const AuthProvider = ({ children }) => {
         setLoginVerify(status);
         setPortalAllData(response.data);
         setProfile(user);
-        setAvatar(user.avatar);
+        setAvatar(user);
         setPortalSettings(portal_settings);
 
         // await fetchAuthType();
@@ -321,12 +327,20 @@ export const AuthProvider = ({ children }) => {
   const fetchPortalStatus = async () => {
     try {
       const res = await axios.get(`${BASE_URL}/portal-info`);
+
       if (res?.data?.status_code === 403) {
         setPortalStatus("forbidden");
         setPortalErrorMsg(res?.data?.msg || "Access denied.");
-      } else {
-        setPortalStatus("active");
+        return;
       }
+
+      setPortalStatus("active");
+
+      const map = Object.fromEntries(
+        (res?.data?.channels || []).map((c) => [c.channel, Number(!!c.status)])
+      );
+
+      setPortalChannels({ whatsapp: 0, tawk: 0, telegram: 0, ...map });
     } catch (error) {
       if (error.response?.status === 403) {
         setPortalStatus("forbidden");
@@ -334,15 +348,19 @@ export const AuthProvider = ({ children }) => {
       } else {
         console.error("Failed to fetch portal info", error);
         setPortalStatus("active");
+        setPortalChannels({ whatsapp: 0, tawk: 0, telegram: 0 });
       }
     }
   };
+  // useEffect(() => {
+  //   fetchPortalStatus();
+  // }, []);
 
   // --- First load init ---
   useEffect(() => {
     const initApp = async () => {
       await fetchPortalStatus();
-
+      await fetchCommunication();
       const token = localStorage.getItem("token");
       if (token) {
         await fetchUser(token);
@@ -355,6 +373,126 @@ export const AuthProvider = ({ children }) => {
     };
     initApp();
   }, [fetchUser]);
+
+  // WhatsAPP icon Starts
+  const [waConfig, setWaConfig] = useState({ phone: null, text: null });
+  const [tawkConfig, setTawkConfig] = useState({
+    url: null,
+    propertyId: null,
+    widgetId: null,
+  });
+
+  function toWaPhone(raw) {
+    if (!raw) return null;
+    return String(raw).replace(/[^\d]/g, ""); // "+91 98..." -> "9198..."
+  }
+  function parseTawk(url) {
+    try {
+      const u = new URL(url);
+      // expect .../embed.tawk.to/<propertyId>/<widgetId>
+      const parts = u.pathname.split("/").filter(Boolean);
+      // find last two non-empty tokens
+      const widgetId = parts[parts.length - 1] || null;
+      const propertyId = parts[parts.length - 2] || null;
+      return { propertyId, widgetId };
+    } catch {
+      return { propertyId: null, widgetId: null };
+    }
+  }
+
+  // inside AuthProvider
+  // const fetchCommunication = async () => {
+  //   try {
+  //     const { data } = await axios.get(`${BASE_URL}/communication`);
+
+  //     // Map channel enable/disable
+  //     const map = Object.fromEntries(
+  //       (data?.channels || []).map((c) => [c.channel, Number(!!c.status)])
+  //     );
+  //     setPortalChannels({ whatsapp: 0, tawk: 0, telegram: 0, ...map });
+
+  //     // Extract per-channel configs
+  //     let w = { phone: null, text: null };
+  //     let t = { url: null, propertyId: null, widgetId: null };
+
+  //     for (const c of data?.channels || []) {
+  //       if (c.channel === "whatsapp" && c.status) {
+  //         w = {
+  //           phone: toWaPhone(c?.config?.number),
+  //           text: c?.config?.welcomeMessage || "Hi! How can we help you?",
+  //         };
+  //       }
+  //       if (c.channel === "tawk" && c.status) {
+  //         const url = c?.config?.tawk_url || null;
+  //         const ids = url
+  //           ? parseTawk(url)
+  //           : { propertyId: null, widgetId: null };
+  //         t = { url, ...ids };
+  //       }
+  //     }
+
+  //     setWaConfig(w);
+  //     setTawkConfig(t);
+  //   } catch (e) {
+  //     console.error("communication fetch failed", e);
+  //     // keep previous portalChannels; clear configs on error
+  //     setWaConfig({ phone: null, text: null });
+  //     setTawkConfig({ url: null, propertyId: null, widgetId: null });
+  //   }
+  // };
+
+ const fetchCommunication = async () => {
+  try {
+    const { data } = await axios.get(`${BASE_URL}/communication`);
+
+    console.log(data);
+
+    // 1) on/off
+    const map = Object.fromEntries(
+      (data?.channels || []).map((c) => [c.channel, Number(!!c.status)])
+    );
+    setPortalChannels({ whatsapp: 0, tawk: 0, telegram: 0, ...map });
+
+    // 2) configs
+    let w = { phone: null, text: null };
+    let t = { url: null, propertyId: null, widgetId: null };
+    let tg = { link: null };
+
+    for (const c of data?.channels || []) {
+
+      // ---- WHATSAPP FIX ----
+      if (c.channel === "whatsapp" && c.status) {
+        w = {
+          phone: toWaPhone(c?.config?.phone),        // FIXED
+          text: c?.config?.text || "Hi! How can we help you?", // FIXED
+        };
+      }
+
+      // ---- TAWK ----
+      if (c.channel === "tawk" && c.status) {
+        const url = c?.config?.tawk_url || null;
+        const ids = url ? parseTawk(url) : { propertyId: null, widgetId: null };
+        t = { url, ...ids };
+      }
+
+      // ---- TELEGRAM ----
+      if (c.channel === "telegram" && c.status) {
+        tg = { link: c?.config?.link || null };
+      }
+    }
+
+    setWaConfig(w);
+    setTawkConfig(t);
+    setTelegramConfig(tg);
+
+  } catch (e) {
+    console.error("communication fetch failed", e);
+
+    setWaConfig({ phone: null, text: null });
+    setTawkConfig({ url: null, propertyId: null, widgetId: null });
+    setTelegramConfig({ link: null });
+  }
+};
 
   // --- Route change check ---
   // useEffect(() => {
@@ -420,6 +558,11 @@ export const AuthProvider = ({ children }) => {
         portalErrorMsg,
         loginVerify,
         portalAllData,
+        portalStatus,
+        portalChannels,
+        waConfig,
+        tawkConfig,
+        telegramConfig,
       }}
     >
       {children}

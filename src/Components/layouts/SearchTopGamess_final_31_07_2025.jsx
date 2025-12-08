@@ -704,7 +704,7 @@ const SearchTopGames = () => {
                           value={searchTerm}
                           onChange={(e) => setSearchTerm(e.target.value)}
                           onInput={(e) => setSearchTerm(e.target.value)} // ✅ extra support for mobile
-                          className="my-3 input"
+                          className="my-3 input text-white"
                         />
                         {isSearchMode && (
                           // <button

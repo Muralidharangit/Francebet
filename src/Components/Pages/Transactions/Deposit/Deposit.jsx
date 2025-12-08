@@ -16,19 +16,25 @@ function Deposit() {
   const [selectedAmount, setSelectedAmount] = useState(""); // 🟣 Add this line
   const [paymentSelectedMethod, setPaymentSelectedMethod] = useState(""); // 🟣 Add this line
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
   const [depositFormData, setDepositFormData] = useState({
     amount: "", // selected in Step 1
     paymentSelectedMethod: "", // selected in Step 2
     utr_number: "",
     payment_screenshot: null,
   });
+
   const steps = [
     {
       id: "step1",
       icon: "fas fa-folder-open",
       title: "Step 1",
       content: () => (
-        <SelectAmount amount={selectedAmount} setAmount={setSelectedAmount} />
+        <SelectAmount
+          amount={selectedAmount}
+          setAmount={setSelectedAmount}
+          count={4}
+        />
       ),
     },
     {
@@ -70,6 +76,7 @@ function Deposit() {
       setActiveStep(steps[currentIndex - 1].id);
     }
   };
+
   return (
     <>
       {/* header  */}
@@ -116,7 +123,7 @@ function Deposit() {
 
                     {/* Wizard */}
                     <div className="container mt-4 px-0">
-                      <div className="wizard my-5">
+                      <div className="wizard my-5 px-2">
                         <ul className="nav nav-tabs justify-content-center">
                           {steps.map((step) => (
                             <li
@@ -158,6 +165,21 @@ function Deposit() {
                         <div className="tab-content">
                           {steps.map((step, index) => {
                             const isActive = activeStep === step.id;
+
+                            const hasBack = index > 0;
+                            const hasNext = index < steps.length - 1;
+
+                            const justifyClass =
+                              hasBack && hasNext
+                                ? "justify-content-between"
+                                : hasNext
+                                ? "justify-content-end" // only Continue → right end
+                                : "justify-content-start"; // only Back → left start
+
+                            const nextDisabled =
+                              (step.id === "step1" && !selectedAmount) ||
+                              (step.id === "step2" && !paymentSelectedMethod);
+
                             return (
                               <div
                                 key={step.id}
@@ -167,8 +189,9 @@ function Deposit() {
                                 id={step.id}
                               >
                                 {step.content()}
-                                <div className="d-flex justify-content-between mt-3">
-                                  {index > 0 && (
+
+                                <div className={`d-flex ${justifyClass} mt-3`}>
+                                  {hasBack && (
                                     <button
                                       className="btn btn-secondary previous"
                                       onClick={goPrevious}
@@ -176,16 +199,12 @@ function Deposit() {
                                       <i className="fas fa-angle-left" /> Back
                                     </button>
                                   )}
-                                  {index < steps.length - 1 && (
+
+                                  {hasNext && (
                                     <button
                                       className="btn btn-light next"
                                       onClick={goNext}
-                                      disabled={
-                                        (step.id === "step1" &&
-                                          !selectedAmount) ||
-                                        (step.id === "step2" &&
-                                          !paymentSelectedMethod)
-                                      }
+                                      disabled={nextDisabled}
                                     >
                                       Continue{" "}
                                       <i className="fas fa-angle-right" />
