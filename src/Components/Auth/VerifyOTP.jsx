@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 // import axios from "axios";
 import { loginUser, registerUser, verifyOTP } from "../../API/authAPI";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import AuthContext from "../../Auth/AuthContext";
 import routes from "../routes/route";
 import { toast, ToastContainer } from "react-toastify";
@@ -184,9 +184,19 @@ const VerifyOTP = () => {
     <section className="container">
       <ToastContainer position="top-right" autoClose={5000} theme="dark" />
       <div className="pt-3 pb-2">
-        <div className="logo d-flex justify-content-center mb-2">
-          <img src={Images.Favlogo} alt="favicon" width="75%" />
-        </div>
+        <Link to={routes.home}>
+          <div
+            className="logo d-flex justify-content-center mb-2"
+            style={{ "max-width": "400px" }}
+          >
+            <img
+              src={Images.Favlogo}
+              alt="Logo"
+              width="50%"
+              style={{ objectFit: "contain" }}
+            />
+          </div>
+        </Link>
         <div className="p-3">
           <div className="section-head">
             <h3 className="title">Enter OTP</h3>

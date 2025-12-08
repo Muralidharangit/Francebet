@@ -7,6 +7,9 @@ import AuthContext from "../../../../Auth/AuthContext";
 import { toast, ToastContainer } from "react-toastify";
 import StickyHeader from "../../../layouts/Header/Header";
 import Sidebar from "../../../layouts/Header/Sidebar";
+import axiosInstance from "../../../../API/axiosConfig";
+import { CURRENCY_SYMBOL } from "../../../../constants";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const DepositHistory = () => {
   const [history, setHistory] = useState([]);
@@ -14,10 +17,26 @@ const DepositHistory = () => {
   const [loading, setLoading] = useState(true);
   const [selectedTab, setSelectedTab] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const { user, profile } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
+  // console.log("user", user);
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const itemsPerPage = 10;
+  const navigate = useNavigate();
 
+  const location = useLocation();
+  //   const [selectedTab, setSelectedTab] = useState("all");
+  // const [currentPage, setCurrentPage] = useState(1);
+
+  const [orders, setOrders] = useState([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
+  const [ordersErr, setOrdersErr] = useState("");
+  const [ordersMeta, setOrdersMeta] = useState({
+    total: 0,
+    per_page: 10,
+    current_page: 1,
+    last_page: 1,
+  });
   // ✅ Moved outside useEffect
   const fetchPlayerData = async () => {
     setLoading(true); // show loading again if retrying
@@ -51,13 +70,75 @@ const DepositHistory = () => {
       // toast.error(errorMessage);
       toast.error(`${err.message}. Please log in again to continue.`, {
         toastId: "unauthorized-toast", // prevents duplicate toasts
+        onClose: () => {
+          // runs if user clicks X OR after autoClose timeout
+          navigate(location.pathname, { replace: true, state: {} });
+        },
       });
       setError(err.message || "Something went wrong. Please try again.");
       setHistory([]); // 🟢 clear old data on error
+      // Redirect after a short delay (e.g., 2 seconds)
+      setTimeout(() => {
+        navigate("/login");
+      }, 5000);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (selectedTab !== "orders list") return;
+
+    const controller = new AbortController();
+    async function fetchOrders() {
+      try {
+        setOrdersLoading(true);
+        setOrdersErr("");
+
+        const playerId = user.id;
+
+        const res = await axiosInstance.get(
+          "/player/payment-services/a-pay/orders",
+          {
+            params: { player_id: playerId, page: currentPage },
+            headers: user?.token
+              ? { Authorization: `Bearer ${user.token}` }
+              : undefined,
+            signal: controller.signal,
+          }
+        );
+
+        // Flexible shape handling
+        const list = res?.data?.data || res?.data?.orders || res?.data || [];
+        setOrders(Array.isArray(list) ? list : []);
+
+        const meta = res?.data?.meta || res?.data?.pagination || {};
+        const total = meta?.total ?? list.length;
+        const perPage = meta?.per_page ?? meta?.perPage ?? 10;
+        const lastPage =
+          meta?.last_page ?? Math.max(1, Math.ceil(total / perPage));
+
+        setOrdersMeta({
+          total,
+          per_page: perPage,
+          current_page: meta?.current_page ?? currentPage,
+          last_page: lastPage,
+        });
+      } catch (e) {
+        if (e?.code === "ERR_CANCELED" || e?.name === "CanceledError") return;
+        setOrdersErr(
+          e?.response?.data?.message ||
+            e?.message ||
+            "Failed to load A-Pay orders."
+        );
+      } finally {
+        setOrdersLoading(false);
+      }
+    }
+
+    fetchOrders();
+    return () => controller.abort();
+  }, [selectedTab, currentPage, user?.token]);
 
   useEffect(() => {
     const handleFocus = () => {
@@ -130,6 +211,26 @@ const DepositHistory = () => {
       )
     );
   };
+
+  const fmtINR = (n = 0) =>
+    new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+    }).format(Number(n || 0));
+
+  const statusBadge = (s) => {
+    const v = (s ?? "").toString().trim().toLowerCase();
+    if (!v) return "badge bg-secondary";
+
+    if (["success", "paid", "completed"].includes(v)) return "badge bg-success";
+    if (["failed", "rejected", "error", "cancelled", "canceled"].includes(v))
+      return "badge bg-danger";
+    if (["processing", "created", "pending", "initiated"].includes(v))
+      return "badge bg-warning text-dark";
+
+    return "badge bg-secondary";
+  };
+
   return (
     <div>
       <ToastContainer position="top-right" autoClose={5000} theme="dark" />
@@ -137,12 +238,12 @@ const DepositHistory = () => {
       <StickyHeader onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
       {/* header end */}
 
-      <section className="container-fluid page-body-wrapper">
+      <section className="page-body-wrapper">
         {/* Sidebar Nav Starts */}
         <Sidebar />
         {/* Sidebar Nav Ends */}
 
-        <div className="main-panel">
+        <div className="main-panel overflow-hidden">
           <div className="content-wrapper">
             <div className="max-1250 mx-auto">
               <div className="h-100">
@@ -171,9 +272,9 @@ const DepositHistory = () => {
               </div> */}
 
                     {/* header Starts */}
-                    <div className="d-flex align-items-center justify-content-between position-relative  px-0">
+                    <div className="d-flex align-items-center justify-content-between position-relative  px-2">
                       {/* Back Button on Left */}
-                      <div className="d-flex justify-content-between align-items-center px-0">
+                      <div className="d-flex justify-content-between align-items-center px-2">
                         {/* <button
                           className="go_back_btn bg-grey"
                           onClick={() => window.history.back()}
@@ -195,15 +296,11 @@ const DepositHistory = () => {
                     </div>
 
                     {/* header Ends */}
-                    <div className="overflow-auto px-0 mt-4">
+                    <div className="overflow-auto px-3 mt-4">
                       <div
                         className="nav nav-pills flex-nowrap gap-2 scroll-hidden rounded-2"
                         id="latest-bet-tabs"
-                        style={{
-                          overflowX: "auto",
-                          whiteSpace: "nowrap",
-                          // background: "#192432",
-                        }}
+                        style={{ overflowX: "auto", whiteSpace: "nowrap" }}
                       >
                         {[
                           "all",
@@ -211,6 +308,7 @@ const DepositHistory = () => {
                           "processing",
                           "verified",
                           "rejected",
+                          "orders list",
                         ].map((tab) => (
                           <button
                             key={tab}
@@ -229,25 +327,145 @@ const DepositHistory = () => {
                       </div>
                     </div>
 
-                    <div className="tab-content p-0 mt-2 mb-3">
+                    {selectedTab === "orders list" && (
+                      <div className="mt-3">
+                        {ordersLoading && (
+                          <p className="text-muted">Loading orders…</p>
+                        )}
+
+                        {ordersErr && (
+                          <div className="alert alert-danger d-flex justify-content-between">
+                            <span>{ordersErr}</span>
+                            <button
+                              className="btn btn-sm btn-outline-light"
+                              onClick={() => setCurrentPage((p) => p)} // retrigger effect
+                            >
+                              Retry
+                            </button>
+                          </div>
+                        )}
+
+                        {!ordersLoading &&
+                          !ordersErr &&
+                          orders.length === 0 && (
+                            <div className="text-center p-4 border rounded">
+                              <div className="mb-2">No orders yet</div>
+                              <small className="text-muted">
+                                Your A-Pay orders will appear here.
+                              </small>
+                            </div>
+                          )}
+
+                        {!ordersLoading && !ordersErr && orders.length > 0 && (
+                          <>
+                            <div className="table-responsive">
+                              <table className="table table-dark table-striped align-middle">
+                                <thead>
+                                  <tr>
+                                    <th>Order ID</th>
+                                    <th>Amount</th>
+                                    <th>Status</th>
+                                    {/* <th>Payment Ref</th> */}
+                                    <th>Created</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {orders.map((o, i) => (
+                                    <tr key={o.id || o.order_id || i}>
+                                      <td className="fw-semibold">
+                                        {o.order_id || o.id || "-"}
+                                      </td>
+                                      <td>
+                                        {fmtINR(o.amount || o.total || 0)}
+                                      </td>
+                                      <td>
+                                        <span className={statusBadge(o.status)}>
+                                          {o.status || "—"}
+                                        </span>
+                                      </td>
+                                      {/* <td>
+                                        {o.payment_reference ||
+                                          o.txn_id ||
+                                          o.gateway_ref ||
+                                          "—"}
+                                      </td> */}
+                                      <td>
+                                        {o.created_at
+                                          ? new Date(
+                                              o.created_at
+                                            ).toLocaleString("en-IN", {
+                                              hour12: false,
+                                            })
+                                          : "—"}
+                                      </td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+
+                            {/* Pagination */}
+                            {ordersMeta?.last_page > 1 && (
+                              <div className="d-flex justify-content-between align-items-center mt-2">
+                                <small className="text-muted">
+                                  Page {ordersMeta.current_page} of{" "}
+                                  {ordersMeta.last_page} • Total{" "}
+                                  {ordersMeta.total}
+                                </small>
+                                <div className="btn-group">
+                                  <button
+                                    className="btn btn-outline-light btn-sm"
+                                    disabled={currentPage <= 1}
+                                    onClick={() =>
+                                      setCurrentPage((p) => Math.max(1, p - 1))
+                                    }
+                                  >
+                                    ‹ Prev
+                                  </button>
+                                  <button
+                                    className="btn btn-outline-light btn-sm"
+                                    disabled={
+                                      currentPage >= ordersMeta.last_page
+                                    }
+                                    onClick={() =>
+                                      setCurrentPage((p) =>
+                                        Math.min(ordersMeta.last_page, p + 1)
+                                      )
+                                    }
+                                  >
+                                    Next ›
+                                  </button>
+                                </div>
+                              </div>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    )}
+
+                    <div className="tab-content px-3 mt-2 mb-3">
                       {loading ? (
                         <p className="text-white text-center mt-4">
                           Loading...
                         </p>
                       ) : error ? (
-                        <>
-                          <p className="text-danger">{error}</p>
-                          <button
-                            className="btn btn-warning mt-2"
-                            onClick={fetchPlayerData}
-                          >
-                            Retry
-                          </button>
-                          <img
+                        <div className="px-3">
+                          <p className="text-danger text-center mt-3">
+                            {error}
+                          </p>
+                          <div className="d-flex align-content-center justify-content-center">
+                            {/* <button
+                              className="btn btn-warning mt-2 w-50"
+                              onClick={fetchPlayerData}
+                            >
+                              Retry
+                            </button> */}
+                            {/* <img
                             src="https://cdni.iconscout.com/illustration/premium/thumb/unauthorized-access-illustration-download-in-svg-png-gif-file-formats--hacker-attack-cyber-intrusion-security-breach-data-pack-crime-illustrations-7706304.png"
                             alt="unauth"
-                          />
-                        </>
+                          /> */}
+                          </div>
+                        </div>
                       ) : paginatedData.length > 0 ? (
                         paginatedData.map((bet) => (
                           <div className="bet-card" key={bet.id}>
@@ -284,7 +502,7 @@ const DepositHistory = () => {
 
                                 <div className="d-flex  align-items-end flex-column">
                                   <h4 className="mb-1 amount-fs-size">
-                                    ₹ {bet.amount}
+                                    {CURRENCY_SYMBOL} {bet.amount}
                                   </h4>
 
                                   <span

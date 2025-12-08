@@ -1,10 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import BASE_URL from "../API/api";
+import { getIsMobileParam } from "./homePageApi";
 
 const fetchFilteredGames = async ({ type, page }) => {
   let mergedGames = [];
   let totalPagesFetched = 1;
+  const isMobileParam = getIsMobileParam();
 
   if (type === "all") {
     const res = await axios.get(
@@ -14,7 +16,7 @@ const fetchFilteredGames = async ({ type, page }) => {
     totalPagesFetched = res.data.pagination?.total_page || 1;
   } else {
     const res = await axios.get(
-      `${BASE_URL}/all-games?is_mobile=1&customType=${type}&page=${page}`
+      `${BASE_URL}/all-games?is_mobile=${isMobileParam}&customType=${type}&page=${page}`
     );
     mergedGames = [...(res.data.allGames || [])];
 

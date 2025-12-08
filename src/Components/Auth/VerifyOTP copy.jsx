@@ -1,7 +1,8 @@
 import React, { useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 import { verifyOTP } from "../../API/authAPI";
 import routes from "../routes/route";
+import { Images } from "../layouts/Header/constants/images";
 
 const VerifyOTP = () => {
   const [otp, setOtp] = useState(["", "", "", ""]);
@@ -74,9 +75,19 @@ const VerifyOTP = () => {
   return (
     <section className="container">
       <div className="pt-3 pb-2">
-        <div className="logo d-flex justify-content-center mb-2">
-          <img src="assets/img/fav.png" alt="favicon" width="75%" />
-        </div>
+        <Link to={routes.home}>
+          <div
+            className="logo d-flex justify-content-center mb-2"
+            style={{ "max-width": "400px" }}
+          >
+            <img
+              src={Images.Favlogo}
+              alt="Logo"
+              width="50%"
+              style={{ objectFit: "contain" }}
+            />
+          </div>
+        </Link>
         <div className="p-3">
           <div className="py-4">
             <h3 className="title text-center">Enter OTP</h3>

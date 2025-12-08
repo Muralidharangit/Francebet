@@ -1,15 +1,61 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
-import BASE_URL from "../../API/api";
+import React, { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import StickyHeader from "./Header/Header";
 import Footer from "./footer/Footer";
 import { motion } from "framer-motion";
-import axios from "axios";
 import axiosInstance from "../../API/axiosConfig";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import Sidebar from "./Header/Sidebar";
+import BottomFooter from "./footer/BottomFooter";
+
+/* ---------------- helpers ---------------- */
+const parseProviders = (data) => {
+  if (Array.isArray(data?.providers)) return data.providers;
+  if (Array.isArray(data?.data)) return data.data;
+  if (Array.isArray(data?.providers?.data)) return data.providers.data;
+  if (Array.isArray(data?.items)) return data.items;
+  return [];
+};
+
+const getHasMore = (data) => {
+  // Common pagination shapes
+  if (data?.links?.next) return true;
+  if (data?.next_page_url) return true;
+
+  if (data?.pagination) {
+    const p = data.pagination;
+    if ("current_page" in p && "last_page" in p)
+      return p.current_page < p.last_page;
+    if ("page" in p && "total_pages" in p) return p.page < p.total_pages;
+    if ("next_page_url" in p) return Boolean(p.next_page_url);
+  }
+
+  if (data?.meta?.current_page && data?.meta?.last_page) {
+    return data.meta.current_page < data.meta.last_page;
+  }
+
+  // Heuristic fallback: if response count >= page size, assume more
+  const list = parseProviders(data);
+  const pageSize = data?.pagination?.per_page || data?.meta?.per_page || 20;
+  return list.length >= pageSize;
+};
+
+const getLogo = (item) =>
+  item?.images?.logo ||
+  item?.images?.name ||
+  item?.images?.logo_name ||
+  "assets/img/game.png";
+
+const getName = (item) =>
+  item?.provider || item?.name || item?.provider_name || "Unknown";
+
+const getKey = (item, index) => {
+  // Stable key for dedupe/map
+  return (item?.id ?? `${getName(item)}-${index}`).toString();
+};
+/* ---------------------------------------- */
 
 const Providers = () => {
   const [providerList, setProviderList] = useState([]);
@@ -20,23 +66,23 @@ const Providers = () => {
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const [isPageLoading, setIsPageLoading] = useState(false);
   const [isSearchingGames, setIsSearchingGames] = useState(false);
-
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const pageRef = useRef(1);
   const isFetchingRef = useRef(false);
-  const hasFetchedRef = useRef(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const fixedSearchTerm = searchTerm.trim();
+  // Scroll container + sentinel
+  const contentRef = useRef(null);
+  const sentinelRef = useRef(null);
 
-    if (fixedSearchTerm.length >= 3) {
+  /* ---------- Debounced provider search (min 3 chars) ---------- */
+  useEffect(() => {
+    const fixed = searchTerm.trim();
+    if (fixed.length >= 3) {
       setIsSearchingGames(true);
-      const timer = setTimeout(() => {
-        handleAutoSearch(fixedSearchTerm);
-      }, 400);
-      return () => clearTimeout(timer);
+      const t = setTimeout(() => handleAutoSearch(fixed), 400);
+      return () => clearTimeout(t);
     } else {
       setSearchedGames([]);
       setIsSearchingGames(false);
@@ -45,115 +91,121 @@ const Providers = () => {
 
   const handleAutoSearch = async (term) => {
     try {
-      const res = await axios.get(
-        // `${BASE_URL}/all-games?is_mobile=1&provider=${term}`
-        `${BASE_URL}/providers-list?provider=${term}`
-      );
-      setSearchedGames(res.data.providers || []);
+      const res = await axiosInstance.get(`/providers-list`, {
+        params: { provider: term },
+      });
+      const list = parseProviders(res.data);
+      setSearchedGames(list);
     } catch (error) {
-      console.error("Auto search failed:", error);
+      // console.error("Auto search failed:", error);
     } finally {
       setIsSearchingGames(false);
     }
   };
 
-  //  const handleAutoSearch = async (term) => {
-  //   try {
-  //     const res = await axios.get(
-  //       // `${BASE_URL}/all-games?is_mobile=1&provider=${term}`
-  //       `${BASE_URL}/providers-list?provider=${term}`
-  //     );
-  //     setSearchedGames(res.data.providers || []);
-  //   } catch (error) {
-  //     console.error("Auto search failed:", error);
-  //   }
-  // };
-
-  // ✅ Fetch all providers
-
+  /* ---------- Fetch all providers (with pagination) ---------- */
   const fetchAllProvider = async (page = 1) => {
     if (page === pageRef.current && page !== 1) return;
     page === 1 ? setIsInitialLoading(true) : setIsPageLoading(true);
 
     try {
-      const response = await axiosInstance.get(`/providers-list?page=${page}`);
-      const data = response.data;
+      const res = await axiosInstance.get(`/providers-list`, {
+        params: { page },
+      });
+      const data = res.data;
+      const list = parseProviders(data);
 
-      console.log(data);
+      setProviderList((prev) => {
+        const merged = page === 1 ? list : [...prev, ...list];
 
-      if (Array.isArray(data.providers)) {
-        setProviderList((prev) => [...prev, ...data.providers]);
-        pageRef.current = page;
-        setCurrentPage(page);
-        setHasMore(data.pagination?.next_page_url !== null);
-      } else {
-        setHasMore(false);
-      }
+        // Deduplicate by key (id or name)
+        const seen = new Set();
+        const deduped = [];
+        for (let i = 0; i < merged.length; i++) {
+          const it = merged[i];
+          const k = (it?.id ?? getName(it)).toString().toLowerCase();
+          if (!seen.has(k)) {
+            seen.add(k);
+            deduped.push(it);
+          }
+        }
+        return deduped;
+      });
+
+      pageRef.current = page;
+      setCurrentPage(page);
+      setHasMore(getHasMore(data));
     } catch (error) {
-      console.error("Error fetching provider list:", error);
+      // console.error("Error fetching provider list:", error);
+      setHasMore(false);
     } finally {
       setIsInitialLoading(false);
       setIsPageLoading(false);
     }
   };
 
+  /* ---------- Initial load ---------- */
   useEffect(() => {
-    const hasFetched = sessionStorage.getItem("providersFetched");
-    if (!hasFetched && !hasFetchedRef.current) {
-      sessionStorage.setItem("providersFetched", "true");
-      hasFetchedRef.current = true;
-      fetchAllProvider();
-    }
+    fetchAllProvider(1);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  /* ---------- IntersectionObserver for infinite load ---------- */
   useEffect(() => {
-    return () => sessionStorage.removeItem("providersFetched");
-  }, []);
+    const root = contentRef.current || null; // if content scrolls; else viewport
+    const sentinel = sentinelRef.current;
+    if (!sentinel) return;
 
-  const handleScroll = useCallback(() => {
-    const bottom =
-      window.innerHeight + window.scrollY >= document.body.offsetHeight - 100;
-    if (
-      bottom &&
-      !isInitialLoading &&
-      !isPageLoading &&
-      hasMore &&
-      !isFetchingRef.current
-    ) {
-      isFetchingRef.current = true;
-      fetchAllProvider(pageRef.current + 1).finally(() => {
-        isFetchingRef.current = false;
-      });
-    }
-  }, [isInitialLoading, isPageLoading, hasMore]);
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (
+            entry.isIntersecting &&
+            !isInitialLoading &&
+            !isPageLoading &&
+            hasMore &&
+            !isFetchingRef.current &&
+            searchTerm.trim().length < 3 // don't auto-load when in search mode
+          ) {
+            isFetchingRef.current = true;
+            fetchAllProvider(pageRef.current + 1).finally(() => {
+              isFetchingRef.current = false;
+            });
+          }
+        });
+      },
+      {
+        root, // observe inside scroll container if it scrolls
+        rootMargin: "300px 0px", // prefetch earlier
+        threshold: 0,
+      }
+    );
 
-  useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, [handleScroll]);
+    io.observe(sentinel);
+    return () => io.disconnect();
+  }, [isInitialLoading, isPageLoading, hasMore, searchTerm]);
 
   return (
     <>
-      {isPageLoading && (
+      {/* {isPageLoading && (
         <div className="text-white text-center my-3 w-100">
           <span className="spinner-border text-light" role="status" />
         </div>
-      )}
+      )} */}
 
       <ToastContainer position="top-right" autoClose={5000} theme="dark" />
-      {/* header  */}
+
+      {/* header */}
       <StickyHeader onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
-      {/* header end */}
 
-      <div className="container-fluid page-body-wrapper">
-        {/* Sidebar Nav Starts */}
+      <div className="container-fluid  page-body-wrapper">
+        {/* Sidebar */}
         <Sidebar />
-        {/* Sidebar Nav Ends */}
-        {/* 🔍 Search Bar */}
 
-        <div className="main-panel">
-          <div className="content-wrapper">
-            <div className="max-1250 mx-auto">
+        <div className="main-panel overflow-hidden">
+          <div className="content-wrapper new" ref={contentRef}>
+            <div className="max-1250 mx-auto px-2">
+              {/* 🔍 Search Bar */}
               <div className="search_container_box">
                 <form
                   className="form my-2"
@@ -177,9 +229,11 @@ const Providers = () => {
                 </form>
               </div>
 
-              <h5>Providersd </h5>
-              <div className="row">
+              <h5>Providers</h5>
+
+              <div className="row px-8leftright">
                 {searchTerm.trim().length >= 3 ? (
+                  // Search Mode
                   isSearchingGames ? (
                     Array.from({ length: 6 }).map((_, index) => (
                       <div
@@ -194,7 +248,6 @@ const Providers = () => {
                             highlightColor="#525252"
                             className="mb-2"
                           />
-                          {/* Skeleton for game name text */}
                           <Skeleton
                             height={14}
                             width="80%"
@@ -202,7 +255,6 @@ const Providers = () => {
                             highlightColor="#525252"
                             className="mx-auto mt-2"
                           />
-                          {/* Skeleton for provider name text */}
                           <Skeleton
                             height={12}
                             width="60%"
@@ -214,10 +266,10 @@ const Providers = () => {
                       </div>
                     ))
                   ) : searchedGames.length > 0 ? (
-                    searchedGames.map((game, index) => (
+                    searchedGames.map((item, index) => (
                       <motion.div
                         className="col-xl-2 col-lg-4 col-md-4 col-sm-4 col-4 mb-3"
-                        key={game.uuid || `${game.name}-${index}`}
+                        key={getKey(item, index)}
                         initial={{ opacity: 0, scale: 0.9 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 0.4, delay: index * 0.05 }}
@@ -227,23 +279,20 @@ const Providers = () => {
                           style={{ height: "120px" }}
                           onClick={() =>
                             navigate(
-                              `/filtered-provider-games?provider=${game.provider}`
+                              `/filtered-provider-games?provider=${encodeURIComponent(
+                                getName(item)
+                              )}`
                             )
                           }
                         >
                           <div className="d-flex gap-1 flex-column align-items-center justify-content-center">
                             <img
-                              src={
-                                game.images?.logo ||
-                                game.images?.name ||
-                                game.images?.logo_name ||
-                                "assets/img/game.png"
-                              }
-                              alt={game.provider || "Provider Logo"}
-                              style={{ width: "27%" }}
+                              src={getLogo(item)}
+                              alt={getName(item)}
+                              style={{ width: "35%" }}
                             />
                             <span className="fs-12 fw-bold text-truncate text-white">
-                              {game.provider}
+                              {getName(item)}
                             </span>
                           </div>
                           <div className="game-play-button d-flex flex-column">
@@ -256,10 +305,11 @@ const Providers = () => {
                     ))
                   ) : (
                     <p className="text-white text-center mt-5">
-                      No games found for this provider.
+                      No providers found for this search.
                     </p>
                   )
-                ) : isInitialLoading ? (
+                ) : // Default Mode (list + infinite scroll)
+                isInitialLoading ? (
                   Array.from({ length: 9 }).map((_, index) => (
                     <div
                       className="col-xl-2 col-lg-4 col-md-4 col-sm-4 col-4 px-1"
@@ -271,24 +321,20 @@ const Providers = () => {
                       >
                         <div className="d-flex gap-1 flex-column align-items-center justify-content-center">
                           <Skeleton
-                            circle={true}
+                            circle
                             height={40}
                             width={40}
                             baseColor="#313131"
                             highlightColor="#525252"
                           />
-                          {/* Skeleton for provider name text */}
                           <Skeleton
                             height={12}
                             width={100}
                             baseColor="#313131"
                             highlightColor="#525252"
-                            className="mt-1 "
+                            className="mt-1"
                           />
-
-                          {/* <Skeleton  width={100} height={20} baseColor="#313131" highlightColor="#525252" /> */}
                         </div>
-
                         <div
                           className="game-play-button d-flex flex-column"
                           style={{ opacity: 0 }}
@@ -302,51 +348,45 @@ const Providers = () => {
                               highlightColor="#525252"
                             />
                           </div>
-
-                          {/* <Skeleton  width={100} height={20} baseColor="#313131" highlightColor="#525252" /> */}
                         </div>
                       </div>
                     </div>
                   ))
-                ) : (
-                  // ✅ Show all providers (default view)
-
-                  // .filter(
-                  //   (provider) =>
-                  //     provider.images?.logo ||
-                  //     provider.images?.name ||
-                  //     provider.images?.logo_name
-                  // // )
+                ) : providerList.length > 0 ? (
                   providerList.map((provider, index) => (
+                    // <motion.div
+                    //   className="col-xl-2 col-lg-4 col-md-4 col-sm-4 col-4 px-1"
+                    //   key={getKey(provider, index)}
+                    //   initial={{ opacity: 0, scale: 0.8 }}
+                    //   animate={{ opacity: 1, scale: 1 }}
+                    //   transition={{ duration: 0.4, delay: index * 0.06 }}
+                    // >
                     <motion.div
                       className="col-xl-2 col-lg-4 col-md-4 col-sm-4 col-4 px-1"
-                      key={provider.id}
-                      initial={{ opacity: 0, scale: 0.8 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      transition={{ duration: 0.4, delay: index * 0.1 }}
+                      key={getKey(provider, index)}
+                      initial={{ opacity: 0, y: 8 }} // tiny translate is cheaper than big scale
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.16, ease: "easeOut" }} // no delay
                     >
                       <div
                         className="game-card-wrapper rounded-2 new-cardclr mt-2 d-flex justify-content-center pt-2"
                         style={{ height: "120px" }}
                         onClick={() =>
                           navigate(
-                            `/filtered-provider-games?provider=${provider.provider}`
+                            `/filtered-provider-games?provider=${encodeURIComponent(
+                              getName(provider)
+                            )}`
                           )
                         }
                       >
                         <div className="d-flex gap-1 flex-column align-items-center justify-content-center">
                           <img
-                            src={
-                              provider.images?.logo ||
-                              provider.images?.name ||
-                              provider.images?.logo_name ||
-                              "assets/img/game.png"
-                            }
-                            alt={provider.provider || "Provider Logo"}
-                            style={{ width: "27%" }}
+                            src={getLogo(provider)}
+                            alt={getName(provider)}
+                            style={{ width: "50%" }}
                           />
                           <span className="fs-12 fw-bold text-truncate text-white">
-                            {provider.provider}
+                            {getName(provider)}
                           </span>
                         </div>
                         <div className="game-play-button d-flex flex-column">
@@ -357,11 +397,18 @@ const Providers = () => {
                       </div>
                     </motion.div>
                   ))
+                ) : (
+                  <p className="text-white text-center mt-5">
+                    No providers to display.
+                  </p>
                 )}
               </div>
+
+              {/* Sentinel for infinite scroll */}
+              <div ref={sentinelRef} style={{ height: 1 }} />
             </div>
 
-            <div style={{ marginTop: "100px" }}></div>
+            <BottomFooter />
             <Footer />
           </div>
         </div>

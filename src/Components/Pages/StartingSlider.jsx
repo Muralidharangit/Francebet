@@ -1,4 +1,6 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import routes from "../routes/route";
 
 const StartingSlider = () => {
   return (
@@ -83,12 +85,12 @@ const StartingSlider = () => {
           {/* Button Section */}
           <div className="w-100 d-flex justify-content-center">
             <div className="text-center position-fixed bottom-0 w-100 my-5 start-0">
-              <a href="./login.html">
+              <Link to={routes.auth.login}>
                 <button type="submit" className="btn btn-login w-75 my-3">
                   Get Started
                   <i className="ri-lock-line text-white fs-20" />
                 </button>
-              </a>
+              </Link>
             </div>
           </div>
         </div>

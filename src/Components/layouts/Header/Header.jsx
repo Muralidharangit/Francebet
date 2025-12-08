@@ -6,13 +6,12 @@ import { verifyToken } from "../../../API/authAPI";
 import { toast, ToastContainer } from "react-toastify";
 import { Images } from "./constants/images";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+
 const StickyHeader = ({ onToggleSidebar }) => {
   const [loading, setLoading] = useState(false);
-  // console.log("onToggleSidebar", onToggleSidebar);
 
   // const { user, profile, avatar, portalSettings, isLoading, logout, authType } =
-  const { user, profile, avatar, portalSettings, isLoading, logout, authType } =
-    useContext(AuthContext); // ✅ Get user authentication state
+  const { user, profile, portalSettings, logout } = useContext(AuthContext); // ✅ Get user authentication state
   const [isSticky, setIsSticky] = useState(false);
   const navigate = useNavigate();
 
@@ -29,15 +28,13 @@ const StickyHeader = ({ onToggleSidebar }) => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-  // console.log(profile, "user in header");
-  // console.log(profile, "user in header");
 
   const handleDepositClick = async () => {
     try {
       const res = await verifyToken();
 
       if (res?.type === "valid" && portalSettings?.auto_deposit === 1) {
-        navigate(routes.transactions.deposit); // ✅ Go to deposit
+        navigate(routes.transactions.paymentMethod); // ✅ Go to deposit
       } else if (res?.type === "valid" && portalSettings?.auto_deposit !== 1) {
         toast.error(
           "Deposits are temporarily unavailable. Please reach out to the support team.",
@@ -62,8 +59,6 @@ const StickyHeader = ({ onToggleSidebar }) => {
         }, 3000);
       }
     } catch (err) {
-      console.error("Token validation failed:", err);
-
       toast.error("Please login again.", {
         position: "top-right",
         autoClose: 3000,
@@ -96,7 +91,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
         }, 3000);
       }
     } catch (err) {
-      console.error("Token validation failed:", err);
+      // console.error("Token validation failed:", err);
 
       toast.error("Please login again.", {
         position: "top-right",
@@ -114,7 +109,6 @@ const StickyHeader = ({ onToggleSidebar }) => {
 
   const handleToggle = () => {
     setIsOpen((prev) => !prev);
-    console.log("testing testing");
   };
 
   const handleToggleSidebar = () => {
@@ -145,6 +139,11 @@ const StickyHeader = ({ onToggleSidebar }) => {
       setLoading(false);
     }
   };
+
+  // const pop_up = ()=>
+  // {
+  //     toast.
+  // }
   return (
     <SkeletonTheme baseColor="#313131" highlightColor="#525252">
       <>
@@ -164,8 +163,8 @@ const StickyHeader = ({ onToggleSidebar }) => {
                       className="navbar-brand m-0 position-relative"
                       to={routes.home}
                     >
-                      <img src={Images.Favlogo} alt="favicon" width="65%" />
-                      <Link
+                      <img src={Images.Favlogo} alt="favicon" width="55%" />
+                      {/* <Link
                         to={routes.pages.testinginfo}
                         style={{
                           position: "absolute",
@@ -188,7 +187,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                         }}
                       >
                         Testing app
-                      </Link>
+                      </Link> */}
                     </Link>
                   ) : (
                     <Skeleton height={40} width={120} />
@@ -201,9 +200,16 @@ const StickyHeader = ({ onToggleSidebar }) => {
                     {/* Coin Box */}
                     {profile ? (
                       <div className="coin-box d-flex align-items-center px-2 py-1 rounded-pill">
-                        <img src="assets/img/rupee.png" width="20" alt="Coin" />
-                        <span className="ms-1 text-white">
-                          ₹ {Number(profile?.chips).toFixed(2)}
+                        {/* <img
+                          src="/assets/img/rupee.png"
+                          width="20"
+                          alt="Coin"
+                          className="mx-1"
+                        /> */}
+                        <div className="text-white px-1">NAD$ :</div>
+                        <span className="text-white">
+                          {/* {CURRENCY_SYMBOL} */}
+                          {Number(profile?.chips).toFixed(2)}
                         </span>
                         <button
                           className="btn btn-sm btn-add-coin ms-2"
@@ -254,6 +260,9 @@ const StickyHeader = ({ onToggleSidebar }) => {
                         <Skeleton circle height={36} width={36} />
                       )} */}
                     </div>
+
+
+                 
                   </div>
                 ) : (
                   // If Not Logged In
@@ -271,10 +280,14 @@ const StickyHeader = ({ onToggleSidebar }) => {
                         Sign up
                       </button>
                     </Link>
+
+                     
                   </div>
                 )}
               </div>
             </div>
+
+          
           </nav>
         </header>
 
@@ -282,12 +295,14 @@ const StickyHeader = ({ onToggleSidebar }) => {
           {/* tab and laptopnav */}
           <nav className="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row mobile-none">
             <div className="text-center navbar-brand-wrapper d-flex align-items-center justify-content-start">
-              <a className="navbar-brand brand-logo">
-                <img src="assets/img/logo.png" alt="logo" />
-              </a>
-              <a className="navbar-brand brand-logo-mini p-0">
-                <img src="assets/img/fav.png" alt="logo" />
-              </a>
+              <Link to={routes.home}>
+                <a className="navbar-brand brand-logo">
+                  <img src="/assets/img/logo.png" alt="logo" />
+                </a>
+                <a className="navbar-brand brand-logo-mini p-0">
+                  <img src="/assets/img/favic.png" alt="logo" />
+                </a>
+              </Link>
             </div>
             <div className="navbar-menu-wrapper d-flex align-items-stretch">
               <button
@@ -304,24 +319,19 @@ const StickyHeader = ({ onToggleSidebar }) => {
                 />
               </button>
               <div className="search-field d-none d-md-block">
-                {/* <form className="d-flex align-items-center h-100" action="#">
-          <div className="search-container position-relative">
-            <input
-              type="text"
-              name="text"
-              className="form-control search-input visibility-hidden"
-              required=""
-              placeholder="Type to search..."
-            />
-            <div className="search-icon position-absolute">
-              <i className="fi fi-rs-search" />
-            </div>
-          </div>
-        </form> */}
+                <form className="d-flex align-items-center h-100" action="#">
+                  <div className="search-container position-relative">
+                    <Link to={routes.games.topGames}>
+                      <div className="search-icon ">
+                        <i className="fi fi-rs-search" />
+                      </div>
+                    </Link>
+                  </div>
+                </form>
               </div>
               <ul className="navbar-nav navbar-nav-right">
                 {/* <li>
-    <button class="btn btn-outline-light rounded-2 me-2"> ₹50,000</button>
+    <button class="btn btn-outline-light rounded-2 me-2"> {CURRENCY_SYMBOL}50,000</button>
   </li> */}
                 {/* <li>
     <a href="./deposit_desktop.html">
@@ -337,20 +347,59 @@ const StickyHeader = ({ onToggleSidebar }) => {
                     {profile ? (
                       <div className="d-flex align-items-center px-2 py-1 rounded-pill">
                         <li>
-                          <div className="deposit_btn_container">
-                            <p className="text-light mb-0 px-3">
-                              <i className="fi fi-rs-coins" /> ₹{" "}
-                              {Number(profile?.chips).toFixed(2)}
+                          <div className="deposit_btn_container d-flex align-items-center">
+                            {/* <img
+                              src="/assets/img/rupee.png"
+                              width="20"
+                              alt="Coin"
+                              className="mx-1"
+                            /> */}
+                            <div className="text-white fw-600 px-1">NAD$ :</div>
+                            <p className="text-light mb-0 px-1 d-flex">
+                              {/* <i className="fi fi-rs-coins" /> */}
+                              {/* {CURRENCY_SYMBOL}{" "} */}{" "}
+                              <h6 className="m-0">
+                                {Number(profile?.chips).toFixed(2)}
+                              </h6>
                             </p>
-                            <button
+                            {/* <button
                               className="btn  btn-index w-100 deposit-btn"
                               onClick={() =>
-                                handleSecureRoute(routes.transactions.deposit)
+                                handleSecureRoute(
+                                  routes.transactions.paymentMethod
+                                )
                               }
                             >
                               Deposit
-                            </button>
+                            </button> */}
+
+                            {portalSettings?.auto_deposit === 1 ? (
+                              // <button
+                              //   className="btn  btn-index w-100 deposit-btn"
+                              //   onClick={() =>
+                              //     handleSecureRoute(
+                              //       routes.transactions.paymentMethod
+                              //     )
+                              //   }
+                              // >
+                              //   Deposit
+                              // </button>
+
+                               <button role="button" className="golden-button btn-index"   onClick={() =>
+                                  handleSecureRoute(
+                                    routes.transactions.paymentMethod
+                                  )
+                                }>
+  <span className="golden-text"> Deposit</span>
+</button>
+
+                            ) : (
+                              ""
+                            )}
                           </div>
+
+
+                             
                         </li>
                       </div>
                     ) : (
@@ -405,7 +454,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
                       </a>
                     </li>
 
-                    <li className="nav-item dropdown">
+                    {/* <li className="nav-item dropdown">
                       <a
                         className="nav-link count-indicator dropdown-toggle"
                         id="notificationDropdown"
@@ -469,14 +518,14 @@ const StickyHeader = ({ onToggleSidebar }) => {
                               {" "}
                               New admin wow!{" "}
                             </p>
-                          </div>
+                          </div>sty
                         </a>
                         <div className="dropdown-divider" />
                         {/* <h6 className="p-3 mb-0 text-center">
                       See all notifications
-                    </h6> */}
+                    </h6> 
                       </div>
-                    </li>
+                    </li> */}
 
                     {/* Profile dropdown starts */}
                     <li className="nav-item dropdown">
@@ -538,152 +587,188 @@ const StickyHeader = ({ onToggleSidebar }) => {
                       >
                         {/* deposit starts */}
                         <div className="dropdown-divider" />
-                        <a className="dropdown-item preview-item">
+                        {/* <a className="dropdown-item preview-item">
                           <div className="preview-thumbnail">
-                            {/* <img
-                          src="/assets/images/faces/face2.jpg"
-                          alt="image"
-                          className="profile-pic"
-                        /> */}
-                          </div>
-                          <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                            <h6
-                              className="preview-subject ellipsis mb-1 font-weight-normal"
-                              onClick={() =>
-                                handleSecureRoute(routes.transactions.deposit)
-                              }
-                            >
+                           
+                          </div> */}
+                        {/* <div
+                            className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
+                            onClick={() =>
+                              handleSecureRoute(
+                                routes.transactions.paymentMethod
+                              )
+                            }
+                          >
+                            <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
                               Deposit
                             </h6>
-                            {/* <p className="text-gray mb-0"> 15 Minutes ago </p> */}
-                          </div>
-                        </a>
+                           
+                          </div> */}
+
+                        {portalSettings?.auto_deposit === 1 ? (
+                          <a className="dropdown-item preview-item">
+                            <div
+                              className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
+                              onClick={() =>
+                                handleSecureRoute(
+                                  routes.transactions.paymentMethod
+                                )
+                              }
+                            >
+                              <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
+                                Deposit
+                              </h6>
+                            </div>
+                          </a>
+                        ) : (
+                          ""
+                        )}
+
                         {/* deposit ends */}
                         {/* Withdraw starts */}
                         <div className="dropdown-divider" />
-                        <a className="dropdown-item preview-item">
-                          <div className="preview-thumbnail">
-                            {/* <img
-                          src="/assets/images/faces/face2.jpg"
-                          alt="image"
-                          className="profile-pic"
-                        /> */}
-                          </div>
-                          <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                            <h6
-                              className="preview-subject ellipsis mb-1 font-weight-normal"
-                              onClick={() =>
-                                handleSecureRoute(routes.transactions.withdraw)
-                              }
-                            >
+
+                        {/* <div
+                            className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
+                            onClick={() =>
+                              handleSecureRoute(
+                                routes.transactions.manual_withdraw_namibia
+                              )
+                            }
+                          >
+                            <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
                               Withdraw
                             </h6>
-                            {/* <p className="text-gray mb-0"> 15 Minutes ago </p> */}
+                          
+                          </div> */}
+
+                        {portalSettings?.auto_withdraw === 1 ? (
+                          <a className="dropdown-item preview-item">
+                            <div
+                              className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
+                              onClick={() =>
+                                handleSecureRoute(
+                                  routes.transactions.withdrawMethod
+                                )
+                              }
+                            >
+                              <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
+                                Withdraw
+                              </h6>
+                            </div>
+                          </a>
+                        ) : (
+                          ""
+                        )}
+
+                        {/* Withdraw ends */}
+
+                        <div className="dropdown-divider" />
+                        {/* <a className="dropdown-item preview-item"> */}
+
+                        {/* <div
+                            className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
+                            onClick={() =>
+                              handleSecureRoute(
+                                routes.transactions.all_depositHistory
+                              )
+                            }
+                          >
+                            <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
+                              Deposit History
+                            </h6>
+                           
+                          </div> */}
+
+                        <a className="dropdown-item preview-item">
+                          <div
+                            className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
+                            onClick={() =>
+                              handleSecureRoute(
+                                routes.transactions.all_depositHistory
+                              )
+                            }
+                          >
+                            <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
+                              Deposit History
+                            </h6>
                           </div>
                         </a>
-                        {/* Withdraw ends */}
+
+                        <div className="dropdown-divider" />
+
+                        {/* <div
+                            className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
+                            onClick={() =>
+                              handleSecureRoute(
+                                routes.transactions
+                                  .manual_withdraw_Namibia_history
+                              )
+                            }
+                          >
+                            <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
+                              Withdraw History
+                            </h6>
+                          </div> */}
+
+                        <a className="dropdown-item preview-item">
+                          <div
+                            className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
+                            onClick={() =>
+                              handleSecureRoute(
+                                routes.transactions.all_withdrawHistory
+                              )
+                            }
+                          >
+                            <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
+                              Withdraw History
+                            </h6>
+                          </div>
+                        </a>
+
                         {/* <h6 className="p-3 mb-0">Messages</h6> */}
                         <div className="dropdown-divider" />
                         <a className="dropdown-item preview-item">
-                          <div className="preview-thumbnail">
-                            {/* <img
-                          src="../assets/images/faces/face4.jpg"
-                          alt="image"
-                          className="profile-pic"
-                        /> */}
-                          </div>
-                          <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                            <h6
-                              className="preview-subject ellipsis mb-1 font-weight-normal"
-                              onClick={() =>
-                                handleSecureRoute(routes.games.history)
-                              }
-                            >
-                              Bet History
+                          {/* <div className="preview-thumbnail">
+                           
+                          </div> */}
+                          <div
+                            className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
+                            onClick={() =>
+                              handleSecureRoute(routes.games.history)
+                            }
+                          >
+                            <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
+                              Transaction History
                             </h6>
                             {/* <p className="text-gray mb-0"> 1 Minutes ago </p> */}
                           </div>
                         </a>
 
-                        <div className="dropdown-divider" />
                         <a className="dropdown-item preview-item">
-                          <div className="preview-thumbnail">
-                            {/* <img
-                          src="/assets/images/faces/face2.jpg"
-                          alt="image"
-                          className="profile-pic"
-                        /> */}
-                          </div>
-                          <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                            <h6
-                              className="preview-subject ellipsis mb-1 font-weight-normal"
-                              onClick={() =>
-                                handleSecureRoute(
-                                  routes.transactions.withdrawHistory
-                                )
-                              }
-                            >
-                              Withdraw History
-                            </h6>
-                            {/* <p className="text-gray mb-0"> 15 Minutes ago </p> */}
-                          </div>
-                        </a>
-                        <div className="dropdown-divider" />
-                        <a className="dropdown-item preview-item">
-                          <div className="preview-thumbnail">
-                            {/* <img
-                          src="assets/img/icons/rupee_2.png"
-                          alt="deposit"
-                          // // width={"12px"}
-                          // style={{width:}}
-                        /> */}
-                          </div>
-                          <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                            <h6
-                              className="preview-subject ellipsis mb-1 font-weight-normal"
-                              onClick={() =>
-                                handleSecureRoute(
-                                  routes.transactions.depositHistory
-                                )
-                              }
-                            >
-                              Deposit History
-                            </h6>
-                            {/* <p className="text-gray mb-0"> 18 Minutes ago </p> */}
-                          </div>
-                        </a>
-
-                        <a className="dropdown-item preview-item">
-                          <div className="preview-thumbnail">
-                            {/* <img
-                          src="/assets/images/faces/face2.jpg"
-                          alt="image"
-                          className="profile-pic"
-                        /> */}
-                          </div>
-                          <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
-                            <h6
-                              className="preview-subject ellipsis mb-1 font-weight-normal"
-                              onClick={handleProfileClick}
-                            >
+                          <div
+                            className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible"
+                            onClick={handleProfileClick}
+                          >
+                            <h6 className="preview-subject ellipsis mb-1 font-weight-normal">
                               Profile
                             </h6>
                             {/* <p className="text-gray mb-0"> 15 Minutes ago </p> */}
                           </div>
                         </a>
 
-                        <a className="dropdown-item preview-item">
-                          <div className="preview-thumbnail"></div>
-                          <div className="preview-item-content d-flex align-items-start flex-column justify-content-center">
+                        <div className="dropdown-item preview-item">
+                          {/* <div className="preview-thumbnail"></div> */}
+                          <div className="preview-item-content d-flex align-items-start flex-column justify-content-center overflow-visible">
                             <h6
-                              className="preview-subject ellipsis mb-1 font-weight-normal"
+                              className="preview-subject ellipsis mb-1 font-weight-normal w-100"
                               onClick={() => logout(navigate)}
                             >
                               Logout
                             </h6>
                             {/* <p className="text-gray mb-0"> 15 Minutes ago </p> */}
                           </div>
-                        </a>
+                        </div>
                         {/* <div className="dropdown-divider" />
                     <h6 className="p-3 mb-0 text-center">4 new messages</h6> */}
                       </div>
@@ -734,13 +819,13 @@ const StickyHeader = ({ onToggleSidebar }) => {
     </div>
   </li> */}
               </ul>
-              <button
+              {/* <button
                 className="navbar-toggler navbar-toggler-right d-lg-none align-self-center"
                 type="button"
                 data-toggle="offcanvas"
               >
                 <span className="mdi mdi-menu" />
-              </button>
+              </button> */}
             </div>
           </nav>
           {/* tab and laptopnav */}
