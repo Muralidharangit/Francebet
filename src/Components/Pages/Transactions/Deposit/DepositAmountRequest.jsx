@@ -8,6 +8,7 @@ import routes from "../../../routes/route";
 import { Link, useNavigate } from "react-router-dom";
 import { sendDepositRequest } from "../../../../API/depositAPI";
 import { verifyToken } from "../../../../API/authAPI";
+import { APP_NAME, CURRENCY_SYMBOL } from "../../../../constants";
 const DepositAmountRequest = ({
   amount,
   paymentSelectedMethod,
@@ -53,6 +54,10 @@ const DepositAmountRequest = ({
           const errorMessage =
             verifyError.response?.data?.message ||
             "Invalid or expired token. Please log in again.";
+          // Redirect after a short delay (e.g., 2 seconds)
+          setTimeout(() => {
+            navigate("/login");
+          }, 5000);
           setErrors({ api: errorMessage });
           setSubmitting(false);
           return;
@@ -170,7 +175,9 @@ const DepositAmountRequest = ({
           {amount && paymentSelectedMethod ? (
             <>
               <h5 className=" mb-0">Deposit Amount</h5>
-              <h3 className="text-success">₹ {amount}</h3>
+              <h3 className="text-success">
+                {CURRENCY_SYMBOL} {amount}
+              </h3>
               <h5 className="mb-3">
                 You have selected the{" "}
                 {paymentSelectedMethod === 1 ? "BANK" : "UPI"} payment method.
@@ -201,7 +208,8 @@ const DepositAmountRequest = ({
                   style={{ display: "none" }}
                 >
                   <p className="mb-0">
-                    You have selected ₹{amount} to deposit.
+                    You have selected {CURRENCY_SYMBOL}
+                    {amount} to deposit.
                   </p>
                   <input
                     required
@@ -323,7 +331,7 @@ const DepositAmountRequest = ({
                   Thank You
                 </span>
                 <span className="text-dark-grey fs-10 fw-700 mt-3">
-                  For Choosing jiboomba
+                  For Choosing jiboomba 
                 </span>
               </div>
             </div>
@@ -341,7 +349,12 @@ const DepositAmountRequest = ({
           <div className="modal-dialog modal-dialog-centered modal-sm justify-content-center">
             <div className="modal-content" style={{ width: "220px" }}>
               <div className="modal-body d-flex flex-column align-items-center">
-                <img src="assets/img/icons/rupee.gif" className="mb-2 w-75" />
+                {/* <img src="assets/img/icons/rupee.gif" className="mb-2 w-75" /> */}
+                <img
+                  src="/assets/img/icons/coin.png"
+                  className="mb-2 w-75 coin-animate"
+                  alt="coin"
+                />
                 <div className="fw-700 fs-13 text-center text-black mb-3">
                   Your Request <br />
                   Is In Our Queue!
@@ -355,7 +368,7 @@ const DepositAmountRequest = ({
                   </span>
                 </Link>
                 <span className="text-dark-grey fs-10 fw-700 mt-3">
-                  For Choosing jiboomba
+                  For Choosing {APP_NAME}
                 </span>
               </div>
             </div>

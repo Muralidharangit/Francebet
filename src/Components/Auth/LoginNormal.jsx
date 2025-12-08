@@ -3,6 +3,7 @@ import routes from "../routes/route";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import BASE_URL from "../../API/api";
+import { APP_NAME } from "../../constants";
 
 const LoginPage = () => {
   const [mobile, setMobile] = useState("");
@@ -18,9 +19,10 @@ const LoginPage = () => {
     // Mobile : 99947283278
 
     // https://staging.syscorp.in/api/jiboomba/login
+    // `${BASE_URL}/jiboomba/login`,
     try {
       const response = await axios.post(
-        `${BASE_URL}/jiboomba/login`,
+        // `${BASE_URL}/jiboomba/login`,
         { mobile, password },
         {
           headers: {
@@ -108,7 +110,7 @@ const LoginPage = () => {
 
                   <div className="text-center">
                     <p>
-                      New to Jibooma?{" "}
+                      New to {APP_NAME}?{" "}
                       <Link
                         to={routes.auth.register}
                         className="link ms-2 fs-16 text-red"

@@ -91,7 +91,7 @@ const UserEnter = () => {
                     alt="bet_history"
                     width="27px"
                   />
-                  <p className="mb-0">Bet History</p>
+                  <p className="mb-0"> Transaction History</p>
                 </div>
 
                 <div
@@ -142,7 +142,7 @@ const UserEnter = () => {
                     <input
                       type="text"
                       className="input2"
-                      defaultValue="https://jiboomba.com"
+                      defaultValue="#"
                       readOnly
                     />
                     <button className="Subscribe-btn">Copy</button>

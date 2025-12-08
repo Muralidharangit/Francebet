@@ -6,7 +6,7 @@ import PaginatedData from "../Pages/Pagination/PaginatedData";
 import { betStatement } from "../../API/betHistory";
 import StickyHeader from "./Header/Header";
 import Sidebar from "./Header/Sidebar";
-
+import { CURRENCY_SYMBOL } from "../../constants";
 const BetHistory = () => {
   const [history, setHistory] = useState([]);
   const [error, setError] = useState(null);
@@ -44,7 +44,7 @@ const BetHistory = () => {
         throw new Error(response.msg || "Failed to load data.");
       }
     } catch (err) {
-      console.error("Error fetching data:", err);
+      // console.error("Error fetching data:", err);
       setError(err.message);
       setHistory([]);
     } finally {
@@ -82,7 +82,7 @@ const BetHistory = () => {
         {/* Sidebar Nav Starts */}
         <Sidebar />
         {/* Sidebar Nav Ends */}
-        <div className="main-panel">
+        <div className="main-panel overflow-hidden">
           <div className="content-wrapper">
             <div className="max-1250 mx-auto">
               <div className="h-100">
@@ -101,19 +101,22 @@ const BetHistory = () => {
               </div> */}
 
                     {/* header Starts */}
-                    <div className="d-flex align-items-center justify-content-between position-relative  px-0">
+                    <div className="d-flex align-items-center justify-content-between position-relative  px-2">
                       {/* Back Button on Left */}
                       <div className="d-flex justify-content-between align-items-center px-0">
-                        {/* <button
+                        <button
                           className="go_back_btn bg-grey"
                           onClick={() => window.history.back()}
                         >
                           <i className="ri-arrow-left-s-line text-white fs-20" />
-                        </button> */}
+                        </button>
                       </div>
 
                       {/* Centered Title */}
-                      <h5 className="m-0 text-white fs-16">Bet History</h5>
+                      <h5 className="m-0 text-white fs-16">
+                        {" "}
+                        Transaction History
+                      </h5>
                       <div className="d-flex justify-content-between align-items-center px-0">
                         <button
                           className="go_back_btn bg-grey"
@@ -126,7 +129,7 @@ const BetHistory = () => {
                     {/* header Ends */}
 
                     {/* ✅ Tabs Section */}
-                    <div className="overflow-auto px-0 mt-4">
+                    <div className="overflow-auto px-3 mt-4">
                       <div
                         className="nav nav-pills flex-wrap"
                         id="transaction-tabs"
@@ -152,26 +155,26 @@ const BetHistory = () => {
                     </div>
 
                     {/* ✅ Display Filtered Transactions */}
-                    <div className="tab-content p-0 mt-2 mb-3">
+                    <div className="tab-content px-3 mt-3 mb-3">
                       {loading ? (
                         <p className="text-white text-center mt-4">
                           Loading...
                         </p>
                       ) : error ? (
                         <>
-                          <p className="text-danger">{error}</p>
+                          <p className="text-danger text-center">{error}</p>
                           <div className="d-flex flex-column align-items-center">
-                            <button
-                              className="btn btn-warning mt-2"
+                            {/* <button
+                              className="btn btn-warning mt-2 w-50"
                               onClick={fetchPlayerData}
                             >
                               Retry
-                            </button>
-                            <img
+                            </button> */}
+                            {/* <img
                               src="assets/img/notification/img_2.png"
                               alt="unauth"
                               className="w-75"
-                            />
+                            /> */}
                           </div>
                         </>
                       ) : filteredHistory.length > 0 ? (
@@ -205,8 +208,12 @@ const BetHistory = () => {
                                   <h4 className="mb-1 amount-fs-size">
                                     {/* {transaction.id} */}
                                     {transaction.type === "DR"
-                                      ? `₹ ${transaction.amount}`
-                                      : `₹ ${transaction.amount}`}
+                                      ? `${CURRENCY_SYMBOL} ${Number(
+                                          transaction?.amount ?? 0
+                                        ).toFixed(2)}`
+                                      : `${CURRENCY_SYMBOL} ${Number(
+                                          transaction?.amount ?? 0
+                                        ).toFixed(2)}`}
                                   </h4>
 
                                   <span
@@ -238,7 +245,9 @@ const BetHistory = () => {
                           </div>
                         ))
                       ) : (
-                        <p className="text-white">No Bet History Found</p>
+                        <p className="text-white">
+                          No Transaction History Found
+                        </p>
                       )}
 
                       {!loading &&
