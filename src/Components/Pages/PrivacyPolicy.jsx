@@ -1,20 +1,22 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next"; // <-- IMPORT HERE
 import routes from "../routes/route";
 import BottomFooter from "../layouts/footer/BottomFooter";
 import Footer from "../layouts/footer/Footer";
 import StickyHeader from "../layouts/Header/Header";
 import Sidebar from "../layouts/Header/Sidebar";
-import { APP_NAME } from "../../constants";
+import { APP_NAME } from "../../constants"; // APP_NAME is now used for interpolation
 
 function PrivacyPolicy() {
+  const { t } = useTranslation(); // <-- USE HOOK HERE
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  
   return (
     <div style={{ overflowX: "hidden" }}>
       {/* header  */}
       <StickyHeader onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
       {/* header end */}
-      {/* <section className="container pt-40 text-white"> */}
       <div className="container-fluid page-body-wrapper">
         {/* Sidebar Nav Starts */}
         <Sidebar />
@@ -23,197 +25,163 @@ function PrivacyPolicy() {
           <div className="content-wrapper new">
             <div className="max-1250 mx-auto">
               <div className="h-100 d-flex justify-content-evenly flex-column">
+                
+                {/* Breadcrumb Section */}
                 <div className="pt-3 pb-2  px-2">
                   <div className="breadcrumb mb-0">
                     <nav aria-label="breadcrumb">
                       <ol className="breadcrumb">
                         <li className="breadcrumb-item text-white">
                           <Link to={routes.home} className="text-white fw-600 ">
-                            Home
+                            {t('privacy.breadcrumb.home')}
                           </Link>
                         </li>
                         <li
                           className="breadcrumb-item active  text-white"
                           aria-current="page"
                         >
-                          Privacy Policy
+                          {t('privacy.breadcrumb.current')}
                         </li>
                       </ol>
                     </nav>
                   </div>
                 </div>
-                <section class="privacy-container px-2 pt-0">
-                  <h1 className="text-white">Privacy Policy</h1>
+
+                {/* Privacy Policy Content Section */}
+                <section className="privacy-container px-2 pt-0">
+                  <h1 className="text-white">{t('privacy.title')}</h1>
 
                   <p>
-                    This Privacy Policy describes Our policies and procedures on
-                    the collection, use and disclosure of Your information when
-                    You use the Service and tells You about Your privacy rights
-                    and how the law protects You.
+                    {t('privacy.intro_p1')}
                   </p>
-                  <div class="highlight-box">
+                  <div className="highlight-box">
                     <p>
                       <strong>
-                        By using our Service, you agree to the collection and
-                        use of information in accordance with this Privacy
-                        Policy.
+                        {t('privacy.intro_highlight')}
                       </strong>
                     </p>
                   </div>
 
-                  <h2>Interpretation and Definitions</h2>
-                  <h3>Interpretation</h3>
+                  <h2>{t('privacy.section1.title')}</h2>
+                  <h3>{t('privacy.section1.h3_interpretation')}</h3>
                   <p>
-                    Words with the initial letter capitalized have meanings
-                    defined under the following conditions. The following
-                    definitions shall apply regardless of singular or plural
-                    usage.
+                    {t('privacy.section1.p_interpretation')}
                   </p>
 
-                  <h3>Definitions</h3>
+                  <h3>{t('privacy.section1.h3_definitions')}</h3>
                   <ul>
                     <li>
-                      <strong>Account:</strong> a unique account created for You
-                      to access our Service.
+                      <strong>{t('privacy.section1.account.strong')}:</strong> {t('privacy.section1.account.text')}
                     </li>
                     <li>
-                      <strong>Affiliate:</strong> an entity under common control
-                      or ownership.
+                      <strong>{t('privacy.section1.affiliate.strong')}:</strong> {t('privacy.section1.affiliate.text')}
                     </li>
                     <li>
-                      <strong>Company:</strong> {APP_NAME} (“We”, “Us”, “Our”).
+                      <strong>{t('privacy.section1.company.strong')}:</strong> {t('privacy.section1.company.text', { appName: APP_NAME })}
                     </li>
                     <li>
-                      <strong>Cookies:</strong> small files stored on Your
-                      device to track browsing activity.
+                      <strong>{t('privacy.section1.cookies.strong')}:</strong> {t('privacy.section1.cookies.text')}
                     </li>
                     <li>
-                      <strong>Country:</strong> - .
+                      <strong>{t('privacy.section1.country.strong')}:</strong> {t('privacy.section1.country.text')}
                     </li>
                     <li>
-                      <strong>Device:</strong> any device such as a computer,
-                      phone, or tablet.
+                      <strong>{t('privacy.section1.device.strong')}:</strong> {t('privacy.section1.device.text')}
                     </li>
                     <li>
-                      <strong>Personal Data:</strong> information relating to an
-                      identified or identifiable individual.
+                      <strong>{t('privacy.section1.personal_data.strong')}:</strong> {t('privacy.section1.personal_data.text')}
                     </li>
                     <li>
-                      <strong>Service:</strong> the Website.
+                      <strong>{t('privacy.section1.service.strong')}:</strong> {t('privacy.section1.service.text')}
                     </li>
                     <li>
-                      <strong>Website:</strong> {APP_NAME}, accessible from
-                      anywhere.
-                      {/* <a href="#">https://{APP_NAME}.in/</a>. */}
+                      <strong>{t('privacy.section1.website.strong')}:</strong> {t('privacy.section1.website.text', { appName: APP_NAME })}
                     </li>
                     <li>
-                      <strong>You:</strong> the individual using the Service, or
-                      a company/legal entity on whose behalf it is used.
+                      <strong>{t('privacy.section1.you.strong')}:</strong> {t('privacy.section1.you.text')}
                     </li>
                   </ul>
 
-                  <h2>Collecting and Using Your Personal Data</h2>
-                  <h3>Types of Data Collected</h3>
-                  <h4>1.Personal Data</h4>
+                  <h2>{t('privacy.section2.title')}</h2>
+                  <h3>{t('privacy.section2.h3_types')}</h3>
+                  <h4>{t('privacy.section2.h4_personal')}</h4>
                   <p>
-                    We may collect personally identifiable information
-                    including:
+                    {t('privacy.section2.p_personal')}
                   </p>
                   <ul>
-                    <li>Email address</li>
-                    <li>Usage Data</li>
+                    <li>{t('privacy.section2.li_email')}</li>
+                    <li>{t('privacy.section2.li_usage')}</li>
                   </ul>
 
-                  <h4>2.Usage Data</h4>
+                  <h4>{t('privacy.section2.h4_usage')}</h4>
                   <p>
-                    Usage Data may include Your IP address, browser type, pages
-                    visited, time spent, device identifiers, and diagnostic
-                    data.
+                    {t('privacy.section2.p_usage')}
                   </p>
 
-                  <h2>Tracking Technologies and Cookies</h2>
+                  <h2>{t('privacy.section3.title')}</h2>
                   <p>
-                    We use Cookies and similar tracking technologies for
-                    analytics and functionality:
+                    {t('privacy.section3.p1')}
                   </p>
                   <ul>
                     <li>
-                      <strong>Essential Cookies:</strong> ensure core service
-                      features and prevent fraud.
+                      <strong>{t('privacy.section3.li1.strong')}:</strong> {t('privacy.section3.li1.text')}
                     </li>
                     <li>
-                      <strong>Notice Acceptance Cookies:</strong> record cookie
-                      acceptance.
+                      <strong>{t('privacy.section3.li2.strong')}:</strong> {t('privacy.section3.li2.text')}
                     </li>
                     <li>
-                      <strong>Functionality Cookies:</strong> remember login
-                      details and preferences.
+                      <strong>{t('privacy.section3.li3.strong')}:</strong> {t('privacy.section3.li3.text')}
                     </li>
                   </ul>
 
-                  <h2>Use of Your Personal Data</h2>
+                  <h2>{t('privacy.section4.title')}</h2>
                   <ul>
-                    <li>Provide and maintain the Service</li>
-                    <li>Manage Your Account</li>
-                    <li>Perform contracts and purchases</li>
-                    <li>Contact You via email, SMS, or push notifications</li>
-                    <li>Provide offers, news, and promotions</li>
-                    <li>Analytics and improvements</li>
-                    <li>Business transfers (mergers/acquisitions)</li>
+                    <li>{t('privacy.section4.li1')}</li>
+                    <li>{t('privacy.section4.li2')}</li>
+                    <li>{t('privacy.section4.li3')}</li>
+                    <li>{t('privacy.section4.li4')}</li>
+                    <li>{t('privacy.section4.li5')}</li>
+                    <li>{t('privacy.section4.li6')}</li>
+                    <li>{t('privacy.section4.li7')}</li>
                   </ul>
 
-                  <h2>Retention & Transfer of Data</h2>
+                  <h2>{t('privacy.section5.title')}</h2>
                   <p>
-                    We retain Your Personal Data only as long as necessary and
-                    may transfer it securely outside Your jurisdiction with
-                    safeguards.
+                    {t('privacy.section5.p1')}
                   </p>
 
-                  <h2>Delete Your Personal Data</h2>
+                  <h2>{t('privacy.section6.title')}</h2>
                   <p>
-                    You may request deletion of Your data anytime via account
-                    settings or contacting us directly.
+                    {t('privacy.section6.p1')}
                   </p>
 
-                  <h2>Disclosure of Your Personal Data</h2>
+                  <h2>{t('privacy.section7.title')}</h2>
                   <ul>
                     <li>
-                      <strong>Business Transactions:</strong> in mergers or
-                      acquisitions.
+                      <strong>{t('privacy.section7.li1.strong')}:</strong> {t('privacy.section7.li1.text')}
                     </li>
                     <li>
-                      <strong>Law Enforcement:</strong> when required by law.
+                      <strong>{t('privacy.section7.li2.strong')}:</strong> {t('privacy.section7.li2.text')}
                     </li>
                     <li>
-                      <strong>Legal Requirements:</strong> to comply, defend, or
-                      protect rights.
+                      <strong>{t('privacy.section7.li3.strong')}:</strong> {t('privacy.section7.li3.text')}
                     </li>
                   </ul>
 
-                  <h2>Children’s Privacy</h2>
+                  <h2>{t('privacy.section8.title')}</h2>
                   <p>
-                    Our Service does not target children under 13. If data is
-                    collected unknowingly, we will delete it immediately.
+                    {t('privacy.section8.p1')}
                   </p>
 
-                  <h2>Changes to this Privacy Policy</h2>
+                  <h2>{t('privacy.section9.title')}</h2>
                   <p>
-                    We may update this policy periodically and notify You via
-                    email or a service notice.
+                    {t('privacy.section9.p1')}
                   </p>
-
-                  {/* <h2>Contact Us</h2>
-                  <p>If you have questions, contact us:</p>
-                  <ul>
-                    <li>
-                      <strong>Email:</strong> {APP_NAME}@gmail.com
-                    </li>
-                  </ul> */}
                 </section>
+                {/* End Privacy Policy Content Section */}
               </div>
             </div>
             <BottomFooter />
-            {/* <div className="h-100 w-100 mb-5"></div> */}
             <Footer />
           </div>
         </div>
