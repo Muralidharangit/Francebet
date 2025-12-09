@@ -6,6 +6,8 @@ import { verifyToken } from "../../../API/authAPI";
 import { toast, ToastContainer } from "react-toastify";
 import { Images } from "./constants/images";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import LanguageSwitcher from "../../LanguageSwitcher";
+import { useTranslation } from 'react-i18next';
 
 const StickyHeader = ({ onToggleSidebar }) => {
   const [loading, setLoading] = useState(false);
@@ -139,6 +141,10 @@ const StickyHeader = ({ onToggleSidebar }) => {
       setLoading(false);
     }
   };
+
+
+  // t is the translation function
+  const { t } = useTranslation();
 
   // const pop_up = ()=>
   // {
@@ -774,6 +780,18 @@ const StickyHeader = ({ onToggleSidebar }) => {
                       </div>
                     </li>
                     {/* Profile dropdown ends */}
+
+                    <li>
+
+      <div style={{ marginTop: '20px' }}>
+        <LanguageSwitcher />
+      </div>
+
+     
+                    </li>
+
+                   
+
                   </div>
                 ) : (
                   // If Not Logged In

@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next"; // <-- IMPORT HERE
 import routes from "../routes/route";
 import BottomFooter from "../layouts/footer/BottomFooter";
 import Footer from "../layouts/footer/Footer";
 import StickyHeader from "../layouts/Header/Header";
 import Sidebar from "../layouts/Header/Sidebar";
-import { APP_NAME } from "../../constants"; // APP_NAME is likely "BetWin Namibia"
+// Removed APP_NAME import as it's not strictly used in this component
 
 function TermsCondition() {
+  const { t } = useTranslation(); // <-- USE HOOK HERE
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   
-  // Constants based on the Terms document
+  // Constants are now defined or used inside the translation key for substitution (interpolation)
   const COMPANY_NAME = "BetWin Namibia";
   const WEBSITE_URL = "play.betwin.co.na";
   const MIN_STAKE = "N$10";
@@ -37,14 +39,14 @@ function TermsCondition() {
                       <ol className="breadcrumb">
                         <li className="breadcrumb-item text-white">
                           <Link to={routes.home} className="text-white fw-600 ">
-                            Home
+                            {t('terms.breadcrumb.home')}
                           </Link>
                         </li>
                         <li
                           className="breadcrumb-item active text-white"
                           aria-current="page"
                         >
-                          Terms and Conditions
+                          {t('terms.breadcrumb.current')}
                         </li>
                       </ol>
                     </nav>
@@ -53,203 +55,158 @@ function TermsCondition() {
                 
                 {/* Terms and Conditions Content Section */}
                 <section className="privacy-container px-2 m-0 pt-0">
-                  <h1 className="text-white">Terms & Conditions</h1>
+                  <h1 className="text-white">{t('terms.title')}</h1>
 
                   {/* 1) Interpretation & Definitions */}
-                  <h2>1) Interpretation & Definitions</h2>
+                  <h2>{t('terms.section1.title')}</h2>
                   <ul>
                     <li>
-                      <strong>Company:</strong> {COMPANY_NAME} (“BetWin”, “we”, “us”, “our”).
+                      <strong>{t('terms.section1.company.strong')}:</strong> {t('terms.section1.company.text', { company: COMPANY_NAME })}
                     </li>
                     <li>
-                      <strong>Website/Service:</strong> <a href="http://play.betwin.co.na/ " target="_blank" rel="noopener noreferrer">{WEBSITE_URL} 
-                      </a>and related services.
+                      <strong>{t('terms.section1.website.strong')}:</strong> <a href="http://play.betwin.co.na/ " target="_blank" rel="noopener noreferrer">{WEBSITE_URL} 
+                      </a> {t('terms.section1.website.text')}
                     </li>
                     <li>
-                      <strong>You/Player:</strong> the natural person who registers and uses the Service.
+                      <strong>{t('terms.section1.player.strong')}:</strong> {t('terms.section1.player.text')}
                     </li>
                     <li>
-                      <strong>Device:</strong> any device that can access the Service.
+                      <strong>{t('terms.section1.device.strong')}:</strong> {t('terms.section1.device.text')}
                     </li>
                     <li>
-                      <strong>Account:</strong> your registered BetWin account.
+                      <strong>{t('terms.section1.account.strong')}:</strong> {t('terms.section1.account.text')}
                     </li>
                   </ul>
                   
                   {/* 2) Eligibility & Account */}
-                  <h2>2) Eligibility & Account</h2>
+                  <h2>{t('terms.section2.title')}</h2>
                   <p>
-                    <strong>18+ only.</strong> Gambling under 18 is prohibited.
+                    {t('terms.section2.p1')}
                   </p>
                   <p>
-                    One account per person. Duplicate or shared accounts are not allowed.
+                    {t('terms.section2.p2')}
                   </p>
                   <p>
-                    You must provide accurate personal details and keep them updated.
+                    {t('terms.section2.p3')}
                   </p>
                   <p>
-                    We may require KYC/AML verification at any time (ID, address, source of funds).
+                    {t('terms.section2.p4')}
                   </p>
 
                   {/* 3) Responsible Play */}
-                  <h2>3) Responsible Play</h2>
+                  <h2>{t('terms.section3.title')}</h2>
                   <p>
-                    Play within your limits. You may request deposit limits, cool-offs, or self-exclusion via Support.
+                    {t('terms.section3.p1')}
                   </p>
                   <p>
-                    If you feel your gambling is problematic, please contact Support for help resources.
+                    {t('terms.section3.p2')}
                   </p>
 
                   {/* 4) Bet Rules & Limits (Important) */}
-                  <h2>4) Bet Rules & Limits (Important)</h2>
+                  <h2>{t('terms.section4.title')}</h2>
                   <p>
-                    <strong>Minimum Stake:</strong> The minimum stake is **{MIN_STAKE}** per bet. Bets below the minimum are invalid and may be voided with the stake returned.
+                    <strong>{t('terms.section4.min_stake.strong')}:</strong> {t('terms.section4.min_stake.text', { minStake: MIN_STAKE })}
                   </p>
                   <p>
-                    <strong>Bet Acceptance:</strong> A bet is accepted only when recorded on our servers and shown in your bet history.
+                    <strong>{t('terms.section4.acceptance.strong')}:</strong> {t('terms.section4.acceptance.text')}
                   </p>
                   <p>
-                    <strong>Payout & Limits:</strong> Payout limits may apply based on stake size, game, and provider rules. To protect fairness and stop “micro-bet farming”, small stakes have capped payouts and/or cool-down rules (see Schedule A – Limits).
+                    <strong>{t('terms.section4.limits.strong')}:</strong> {t('terms.section4.limits.text')}
                   </p>
                   <p>
-                    <strong>Errors:</strong> In case of obvious error (palpable error, technical fault, or incorrect odds), we may void or re-settle the bet to its correct terms.
+                    <strong>{t('terms.section4.errors.strong')}:</strong> {t('terms.section4.errors.text')}
                   </p>
 
                   {/* 5) Fair Play & Anti-Fraud */}
-                  <h2>5) Fair Play & Anti-Fraud</h2>
-                  <p>To protect all players, the following are strictly prohibited:</p>
+                  <h2>{t('terms.section5.title')}</h2>
+                  <p>{t('terms.section5.p1')}</p>
                   <ul>
-                    <li>
-                      Multiple accounts, identity/KYC mismatch, third-party accounts.
-                    </li>
-                    <li>
-                      Collusion, syndicate play, arbitrage/manipulation.
-                    </li>
-                    <li>
-                      Automated/bot/scripted play or device emulation.
-                    </li>
-                    <li>
-                      Bonus abuse, chip dumping, or attempting to bypass limits.
-                    </li>
+                    <li>{t('terms.section5.li1')}</li>
+                    <li>{t('terms.section5.li2')}</li>
+                    <li>{t('terms.section5.li3')}</li>
+                    <li>{t('terms.section5.li4')}</li>
                   </ul>
                   <p>
-                    <strong>Voiding of Bets:</strong> We may void any bet and withhold associated winnings if we reasonably determine it was placed in breach of these Terms. Where appropriate, original stakes may be returned. Accounts may be suspended or closed, and activity may be reported to relevant stakeholders. You may appeal via Support; we review with logs/evidence.
+                    <strong>{t('terms.section5.voiding.strong')}:</strong> {t('terms.section5.voiding.text')}
                   </p>
 
                   {/* 6) Deposits & Withdrawals */}
-                  <h2>6) Deposits & Withdrawals</h2>
+                  <h2>{t('terms.section6.title')}</h2>
                   <p>
-                    <strong>Payments:</strong> We support EasyPay/Kazang vouchers, FNB eWallet, Bank Windhoek EasyWallet, and bank transfer (availability may vary).
+                    <strong>{t('terms.section6.payments.strong')}:</strong> {t('terms.section6.payments.text')}
                   </p>
                   <p>
-                    <strong>Withdrawal conditions:</strong>
+                    <strong>{t('terms.section6.withdrawal_conditions.strong')}:</strong>
                   </p>
                   <ul>
-                    <li>
-                      KYC must be completed before any payout.
-                    </li>
-                    <li>
-                      We may request Source-of-Funds documents for compliance.
-                    </li>
-                    <li>
-                      Payouts are made to the same method/name used for deposits where possible.
-                    </li>
-                    <li>
-                      Processing times depend on checks and provider availability.
-                    </li>
-                    <li>
-                      We may hold or reverse transactions while a risk review or chargeback/fraud investigation is in progress.
-                    </li>
+                    <li>{t('terms.section6.li1')}</li>
+                    <li>{t('terms.section6.li2')}</li>
+                    <li>{t('terms.section6.li3')}</li>
+                    <li>{t('terms.section6.li4')}</li>
+                    <li>{t('terms.section6.li5')}</li>
                   </ul>
                   
                   {/* 7) Promotions & Bonuses */}
-                  <h2>7) Promotions & Bonuses</h2>
-                  <p>
-                    Promotions have specific rules (wagering, eligible games, expiry, min stake).
-                  </p>
-                  <p>
-                    Sub-minimum bets do not qualify for promotions.
-                  </p>
-                  <p>
-                    If bonus abuse is suspected, related bets may be voided and the bonus removed.
-                  </p>
+                  <h2>{t('terms.section7.title')}</h2>
+                  <p>{t('terms.section7.p1')}</p>
+                  <p>{t('terms.section7.p2')}</p>
+                  <p>{t('terms.section7.p3')}</p>
 
                   {/* 8) Account Security & Privacy */}
-                  <h2>8) Account Security & Privacy</h2>
+                  <h2>{t('terms.section8.title')}</h2>
+                  <p>{t('terms.section8.p1')}</p>
                   <p>
-                    You are responsible for keeping your credentials secure.
-                  </p>
-                  <p>
-                    We process your data according to our{" "}
-                    {/* Assuming routes.pages.privacyPolicy is correct for the link */}
-                    <Link to={routes.pages.privacyPolicy}>Privacy Policy</Link>.
+                    {t('terms.section8.p2_part1')}{" "}
+                    <Link to={routes.pages.privacyPolicy}>{t('terms.section8.privacy_link')}</Link>.
                   </p>
 
                   {/* 9) Suspension & Termination */}
-                  <h2>9) Suspension & Termination</h2>
-                  <p>
-                    We may suspend or terminate your access immediately for breach of these Terms, fraud/risk concerns, or legal/compliance reasons.
-                  </p>
-                  <p>
-                    Upon termination, your right to use the Service ceases immediately; balances are handled per applicable law and these Terms.
-                  </p>
+                  <h2>{t('terms.section9.title')}</h2>
+                  <p>{t('terms.section9.p1')}</p>
+                  <p>{t('terms.section9.p2')}</p>
 
                   {/* 10) Liability */}
-                  <h2>10) Liability</h2>
-                  <p>
-                    The Service is provided “AS IS” and “AS AVAILABLE.” We disclaim all implied warranties to the fullest extent permitted by law.
-                  </p>
-                  <p>
-                    Our liability is limited to the amount you have paid to us in the 6 months preceding the claim, or N$2,000 if none. We are not liable for indirect or consequential losses, save as required by law.
-                  </p>
+                  <h2>{t('terms.section10.title')}</h2>
+                  <p>{t('terms.section10.p1')}</p>
+                  <p>{t('terms.section10.p2', { limit: 'N$2,000' })}</p>
 
                   {/* 11) Governing Law & Disputes */}
-                  <h2>11) Governing Law & Disputes</h2>
-                  <p>
-                    These Terms are governed by the laws of the **{GOVERNING_LAW}**.
-                  </p>
-                  <p>
-                    If you have a concern, please contact Support first; we aim to resolve disputes informally. If unresolved, you may escalate per applicable Namibian law.
-                  </p>
+                  <h2>{t('terms.section11.title')}</h2>
+                  <p>{t('terms.section11.p1', { law: GOVERNING_LAW })}</p>
+                  <p>{t('terms.section11.p2')}</p>
                   
                   {/* 12) Severability & Waiver */}
-                  <h2>12) Severability & Waiver</h2>
-                  <p>
-                    If any provision is held invalid, the remaining terms remain in force.
-                  </p>
-                  <p>
-                    Failure to enforce any right is not a waiver of that right.
-                  </p>
+                  <h2>{t('terms.section12.title')}</h2>
+                  <p>{t('terms.section12.p1')}</p>
+                  <p>{t('terms.section12.p2')}</p>
 
                   {/* 13) Changes to These Terms */}
-                  <h2>13) Changes to These Terms</h2>
-                  <p>
-                    We may modify these Terms from time to time. Material changes will be notified on the Website; continued use after changes means you accept the new Terms.
-                  </p>
+                  <h2>{t('terms.section13.title')}</h2>
+                  <p>{t('terms.section13.p1')}</p>
                   
                   {/* Schedule A - Limits */}
-                  <h2>Schedule A — Limits (to reduce “small-stake farming”)</h2>
+                  <h2>{t('terms.scheduleA.title')}</h2>
                   <p>
-                    These values are configurable by {COMPANY_NAME} and effective once published on the Website or Admin notice. If a number below changes in Admin, the latest published value prevails.
+                    {t('terms.scheduleA.p1', { company: COMPANY_NAME })}
                   </p>
                   <ol>
                     <li>
-                      <strong>Minimum Stake:</strong> {MIN_STAKE} (hard-enforced in UI/API).
+                      <strong>{t('terms.scheduleA.li1.strong')}:</strong> {t('terms.scheduleA.li1.text', { minStake: MIN_STAKE })}
                     </li>
                     <li>
-                      <strong>Payout Cap for Small Stakes:</strong> For stakes below N$20, the maximum payout per single bet is capped at [e.g., 150× stake].
+                      <strong>{t('terms.scheduleA.li2.strong')}:</strong> {t('terms.scheduleA.li2.text', { cap: '150× stake', min: 'N$20' })}
                     </li>
                     <li>
-                      <strong>Daily Net Win Cap:</strong> [e.g., N$15,000] per account per day. Additional wins may be settled the next day subject to review.
+                      <strong>{t('terms.scheduleA.li3.strong')}:</strong> {t('terms.scheduleA.li3.text', { cap: 'N$15,000' })}
                     </li>
                     <li>
-                      <strong>Big-Win Cool-down:</strong> After a single win $\geq$ [e.g., N$5,000], a cool-down of [e.g., 30 minutes] applies for the same game.
+                      <strong>{t('terms.scheduleA.li4.strong')}:</strong> {t('terms.scheduleA.li4.text', { win: 'N$5,000', cool: '30 minutes' })}
                     </li>
                     <li>
-                      <strong>Concurrent Small Bets:</strong> Max [e.g., 1–2] concurrent small-stake bets per round where applicable.
+                      <strong>{t('terms.scheduleA.li5.strong')}:</strong> {t('terms.scheduleA.li5.text', { max: '1–2' })}
                     </li>
                     <li>
-                      <strong>Risk Reviews:</strong> Bets may be temporarily held for review if risk signals trigger (multiple devices, IP anomalies, velocity, scripting). Confirmed breaches $\to$ voided bets per Section 5.
+                      <strong>{t('terms.scheduleA.li6.strong')}:</strong> {t('terms.scheduleA.li6.text', { section: 'Section 5' })}
                     </li>
                   </ol>
 

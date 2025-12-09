@@ -28,6 +28,7 @@ import {
 import { useQuery } from "@tanstack/react-query";
 import Sidebar from "./Header/Sidebar";
 import { APP_NAME, CURRENCY_SYMBOL } from "../../constants";
+import { useTranslation } from "react-i18next";
 
 function Home() {
   const { isLoading } = useContext(AuthContext);
@@ -795,6 +796,9 @@ function Home() {
       toast.error("Game launch failed. Try again later.");
     }
   };
+
+    // t is the translation function
+    const { t } = useTranslation();
   // back btn setup Ends
   return (
     <>
@@ -850,6 +854,18 @@ function Home() {
                 ) : (
                   <>
                     <section className="container vh-100  py-2">
+
+
+
+ <div style={{ padding: '20px' }}>
+      <h1>{t('greeting')}</h1>
+      
+     
+      <p style={{ marginTop: '30px', fontSize: '16px' }}>
+        {/* Example text with consistent font size */}
+        {t('language_option')}: {t('greeting')}
+      </p>
+    </div>
                       {/* home start */}
                       {/*----banner-slider----*/}
                       <SkeletonTheme
