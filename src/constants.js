@@ -1,4 +1,4 @@
 export const CURRENCY_SYMBOL = "NAD$";
 
 
-export const APP_NAME = "Betwin";
+export const APP_NAME = "France Bet";

@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
+import { useTranslation } from "react-i18next"; // <-- IMPORT HERE
 import routes from "../routes/route";
 import StickyHeader from "../layouts/Header/Header";
 import BottomFooter from "../layouts/footer/BottomFooter";
@@ -7,14 +8,18 @@ import Footer from "../layouts/footer/Footer";
 import Sidebar from "../layouts/Header/Sidebar";
 import { APP_NAME } from "../../constants";
 
-const HowToPlay = () => {
+const ResponsibleGamingPolicy = () => { // Renamed component for clarity, though export remains
+  const { t } = useTranslation(); // <-- USE HOOK HERE
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  
+  // Dynamic email for the contact link
+  const supportEmail = `support@${APP_NAME}.in`; 
+
   return (
     <div style={{ overflowX: "hidden" }}>
       {/* header  */}
       <StickyHeader onToggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />
       {/* header end */}
-      {/* <section className="container pt-40 text-white"> */}
       <div className="container-fluid page-body-wrapper">
         {/* Sidebar Nav Starts */}
         <Sidebar />
@@ -23,207 +28,179 @@ const HowToPlay = () => {
           <div className="content-wrapper">
             <div className="max-1250 mx-auto">
               <div className="h-100 d-flex justify-content-evenly flex-column">
+                
+                {/* Breadcrumb Section */}
                 <div className="pt-3 pb-2 px-2">
                   <div className=" ">
                     <nav aria-label="breadcrumb">
                       <ol className="breadcrumb m-0">
                         <li className="breadcrumb-item text-white">
                           <Link to={routes.home} className="text-white fw-600 ">
-                            Home
+                            {t('responsibleGaming.breadcrumb.home')}
                           </Link>
                         </li>
                         <li
                           className="breadcrumb-item active  text-white"
                           aria-current="page"
                         >
-                          How to play
+                          {t('responsibleGaming.breadcrumb.current')}
                         </li>
                       </ol>
                     </nav>
                   </div>
                 </div>
-                <section class="privacy-container px-2 m-0">
+
+                <section className="privacy-container px-2 m-0">
                   <h1 className="text-white">
-                    Responsible Gaming & Player Protection Policy
+                    {t('responsibleGaming.title')}
                   </h1>
                   <p>
-                    At <strong>{APP_NAME}.in</strong>, we are committed to
-                    promoting responsible gaming and ensuring the safety of our
-                    players. Our goal is to raise awareness about problem
-                    gambling while providing effective tools for prevention,
-                    intervention, and support.
+                    {t('responsibleGaming.intro_p1', { appName: APP_NAME })}
                   </p>
                   <p>
-                    Our Responsible Gaming Policy reflects our dedication to
-                    reducing the risks associated with gambling and creating a
-                    secure, enjoyable experience for every player.
+                    {t('responsibleGaming.intro_p2')}
                   </p>
 
-                  <h2>Our Commitment</h2>
+                  {/* Our Commitment */}
+                  <h2>{t('responsibleGaming.section1.title')}</h2>
                   <p>
-                    We strive to make sure that while you enjoy your gaming
-                    experience on <strong>{APP_NAME}.in</strong>, you remain
-                    fully aware of the potential{" "}
-                    <strong>social and financial risks</strong> associated with
-                    gambling.
+                    {t('responsibleGaming.section1.p1', { appName: APP_NAME })}
+                    <strong>{t('responsibleGaming.section1.p1_strong')}</strong>
+                    {t('responsibleGaming.section1.p1_tail')}
                   </p>
                   <ul>
-                    <li>Customer-driven deposit and loss limits.</li>
-                    <li>
-                      Self-exclusion options available through Customer Support.
-                    </li>
-                    <li>
-                      Links to trusted support organizations such as SICAD,
-                      GamCare, and Gambling Therapy.
-                    </li>
-                    <li>Self-protection and awareness resources.</li>
-                    <li>
-                      Strong account security measures to prevent underage or
-                      unauthorized access.
-                    </li>
+                    <li>{t('responsibleGaming.section1.li1')}</li>
+                    <li>{t('responsibleGaming.section1.li2')}</li>
+                    <li>{t('responsibleGaming.section1.li3')}</li>
+                    <li>{t('responsibleGaming.section1.li4')}</li>
+                    <li>{t('responsibleGaming.section1.li5')}</li>
                   </ul>
 
-                  <h2>Temporary Account Closure / Self-Exclusion</h2>
+                  {/* Temporary Account Closure / Self-Exclusion */}
+                  <h2>{t('responsibleGaming.section2.title')}</h2>
                   <p>
-                    You have the option to restrict access to your account or
-                    exclude yourself from playing games temporarily or
-                    permanently.
+                    {t('responsibleGaming.section2.p1')}
                   </p>
                   <p>
-                    <strong>How to apply restrictions:</strong>
+                    <strong>{t('responsibleGaming.section2.p2_strong')}:</strong>
                   </p>
                   <ul>
                     <li>
-                      Go to <strong>Profile &gt; Player Protection</strong> in
-                      your account.
+                      {t('responsibleGaming.section2.li1_part1')}
+                      <strong>{t('responsibleGaming.section2.li1_strong')}</strong>
+                      {t('responsibleGaming.section2.li1_part2')}
                     </li>
-                    {/* <li>
-                      Or contact our Customer Support team at{" "}
-                      <a href="mailto:support@{APP_NAME}.in">
-                        support@{APP_NAME}.in
-                      </a>
-                      .
-                    </li> */}
                   </ul>
                   <p>
-                    <strong>Important:</strong>
+                    <strong>{t('responsibleGaming.section2.p3_strong')}:</strong>
                   </p>
                   <ul>
                     <li>
-                      All account blocking or self-exclusion requests take
-                      effect <strong>immediately</strong>.
+                      {t('responsibleGaming.section2.li2_p1')}
+                      <strong>{t('responsibleGaming.section2.li2_strong')}</strong>
+                      {t('responsibleGaming.section2.li2_p2')}
                     </li>
                     <li>
-                      Revoking restrictions may take up to{" "}
-                      <strong>7 days</strong> after your request and only once
-                      the exclusion period has expired.
+                      {t('responsibleGaming.section2.li3_p1')}
+                      <strong>{t('responsibleGaming.section2.li3_strong')}</strong>
+                      {t('responsibleGaming.section2.li3_p2')}
                     </li>
                   </ul>
 
-                  <h2>Maintaining Control Over Gambling</h2>
+                  {/* Maintaining Control Over Gambling */}
+                  <h2>{t('responsibleGaming.section3.title')}</h2>
                   <p>
-                    While most players enjoy gaming within their limits, some
-                    may face challenges. To stay in control:
+                    {t('responsibleGaming.section3.p1')}
                   </p>
                   <ul>
                     <li>
-                      Treat gambling as <strong>entertainment</strong>, not
-                      income.
+                      {t('responsibleGaming.section3.li1_p1')}
+                      <strong>{t('responsibleGaming.section3.li1_strong')}</strong>
+                      {t('responsibleGaming.section3.li1_p2')}
                     </li>
-                    <li>Never chase losses.</li>
+                    <li>{t('responsibleGaming.section3.li2')}</li>
                     <li>
-                      Track your <strong>time and money</strong> spent.
-                    </li>
-                    <li>
-                      Use the <strong>loss limit</strong> feature in your
-                      profile settings.
-                    </li>
-                    <li>
-                      Take breaks or use <strong>self-exclusion</strong> when
-                      needed.
+                      {t('responsibleGaming.section3.li3_p1')}
+                      <strong>{t('responsibleGaming.section3.li3_strong')}</strong>
+                      {t('responsibleGaming.section3.li3_p2')}
                     </li>
                     <li>
-                      Reach out to professional organizations if gambling
-                      becomes harmful.
+                      {t('responsibleGaming.section3.li4_p1')}
+                      <strong>{t('responsibleGaming.section3.li4_strong')}</strong>
+                      {t('responsibleGaming.section3.li4_p2')}
                     </li>
+                    <li>
+                      {t('responsibleGaming.section3.li5_p1')}
+                      <strong>{t('responsibleGaming.section3.li5_strong')}</strong>
+                      {t('responsibleGaming.section3.li5_p2')}
+                    </li>
+                    <li>{t('responsibleGaming.section3.li6')}</li>
                   </ul>
-                  <div class="highlight-box text-black">
-                    💡 You can monitor your deposits, withdrawals, and bets
-                    under <strong>History &gt; Transactions</strong>. If you
-                    notice unauthorized activity, contact{" "}
-                    <a href="#">
-                      support@{APP_NAME}.in
-                    </a>{" "}
-                    immediately and update your password.
+                  <div className="highlight-box text-black">
+                    💡 {t('responsibleGaming.section3.highlight_p1')}
+                    <strong>{t('responsibleGaming.section3.highlight_strong')}</strong>
+                    {t('responsibleGaming.section3.highlight_p2')}
+                    <a href={`mailto:${supportEmail}`}>
+                      {supportEmail}
+                    </a>
+                    {t('responsibleGaming.section3.highlight_p3')}
                   </div>
 
-                  <h2>Do You Think You Have a Problem?</h2>
+                  {/* Do You Think You Have a Problem? */}
+                  <h2>{t('responsibleGaming.section4.title')}</h2>
                   <p>
-                    If gambling is negatively impacting your life, ask yourself:
+                    {t('responsibleGaming.section4.p1')}
                   </p>
                   <ul>
-                    <li>Do you skip school/work to gamble?</li>
-                    <li>Do you gamble out of boredom?</li>
-                    <li>Do you spend long hours gambling alone?</li>
-                    <li>Have people criticized your gambling habits?</li>
-                    <li>
-                      Do you neglect family, friends, or hobbies due to
-                      gambling?
-                    </li>
-                    <li>Have you borrowed or stolen money for gambling?</li>
-                    <li>Do you gamble until all your money is gone?</li>
-                    <li>Do you chase losses immediately after losing?</li>
-                    <li>Do arguments or frustrations push you to gamble?</li>
-                    <li>
-                      Has gambling led to depression or suicidal thoughts?
-                    </li>
+                    <li>{t('responsibleGaming.section4.li1')}</li>
+                    <li>{t('responsibleGaming.section4.li2')}</li>
+                    <li>{t('responsibleGaming.section4.li3')}</li>
+                    <li>{t('responsibleGaming.section4.li4')}</li>
+                    <li>{t('responsibleGaming.section4.li5')}</li>
+                    <li>{t('responsibleGaming.section4.li6')}</li>
+                    <li>{t('responsibleGaming.section4.li7')}</li>
+                    <li>{t('responsibleGaming.section4.li8')}</li>
+                    <li>{t('responsibleGaming.section4.li9')}</li>
+                    <li>{t('responsibleGaming.section4.li10')}</li>
                   </ul>
                   <p>
-                    👉 If you answered <strong>yes</strong> to several of these
-                    questions, we strongly encourage you to seek support from
-                    trusted organizations like{" "}
+                    👉 {t('responsibleGaming.section4.p2_p1')}
+                    <strong>{t('responsibleGaming.section4.p2_strong')}</strong>
+                    {t('responsibleGaming.section4.p2_p2')}
                     <a href="#" target="_blank">
-                      GamCare
-                    </a>{" "}
-                    or{" "}
+                      {t('responsibleGaming.section4.link1')}
+                    </a>
+                    {t('responsibleGaming.section4.p2_or')}
                     <a href="#" target="_blank">
-                      Gambling Therapy
+                      {t('responsibleGaming.section4.link2')}
                     </a>
                     .
                   </p>
 
-                  <h2>Underage Gambling Policy</h2>
+                  {/* Underage Gambling Policy */}
+                  <h2>{t('responsibleGaming.section5.title')}</h2>
                   <p>
-                    It is strictly prohibited for anyone{" "}
-                    <strong>under the age of 18</strong> to register or gamble
-                    on
-                    <strong>{APP_NAME}.in</strong>.
+                    {t('responsibleGaming.section5.p1_p1')}
+                    <strong>{t('responsibleGaming.section5.p1_strong')}</strong>
+                    {t('responsibleGaming.section5.p1_p2', { appName: APP_NAME })}
                   </p>
-                  <p>To prevent underage gambling, we enforce:</p>
+                  <p>{t('responsibleGaming.section5.p2')}</p>
                   <ul>
-                    <li>Age verification checks for all users.</li>
-                    <li>
-                      Random checks on accounts linked to payment methods.
-                    </li>
-                    <li>
-                      Immediate account closure and forfeiture of winnings for
-                      underage users.
-                    </li>
-                    <li>Possible reporting to authorities for violations.</li>
+                    <li>{t('responsibleGaming.section5.li1')}</li>
+                    <li>{t('responsibleGaming.section5.li2')}</li>
+                    <li>{t('responsibleGaming.section5.li3')}</li>
+                    <li>{t('responsibleGaming.section5.li4')}</li>
                   </ul>
 
-                  <h2>Our Promise</h2>
+                  {/* Our Promise */}
+                  <h2>{t('responsibleGaming.section6.title')}</h2>
                   <p>
-                    At <strong>{APP_NAME}.in</strong>, we are dedicated to
-                    providing a safe, fair, and enjoyable gaming environment. We
-                    strongly encourage players to stay informed, play
-                    responsibly, and seek help if needed.
+                    {t('responsibleGaming.section6.p1', { appName: APP_NAME })}
                   </p>
                   <p>
-                    📧 For questions or support, contact us anytime at
-                    <a href="mailto:support@{APP_NAME}.in">
-                      {" "}
-                      support{APP_NAME}.in
+                    📧 {t('responsibleGaming.section6.p2_p1')}
+                    <a href={`mailto:${supportEmail}`}>
+                      {supportEmail}
                     </a>
                     .
                   </p>
@@ -240,4 +217,5 @@ const HowToPlay = () => {
   );
 };
 
-export default HowToPlay;
+export default ResponsibleGamingPolicy; // Exporting under a descriptive name
+// export default HowToPlay; // If you must keep the original export name

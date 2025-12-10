@@ -1,15 +1,464 @@
 {
-  "nav": {
-    "home": "Home",
-    "about": "About",
-    "contact": "Contact"
+  "terms": {
+    "breadcrumb": {
+      "home": "Home",
+      "current": "Terms and Conditions"
+    },
+    "title": "Terms & Conditions",
+    
+    "section1": {
+      "title": "1) Interpretation & Definitions",
+      "company": {
+        "strong": "Company",
+        "text": "BetWin Namibia (“BetWin”, “we”, “us”, “our”)."
+      },
+      "website": {
+        "strong": "Website/Service",
+        "text": "and related services."
+      },
+      "player": {
+        "strong": "You/Player",
+        "text": "the natural person who registers and uses the Service."
+      },
+      "device": {
+        "strong": "Device",
+        "text": "any device that can access the Service."
+      },
+      "account": {
+        "strong": "Account",
+        "text": "your registered BetWin account."
+      }
+    },
+
+    "section2": {
+      "title": "2) Eligibility & Account",
+      "p1": "18+ only. Gambling under 18 is prohibited.",
+      "p2": "One account per person. Duplicate or shared accounts are not allowed.",
+      "p3": "You must provide accurate personal details and keep them updated.",
+      "p4": "We may require KYC/AML verification at any time (ID, address, source of funds)."
+    },
+
+    "section3": {
+      "title": "3) Responsible Play",
+      "p1": "Play within your limits. You may request deposit limits, cool-offs, or self-exclusion via Support.",
+      "p2": "If you feel your gambling is problematic, please contact Support for help resources."
+    },
+
+    "section4": {
+      "title": "4) Bet Rules & Limits (Important)",
+      "min_stake": {
+        "strong": "Minimum Stake",
+        "text": "The minimum stake is {{minStake}} per bet. Bets below the minimum are invalid and may be voided with the stake returned."
+      },
+      "acceptance": {
+        "strong": "Bet Acceptance",
+        "text": "A bet is accepted only when recorded on our servers and shown in your bet history."
+      },
+      "limits": {
+        "strong": "Payout & Limits",
+        "text": "Payout limits may apply based on stake size, game, and provider rules. To protect fairness and stop “micro-bet farming”, small stakes have capped payouts and/or cool-down rules (see Schedule A – Limits)."
+      },
+      "errors": {
+        "strong": "Errors",
+        "text": "In case of obvious error (palpable error, technical fault, or incorrect odds), we may void or re-settle the bet to its correct terms."
+      }
+    },
+    
+    "section5": {
+        "title": "5) Fair Play & Anti-Fraud",
+        "p1": "To protect all players, the following are strictly prohibited:",
+        "li1": "Multiple accounts, identity/KYC mismatch, third-party accounts.",
+        "li2": "Collusion, syndicate play, arbitrage/manipulation.",
+        "li3": "Automated/bot/scripted play or device emulation.",
+        "li4": "Bonus abuse, chip dumping, or attempting to bypass limits.",
+        "voiding": {
+            "strong": "Voiding of Bets",
+            "text": "We may void any bet and withhold associated winnings if we reasonably determine it was placed in breach of these Terms. Where appropriate, original stakes may be returned. Accounts may be suspended or closed, and activity may be reported to relevant stakeholders. You may appeal via Support; we review with logs/evidence."
+        }
+    },
+
+    "section6": {
+        "title": "6) Deposits & Withdrawals",
+        "payments": {
+            "strong": "Payments",
+            "text": "We support EasyPay/Kazang vouchers, FNB eWallet, Bank Windhoek EasyWallet, and bank transfer (availability may vary)."
+        },
+        "withdrawal_conditions": {
+            "strong": "Withdrawal conditions"
+        },
+        "li1": "KYC must be completed before any payout.",
+        "li2": "We may request Source-of-Funds documents for compliance.",
+        "li3": "Payouts are made to the same method/name used for deposits where possible.",
+        "li4": "Processing times depend on checks and provider availability.",
+        "li5": "We may hold or reverse transactions while a risk review or chargeback/fraud investigation is in progress."
+    },
+
+    "section7": {
+        "title": "7) Promotions & Bonuses",
+        "p1": "Promotions have specific rules (wagering, eligible games, expiry, min stake).",
+        "p2": "Sub-minimum bets do not qualify for promotions.",
+        "p3": "If bonus abuse is suspected, related bets may be voided and the bonus removed."
+    },
+
+    "section8": {
+        "title": "8) Account Security & Privacy",
+        "p1": "You are responsible for keeping your credentials secure.",
+        "p2_part1": "We process your data according to our",
+        "privacy_link": "Privacy Policy"
+    },
+
+    "section9": {
+        "title": "9) Suspension & Termination",
+        "p1": "We may suspend or terminate your access immediately for breach of these Terms, fraud/risk concerns, or legal/compliance reasons.",
+        "p2": "Upon termination, your right to use the Service ceases immediately; balances are handled per applicable law and these Terms."
+    },
+
+    "section10": {
+        "title": "10) Liability",
+        "p1": "The Service is provided “AS IS” and “AS AVAILABLE.” We disclaim all implied warranties to the fullest extent permitted by law.",
+        "p2": "Our liability is limited to the amount you have paid to us in the 6 months preceding the claim, or {{limit}} if none. We are not liable for indirect or consequential losses, save as required by law."
+    },
+
+    "section11": {
+        "title": "11) Governing Law & Disputes",
+        "p1": "These Terms are governed by the laws of the {{law}}.",
+        "p2": "If you have a concern, please contact Support first; we aim to resolve disputes informally. If unresolved, you may escalate per applicable Namibian law."
+    },
+
+    "section12": {
+        "title": "12) Severability & Waiver",
+        "p1": "If any provision is held invalid, the remaining terms remain in force.",
+        "p2": "Failure to enforce any right is not a waiver of that right."
+    },
+
+    "section13": {
+        "title": "13) Changes to These Terms",
+        "p1": "We may modify these Terms from time to time. Material changes will be notified on the Website; continued use after changes means you accept the new Terms."
+    },
+    
+    "scheduleA": {
+        "title": "Schedule A — Limits (to reduce “small-stake farming”)",
+        "p1": "These values are configurable by {{company}} and effective once published on the Website or Admin notice. If a number below changes in Admin, the latest published value prevails.",
+        "li1": {
+            "strong": "Minimum Stake",
+            "text": "{{minStake}} (hard-enforced in UI/API)."
+        },
+        "li2": {
+            "strong": "Payout Cap for Small Stakes",
+            "text": "For stakes below {{min}}, the maximum payout per single bet is capped at [e.g., {{cap}}]."
+        },
+        "li3": {
+            "strong": "Daily Net Win Cap",
+            "text": "[e.g., {{cap}}] per account per day. Additional wins may be settled the next day subject to review."
+        },
+        "li4": {
+            "strong": "Big-Win Cool-down",
+            "text": "After a single win $\\geq$ [e.g., {{win}}], a cool-down of [e.g., {{cool}}] applies for the same game."
+        },
+        "li5": {
+            "strong": "Concurrent Small Bets",
+            "text": "Max [e.g., {{max}}] concurrent small-stake bets per round where applicable."
+        },
+        "li6": {
+            "strong": "Risk Reviews",
+            "text": "Bets may be temporarily held for review if risk signals trigger (multiple devices, IP anomalies, velocity, scripting). Confirmed breaches $\\to$ voided bets per {{section}}."
+        }
+    }
   },
-  "hero": {
-    "title": "Welcome to our website",
-    "subtitle": "i18next test in Create React App"
+
+  "privacy": {
+    "breadcrumb": {
+      "home": "Home",
+      "current": "Privacy Policy"
+    },
+    "title": "Privacy Policy",
+    "intro_p1": "This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You.",
+    "intro_highlight": "By using our Service, you agree to the collection and use of information in accordance with this Privacy Policy.",
+
+    "section1": {
+      "title": "Interpretation and Definitions",
+      "h3_interpretation": "Interpretation",
+      "p_interpretation": "Words with the initial letter capitalized have meanings defined under the following conditions. The following definitions shall apply regardless of singular or plural usage.",
+      "h3_definitions": "Definitions",
+      "account": {
+        "strong": "Account",
+        "text": "a unique account created for You to access our Service."
+      },
+      "affiliate": {
+        "strong": "Affiliate",
+        "text": "an entity under common control or ownership."
+      },
+      "company": {
+        "strong": "Company",
+        "text": "{{appName}} (“We”, “Us”, “Our”)."
+      },
+      "cookies": {
+        "strong": "Cookies",
+        "text": "small files stored on Your device to track browsing activity."
+      },
+      "country": {
+        "strong": "Country",
+        "text": "- ."
+      },
+      "device": {
+        "strong": "Device",
+        "text": "any device such as a computer, phone, or tablet."
+      },
+      "personal_data": {
+        "strong": "Personal Data",
+        "text": "information relating to an identified or identifiable individual."
+      },
+      "service": {
+        "strong": "Service",
+        "text": "the Website."
+      },
+      "website": {
+        "strong": "Website",
+        "text": "{{appName}}, accessible from anywhere."
+      },
+      "you": {
+        "strong": "You",
+        "text": "the individual using the Service, or a company/legal entity on whose behalf it is used."
+      }
+    },
+
+    "section2": {
+      "title": "Collecting and Using Your Personal Data",
+      "h3_types": "Types of Data Collected",
+      "h4_personal": "1.Personal Data",
+      "p_personal": "We may collect personally identifiable information including:",
+      "li_email": "Email address",
+      "li_usage": "Usage Data",
+      "h4_usage": "2.Usage Data",
+      "p_usage": "Usage Data may include Your IP address, browser type, pages visited, time spent, device identifiers, and diagnostic data."
+    },
+
+    "section3": {
+      "title": "Tracking Technologies and Cookies",
+      "p1": "We use Cookies and similar tracking technologies for analytics and functionality:",
+      "li1": {
+        "strong": "Essential Cookies",
+        "text": "ensure core service features and prevent fraud."
+      },
+      "li2": {
+        "strong": "Notice Acceptance Cookies",
+        "text": "record cookie acceptance."
+      },
+      "li3": {
+        "strong": "Functionality Cookies",
+        "text": "remember login details and preferences."
+      }
+    },
+
+    "section4": {
+      "title": "Use of Your Personal Data",
+      "li1": "Provide and maintain the Service",
+      "li2": "Manage Your Account",
+      "li3": "Perform contracts and purchases",
+      "li4": "Contact You via email, SMS, or push notifications",
+      "li5": "Provide offers, news, and promotions",
+      "li6": "Analytics and improvements",
+      "li7": "Business transfers (mergers/acquisitions)"
+    },
+
+    "section5": {
+      "title": "Retention & Transfer of Data",
+      "p1": "We retain Your Personal Data only as long as necessary and may transfer it securely outside Your jurisdiction with safeguards."
+    },
+
+    "section6": {
+      "title": "Delete Your Personal Data",
+      "p1": "You may request deletion of Your data anytime via account settings or contacting us directly."
+    },
+
+    "section7": {
+      "title": "Disclosure of Your Personal Data",
+      "li1": {
+        "strong": "Business Transactions",
+        "text": "in mergers or acquisitions."
+      },
+      "li2": {
+        "strong": "Law Enforcement",
+        "text": "when required by law."
+      },
+      "li3": {
+        "strong": "Legal Requirements",
+        "text": "to comply, defend, or protect rights."
+      }
+    },
+
+    "section8": {
+      "title": "Children’s Privacy",
+      "p1": "Our Service does not target children under 13. If data is collected unknowingly, we will delete it immediately."
+    },
+
+    "section9": {
+      "title": "Changes to this Privacy Policy",
+      "p1": "We may update this policy periodically and notify You via email or a service notice."
+    }
   },
-  "cta": {
-    "getStarted": "Get Started"
-  },
-  "footer": "© 2025 My CRA I18N App"
+
+
+  "responsibleGaming": {
+    "breadcrumb": {
+      "home": "Home",
+      "current": "How to play"
+    },
+    "title": "Responsible Gaming & Player Protection Policy",
+    "intro_p1": "At **{{appName}}.in**, we are committed to promoting responsible gaming and ensuring the safety of our players. Our goal is to raise awareness about problem gambling while providing effective tools for prevention, intervention, and support.",
+    "intro_p2": "Our Responsible Gaming Policy reflects our dedication to reducing the risks associated with gambling and creating a secure, enjoyable experience for every player.",
+
+    "section1": {
+      "title": "Our Commitment",
+      "p1": "We strive to make sure that while you enjoy your gaming experience on **{{appName}}.in**, you remain fully aware of the potential ",
+      "p1_strong": "social and financial risks",
+      "p1_tail": " associated with gambling.",
+      "li1": "Customer-driven deposit and loss limits.",
+      "li2": "Self-exclusion options available through Customer Support.",
+      "li3": "Links to trusted support organizations such as SICAD, GamCare, and Gambling Therapy.",
+      "li4": "Self-protection and awareness resources.",
+      "li5": "Strong account security measures to prevent underage or unauthorized access."
+    },
+
+    "section2": {
+      "title": "Temporary Account Closure / Self-Exclusion",
+      "p1": "You have the option to restrict access to your account or exclude yourself from playing games temporarily or permanently.",
+      "p2_strong": "How to apply restrictions",
+      "li1_part1": "Go to ",
+      "li1_strong": "Profile > Player Protection",
+      "li1_part2": " in your account.",
+      "p3_strong": "Important",
+      "li2_p1": "All account blocking or self-exclusion requests take effect ",
+      "li2_strong": "immediately",
+      "li2_p2": ".",
+      "li3_p1": "Revoking restrictions may take up to ",
+      "li3_strong": "7 days",
+      "li3_p2": " after your request and only once the exclusion period has expired."
+    },
+
+    "section3": {
+      "title": "Maintaining Control Over Gambling",
+      "p1": "While most players enjoy gaming within their limits, some may face challenges. To stay in control:",
+      "li1_p1": "Treat gambling as ",
+      "li1_strong": "entertainment",
+      "li1_p2": ", not income.",
+      "li2": "Never chase losses.",
+      "li3_p1": "Track your ",
+      "li3_strong": "time and money",
+      "li3_p2": " spent.",
+      "li4_p1": "Use the ",
+      "li4_strong": "loss limit",
+      "li4_p2": " feature in your profile settings.",
+      "li5_p1": "Take breaks or use ",
+      "li5_strong": "self-exclusion",
+      "li5_p2": " when needed.",
+      "li6": "Reach out to professional organizations if gambling becomes harmful.",
+      "highlight_p1": "You can monitor your deposits, withdrawals, and bets under ",
+      "highlight_strong": "History > Transactions",
+      "highlight_p2": ". If you notice unauthorized activity, contact ",
+      "highlight_p3": " immediately and update your password."
+    },
+
+    "section4": {
+      "title": "Do You Think You Have a Problem?",
+      "p1": "If gambling is negatively impacting your life, ask yourself:",
+      "li1": "Do you skip school/work to gamble?",
+      "li2": "Do you gamble out of boredom?",
+      "li3": "Do you spend long hours gambling alone?",
+      "li4": "Have people criticized your gambling habits?",
+      "li5": "Do you neglect family, friends, or hobbies due to gambling?",
+      "li6": "Have you borrowed or stolen money for gambling?",
+      "li7": "Do you gamble until all your money is gone?",
+      "li8": "Do you chase losses immediately after losing?",
+      "li9": "Do arguments or frustrations push you to gamble?",
+      "li10": "Has gambling led to depression or suicidal thoughts?",
+      "p2_p1": "If you answered ",
+      "p2_strong": "yes",
+      "p2_p2": " to several of these questions, we strongly encourage you to seek support from trusted organizations like ",
+      "p2_or": " or ",
+      "link1": "GamCare",
+      "link2": "Gambling Therapy"
+    },
+
+    "section5": {
+      "title": "Underage Gambling Policy",
+      "p1_p1": "It is strictly prohibited for anyone ",
+      "p1_strong": "under the age of 18",
+      "p1_p2": " to register or gamble on **{{appName}}.in**.",
+      "p2": "To prevent underage gambling, we enforce:",
+      "li1": "Age verification checks for all users.",
+      "li2": "Random checks on accounts linked to payment methods.",
+      "li3": "Immediate account closure and forfeiture of winnings for underage users.",
+      "li4": "Possible reporting to authorities for violations."
+    },
+
+    "section6": {
+      "title": "Our Promise",
+      "p1": "At **{{appName}}.in**, we are dedicated to providing a safe, fair, and enjoyable gaming environment. We strongly encourage players to stay informed, play responsibly, and seek help if needed.",
+      "p2_p1": "For questions or support, contact us anytime at "
+    }
+  }
+
+  ,
+
+  "sidebar": {
+    "menu": {
+      "home": "Home",
+      "allGames": "All Games",
+      "liveCasino": "Live Casino",
+      "crashGames": "Crash Games",
+      "providers": "Providers",
+      "howToDeposit": "How To Deposit",
+      "howToPlay": "How to Play",
+      "terms": "Terms and Conditions",
+      "privacy": "Privacy and policy"
+    },
+    "button": {
+      "allGames": "All Games"
+    }
+  }
+
+  ,
+
+ "home": {
+    "hotGames": {
+      "title": "Hot Games",
+      "allLink": "All",
+      "iconAlt": "Games Type Icon"
+    },
+    "gamesType": {
+      "title": "Games Type",
+      "allLink": "All",
+      "iconAlt": "Games Type Icon"
+    },
+    "allGames": {
+      "title": "All Games",
+      "allLink": "All"
+    },
+    "slotGames": {
+      "title": "Slot Games",
+      "allLink": "All",
+      "error": "Error loading slot games",
+      "noGames": "No slot games available",
+      "noGamesAlt": "No games available image"
+    },
+    "providers": {
+      "title": "Provider",
+      "allLink": "All",
+      "iconAlt": "Coin icon"
+    },
+    "bonus": {
+      "title": "Bonus",
+      "allLink": "All",
+      "iconAlt": "Coin icon"
+    },
+    "bonusCard": {
+      "type": "Casino",
+      "desc100": "100% Crash Power Bonus",
+      "desc75": "75% Crash Power Bonus",
+      "getBonusButton": "Get bonus",
+      "detailsButton": "Details"
+    }
+  }
+  
 }

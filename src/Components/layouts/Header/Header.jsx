@@ -6,6 +6,8 @@ import { verifyToken } from "../../../API/authAPI";
 import { toast, ToastContainer } from "react-toastify";
 import { Images } from "./constants/images";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
+import LanguageSwitcher from "../../LanguageSwitcher";
+import { useTranslation } from 'react-i18next';
 
 const StickyHeader = ({ onToggleSidebar }) => {
   const [loading, setLoading] = useState(false);
@@ -140,6 +142,10 @@ const StickyHeader = ({ onToggleSidebar }) => {
     }
   };
 
+
+  // t is the translation function
+  const { t } = useTranslation();
+
   // const pop_up = ()=>
   // {
   //     toast.
@@ -224,7 +230,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
 
                     {/* Avatar */}
                     <div
-                      className="user-icon ms-2"
+                      className="user-icon"
                       onClick={handleProfileClick}
                     >
                       <img
@@ -774,6 +780,18 @@ const StickyHeader = ({ onToggleSidebar }) => {
                       </div>
                     </li>
                     {/* Profile dropdown ends */}
+
+                    <li className="nav-item">
+
+      <div >
+        <LanguageSwitcher />
+      </div>
+
+     
+                    </li>
+
+                   
+
                   </div>
                 ) : (
                   // If Not Logged In
