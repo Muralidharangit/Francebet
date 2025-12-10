@@ -1034,43 +1034,42 @@ function Home() {
                         {/* HOT GAMES */}
                         <div>
                           {/* Section Title */}
-                          <div className="top-matches-title d-flex align-items-center justify-content-between my-2">
-                            <div className="d-flex align-items-center">
-                              {isLoadingTypes ? (
-                                <>
-                                  <Skeleton circle height={27} width={27} />
-                                  <Skeleton
-                                    height={20}
-                                    width={100}
-                                    className="ms-2"
-                                  />
-                                </>
-                              ) : (
-                                <>
-                                  <img
-                                    src="https://cdn-icons-png.flaticon.com/512/12800/12800987.png"
-                                    width="27"
-                                    alt="Games Type Icon"
-                                  />
-                                  <h5 className="m-0 ms-2 d-flex align-items-center">
-                                    Hot Games
-                                  </h5>
-                                </>
-                              )}
-                            </div>
+                        {/* // ... replace the original div with this: */}
+<div className="top-matches-title d-flex align-items-center justify-content-between my-2">
+    <div className="d-flex align-items-center">
+        {isLoadingTypes ? (
+            <>
+                <Skeleton circle height={27} width={27} />
+                <Skeleton
+                    height={20}
+                    width={100}
+                    className="ms-2"
+                />
+            </>
+        ) : (
+            <>
+                <img
+                    src="https://cdn-icons-png.flaticon.com/512/12800/12800987.png"
+                    width="27"
+                    alt={t('home.hotGames.iconAlt')}
+                />
+                <h5 className="m-0 ms-2 d-flex align-items-center">
+                    {t('home.hotGames.title')}
+                </h5>
+            </>
+        )}
+    </div>
 
-                            <div
-                              onClick={() =>
-                                navigate(`/filtered-games?type=hot`)
-                              }
-                            >
-                              {/* <Link to="/all-games"> */}
-                              <span className="text-white fs-13 fw-500 right_heading">
-                                All <i className="ri-arrow-right-s-line" />
-                              </span>
-                              {/* </Link> */}
-                            </div>
-                          </div>
+    <div
+        onClick={() =>
+            navigate(`/filtered-games?type=hot`)
+        }
+    >
+        <span className="text-white fs-13 fw-500 right_heading">
+            {t('home.hotGames.allLink')} <i className="ri-arrow-right-s-line" />
+        </span>
+    </div>
+</div>
 
                           {/* Swiper Section */}
                           <Swiper
@@ -1289,46 +1288,49 @@ function Home() {
 
                       <div className="game-types-section  tabd-none">
                         {/* Games Type Header */}
-                        <div className="top-matches-title d-flex align-items-center justify-content-between my-2 ">
-                          <div className="d-flex">
-                            {/* Skeleton for icon */}
-                            {isLoadingTypes ? (
-                              <Skeleton
-                                circle
-                                height={27}
-                                width={27}
-                                baseColor="#313131" // Darker grey for the base
-                                highlightColor="#525252"
-                              />
-                            ) : (
-                              <img
-                                src="https://cdn-icons-png.flaticon.com/512/12800/12800987.png"
-                                width="27"
-                                alt="Games Type Icon"
-                              />
-                            )}
-                            {/* Skeleton for title */}
-                            {isLoadingTypes ? (
-                              <Skeleton
-                                height={20}
-                                width={100}
-                                className="ms-2"
-                                baseColor="#313131" // Darker grey for the base
-                                highlightColor="#525252"
-                              />
-                            ) : (
-                              <h5 className="m-0 ms-2">Games Type</h5>
-                            )}
-                          </div>
-                          {/* <div>
-                            <Link to={routes.games.all}>
-                              <span className="text-white fs-13 fw-500 right_heading">
-                                All <i className="ri-arrow-right-s-line" />
-                              </span>
-                            </Link>
-                          </div> */}
-                        </div>
-
+                      {/* // ... */}
+<div className="top-matches-title d-flex align-items-center justify-content-between my-2 ">
+    <div className="d-flex">
+        {/* Skeleton for icon */}
+        {isLoadingTypes ? (
+            <Skeleton
+                circle
+                height={27}
+                width={27}
+                baseColor="#313131" // Darker grey for the base
+                highlightColor="#525252"
+            />
+        ) : (
+            <img
+                src="https://cdn-icons-png.flaticon.com/512/12800/12800987.png"
+                width="27"
+                alt={t('home.gamesType.iconAlt')}
+            />
+        )}
+        {/* Skeleton for title */}
+        {isLoadingTypes ? (
+            <Skeleton
+                height={20}
+                width={100}
+                className="ms-2"
+                baseColor="#313131" // Darker grey for the base
+                highlightColor="#525252"
+            />
+        ) : (
+            <h5 className="m-0 ms-2">{t('home.gamesType.title')}</h5>
+        )}
+    </div>
+    {/* The 'All' link section is commented out in your source, so I won't add translation for it, but the structure is below for future use: */}
+    {/*
+    <div>
+        <Link to={routes.games.all}>
+            <span className="text-white fs-13 fw-500 right_heading">
+                {t('home.gamesType.allLink')} <i className="ri-arrow-right-s-line" />
+            </span>
+        </Link>
+    </div>
+    */}
+</div>
                         {/* SkeletonTheme for consistent skeleton colors */}
                         <SkeletonTheme
                           baseColor="#313131"
@@ -1756,43 +1758,42 @@ function Home() {
                       {/* all games part */}
                       <div>
                         {/* All Games Section Header */}
-                        <div className="top-matches-title d-flex align-items-center justify-content-between my-3">
-                          <div className="d-flex">
-                            {isLoadingGames ? (
-                              // Skeleton for the dot icon
-                              <Skeleton
-                                circle
-                                height={20}
-                                width={20}
-                                className="dot"
-                                baseColor="#313131" // Darker grey for the base
-                                highlightColor="#525252"
-                              />
-                            ) : (
-                              <span className="dot" />
-                            )}
-                            {isLoadingGames ? (
-                              // Skeleton for the title text
-                              <Skeleton
-                                height={20}
-                                width={120}
-                                className="ms-2"
-                                baseColor="#313131" // Darker grey for the base
-                                highlightColor="#525252"
-                              />
-                            ) : (
-                              <h5 className="m-0 ms-2">All Games</h5>
-                            )}
-                          </div>
-                          <div>
-                            {/* The "All" link typically remains visible even during loading */}
-                            <Link to={routes.games.all}>
-                              <span className="text-white fs-13 fw-500 right_heading">
-                                All <i className="ri-arrow-right-s-line" />
-                              </span>
-                            </Link>
-                          </div>
-                        </div>
+                       <div className="top-matches-title d-flex align-items-center justify-content-between my-3">
+    <div className="d-flex">
+        {isLoadingGames ? (
+            // Skeleton for the dot icon
+            <Skeleton
+                circle
+                height={20}
+                width={20}
+                className="dot"
+                baseColor="#313131" // Darker grey for the base
+                highlightColor="#525252"
+            />
+        ) : (
+            <span className="dot" />
+        )}
+        {isLoadingGames ? (
+            // Skeleton for the title text
+            <Skeleton
+                height={20}
+                width={120}
+                className="ms-2"
+                baseColor="#313131" // Darker grey for the base
+                highlightColor="#525252"
+            />
+        ) : (
+            <h5 className="m-0 ms-2">{t('home.allGames.title')}</h5>
+        )}
+    </div>
+    <div>
+        <Link to={routes.games.all}>
+            <span className="text-white fs-13 fw-500 right_heading">
+                {t('home.allGames.allLink')} <i className="ri-arrow-right-s-line" />
+            </span>
+        </Link>
+    </div>
+</div>
 
                         {/* Apply SkeletonTheme for consistent styling of all skeletons in this section */}
                         <SkeletonTheme
@@ -1923,25 +1924,48 @@ function Home() {
                       >
                         {/* SLOT GAMES */}
                         <div>
-                          <div className="top-matches-title d-flex align-items-center justify-content-between my-3">
-                            <div className="d-flex">
-                              <span className="dot" />
-                              <h5 className="m-0 ms-2 d-flex align-items-center">
-                                Slot Games
-                              </h5>
-                            </div>
-                            <div
-                              onClick={() =>
-                                navigate(`/filtered-games?type=slots`)
-                              }
-                            >
-                              {/* <Link to={routes.games.all}> */}
-                              <span className="text-white fs-13 fw-500 right_heading">
-                                All <i className="ri-arrow-right-s-line" />
-                              </span>
-                              {/* </Link> */}
-                            </div>
-                          </div>
+                          <div>
+    <div className="top-matches-title d-flex align-items-center justify-content-between my-3">
+        <div className="d-flex">
+            <span className="dot" />
+            <h5 className="m-0 ms-2 d-flex align-items-center">
+                {t('home.slotGames.title')}
+            </h5>
+        </div>
+        <div
+            onClick={() =>
+                navigate(`/filtered-games?type=slots`)
+            }
+        >
+            <span className="text-white fs-13 fw-500 right_heading">
+                {t('home.slotGames.allLink')} <i className="ri-arrow-right-s-line" />
+            </span>
+        </div>
+    </div>
+    {/* Swiper for Slot Games (omitting large content for brevity, focusing on translations) */}
+    {/* ... slot game swiper content ... */}
+    {isErrorSmartSoft && (
+        <div className="d-flex flex-column align-items-center mt-5 w-100">
+            <p className="text-white text-center">
+                {t('home.slotGames.error')}:{" "}
+                {errorSmartSoft.message}
+            </p>
+        </div>
+    )}
+    {smartSoftGames.length === 0 && !isLoadingSmartSoftGames && (
+        <div className="d-flex flex-column align-items-center mt-5 w-100">
+            <img
+                src="assets/img/notification/img_2.png"
+                alt={t('home.slotGames.noGamesAlt')}
+                className="w-25"
+            />
+            <p className="text-white text-center">
+                {t('home.slotGames.noGames')}
+            </p>
+        </div>
+    )}
+    {/* ... end swiper content */}
+</div>
 
                           {/* Swiper for Slot Games */}
                           <Swiper
@@ -2044,36 +2068,36 @@ function Home() {
                       >
                         <div>
                           {/* Provider running list Header */}
-                          <div className="top-matches-title d-flex align-items-center justify-content-between my-3">
-                            <div className="d-flex">
-                              {isLoading ? (
-                                <>
-                                  <Skeleton circle height={22} width={22} />
-                                  <Skeleton
-                                    height={20}
-                                    width={100}
-                                    className="ms-2"
-                                  />
-                                </>
-                              ) : (
-                                <>
-                                  <img
-                                    src="assets/img/coin.png"
-                                    width="22px"
-                                    alt="flaticon"
-                                  />
-                                  <h5 className="m-0 ms-2">Provider</h5>
-                                </>
-                              )}
-                            </div>
-                            <div>
-                              <Link to="/providers">
-                                <span className="text-white fs-13 fw-500 right_heading">
-                                  All <i className="ri-arrow-right-s-line" />
-                                </span>
-                              </Link>
-                            </div>
-                          </div>
+                         <div className="top-matches-title d-flex align-items-center justify-content-between my-3">
+    <div className="d-flex">
+        {isLoading ? (
+            <>
+                <Skeleton circle height={22} width={22} />
+                <Skeleton
+                    height={20}
+                    width={100}
+                    className="ms-2"
+                />
+            </>
+        ) : (
+            <>
+                <img
+                    src="assets/img/coin.png"
+                    width="22px"
+                    alt={t('home.providers.iconAlt')}
+                />
+                <h5 className="m-0 ms-2">{t('home.providers.title')}</h5>
+            </>
+        )}
+    </div>
+    <div>
+        <Link to="/providers">
+            <span className="text-white fs-13 fw-500 right_heading">
+                {t('home.providers.allLink')} <i className="ri-arrow-right-s-line" />
+            </span>
+        </Link>
+    </div>
+</div>
 
                           {/* Provider Swiper */}
                           {isLoadingProviders ? (
@@ -2303,94 +2327,94 @@ function Home() {
                       {/*---bonus------*/}
                       <div>
                         <div className="">
-                          <div className="top-matches-title d-flex align-items-center gap-2  my-3 justify-content-between">
-                            <div className="d-flex align-items-center">
-                              <img
-                                src="assets/img/coin.png"
-                                alt="coin"
-                                srcSet=""
-                                width=""
-                              />{" "}
-                              <h5 className="m-0 ms-2">Bonus </h5>
-                            </div>
-                            <Link to="/bonus">
-                              <div>
-                                <span className="text-white fs-13 fw-500 right_heading">
-                                  All <i className="ri-arrow-right-s-line" />
+<div className="top-matches-title d-flex align-items-center gap-2  my-3 justify-content-between">
+    <div className="d-flex align-items-center">
+        <img
+            src="assets/img/coin.png"
+            alt={t('home.bonus.iconAlt')}
+            srcSet=""
+            width=""
+        />{" "}
+        <h5 className="m-0 ms-2">{t('home.bonus.title')}</h5>
+    </div>
+    <Link to="/bonus">
+        <div>
+            <span className="text-white fs-13 fw-500 right_heading">
+                {t('home.bonus.allLink')} <i className="ri-arrow-right-s-line" />
+            </span>
+        </div>
+    </Link>
+</div>
+
+                         <div className="row px-0">
+    <div className="col-lg-6 mb-3">
+        <div className="bouns_sec">
+            <div className="card bonus_card">
+                <div className="card-body p-0">
+                    <div className="bonus_card_sec">
+                        {/* Top section with text and image */}
+                        <div className="bonus_sec_top p-4 py-2">
+                            <div className="bonus_sec_content">
+                                <span>{t('home.bonusCard.type')}</span>
+                                <span className="text-shadow">
+                                    <p>{t('home.bonusCard.desc100')}</p>
                                 </span>
-                              </div>
-                            </Link>
-                          </div>
-
-                          <div className="row px-0">
-                            <div className="col-lg-6 mb-3">
-                              <div className="bouns_sec">
-                                <div className="card bonus_card">
-                                  <div className="card-body p-0">
-                                    <div className="bonus_card_sec">
-                                      {/* Top section with text and image */}
-                                      <div className="bonus_sec_top p-4 py-2">
-                                        <div className="bonus_sec_content">
-                                          <span>Casino</span>
-                                          <span className="text-shadow">
-                                            <p>100% Crash Power Bonus</p>
-                                          </span>
-                                        </div>
-                                      </div>
-                                      {/* Bottom section with timer and buttons */}
-                                      <div className="bonusBlock_other__bottom p-2">
-                                        <div className="timer_block_container d-flex align-items-center">
-                                          {/* Action buttons */}
-                                          <div className="bonus_bottom_btn red_clr w-100">
-                                            <button className="btn btn-red w-100">
-                                              Get bonus
-                                            </button>
-                                            <button className="btn btn-outline-light w-100">
-                                              Details
-                                            </button>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
                             </div>
-
-                            <div className="col-lg-6">
-                              <div className="bouns_sec ">
-                                <div className="card bonus_card">
-                                  <div className="card-body p-0">
-                                    <div className="bonus_card_sec">
-                                      {/* Top section with text and image */}
-                                      <div className="bonus_sec_top p-4 py-2">
-                                        <div className="bonus_sec_content">
-                                          <span>Casino</span>
-                                          <span className="text-shadow">
-                                            <p>75% Crash Power Bonus</p>
-                                          </span>
-                                        </div>
-                                      </div>
-                                      {/* Bottom section with timer and buttons */}
-                                      <div className="bonusBlock_other__bottom p-2">
-                                        <div className="timer_block_container d-flex align-items-center">
-                                          {/* Action buttons */}
-                                          <div className="bonus_bottom_btn red_clr w-100">
-                                            <button className="btn btn-red w-100">
-                                              Get bonus
-                                            </button>
-                                            <button className="btn btn-outline-light w-100">
-                                              Details
-                                            </button>
-                                          </div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                  </div>
+                        </div>
+                        {/* Bottom section with timer and buttons */}
+                        <div className="bonusBlock_other__bottom p-2">
+                            <div className="timer_block_container d-flex align-items-center">
+                                {/* Action buttons */}
+                                <div className="bonus_bottom_btn red_clr w-100">
+                                    <button className="btn btn-red w-100">
+                                        {t('home.bonusCard.getBonusButton')}
+                                    </button>
+                                    <button className="btn btn-outline-light w-100">
+                                        {t('home.bonusCard.detailsButton')}
+                                    </button>
                                 </div>
-                              </div>
                             </div>
-                          </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div className="col-lg-6">
+        <div className="bouns_sec ">
+            <div className="card bonus_card">
+                <div className="card-body p-0">
+                    <div className="bonus_card_sec">
+                        {/* Top section with text and image */}
+                        <div className="bonus_sec_top p-4 py-2">
+                            <div className="bonus_sec_content">
+                                <span>{t('home.bonusCard.type')}</span>
+                                <span className="text-shadow">
+                                    <p>{t('home.bonusCard.desc75')}</p>
+                                </span>
+                            </div>
+                        </div>
+                        {/* Bottom section with timer and buttons */}
+                        <div className="bonusBlock_other__bottom p-2">
+                            <div className="timer_block_container d-flex align-items-center">
+                                {/* Action buttons */}
+                                <div className="bonus_bottom_btn red_clr w-100">
+                                    <button className="btn btn-red w-100">
+                                        {t('home.bonusCard.getBonusButton')}
+                                    </button>
+                                    <button className="btn btn-outline-light w-100">
+                                        {t('home.bonusCard.detailsButton')}
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
                         </div>
                       </div>
 

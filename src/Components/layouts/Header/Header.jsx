@@ -230,7 +230,7 @@ const StickyHeader = ({ onToggleSidebar }) => {
 
                     {/* Avatar */}
                     <div
-                      className="user-icon ms-2"
+                      className="user-icon"
                       onClick={handleProfileClick}
                     >
                       <img
@@ -781,9 +781,9 @@ const StickyHeader = ({ onToggleSidebar }) => {
                     </li>
                     {/* Profile dropdown ends */}
 
-                    <li>
+                    <li className="nav-item">
 
-      <div style={{ marginTop: '20px' }}>
+      <div >
         <LanguageSwitcher />
       </div>
 

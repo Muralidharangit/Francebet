@@ -2328,8 +2328,8 @@ li.nav-item button {
 .navbar .navbar-menu-wrapper .navbar-nav .nav-item .nav-link {
   color: #e4e4e4;
   font-size: 0.875rem;
-  margin-left: 1.5rem;
-  margin-right: 1.5rem;
+  margin-left: 1rem;
+  margin-right: 1rem;
   height: 70px;
   display: -webkit-flex;
   display: flex;
@@ -5653,7 +5653,7 @@ span.fs-12.fw-bold.text-truncate.text-white {
   margin-top: 35px;
   margin-bottom: 15px;
   color: white;
-  border-left: 5px solid #e4063b;
+  border-left: 5px solid #b59509;
   padding-left: 10px;
 }
 

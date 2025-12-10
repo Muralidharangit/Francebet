@@ -398,4 +398,67 @@
       "p2_p1": "For questions or support, contact us anytime at "
     }
   }
+
+  ,
+
+  "sidebar": {
+    "menu": {
+      "home": "Home",
+      "allGames": "All Games",
+      "liveCasino": "Live Casino",
+      "crashGames": "Crash Games",
+      "providers": "Providers",
+      "howToDeposit": "How To Deposit",
+      "howToPlay": "How to Play",
+      "terms": "Terms and Conditions",
+      "privacy": "Privacy and policy"
+    },
+    "button": {
+      "allGames": "All Games"
+    }
+  }
+
+  ,
+
+ "home": {
+    "hotGames": {
+      "title": "Hot Games",
+      "allLink": "All",
+      "iconAlt": "Games Type Icon"
+    },
+    "gamesType": {
+      "title": "Games Type",
+      "allLink": "All",
+      "iconAlt": "Games Type Icon"
+    },
+    "allGames": {
+      "title": "All Games",
+      "allLink": "All"
+    },
+    "slotGames": {
+      "title": "Slot Games",
+      "allLink": "All",
+      "error": "Error loading slot games",
+      "noGames": "No slot games available",
+      "noGamesAlt": "No games available image"
+    },
+    "providers": {
+      "title": "Provider",
+      "allLink": "All",
+      "iconAlt": "Coin icon"
+    },
+    "bonus": {
+      "title": "Bonus",
+      "allLink": "All",
+      "iconAlt": "Coin icon"
+    },
+    "bonusCard": {
+      "type": "Casino",
+      "desc100": "100% Crash Power Bonus",
+      "desc75": "75% Crash Power Bonus",
+      "getBonusButton": "Get bonus",
+      "detailsButton": "Details"
+    }
+  }
+  
 }
